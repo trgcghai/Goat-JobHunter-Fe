@@ -6,6 +6,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import Image from "next/image";
+import Link from "next/link";
 
 const jobs = [
   {
@@ -95,12 +96,14 @@ export function FeaturedJobs() {
         </div>
 
         <div className="mt-8 text-center">
-          <Button
-            variant="outline"
-            className="border-primary text-primary hover:bg-primary/10 bg-transparent rounded-xl"
-          >
-            Xem Tất Cả Việc Làm
-          </Button>
+          <Link href="/jobs">
+            <Button
+              variant="outline"
+              className="border-primary text-primary hover:bg-primary/10 bg-transparent rounded-xl"
+            >
+              Xem Tất Cả Việc Làm
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

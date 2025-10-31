@@ -16,11 +16,9 @@ interface User {
 interface HeaderProps {
   isLoggedIn: boolean;
   user: User;
-  onLogin: () => void;
-  onLogout: () => void;
 }
 
-export function Header({ isLoggedIn, user, onLogin, onLogout }: HeaderProps) {
+export function Header({ isLoggedIn, user }: HeaderProps) {
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   return (
@@ -70,7 +68,7 @@ export function Header({ isLoggedIn, user, onLogin, onLogout }: HeaderProps) {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={onLogin}
+                  onClick={() => {}}
                   className="hover:bg-muted rounded-xl border-primary text-primary"
                 >
                   Đăng Nhập
@@ -99,7 +97,7 @@ export function Header({ isLoggedIn, user, onLogin, onLogout }: HeaderProps) {
                 {showUserMenu && (
                   <UserPopup
                     user={user}
-                    onLogout={onLogout}
+                    onLogout={() => {}}
                     onClose={() => setShowUserMenu(false)}
                   />
                 )}
