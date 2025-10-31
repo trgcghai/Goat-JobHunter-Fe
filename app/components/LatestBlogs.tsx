@@ -1,46 +1,19 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { blogs } from "@/constants/sample";
 import Image from "next/image";
-
-const blogs = [
-  {
-    id: 1,
-    title: "5 Kỹ Năng Cần Thiết Cho Lập Trình Viên Trong 2025",
-    excerpt:
-      "Khám phá những kỹ năng quan trọng nhất mà mỗi lập trình viên cần có...",
-    date: "15 Tháng 10, 2025",
-    category: "Career Tips",
-    image:
-      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: 2,
-    title: "Cách Chuẩn Bị Cho Phỏng Vấn Kỹ Thuật",
-    excerpt:
-      "Hướng dẫn chi tiết để giúp bạn thành công trong phỏng vấn kỹ thuật...",
-    date: "10 Tháng 10, 2025",
-    category: "Interview Tips",
-    image:
-      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: 3,
-    title: "Xu Hướng Công Nghệ Năm 2025",
-    excerpt:
-      "Những công nghệ mới sẽ thay đổi ngành công nghiệp trong năm tới...",
-    date: "5 Tháng 10, 2025",
-    category: "Technology",
-    image:
-      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
-  },
-];
+import Link from "next/link";
 
 export function LatestBlogs() {
+  function formatDate(isoDate: string): string {
+    const date = new Date(isoDate);
+    return new Intl.DateTimeFormat("vi-VN", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(date);
+  }
+
   return (
     <section className="py-16 md:py-24 bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -56,42 +29,49 @@ export function LatestBlogs() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {blogs.map((blog) => (
             <Card
-              key={blog.id}
+              key={blog.blogId}
               className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer py-0 pb-4"
             >
               <Image
-                src={blog.image || "/placeholder.svg"}
+                src={blog.banner || "/placeholder.svg"}
                 alt={blog.title}
                 className="h-40 w-full object-cover"
                 width={400}
                 height={160}
               />
               <CardHeader>
-                <div className="mb-2">
-                  <span className="text-xs font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full">
-                    {blog.category}
-                  </span>
+                <div className="mb-2 flex flex-wrap gap-2">
+                  {blog.tags?.slice(0, 2).map((tag, index) => (
+                    <span
+                      key={index}
+                      className="text-xs font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full"
+                    >
+                      {tag}
+                    </span>
+                  ))}
                 </div>
                 <h3 className="font-bold text-lg text-foreground line-clamp-2">
                   {blog.title}
                 </h3>
+                <p className="text-xs text-muted-foreground">
+                  {formatDate(blog.createdAt as "")}
+                </p>
               </CardHeader>
-              <CardContent>
+              <CardContent className="flex-1">
                 <p className="text-sm text-muted-foreground line-clamp-2">
-                  {blog.excerpt}
+                  {blog.description}
                 </p>
               </CardContent>
-              <CardFooter>
-                <p className="text-xs text-muted-foreground">{blog.date}</p>
-              </CardFooter>
             </Card>
           ))}
         </div>
 
         <div className="mt-8 text-center">
-          <Button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl">
-            Đọc Thêm Bài Viết
-          </Button>
+          <Link href="/blogs">
+            <Button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl">
+              Đọc Thêm Bài Viết
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

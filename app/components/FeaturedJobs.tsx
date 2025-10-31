@@ -5,46 +5,8 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import Image from "next/image";
+import { jobs } from "@/constants/sample";
 import Link from "next/link";
-
-const jobs = [
-  {
-    id: 1,
-    title: "Senior Frontend Engineer",
-    company: "TechCorp Vietnam",
-    location: "Ho Chi Minh City",
-    salary: "$2,000 - $3,500",
-    type: "Full-time",
-    description:
-      "Looking for an experienced frontend engineer to join our growing team.",
-    image:
-      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: 2,
-    title: "Product Manager",
-    company: "StartupXYZ",
-    location: "Hanoi",
-    salary: "$1,800 - $2,800",
-    type: "Full-time",
-    description: "Join our product team and shape the future of our platform.",
-    image:
-      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: 3,
-    title: "UX/UI Designer",
-    company: "DesignStudio",
-    location: "Da Nang",
-    salary: "$1,500 - $2,500",
-    type: "Full-time",
-    description:
-      "Create beautiful and intuitive user experiences for our clients.",
-    image:
-      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
-  },
-];
 
 export function FeaturedJobs() {
   return (
@@ -62,26 +24,18 @@ export function FeaturedJobs() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {jobs.map((job) => (
             <Card
-              key={job.id}
-              className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer py-0 pb-4"
+              key={job.jobId}
+              className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer py-4"
             >
-              <Image
-                src={job.image || "/placeholder.svg"}
-                alt={job.company}
-                width={400}
-                height={160}
-                className="h-40 w-full object-cover"
-              />
               <CardHeader>
-                <h3 className="font-bold text-lg text-foreground mb-1">
+                <h3 className="font-bold text-lg text-foreground">
                   {job.title}
                 </h3>
-                <p className="text-sm text-muted-foreground">{job.company}</p>
               </CardHeader>
-              <CardContent>
+              <CardContent className="flex-1">
                 <div className="mb-4 space-y-2 text-sm text-muted-foreground">
                   <p>📍 {job.location}</p>
-                  <p>💼 {job.type}</p>
+                  <p>💼 {job.workingType}</p>
                   <p className="font-semibold text-primary">{job.salary}</p>
                 </div>
                 <p className="text-sm text-foreground">{job.description}</p>

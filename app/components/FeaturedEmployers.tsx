@@ -1,41 +1,13 @@
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { recruiters } from "@/constants/sample";
 import Image from "next/image";
-
-const employers = [
-  {
-    id: 1,
-    name: "TechCorp Vietnam",
-    industry: "Technology",
-    openPositions: 12,
-    description: "Leading tech company in Southeast Asia",
-    image:
-      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: 2,
-    name: "StartupXYZ",
-    industry: "SaaS",
-    openPositions: 8,
-    description: "Innovative SaaS solutions for businesses",
-    image:
-      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: 3,
-    name: "DesignStudio",
-    industry: "Design",
-    openPositions: 5,
-    description: "Creative design agency with global clients",
-    image:
-      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
-  },
-];
+import Link from "next/link";
 
 export function FeaturedEmployers() {
   return (
@@ -51,14 +23,14 @@ export function FeaturedEmployers() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {employers.map((employer) => (
+          {recruiters.map((employer) => (
             <Card
-              key={employer.id}
+              key={employer.userId}
               className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer py-0 pb-4"
             >
               <Image
-                src={employer.image || "/placeholder.svg"}
-                alt={employer.image}
+                src={employer.avatar || "/placeholder.svg"}
+                alt={employer.name}
                 width={400}
                 height={160}
                 className="h-40 w-full object-cover"
@@ -68,17 +40,17 @@ export function FeaturedEmployers() {
                   {employer.name}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  {employer.industry}
+                  {employer.website}
                 </p>
               </CardHeader>
-              <CardContent>
-                <p className="text-sm text-foreground mb-4">
+              <CardContent className="flex-1">
+                <p className="text-sm text-foreground mb-4 line-clamp-2">
                   {employer.description}
                 </p>
                 <div className="p-3 rounded-lg bg-background">
                   <p className="text-sm">
                     <span className="font-semibold text-primary">
-                      {employer.openPositions}
+                      {employer.jobs?.length || 0}
                     </span>
                     <span className="text-muted-foreground">
                       {" "}
@@ -88,24 +60,31 @@ export function FeaturedEmployers() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button
-                  variant="outline"
-                  className="w-full border-primary text-primary hover:bg-primary/10 bg-transparent rounded-xl"
+                <Link
+                  href={`/recruiters/${employer.userId}`}
+                  className="w-full"
                 >
-                  Xem Công Ty
-                </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full border-primary text-primary hover:bg-primary/10 bg-transparent rounded-xl"
+                  >
+                    Xem Công Ty
+                  </Button>
+                </Link>
               </CardFooter>
             </Card>
           ))}
         </div>
 
         <div className="mt-8 text-center">
-          <Button
-            variant="outline"
-            className="border-primary text-primary hover:bg-primary/10 bg-transparent rounded-xl"
-          >
-            Khám Phá Thêm Nhà Tuyển Dụng
-          </Button>
+          <Link href="/recruiters">
+            <Button
+              variant="outline"
+              className="border-primary text-primary hover:bg-primary/10 bg-transparent rounded-xl"
+            >
+              Khám Phá Thêm Nhà Tuyển Dụng
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
