@@ -1,10 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Button } from "@/components/ui/button";
-import { Grid3x3, List } from "lucide-react";
-import { JobList } from "@/app/jobs/components/JobList";
 import { JobFilter } from "@/app/jobs/components/JobFilter";
+import { JobList } from "@/app/jobs/components/JobList";
+import { Button } from "@/components/ui/button";
 import {
   Pagination,
   PaginationContent,
@@ -14,117 +12,9 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-
-const allJobs = [
-  {
-    id: 1,
-    title: "Senior Frontend Engineer",
-    company: "TechCorp Vietnam",
-    location: "Ho Chi Minh City",
-    salary: "$2,000 - $3,500",
-    type: "Full-time",
-    description:
-      "Looking for an experienced frontend engineer to join our growing team.",
-    image:
-      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
-    skills: ["React", "TypeScript", "Tailwind CSS"],
-    datePosted: "2025-01-15",
-  },
-  {
-    id: 2,
-    title: "Product Manager",
-    company: "StartupXYZ",
-    location: "Hanoi",
-    salary: "$1,800 - $2,800",
-    type: "Full-time",
-    description: "Join our product team and shape the future of our platform.",
-    image:
-      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
-    skills: ["Product Strategy", "Analytics", "Leadership"],
-    datePosted: "2025-01-14",
-  },
-  {
-    id: 3,
-    title: "UX/UI Designer",
-    company: "DesignStudio",
-    location: "Da Nang",
-    salary: "$1,500 - $2,500",
-    type: "Full-time",
-    description:
-      "Create beautiful and intuitive user experiences for our clients.",
-    image:
-      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
-    skills: ["Figma", "UI Design", "Prototyping"],
-    datePosted: "2025-01-13",
-  },
-  {
-    id: 4,
-    title: "Backend Engineer (Node.js)",
-    company: "CloudServices Inc",
-    location: "Ho Chi Minh City",
-    salary: "$2,200 - $3,800",
-    type: "Full-time",
-    description: "Build scalable backend systems with Node.js and AWS.",
-    image:
-      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
-    skills: ["Node.js", "AWS", "PostgreSQL"],
-    datePosted: "2025-01-12",
-  },
-  {
-    id: 5,
-    title: "Data Analyst",
-    company: "DataCorp",
-    location: "Hanoi",
-    salary: "$1,600 - $2,400",
-    type: "Full-time",
-    description: "Analyze and visualize data to drive business insights.",
-    image:
-      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
-    skills: ["Python", "SQL", "Tableau"],
-    datePosted: "2025-01-10",
-  },
-  {
-    id: 6,
-    title: "Mobile App Developer",
-    company: "AppStudio",
-    location: "Da Nang",
-    salary: "$1,700 - $2,600",
-    type: "Full-time",
-    description:
-      "Develop iOS and Android applications for mobile-first experiences.",
-    image:
-      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
-    skills: ["Flutter", "React Native", "Mobile UI"],
-    datePosted: "2025-01-08",
-  },
-  {
-    id: 7,
-    title: "DevOps Engineer",
-    company: "InfraTech",
-    location: "Ho Chi Minh City",
-    salary: "$2,100 - $3,200",
-    type: "Full-time",
-    description: "Manage and optimize cloud infrastructure and deployments.",
-    image:
-      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
-    skills: ["Kubernetes", "Docker", "AWS"],
-    datePosted: "2025-01-05",
-  },
-  {
-    id: 8,
-    title: "QA Engineer",
-    company: "TechCorp Vietnam",
-    location: "Hanoi",
-    salary: "$1,300 - $2,000",
-    type: "Full-time",
-    description:
-      "Ensure product quality through comprehensive testing strategies.",
-    image:
-      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
-    skills: ["Automation Testing", "Selenium", "Manual Testing"],
-    datePosted: "2025-01-03",
-  },
-];
+import { allJobs } from "@/constants/sample";
+import { Grid3x3, List } from "lucide-react";
+import { useMemo, useState } from "react";
 
 export default function JobsPage() {
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
@@ -149,39 +39,32 @@ export default function JobsPage() {
 
       if (filters.skills.length > 0) {
         const hasSkill = filters.skills.some((skill) =>
-          job.skills.some((jobSkill) =>
-            jobSkill.toLowerCase().includes(skill.toLowerCase())
-          )
+          job.skills?.some((jobSkill) =>
+            jobSkill.name.toLowerCase().includes(skill.toLowerCase()),
+          ),
         );
         if (!hasSkill) return false;
       }
 
-      if (
-        filters.employer &&
-        !job.company.toLowerCase().includes(filters.employer.toLowerCase())
-      ) {
-        return false;
-      }
-
       if (filters.datePosted !== "all") {
-        const jobDate = new Date(job.datePosted);
+        const jobDate = job.createdAt ? new Date(job.createdAt) : null;
         const today = new Date();
         const daysAgo = Number.parseInt(filters.datePosted);
 
         const cutoffDate = new Date(today);
         cutoffDate.setDate(cutoffDate.getDate() - daysAgo);
 
-        if (jobDate < cutoffDate) return false;
+        if (jobDate && jobDate < cutoffDate) return false;
       }
 
       return true;
     });
-  }, [filters.datePosted, filters.employer, filters.location, filters.skills]);
+  }, [filters.datePosted, filters.location, filters.skills]);
 
   const totalPages = Math.ceil(filteredJobs.length / itemsPerPage);
   const paginatedJobs = filteredJobs.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   const handleFilterChange = (newFilters: typeof filters) => {
