@@ -440,3 +440,126 @@ export const allJobs: Job[] = [
     ],
   },
 ];
+
+export const allRecruiter: Recruiter[] = [
+  {
+    userId: 1,
+    email: "contact@techcorp.vn",
+    name: "TechCorp Vietnam",
+    phone: "+84 28 1234 5678",
+    address: "123 Nguyen Hue, District 1",
+    avatar:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+    description:
+      "Leading software development company with 10+ years of experience in creating innovative solutions.",
+    website: "https://techcorp.vn",
+    createdAt: "2023-01-15T00:00:00Z",
+    createdBy: "admin",
+    jobs: Array(12).fill(null),
+  },
+  {
+    userId: 2,
+    email: "contact@startupxyz.io",
+    name: "StartupXYZ",
+    phone: "+84 24 1234 5678",
+    address: "456 Tran Hung Dao, Hoan Kiem",
+    avatar:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+    description:
+      "Fast-growing startup focused on AI and machine learning solutions for businesses.",
+    website: "https://startupxyz.io",
+    createdAt: "2023-02-20T00:00:00Z",
+    createdBy: "admin",
+    jobs: Array(8).fill(null),
+  },
+  {
+    userId: 3,
+    email: "contact@designstudio.vn",
+    name: "DesignStudio",
+    phone: "+84 236 1234 567",
+    address: "789 Bach Dang, Hai Chau",
+    avatar:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+    description:
+      "Creative agency specializing in UI/UX design and brand development.",
+    website: "https://designstudio.vn",
+    createdAt: "2023-03-10T00:00:00Z",
+    createdBy: "admin",
+    jobs: Array(5).fill(null),
+  },
+  {
+    userId: 4,
+    email: "contact@cloudservices.io",
+    name: "CloudServices Inc",
+    phone: "+84 28 2234 5678",
+    address: "321 Le Loi, District 3",
+    avatar:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+    description:
+      "Enterprise cloud infrastructure and services provider for businesses worldwide.",
+    website: "https://cloudservices.io",
+    createdAt: "2023-04-05T00:00:00Z",
+    createdBy: "admin",
+    jobs: Array(18).fill(null),
+  },
+  {
+    userId: 5,
+    email: "contact@datacorp.vn",
+    name: "DataCorp",
+    phone: "+84 24 3234 5678",
+    address: "654 Ba Trieu, Dong Da",
+    avatar:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+    description:
+      "Data analytics company helping businesses make data-driven decisions.",
+    website: "https://datacorp.vn",
+    createdAt: "2023-05-12T00:00:00Z",
+    createdBy: "admin",
+    jobs: Array(6).fill(null),
+  },
+  {
+    userId: 6,
+    email: "contact@appstudio.vn",
+    name: "AppStudio",
+    phone: "+84 236 2234 567",
+    address: "987 Nguyen Van Linh, Thanh Khe",
+    avatar:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+    description:
+      "Mobile app development studio creating innovative applications for iOS and Android.",
+    website: "https://appstudio.vn",
+    createdAt: "2023-06-18T00:00:00Z",
+    createdBy: "admin",
+    jobs: Array(7).fill(null),
+  },
+  {
+    userId: 7,
+    email: "contact@infratech.io",
+    name: "InfraTech",
+    phone: "+84 28 3234 5678",
+    address: "147 Vo Van Tan, District 3",
+    avatar:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+    description:
+      "Infrastructure and DevOps solutions provider for cloud-native applications.",
+    website: "https://infratech.io",
+    createdAt: "2023-07-22T00:00:00Z",
+    createdBy: "admin",
+    jobs: Array(9).fill(null),
+  },
+  {
+    userId: 8,
+    email: "contact@gamestudio.vn",
+    name: "GameStudio",
+    phone: "+84 24 4234 5678",
+    address: "258 Cau Giay, Cau Giay",
+    avatar:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
+    description:
+      "Game development studio creating engaging mobile and PC games.",
+    website: "https://gamestudio.vn",
+    createdAt: "2023-08-30T00:00:00Z",
+    createdBy: "admin",
+    jobs: Array(4).fill(null),
+  },
+];

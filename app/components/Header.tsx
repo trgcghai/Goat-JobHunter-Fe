@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { UserPopup } from "@/app/components/UserPopup";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { UserPopup } from "@/app/components/UserPopup";
+import Link from "next/link";
+import { useState } from "react";
 
 interface User {
   name: string;
@@ -49,7 +49,7 @@ export function Header({ isLoggedIn, user }: HeaderProps) {
               Việc Làm
             </Link>
             <Link
-              href="/employers"
+              href="/recruiters"
               className="text-sm font-medium text-foreground hover:text-primary transition-colors"
             >
               Nhà Tuyển Dụng

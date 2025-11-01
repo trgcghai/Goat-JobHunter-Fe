@@ -58,6 +58,8 @@ type Job = {
   updatedAt?: string;
   updatedBy?: string;
   skills?: Skill[];
+  career?: Career;
+  recruiter?: Recruiter;
 };
 
 type Application = {
