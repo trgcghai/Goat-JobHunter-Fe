@@ -1,4 +1,5 @@
 import { Option } from "@/components/ui/MultipleSelector";
+import { Level, WorkingType } from "@/types/enum";
 
 export const LOCATION_OPTIONS: Option[] = [
   { value: "Ho Chi Minh City", label: "Ho Chi Minh City" },
@@ -33,3 +34,19 @@ export const EMPLOYER_OPTIONS: Option[] = [
   { value: "AppStudio", label: "AppStudio" },
   { value: "InfraTech", label: "InfraTech" },
 ];
+
+export const WORKING_TYPE_OPTIONS: Option[] = Object.entries(WorkingType).map(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ([_, value]) => ({
+    value: value,
+    label: value.charAt(0).toUpperCase() + value.slice(1),
+  }),
+);
+
+export const LEVEL_OPTIONS: Option[] = Object.entries(Level).map(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ([_, value]) => ({
+    value: value,
+    label: value.charAt(0).toUpperCase() + value.slice(1),
+  }),
+);

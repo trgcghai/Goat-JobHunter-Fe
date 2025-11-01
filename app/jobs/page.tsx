@@ -25,7 +25,8 @@ export default function JobsPage() {
     location: "",
     skills: [] as string[],
     employer: "",
-    datePosted: "all",
+    level: "",
+    workingType: "",
   });
 
   const filteredJobs = useMemo(() => {
@@ -46,20 +47,17 @@ export default function JobsPage() {
         if (!hasSkill) return false;
       }
 
-      if (filters.datePosted !== "all") {
-        const jobDate = job.createdAt ? new Date(job.createdAt) : null;
-        const today = new Date();
-        const daysAgo = Number.parseInt(filters.datePosted);
+      if (filters.level && job.level !== filters.level) {
+        return false;
+      }
 
-        const cutoffDate = new Date(today);
-        cutoffDate.setDate(cutoffDate.getDate() - daysAgo);
-
-        if (jobDate && jobDate < cutoffDate) return false;
+      if (filters.workingType && job.workingType !== filters.workingType) {
+        return false;
       }
 
       return true;
     });
-  }, [filters.datePosted, filters.location, filters.skills]);
+  }, [filters.location, filters.skills, filters.level, filters.workingType]);
 
   const totalPages = Math.ceil(filteredJobs.length / itemsPerPage);
   const paginatedJobs = filteredJobs.slice(
