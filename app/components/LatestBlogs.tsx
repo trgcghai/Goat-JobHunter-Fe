@@ -1,19 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { blogs } from "@/constants/sample";
+import { formatDate } from "@/utils/formatDate";
 import Image from "next/image";
 import Link from "next/link";
 
 export function LatestBlogs() {
-  function formatDate(isoDate: string): string {
-    const date = new Date(isoDate);
-    return new Intl.DateTimeFormat("vi-VN", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }).format(date);
-  }
-
   return (
     <section className="py-16 md:py-24 bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

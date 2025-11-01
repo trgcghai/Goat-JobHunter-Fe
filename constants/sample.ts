@@ -39,64 +39,6 @@ export const recruiters: Recruiter[] = [
   },
 ];
 
-export const jobs: Job[] = [
-  {
-    jobId: 1,
-    title: "Frontend Developer",
-    description: "Phát triển và tối ưu giao diện web sử dụng ReactJS.",
-    startDate: "2025-11-01",
-    endDate: "2025-12-31",
-    active: true,
-    level: "Mid",
-    quantity: 2,
-    salary: 1800,
-    workingType: WorkingType.OFFLINE,
-    location: "Hà Nội",
-    skills: [
-      { skillId: 1, name: "ReactJS" },
-      { skillId: 2, name: "TypeScript" },
-      { skillId: 3, name: "HTML/CSS" },
-    ],
-  },
-  {
-    jobId: 2,
-    title: "Backend Developer",
-    description:
-      "Xây dựng API và quản lý cơ sở dữ liệu với NestJS và PostgreSQL.",
-    startDate: "2025-11-10",
-    endDate: "2026-01-10",
-    active: true,
-    level: "Senior",
-    quantity: 1,
-    salary: 2500,
-    workingType: WorkingType.OFFLINE,
-    location: "TP. Hồ Chí Minh",
-    skills: [
-      { skillId: 4, name: "NestJS" },
-      { skillId: 5, name: "PostgreSQL" },
-      { skillId: 6, name: "Docker" },
-    ],
-  },
-  {
-    jobId: 3,
-    title: "UI/UX Designer",
-    description:
-      "Thiết kế giao diện và trải nghiệm người dùng cho ứng dụng di động.",
-    startDate: "2025-11-05",
-    endDate: "2025-12-20",
-    active: false,
-    level: "Junior",
-    quantity: 1,
-    salary: 1200,
-    workingType: WorkingType.FULL_TIME,
-    location: "Đà Nẵng",
-    skills: [
-      { skillId: 7, name: "Figma" },
-      { skillId: 8, name: "Adobe XD" },
-    ],
-  },
-];
-
 export const blogs: Blog[] = [
   {
     blogId: 1,

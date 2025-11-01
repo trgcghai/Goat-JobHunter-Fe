@@ -1,6 +1,7 @@
 import { FilterOptions } from "@/app/jobs/components/JobFilter";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { formatDate } from "@/utils/formatDate";
 import { Calendar, DollarSign, MapPin } from "lucide-react";
 import Link from "next/link";
 
@@ -9,15 +10,6 @@ interface JobListProps {
   viewMode: "list" | "grid";
   filters: FilterOptions;
   onFilterChange: (filters: FilterOptions) => void;
-}
-
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return new Intl.DateTimeFormat("vi-VN", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  }).format(date);
 }
 
 export function JobList({

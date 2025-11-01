@@ -1,15 +1,7 @@
+import { formatDate } from "@/utils/formatDate";
 import { Calendar, Clock, DollarSign, MapPin, Users } from "lucide-react";
 
 function JobInfoGrid({ job }: { job: Job }) {
-  function formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat("vi-VN", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }).format(date);
-  }
-
   const infoItems = [
     {
       icon: MapPin,
