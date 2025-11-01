@@ -1,10 +1,13 @@
+import { FilterOptions } from "@/app/jobs/components/JobFilter";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Briefcase, Calendar, DollarSign, MapPin } from "lucide-react";
+import { Calendar, DollarSign, MapPin } from "lucide-react";
 
 interface JobListProps {
   jobs: Job[];
   viewMode: "list" | "grid";
+  filters: FilterOptions;
+  onFilterChange: (filters: FilterOptions) => void;
 }
 
 function formatDate(dateString: string): string {
@@ -16,7 +19,34 @@ function formatDate(dateString: string): string {
   }).format(date);
 }
 
-export function JobList({ jobs, viewMode }: JobListProps) {
+export function JobList({
+  jobs,
+  viewMode,
+  filters,
+  onFilterChange,
+}: JobListProps) {
+  const handleLevelClick = (level: string) => {
+    if (onFilterChange && filters) {
+      onFilterChange({
+        ...filters,
+        level: filters.level === level ? "" : level,
+      });
+      // Scroll to top to see filter section
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const handleWorkingTypeClick = (workingType: string) => {
+    if (onFilterChange && filters) {
+      onFilterChange({
+        ...filters,
+        workingType: filters.workingType === workingType ? "" : workingType,
+      });
+      // Scroll to top to see filter section
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   if (viewMode === "grid") {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -27,7 +57,14 @@ export function JobList({ jobs, viewMode }: JobListProps) {
           >
             <CardHeader>
               <div className="flex items-start justify-between mb-2">
-                <Badge variant="secondary" className="mb-2">
+                <Badge
+                  variant="secondary"
+                  className="mb-2"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleLevelClick(job.level);
+                  }}
+                >
                   {job.level}
                 </Badge>
                 <Badge
@@ -48,8 +85,16 @@ export function JobList({ jobs, viewMode }: JobListProps) {
                   <span>{job.location}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Briefcase className="h-4 w-4" />
-                  <span>{job.workingType}</span>
+                  <Badge
+                    variant="outline"
+                    className="text-xs cursor-pointer hover:bg-accent transition-colors"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleWorkingTypeClick(job.workingType);
+                    }}
+                  >
+                    {job.workingType}
+                  </Badge>
                 </div>
                 <div className="flex items-center gap-2">
                   <DollarSign className="h-4 w-4" />
@@ -106,11 +151,27 @@ export function JobList({ jobs, viewMode }: JobListProps) {
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 flex flex-col gap-2">
                     <div className="flex items-center gap-2 mb-2">
-                      <Badge variant="secondary">{job.level}</Badge>
+                      <Badge
+                        variant="secondary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleLevelClick(job.level);
+                        }}
+                      >
+                        {job.level}
+                      </Badge>
                       <Badge variant={job.active ? "default" : "outline"}>
                         {job.active ? "Đang tuyển" : "Đã đóng"}
                       </Badge>
-                      <Badge variant="outline">{job.workingType}</Badge>
+                      <Badge
+                        variant="outline"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleWorkingTypeClick(job.workingType);
+                        }}
+                      >
+                        {job.workingType}
+                      </Badge>
                     </div>
                     <h3 className="font-bold text-xl text-foreground mb-1">
                       {job.title}

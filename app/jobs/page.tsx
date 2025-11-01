@@ -121,7 +121,12 @@ export default function JobsPage() {
             </div>
 
             {paginatedJobs.length > 0 ? (
-              <JobList jobs={paginatedJobs} viewMode={viewMode} />
+              <JobList
+                jobs={paginatedJobs}
+                viewMode={viewMode}
+                filters={filters}
+                onFilterChange={handleFilterChange}
+              />
             ) : (
               <div className="rounded-lg border border-border bg-card p-12 text-center">
                 <p className="text-muted-foreground mb-2">

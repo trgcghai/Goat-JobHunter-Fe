@@ -10,7 +10,7 @@ import {
   WORKING_TYPE_OPTIONS,
 } from "@/constants/constant";
 
-interface FilterOptions {
+export interface FilterOptions {
   location: string;
   skills: string[];
   employer: string;
