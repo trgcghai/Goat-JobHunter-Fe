@@ -89,6 +89,15 @@ type BlogActivity = {
   totalReplies: number;
 };
 
+type MyComment = {
+  commentId: number;
+  content: string;
+  createdAt?: string;
+  createdBy?: string;
+  updatedAt?: string;
+  updatedBy?: string;
+};
+
 type Blog = {
   blogId: number;
   title: string;
@@ -102,20 +111,11 @@ type Blog = {
   createdBy?: string;
   updatedAt?: string;
   updatedBy?: string;
-  comments?: Comment[];
-  notifications?: Notification[];
+  comments?: MyComment[];
+  notifications?: MyNotification[];
 };
 
-type Comment = {
-  commentId: number;
-  content: string;
-  createdAt?: string;
-  createdBy?: string;
-  updatedAt?: string;
-  updatedBy?: string;
-};
-
-type Notification = {
+type MyNotification = {
   notificationId: number;
   type: string;
   message: string;

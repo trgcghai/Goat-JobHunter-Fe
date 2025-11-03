@@ -55,7 +55,7 @@ export function Header({ isLoggedIn, user }: HeaderProps) {
               Nhà Tuyển Dụng
             </Link>
             <Link
-              href="/blog"
+              href="/blogs"
               className="text-sm font-medium text-foreground hover:text-primary transition-colors"
             >
               Blog

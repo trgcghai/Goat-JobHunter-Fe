@@ -96,6 +96,244 @@ export const blogs: Blog[] = [
   },
 ];
 
+export const allBlogs: Blog[] = [
+  {
+    blogId: 1,
+    title: "Hướng dẫn sử dụng Docker cho người mới",
+    banner:
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
+    description: "Bài viết hướng dẫn cơ bản về Docker, container và image.",
+    content: [
+      "Docker là công cụ giúp đóng gói ứng dụng vào container.",
+      "Bạn có thể chạy Docker trên Windows, macOS, hoặc Linux.",
+    ],
+    tags: ["DevOps", "Docker", "Tutorial"],
+    draft: false,
+    activity: {
+      totalLikes: 125,
+      totalReads: 3100,
+      totalParentComments: 14,
+      totalReplies: 33,
+    },
+    createdAt: "2025-01-15T10:30:00Z",
+    createdBy: "admin",
+    comments: [
+      {
+        commentId: 1,
+        content: "Bài viết rất dễ hiểu, cảm ơn!",
+        createdBy: "user1",
+      },
+      {
+        commentId: 2,
+        content: "Mong có phần nâng cao sớm.",
+        createdBy: "user2",
+      },
+    ],
+    notifications: [
+      {
+        notificationId: 1,
+        type: "COMMENT",
+        message: "user1 đã bình luận",
+        read: false,
+      },
+    ],
+  },
+  {
+    blogId: 2,
+    title: "React 18: Những điểm mới đáng chú ý",
+    banner:
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
+    description:
+      "Khám phá các tính năng mới của React 18 như concurrent rendering.",
+    content: [
+      "React 18 giới thiệu concurrent mode để tối ưu UI.",
+      "useTransition giúp cải thiện trải nghiệm người dùng.",
+    ],
+    tags: ["React", "Frontend", "JavaScript"],
+    draft: false,
+    activity: {
+      totalLikes: 203,
+      totalReads: 4500,
+      totalParentComments: 28,
+      totalReplies: 65,
+    },
+    createdAt: "2025-02-10T09:45:00Z",
+    createdBy: "editor01",
+  },
+  {
+    blogId: 3,
+    title: "Top 5 IDE tốt nhất cho lập trình viên năm 2025",
+    banner:
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
+    description: "Tổng hợp những IDE phổ biến nhất hiện nay.",
+    content: [
+      "Visual Studio Code",
+      "IntelliJ IDEA",
+      "PyCharm",
+      "WebStorm",
+      "Eclipse",
+    ],
+    tags: ["IDE", "Developer", "Tools"],
+    draft: false,
+    activity: {
+      totalLikes: 88,
+      totalReads: 2200,
+      totalParentComments: 7,
+      totalReplies: 15,
+    },
+    createdAt: "2025-03-05T11:00:00Z",
+    createdBy: "authorB",
+  },
+  {
+    blogId: 4,
+    title: "Sự khác biệt giữa SQL và NoSQL",
+    banner:
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
+    description:
+      "Bài viết phân tích ưu và nhược điểm của hai loại cơ sở dữ liệu.",
+    tags: ["Database", "SQL", "NoSQL"],
+    draft: false,
+    activity: {
+      totalLikes: 175,
+      totalReads: 3800,
+      totalParentComments: 20,
+      totalReplies: 40,
+    },
+    createdAt: "2025-03-20T14:00:00Z",
+    createdBy: "admin",
+  },
+  {
+    blogId: 5,
+    title: "10 mẹo tăng hiệu suất làm việc với VS Code",
+    banner:
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
+    tags: ["VSCode", "Productivity", "Tips"],
+    draft: false,
+    activity: {
+      totalLikes: 145,
+      totalReads: 2900,
+      totalParentComments: 16,
+      totalReplies: 21,
+    },
+    createdAt: "2025-03-28T08:30:00Z",
+    createdBy: "devtips",
+  },
+  {
+    blogId: 6,
+    title: "Giới thiệu về RESTful API và nguyên tắc thiết kế",
+    banner:
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
+    description: "Hiểu rõ về REST và cách xây dựng API hiệu quả.",
+    tags: ["API", "Backend", "REST"],
+    draft: false,
+    activity: {
+      totalLikes: 167,
+      totalReads: 3100,
+      totalParentComments: 19,
+      totalReplies: 29,
+    },
+    createdAt: "2025-04-02T10:10:00Z",
+    createdBy: "api_master",
+  },
+  {
+    blogId: 7,
+    title: "Cách deploy ứng dụng Node.js lên Vercel",
+    banner:
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
+    tags: ["Node.js", "Deployment", "Vercel"],
+    draft: false,
+    activity: {
+      totalLikes: 74,
+      totalReads: 1600,
+      totalParentComments: 8,
+      totalReplies: 11,
+    },
+    createdAt: "2025-04-05T12:00:00Z",
+    createdBy: "editor01",
+  },
+  {
+    blogId: 8,
+    title: "So sánh TypeScript và JavaScript: Khi nào nên dùng?",
+    banner:
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
+    tags: ["TypeScript", "JavaScript", "Programming"],
+    draft: false,
+    activity: {
+      totalLikes: 210,
+      totalReads: 4200,
+      totalParentComments: 32,
+      totalReplies: 60,
+    },
+    createdAt: "2025-04-20T09:00:00Z",
+    createdBy: "admin",
+  },
+  {
+    blogId: 9,
+    title: "Tổng quan về Git và GitHub cho người mới bắt đầu",
+    banner:
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
+    description: "Cách sử dụng Git cơ bản và làm việc với GitHub.",
+    tags: ["Git", "Version Control"],
+    draft: false,
+    activity: {
+      totalLikes: 189,
+      totalReads: 4000,
+      totalParentComments: 25,
+      totalReplies: 42,
+    },
+    createdAt: "2025-05-01T10:00:00Z",
+    createdBy: "authorC",
+  },
+  {
+    blogId: 10,
+    title: "Cách tạo blog cá nhân với Next.js và Markdown",
+    banner:
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
+    tags: ["Next.js", "Markdown", "WebDev"],
+    draft: false,
+    activity: {
+      totalLikes: 94,
+      totalReads: 2000,
+      totalParentComments: 10,
+      totalReplies: 13,
+    },
+    createdAt: "2025-05-15T11:30:00Z",
+    createdBy: "frontenddev",
+  },
+  {
+    blogId: 11,
+    title: "Những xu hướng công nghệ năm 2025 bạn không nên bỏ lỡ",
+    banner:
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
+    tags: ["Tech Trends", "AI", "Cloud", "Blockchain"],
+    draft: false,
+    activity: {
+      totalLikes: 301,
+      totalReads: 6100,
+      totalParentComments: 40,
+      totalReplies: 92,
+    },
+    createdAt: "2025-06-01T08:00:00Z",
+    createdBy: "techinsider",
+  },
+  {
+    blogId: 12,
+    title: "Tại sao nên học lập trình Python trong năm 2025?",
+    banner:
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80",
+    tags: ["Python", "Beginner", "Career"],
+    draft: false,
+    activity: {
+      totalLikes: 250,
+      totalReads: 5400,
+      totalParentComments: 33,
+      totalReplies: 70,
+    },
+    createdAt: "2025-06-10T09:20:00Z",
+    createdBy: "admin",
+  },
+];
+
 export const allJobs: Job[] = [
   {
     jobId: 1,
