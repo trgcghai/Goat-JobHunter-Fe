@@ -6,6 +6,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { recruiters } from "@/constants/sample";
+import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -47,7 +48,7 @@ export function FeaturedEmployers() {
                 <p className="text-sm text-foreground mb-4 line-clamp-2">
                   {employer.description}
                 </p>
-                <div className="p-3 rounded-lg bg-background">
+                <div className="rounded-lg bg-background">
                   <p className="text-sm">
                     <span className="font-semibold text-primary">
                       {employer.jobs?.length || 0}
@@ -69,6 +70,7 @@ export function FeaturedEmployers() {
                     className="w-full border-primary text-primary hover:bg-primary/10 bg-transparent rounded-xl"
                   >
                     Xem Công Ty
+                    <ArrowRight className="h-4 w-4" />
                   </Button>
                 </Link>
               </CardFooter>

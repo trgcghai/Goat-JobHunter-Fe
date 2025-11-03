@@ -24,7 +24,6 @@ export function JobList({
         ...filters,
         level: filters.level === level ? "" : level,
       });
-      // Scroll to top to see filter section
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
@@ -35,7 +34,6 @@ export function JobList({
         ...filters,
         workingType: filters.workingType === workingType ? "" : workingType,
       });
-      // Scroll to top to see filter section
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };

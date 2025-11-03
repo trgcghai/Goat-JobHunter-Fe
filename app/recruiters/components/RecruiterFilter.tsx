@@ -1,9 +1,10 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { X } from "lucide-react";
-import type React from "react";
+import MultipleSelector, { Option } from "@/components/ui/MultipleSelector";
+import { LOCATION_OPTIONS } from "@/constants/constant";
+import { Search } from "lucide-react";
 
 export interface RecruiterFilterOptions {
   location: string;
@@ -15,16 +16,14 @@ interface RecruiterFilterProps {
   onFilterChange: (filters: RecruiterFilterOptions) => void;
 }
 
-const LOCATIONS = ["Ho Chi Minh City", "Hanoi", "Da Nang", "Can Tho"];
-
 export function RecruiterFilter({
   filters,
   onFilterChange,
 }: RecruiterFilterProps) {
-  const handleLocationChange = (location: string) => {
+  const handleLocationChange = (options: Option[]) => {
     onFilterChange({
       ...filters,
-      location: filters.location === location ? "" : location,
+      location: options.length > 0 ? options[0].value : "",
     });
   };
 
@@ -35,66 +34,51 @@ export function RecruiterFilter({
     });
   };
 
-  const handleReset = () => {
-    onFilterChange({
-      location: "",
-      companyName: "",
-    });
-  };
-
-  const hasActiveFilters = filters.location || filters.companyName;
+  const selectedLocation: Option[] = filters.location
+    ? [{ value: filters.location, label: filters.location }]
+    : [];
 
   return (
-    <Card className="p-6 bg-card">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="font-semibold text-foreground">Tìm Kiếm</h3>
-        {hasActiveFilters && (
-          <button
-            onClick={handleReset}
-            className="text-xs text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
-          >
-            <X className="h-3 w-3" />
-            Xóa
-          </button>
-        )}
-      </div>
-
+    <div className="bg-white rounded-xl border border-border p-6 mb-8">
       <div className="mb-6">
-        <label className="block text-sm font-medium text-foreground mb-2">
-          Tên Công Ty
-        </label>
-        <Input
-          type="text"
-          placeholder="Nhập tên công ty..."
-          value={filters.companyName}
-          onChange={handleCompanyNameChange}
-          className="w-full"
-        />
+        <p className="text-xl md:text-4xl font-bold text-foreground mb-2">
+          Tìm kiếm nhà tuyển dụng
+        </p>
+        <p className="text-muted-foreground">
+          Khám phá các nhà tuyển dụng uy tín
+        </p>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-foreground mb-3">
-          Địa Điểm
-        </label>
-        <div className="space-y-2">
-          {LOCATIONS.map((location) => (
-            <label
-              key={location}
-              className="flex items-center gap-2 cursor-pointer group"
-            >
-              <input
-                type="checkbox"
-                checked={filters.location === location}
-                onChange={() => handleLocationChange(location)}
-                className="rounded border-border"
-              />
-              <span className="text-sm text-foreground group-hover:text-primary transition-colors">
-                {location}
-              </span>
-            </label>
-          ))}
+      <div className="mb-4 space-y-4">
+        <div className="flex items-center gap-4">
+          <Input
+            type="text"
+            placeholder="Nhập tên công ty..."
+            value={filters.companyName}
+            onChange={handleCompanyNameChange}
+            className="rounded-xl w-full"
+          />
+
+          <MultipleSelector
+            value={selectedLocation}
+            onChange={handleLocationChange}
+            defaultOptions={LOCATION_OPTIONS}
+            placeholder="Tìm kiếm theo địa điểm..."
+            maxSelected={1}
+            emptyIndicator={
+              <p className="text-center text-sm text-muted-foreground">
+                Không tìm thấy địa điểm
+              </p>
+            }
+            className="rounded-xl w-full"
+          />
+
+          <Button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl w-1/10">
+            <Search />
+            Tìm kiếm
+          </Button>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }

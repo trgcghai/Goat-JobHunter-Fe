@@ -19,7 +19,7 @@ import { useMemo, useState } from "react";
 export default function JobsPage() {
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = viewMode === "grid" ? 6 : 10;
+  const itemsPerPage = viewMode === "grid" ? 9 : 10;
 
   const [filters, setFilters] = useState({
     location: "",

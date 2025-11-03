@@ -9,6 +9,7 @@ import {
   SKILL_OPTIONS,
   WORKING_TYPE_OPTIONS,
 } from "@/constants/constant";
+import { Search } from "lucide-react";
 
 export interface FilterOptions {
   location: string;
@@ -165,6 +166,7 @@ export function JobFilter({ filters, onFilterChange }: JobFilterProps) {
           />
 
           <Button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl w-1/10">
+            <Search />
             Tìm kiếm
           </Button>
         </div>

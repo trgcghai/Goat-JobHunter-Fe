@@ -18,21 +18,17 @@ import {
 } from "@/components/ui/pagination";
 
 export default function EmployersPage() {
-  // State for filters and display
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = viewMode === "grid" ? 6 : 8;
+  const itemsPerPage = viewMode === "grid" ? 9 : 10;
 
-  // Filter state
   const [filters, setFilters] = useState({
     location: "",
     companyName: "",
   });
 
-  // Filter employers based on filters
   const filteredRecruiters = useMemo(() => {
     return allRecruiter.filter((recruiter) => {
-      // Location filter (check in address field)
       if (
         filters.location &&
         !recruiter.address
@@ -42,7 +38,6 @@ export default function EmployersPage() {
         return false;
       }
 
-      // Company name filter
       if (
         filters.companyName &&
         !recruiter.name
@@ -56,7 +51,6 @@ export default function EmployersPage() {
     });
   }, [filters]);
 
-  // Pagination
   const totalPages = Math.ceil(filteredRecruiters.length / itemsPerPage);
   const paginatedRecruiters = filteredRecruiters.slice(
     (currentPage - 1) * itemsPerPage,
@@ -65,7 +59,6 @@ export default function EmployersPage() {
 
   const handleFilterChange = (newFilters: typeof filters) => {
     setFilters(newFilters);
-    setCurrentPage(1); // Reset to first page when filtering
   };
 
   return (
@@ -75,9 +68,7 @@ export default function EmployersPage() {
           <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
             Nhà Tuyển Dụng
           </h1>
-          <p className="text-muted-foreground">
-            Khám phá {allRecruiter.length} công ty hàng đầu
-          </p>
+          <p className="text-muted-foreground">Khám phá các công ty hàng đầu</p>
         </div>
       </section>
 
@@ -111,11 +102,7 @@ export default function EmployersPage() {
                   setViewMode("list");
                   setCurrentPage(1);
                 }}
-                className={
-                  viewMode === "list"
-                    ? "bg-primary text-primary-foreground"
-                    : ""
-                }
+                className="rounded-xl"
               >
                 <List className="h-4 w-4" />
               </Button>
@@ -126,11 +113,7 @@ export default function EmployersPage() {
                   setViewMode("grid");
                   setCurrentPage(1);
                 }}
-                className={
-                  viewMode === "grid"
-                    ? "bg-primary text-primary-foreground"
-                    : ""
-                }
+                className="rounded-xl"
               >
                 <Grid3x3 className="h-4 w-4" />
               </Button>
