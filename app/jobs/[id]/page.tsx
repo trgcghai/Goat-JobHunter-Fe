@@ -63,10 +63,10 @@ export default function JobDetailPage() {
             <Card className="mb-8 py-0">
               <JobHeader job={job} />
 
-              <CardContent className="px-8 pb-8">
-                <Separator className="mb-6" />
+              <CardContent className="px-6 pb-6">
+                <Separator className="mb-4" />
                 <JobInfoGrid job={job} />
-                <Separator className="my-6" />
+                <Separator className="my-4" />
 
                 <div>
                   <h2 className="text-xl font-bold text-foreground mb-4">

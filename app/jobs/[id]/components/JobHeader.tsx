@@ -1,14 +1,10 @@
 import { Badge } from "@/components/ui/badge";
 import { CardContent } from "@/components/ui/card";
-import { Briefcase } from "lucide-react";
 
 function JobHeader({ job }: { job: Job }) {
   return (
     <>
-      <div className="h-48 bg-linear-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-        <Briefcase className="h-24 w-24 text-primary" />
-      </div>
-      <CardContent className="p-8">
+      <CardContent className="p-6 pb-0">
         <div className="flex flex-wrap gap-2 mb-4">
           <Badge variant="secondary" className="text-sm">
             {job.level}
