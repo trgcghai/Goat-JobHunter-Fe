@@ -154,7 +154,6 @@ export function ProfileNotifications() {
         })}
       </div>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className="mt-8 flex items-center justify-center gap-2">
           <Pagination>
