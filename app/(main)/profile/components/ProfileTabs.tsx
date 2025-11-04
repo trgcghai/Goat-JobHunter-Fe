@@ -18,24 +18,36 @@ export function ProfileTabs() {
         <TabsList className="grid w-full grid-cols-5 mb-8">
           <TabsTrigger
             value="notifications"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 rounded-xl cursor-pointer"
           >
             <Bell className="h-4 w-4" />
             <span className="hidden sm:inline">Thông Báo</span>
           </TabsTrigger>
-          <TabsTrigger value="password" className="flex items-center gap-2">
+          <TabsTrigger
+            value="password"
+            className="flex items-center gap-2 rounded-xl cursor-pointer"
+          >
             <Lock className="h-4 w-4" />
             <span className="hidden sm:inline">Mật Khẩu</span>
           </TabsTrigger>
-          <TabsTrigger value="applications" className="flex items-center gap-2">
+          <TabsTrigger
+            value="applications"
+            className="flex items-center gap-2 rounded-xl cursor-pointer"
+          >
             <Briefcase className="h-4 w-4" />
             <span className="hidden sm:inline">Ứng Tuyển</span>
           </TabsTrigger>
-          <TabsTrigger value="email" className="flex items-center gap-2">
+          <TabsTrigger
+            value="email"
+            className="flex items-center gap-2 rounded-xl cursor-pointer"
+          >
             <Mail className="h-4 w-4" />
             <span className="hidden sm:inline">Email</span>
           </TabsTrigger>
-          <TabsTrigger value="info" className="flex items-center gap-2">
+          <TabsTrigger
+            value="info"
+            className="flex items-center gap-2 rounded-xl cursor-pointer"
+          >
             <UserIcon className="h-4 w-4" />
             <span className="hidden sm:inline">Thông Tin</span>
           </TabsTrigger>
