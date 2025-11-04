@@ -2,9 +2,13 @@
 
 import type React from "react";
 
+import CheckPasswordStrength from "@/app/(main)/profile/CheckPasswordStrength";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Eye, EyeOff } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { AlertCircle, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 
 export function ProfilePassword() {
@@ -21,6 +25,7 @@ export function ProfilePassword() {
   });
 
   const [message, setMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,146 +37,137 @@ export function ProfilePassword() {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      if (formData.newPassword !== formData.confirmPassword) {
-        setMessage("Mật khẩu mới không khớp!");
-      } else if (formData.newPassword.length < 8) {
-        setMessage("Mật khẩu mới phải có ít nhất 8 ký tự!");
-      } else {
-        setMessage("Cập nhật mật khẩu thành công!");
-        setFormData({
-          currentPassword: "",
-          newPassword: "",
-          confirmPassword: "",
-        });
-      }
-      setIsLoading(false);
-    }, 1000);
+    // api call to update password
+    setMessage("Mật khẩu đã được cập nhật thành công.");
+    setIsSuccess(true);
+    setIsLoading(false);
   };
 
   return (
-    <Card className="p-6 max-w-2xl">
-      <h2 className="text-xl font-bold text-foreground mb-6">
+    <Card className="p-6">
+      <h2 className="text-xl font-bold text-foreground mb-4">
         Cài Đặt Mật Khẩu
       </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Current Password */}
-        <div>
-          <label className="block text-sm font-medium text-foreground mb-2">
-            Mật khẩu hiện tại
-          </label>
+      <form onSubmit={handleSubmit} className="space-y-8">
+        <div className="space-y-2">
+          <Label htmlFor="currentPassword">Mật khẩu hiện tại</Label>
           <div className="relative">
-            <input
+            <Input
+              id="currentPassword"
               type={showPasswords.current ? "text" : "password"}
               name="currentPassword"
               value={formData.currentPassword}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
               placeholder="Nhập mật khẩu hiện tại"
+              className="pr-10 rounded-xl"
             />
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="icon"
+              className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
               onClick={() =>
                 setShowPasswords((prev) => ({
                   ...prev,
                   current: !prev.current,
                 }))
               }
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             >
               {showPasswords.current ? (
-                <EyeOff className="h-4 w-4" />
+                <EyeOff className="h-4 w-4 text-muted-foreground" />
               ) : (
-                <Eye className="h-4 w-4" />
+                <Eye className="h-4 w-4 text-muted-foreground" />
               )}
-            </button>
+            </Button>
           </div>
         </div>
 
-        {/* New Password */}
-        <div>
-          <label className="block text-sm font-medium text-foreground mb-2">
-            Mật khẩu mới
-          </label>
+        <div className="space-y-2">
+          <Label htmlFor="newPassword">Mật khẩu mới</Label>
           <div className="relative">
-            <input
+            <Input
+              id="newPassword"
               type={showPasswords.new ? "text" : "password"}
               name="newPassword"
               value={formData.newPassword}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
               placeholder="Nhập mật khẩu mới"
+              className="pr-10 rounded-xl"
             />
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="icon"
+              className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
               onClick={() =>
                 setShowPasswords((prev) => ({ ...prev, new: !prev.new }))
               }
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             >
               {showPasswords.new ? (
-                <EyeOff className="h-4 w-4" />
+                <EyeOff className="h-4 w-4 text-muted-foreground" />
               ) : (
-                <Eye className="h-4 w-4" />
+                <Eye className="h-4 w-4 text-muted-foreground" />
               )}
-            </button>
+            </Button>
           </div>
         </div>
 
-        {/* Confirm Password */}
-        <div>
-          <label className="block text-sm font-medium text-foreground mb-2">
-            Xác nhận mật khẩu
-          </label>
+        {formData.newPassword && (
+          <CheckPasswordStrength password={formData.newPassword} />
+        )}
+
+        <div className="space-y-2">
+          <Label htmlFor="confirmPassword">Xác nhận mật khẩu</Label>
           <div className="relative">
-            <input
+            <Input
+              id="confirmPassword"
               type={showPasswords.confirm ? "text" : "password"}
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
               placeholder="Xác nhận mật khẩu mới"
+              className="pr-10 rounded-xl"
             />
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="icon"
+              className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
               onClick={() =>
                 setShowPasswords((prev) => ({
                   ...prev,
                   confirm: !prev.confirm,
                 }))
               }
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             >
               {showPasswords.confirm ? (
-                <EyeOff className="h-4 w-4" />
+                <EyeOff className="h-4 w-4 text-muted-foreground" />
               ) : (
-                <Eye className="h-4 w-4" />
+                <Eye className="h-4 w-4 text-muted-foreground" />
               )}
-            </button>
+            </Button>
           </div>
         </div>
 
         {message && (
-          <div
-            className={`p-3 rounded-lg text-sm ${
-              message.includes("thành công")
-                ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-            }`}
-          >
-            {message}
-          </div>
+          <Alert variant={isSuccess ? "default" : "destructive"}>
+            {isSuccess ? (
+              <CheckCircle2 className="h-4 w-4" />
+            ) : (
+              <AlertCircle className="h-4 w-4" />
+            )}
+            <AlertDescription>{message}</AlertDescription>
+          </Alert>
         )}
 
         <Button
           type="submit"
           disabled={isLoading}
-          className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+          className="w-full rounded-xl"
         >
           {isLoading ? "Đang cập nhật..." : "Cập Nhật Mật Khẩu"}
         </Button>
