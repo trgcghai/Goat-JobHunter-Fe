@@ -83,7 +83,7 @@ const DetailBlogPage = () => {
         </div>
       )}
 
-      <div className="bg-white rounded-xl p-8 mb-6">
+      <div className="bg-white rounded-xl p-8 mb-6 border">
         <div className="flex flex-wrap gap-2 mb-4">
           {blog.tags?.map((tag, index) => (
             <span
