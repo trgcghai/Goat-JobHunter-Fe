@@ -16,7 +16,7 @@ interface RecruiterCardProps {
 export function RecruiterCard({ recruiter, viewMode }: RecruiterCardProps) {
   if (viewMode === "grid") {
     return (
-      <Link href={`/recruiter/${recruiter.userId}`}>
+      <Link href={`/recruiters/${recruiter.userId}`}>
         <Card
           key={recruiter.userId}
           className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer py-0 pb-4"
@@ -72,7 +72,7 @@ export function RecruiterCard({ recruiter, viewMode }: RecruiterCardProps) {
 
   // List view
   return (
-    <Link href={`/recruiter/${recruiter.userId}`}>
+    <Link href={`/recruiters/${recruiter.userId}`}>
       <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer py-0 mb-4">
         <CardContent className="p-4">
           <div className="flex items-start justify-between gap-4">

@@ -16,18 +16,17 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 
 export default function JobDetailPage() {
-  const params = useParams();
-  const jobId = Number(params.id);
-  const job = allJobs.find((j) => j.jobId === jobId);
+  const params = useParams<{ id: string }>();
+  const job = allJobs.find((j) => j.jobId === params.id);
 
   const handleApply = () => {
     // TODO: Submit application to API
-    console.log("Applying to job:", jobId);
+    console.log("Applying to job:", params.id);
   };
 
   const handleSave = () => {
     // TODO: Save/unsave job to database
-    console.log("Saving job:", jobId);
+    console.log("Saving job:", params.id);
   };
 
   if (!job) {

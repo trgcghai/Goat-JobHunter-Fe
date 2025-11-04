@@ -18,9 +18,8 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 
 export default function RecruiterDetailPage() {
-  const params = useParams();
-  const recruiterId = Number(params.id);
-  const recruiter = allRecruiter.find((r) => r.userId === recruiterId);
+  const params = useParams<{ id: string }>();
+  const recruiter = allRecruiter.find((r) => r.userId == params.id);
 
   if (!recruiter) {
     return (
@@ -61,7 +60,7 @@ export default function RecruiterDetailPage() {
                   <div className="h-24 w-24 shrink-0 rounded-lg bg-muted flex items-center justify-center overflow-hidden">
                     <Image
                       src={recruiter.avatar || "/placeholder.svg"}
-                      alt={recruiter.name}
+                      alt={recruiter.fullName}
                       className="w-full h-full object-cover"
                       width={96}
                       height={96}
@@ -69,7 +68,7 @@ export default function RecruiterDetailPage() {
                   </div>
                   <div className="flex-1">
                     <h1 className="text-3xl font-bold text-foreground mb-2">
-                      {recruiter.name}
+                      {recruiter.fullName}
                     </h1>
                     <div className="gap-4 text-sm text-muted-foreground space-y-2">
                       <div className="flex items-center gap-2">

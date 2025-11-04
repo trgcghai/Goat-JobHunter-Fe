@@ -20,41 +20,44 @@ export function LatestBlogs() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {blogs.map((blog) => (
-            <Card
+            <Link
               key={blog.blogId}
-              className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer py-0 pb-4"
+              href={`/blogs/${blog.blogId}`}
+              className="block"
             >
-              <Image
-                src={blog.banner || "/placeholder.svg"}
-                alt={blog.title}
-                className="h-40 w-full object-cover"
-                width={400}
-                height={160}
-              />
-              <CardHeader>
-                <div className="mb-2 flex flex-wrap gap-2">
-                  {blog.tags?.slice(0, 2).map((tag, index) => (
-                    <span
-                      key={index}
-                      className="text-xs font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <h3 className="font-bold text-lg text-foreground line-clamp-2">
-                  {blog.title}
-                </h3>
-                <p className="text-xs text-muted-foreground">
-                  {formatDate(blog.createdAt as "")}
-                </p>
-              </CardHeader>
-              <CardContent className="flex-1">
-                <p className="text-sm text-muted-foreground line-clamp-2">
-                  {blog.description}
-                </p>
-              </CardContent>
-            </Card>
+              <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer py-0 pb-4">
+                <Image
+                  src={blog.banner || "/placeholder.svg"}
+                  alt={blog.title}
+                  className="h-40 w-full object-cover"
+                  width={400}
+                  height={160}
+                />
+                <CardHeader>
+                  <div className="mb-2 flex flex-wrap gap-2">
+                    {blog.tags?.slice(0, 2).map((tag, index) => (
+                      <span
+                        key={index}
+                        className="text-xs font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <h3 className="font-bold text-lg text-foreground line-clamp-2">
+                    {blog.title}
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    {formatDate(blog.createdAt as "")}
+                  </p>
+                </CardHeader>
+                <CardContent className="flex-1">
+                  <p className="text-sm text-muted-foreground line-clamp-2">
+                    {blog.description}
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
 
