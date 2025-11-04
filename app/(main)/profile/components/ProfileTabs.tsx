@@ -1,6 +1,6 @@
 "use client";
 
-import { ProfileApplications } from "@/app/(main)/profile/components/ProfileApplications";
+import { ProfileApplications } from "@/app/(main)/profile/components/ProfileApplication";
 import { ProfileEmailNotification } from "@/app/(main)/profile/components/ProfileEmailNotification";
 import { ProfileInfo } from "@/app/(main)/profile/components/ProfileInfo";
 import { ProfileNotifications } from "@/app/(main)/profile/components/ProfileNotifications";
@@ -35,7 +35,7 @@ export function ProfileTabs() {
             className="flex items-center gap-2 rounded-xl cursor-pointer"
           >
             <Briefcase className="h-4 w-4" />
-            <span className="hidden sm:inline">Ứng Tuyển</span>
+            <span className="hidden sm:inline">Việc làm</span>
           </TabsTrigger>
           <TabsTrigger
             value="email"

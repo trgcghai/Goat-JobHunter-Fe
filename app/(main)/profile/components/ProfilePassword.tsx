@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import CheckPasswordStrength from "@/app/(main)/profile/CheckPasswordStrength";
+import CheckPasswordStrength from "@/app/(main)/profile/components/CheckPasswordStrength";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
