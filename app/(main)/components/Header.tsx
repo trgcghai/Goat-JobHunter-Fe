@@ -13,7 +13,8 @@ export function Header() {
   // Replace with actual user data
   const user = {
     name: "John Doe",
-    avatar: "/user-avatar.jpg",
+    avatar:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
     email: "john.doe@example.com",
     role: "Admin",
   };
