@@ -1,6 +1,6 @@
 "use client";
 
-import { RecruiterCard } from "@/app/recruiters/components/RecruiterCard";
+import { RecruiterCard } from "@/app/(main)/recruiters/components/RecruiterCard";
 import { Recruiter } from "@/types/model";
 
 interface RecruiterListProps {

@@ -5,8 +5,8 @@ import { allRecruiter } from "@/constants/sample";
 import { Grid3x3, List } from "lucide-react";
 import { useMemo, useState } from "react";
 
-import { RecruiterFilter } from "@/app/recruiters/components/RecruiterFilter";
-import { RecruiterList } from "@/app/recruiters/components/RecruiterList";
+import { RecruiterFilter } from "@/app/(main)/recruiters/components/RecruiterFilter";
+import { RecruiterList } from "@/app/(main)/recruiters/components/RecruiterList";
 import {
   Pagination,
   PaginationContent,

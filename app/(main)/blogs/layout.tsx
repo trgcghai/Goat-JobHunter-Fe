@@ -1,6 +1,6 @@
 "use client";
 
-import TrendingBlogCard from "@/app/blogs/components/TrendingBlogCard";
+import TrendingBlogCard from "@/app/(main)/blogs/components/TrendingBlogCard";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { allBlogs } from "@/constants/sample";
 import { Tag, TrendingUp } from "lucide-react";

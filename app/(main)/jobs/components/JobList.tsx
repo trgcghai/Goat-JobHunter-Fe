@@ -1,7 +1,7 @@
 "use client";
 
-import { JobCard } from "@/app/jobs/components/JobCard";
-import { FilterOptions } from "@/app/jobs/components/JobFilter";
+import { JobCard } from "@/app/(main)/jobs/components/JobCard";
+import { FilterOptions } from "@/app/(main)/jobs/components/JobFilter";
 import { Job } from "@/types/model";
 
 interface JobListProps {

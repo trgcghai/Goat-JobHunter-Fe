@@ -1,6 +1,6 @@
 "use client";
 
-import { UserPopup } from "@/app/components/UserPopup";
+import { UserPopup } from "@/app/(main)/components/UserPopup";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
