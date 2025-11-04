@@ -37,14 +37,14 @@ export function ProfileInfo() {
 
   return (
     <>
-      <Card className="p-6 max-w-2xl">
+      <Card className="p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-foreground">
             Thông Tin Tài Khoản
           </h2>
           <Button
             onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
+            className="flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl"
           >
             <Edit2 className="h-4 w-4" />
             Cập Nhật
