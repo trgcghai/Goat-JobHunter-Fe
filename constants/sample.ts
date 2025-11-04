@@ -1216,7 +1216,8 @@ export const users: User[] = [
     gender: "Male",
     password: "hashed_password_1",
     username: "john_doe",
-    avatar: "https://avatars.com/john_doe.png",
+    avatar:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
     enabled: true,
     role: { roleId: "r1", name: "Applicant" },
     savedJob: { jobId: "j201", title: "Frontend Developer" },
@@ -1234,7 +1235,8 @@ export const users: User[] = [
     gender: "Female",
     password: "hashed_password_2",
     username: "sara_lee",
-    avatar: "https://avatars.com/sara_lee.png",
+    avatar:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
     enabled: true,
     role: { roleId: "r2", name: "Applicant" },
     savedJob: { jobId: "j202", title: "Backend Engineer" },
@@ -1252,7 +1254,8 @@ export const users: User[] = [
     gender: "Female",
     password: "hashed_password_3",
     username: "alice_hr",
-    avatar: "https://avatars.com/alice_nguyen.png",
+    avatar:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
     enabled: true,
     role: { roleId: "r3", name: "Recruiter" },
     createdAt: "2025-09-15T08:00:00Z",
@@ -1268,7 +1271,8 @@ export const users: User[] = [
     gender: "Male",
     password: "hashed_password_4",
     username: "david_hoang",
-    avatar: "https://avatars.com/david_hoang.png",
+    avatar:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
     enabled: true,
     role: { roleId: "r3", name: "Recruiter" },
     createdAt: "2025-09-12T10:15:00Z",
@@ -1281,7 +1285,8 @@ export const users: User[] = [
     contact: { email: "admin@example.com", phone: "+84 900000000" },
     password: "super_admin_pass",
     username: "admin",
-    avatar: "https://avatars.com/admin.png",
+    avatar:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
     enabled: true,
     role: { roleId: "r0", name: "Admin" },
     createdAt: "2025-09-01T00:00:00Z",
