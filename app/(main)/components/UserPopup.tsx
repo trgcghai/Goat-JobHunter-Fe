@@ -45,7 +45,7 @@ export function UserPopup({ user, onLogout }: UserPopupProps) {
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-64" align="end" forceMount>
+      <DropdownMenuContent className="w-64 rounded-xl" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex items-center gap-3 py-2">
             <Avatar className="h-12 w-12">

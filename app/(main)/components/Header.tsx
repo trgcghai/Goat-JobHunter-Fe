@@ -1,5 +1,6 @@
 "use client";
 
+import { NotificationPopup } from "@/app/(main)/components/NotificationPopup";
 import { UserPopup } from "@/app/(main)/components/UserPopup";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -85,7 +86,10 @@ export function Header() {
                 </Link>
               </>
             ) : (
-              <UserPopup user={user} onLogout={handleLogout} />
+              <>
+                <NotificationPopup />
+                <UserPopup user={user} onLogout={handleLogout} />
+              </>
             )}
           </div>
         </div>
