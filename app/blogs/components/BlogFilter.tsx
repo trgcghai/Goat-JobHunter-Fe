@@ -32,7 +32,7 @@ export function BlogFilter({ filters, onFilterChange }: BlogFilterProps) {
           className="rounded-xl w-full"
         />
 
-        <Button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl w-1/10">
+        <Button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl w-1/8">
           <Search />
           Tìm kiếm
         </Button>

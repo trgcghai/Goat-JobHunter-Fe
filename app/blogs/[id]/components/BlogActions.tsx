@@ -41,18 +41,16 @@ export function BlogActions({
             className="rounded-xl"
             onClick={handleLike}
           >
-            <Heart
-              className={`h-5 w-5 mr-2 ${isLiked ? "fill-current" : ""}`}
-            />
+            <Heart className={`h-4 w-4 ${isLiked ? "fill-current" : ""}`} />
             {likeCount} Thích
           </Button>
           <Button variant="outline" className="rounded-xl">
-            <MessageCircle className="h-5 w-5 mr-2" />
+            <MessageCircle className="h-4 w-4" />
             {totalComments} Bình luận
           </Button>
         </div>
         <Button variant="outline" className="rounded-xl" onClick={handleShare}>
-          <Share2 className="h-5 w-5 mr-2" />
+          <Share2 className="h-4 w-4" />
           Chia sẻ
         </Button>
       </div>
