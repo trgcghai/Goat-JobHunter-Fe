@@ -243,7 +243,7 @@ export type Comment = {
   updatedAt?: string;
 };
 
-export type Notification = {
+export type NotificationType = {
   notificationId?: string;
   type: string;
   seen: boolean;
