@@ -4,22 +4,23 @@ import { UserPopup } from "@/app/(main)/components/UserPopup";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 
-interface User {
-  name: string;
-  email: string;
-  role: string;
-  avatar: string;
-}
+export function Header() {
+  // Replace with actual authentication logic
+  const isLoggedIn = true;
 
-interface HeaderProps {
-  isLoggedIn: boolean;
-  user: User;
-}
+  // Replace with actual user data
+  const user = {
+    name: "John Doe",
+    avatar: "/user-avatar.jpg",
+    email: "john.doe@example.com",
+    role: "Admin",
+  };
 
-export function Header({ isLoggedIn, user }: HeaderProps) {
-  const [showUserMenu, setShowUserMenu] = useState(false);
+  const handleLogout = () => {
+    // Implement logout logic here
+    console.log("Logout");
+  };
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
@@ -65,43 +66,26 @@ export function Header({ isLoggedIn, user }: HeaderProps) {
           <div className="flex items-center gap-4">
             {!isLoggedIn ? (
               <>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {}}
-                  className="hover:bg-muted rounded-xl border-primary text-primary"
-                >
-                  Đăng Nhập
-                </Button>
-                <Button
-                  size="sm"
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl"
-                >
-                  Đăng Ký
-                </Button>
+                <Link href="/signin">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="hover:bg-muted rounded-xl border-primary text-primary"
+                  >
+                    Đăng Nhập
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button
+                    size="sm"
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl"
+                  >
+                    Đăng Ký
+                  </Button>
+                </Link>
               </>
             ) : (
-              <div className="relative">
-                <button
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center gap-2 rounded-full border border-border p-1 hover:bg-muted transition-colors"
-                >
-                  <Image
-                    src={user.avatar || "/placeholder.svg"}
-                    alt={user.name}
-                    className="h-8 w-8 rounded-full object-cover"
-                    width={32}
-                    height={32}
-                  />
-                </button>
-                {showUserMenu && (
-                  <UserPopup
-                    user={user}
-                    onLogout={() => {}}
-                    onClose={() => setShowUserMenu(false)}
-                  />
-                )}
-              </div>
+              <UserPopup user={user} onLogout={handleLogout} />
             )}
           </div>
         </div>
