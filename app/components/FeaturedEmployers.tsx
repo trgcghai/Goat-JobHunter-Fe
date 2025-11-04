@@ -24,34 +24,34 @@ export function FeaturedEmployers() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {recruiters.map((employer) => (
+          {recruiters.map((recruiter) => (
             <Card
-              key={employer.userId}
+              key={recruiter.userId}
               className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer py-0 pb-4"
             >
               <Image
-                src={employer.avatar || "/placeholder.svg"}
-                alt={employer.name}
+                src={recruiter.avatar || "/placeholder.svg"}
+                alt={recruiter.fullName}
                 width={400}
                 height={160}
                 className="h-40 w-full object-cover"
               />
               <CardHeader>
                 <h3 className="font-bold text-lg text-foreground">
-                  {employer.name}
+                  {recruiter.fullName}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  {employer.website}
+                  {recruiter.website}
                 </p>
               </CardHeader>
               <CardContent className="flex-1">
                 <p className="text-sm text-foreground mb-4 line-clamp-2">
-                  {employer.description}
+                  {recruiter.description}
                 </p>
                 <div className="rounded-lg bg-background">
                   <p className="text-sm">
                     <span className="font-semibold text-primary">
-                      {employer.jobs?.length || 0}
+                      Số lượng tuyển dụng
                     </span>
                     <span className="text-muted-foreground">
                       {" "}
@@ -62,7 +62,7 @@ export function FeaturedEmployers() {
               </CardContent>
               <CardFooter>
                 <Link
-                  href={`/recruiters/${employer.userId}`}
+                  href={`/recruiters/${recruiter.userId}`}
                   className="w-full"
                 >
                   <Button

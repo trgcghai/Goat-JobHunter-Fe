@@ -1,6 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Blog } from "@/types/model";
 import { formatDate } from "@/utils/formatDate";
 import { Eye, Heart } from "lucide-react";
 import Image from "next/image";
@@ -51,11 +52,11 @@ export function BlogCard({ blog }: BlogCardProps) {
             <div className="flex items-center gap-3 text-xs text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Eye className="h-3 w-3" />
-                <span>{blog.activity.totalReads}</span>
+                <span>{blog.activity?.totalReads || 0}</span>
               </div>
               <div className="flex items-center gap-1">
                 <Heart className="h-3 w-3" />
-                <span>{blog.activity.totalLikes}</span>
+                <span>{blog.activity?.totalLikes || 0}</span>
               </div>
             </div>
           </div>

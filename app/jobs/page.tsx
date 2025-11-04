@@ -33,7 +33,7 @@ export default function JobsPage() {
     return allJobs.filter((job) => {
       if (
         filters.location &&
-        !job.location.toLowerCase().includes(filters.location.toLowerCase())
+        !job.location?.toLowerCase().includes(filters.location.toLowerCase())
       ) {
         return false;
       }
@@ -41,7 +41,7 @@ export default function JobsPage() {
       if (filters.skills.length > 0) {
         const hasSkill = filters.skills.some((skill) =>
           job.skills?.some((jobSkill) =>
-            jobSkill.name.toLowerCase().includes(skill.toLowerCase()),
+            jobSkill.name?.toLowerCase().includes(skill.toLowerCase()),
           ),
         );
         if (!hasSkill) return false;

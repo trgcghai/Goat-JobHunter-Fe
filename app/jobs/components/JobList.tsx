@@ -1,6 +1,7 @@
 import { FilterOptions } from "@/app/jobs/components/JobFilter";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Job } from "@/types/model";
 import { formatDate } from "@/utils/formatDate";
 import { Calendar, DollarSign, MapPin } from "lucide-react";
 import Link from "next/link";
@@ -46,16 +47,27 @@ export function JobList({
             <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
               <CardHeader>
                 <div className="flex items-start justify-between mb-2">
-                  <Badge
-                    variant="secondary"
-                    className="mb-2"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleLevelClick(job.level);
-                    }}
-                  >
-                    {job.level}
-                  </Badge>
+                  <div className="flex gap-2 mb-2">
+                    <Badge
+                      variant="secondary"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleLevelClick(job.level);
+                      }}
+                    >
+                      {job.level}
+                    </Badge>
+                    <Badge
+                      variant="outline"
+                      className="text-xs cursor-pointer hover:bg-accent transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleWorkingTypeClick(job.workingType || "");
+                      }}
+                    >
+                      {job.workingType}
+                    </Badge>
+                  </div>
                   <Badge
                     variant={job.active ? "default" : "outline"}
                     className="mb-2"
@@ -72,18 +84,6 @@ export function JobList({
                   <div className="flex items-center gap-2">
                     <MapPin className="h-4 w-4" />
                     <span>{job.location}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Badge
-                      variant="outline"
-                      className="text-xs cursor-pointer hover:bg-accent transition-colors"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleWorkingTypeClick(job.workingType);
-                      }}
-                    >
-                      {job.workingType}
-                    </Badge>
                   </div>
                   <div className="flex items-center gap-2">
                     <DollarSign className="h-4 w-4" />
@@ -132,7 +132,7 @@ export function JobList({
     <div className="space-y-4">
       {jobs.map((job) => (
         <Link key={job.jobId} href={`/jobs/${job.jobId}`}>
-          <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer py-0">
+          <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer py-0 mb-4">
             <div className="flex gap-6 p-6">
               <div className="flex-1">
                 <CardHeader className="p-0 mb-3">
@@ -155,7 +155,7 @@ export function JobList({
                           variant="outline"
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleWorkingTypeClick(job.workingType);
+                            handleWorkingTypeClick(job.workingType || "");
                           }}
                         >
                           {job.workingType}

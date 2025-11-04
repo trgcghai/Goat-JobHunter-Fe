@@ -40,7 +40,7 @@ export default function EmployersPage() {
 
       if (
         filters.companyName &&
-        !recruiter.name
+        !recruiter.fullName
           .toLowerCase()
           .includes(filters.companyName.toLowerCase())
       ) {
