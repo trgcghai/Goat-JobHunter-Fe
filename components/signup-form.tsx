@@ -1,3 +1,4 @@
+import CheckPasswordStrength from "@/app/(main)/profile/components/ProfilePassword/CheckPasswordStrength";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,7 +16,9 @@ import {
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 
-export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
+type SignupFormProps = React.ComponentProps<typeof Card>;
+
+export function SignupForm({ ...props }: SignupFormProps) {
   return (
     <Card {...props}>
       <CardHeader>
@@ -57,6 +60,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                 placeholder="*********"
               />
             </Field>
+            <CheckPasswordStrength password="" />
             <Field>
               <FieldLabel htmlFor="confirm-password">
                 Confirm Password
