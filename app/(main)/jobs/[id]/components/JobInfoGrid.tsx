@@ -1,3 +1,4 @@
+import { Job } from "@/types/model";
 import { formatDate } from "@/utils/formatDate";
 import { Calendar, Clock, DollarSign, MapPin, Users } from "lucide-react";
 
@@ -21,12 +22,12 @@ function JobInfoGrid({ job }: { job: Job }) {
     {
       icon: Calendar,
       label: "Ngày bắt đầu",
-      value: formatDate(job.startDate),
+      value: formatDate(job.startDate.toISOString()),
     },
     {
       icon: Clock,
       label: "Hạn nộp",
-      value: formatDate(job.endDate),
+      value: formatDate(job.endDate.toISOString()),
     },
     {
       icon: Calendar,

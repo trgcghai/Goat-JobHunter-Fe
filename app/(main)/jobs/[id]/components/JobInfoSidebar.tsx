@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { Job } from "@/types/model";
 import { Building2 } from "lucide-react";
 
 function JobInfoSidebar({ job }: { job: Job }) {

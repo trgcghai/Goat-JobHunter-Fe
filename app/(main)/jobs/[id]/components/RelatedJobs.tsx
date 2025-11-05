@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { allJobs } from "@/constants/sample";
+import { Job } from "@/types/model";
 import Link from "next/link";
 
 function RelatedJobs({ currentJob }: { currentJob: Job }) {

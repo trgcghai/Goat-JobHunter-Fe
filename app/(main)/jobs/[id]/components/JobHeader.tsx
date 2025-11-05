@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { CardContent } from "@/components/ui/card";
+import { Job } from "@/types/model";
 
 function JobHeader({ job }: { job: Job }) {
   return (

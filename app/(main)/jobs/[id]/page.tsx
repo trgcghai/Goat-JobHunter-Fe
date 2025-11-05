@@ -5,7 +5,7 @@ import {
   JobInfoGrid,
   JobInfoSidebar,
   RelatedJobs,
-} from "@/app/jobs/[id]/components";
+} from "@/app/(main)/jobs/[id]/components";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
