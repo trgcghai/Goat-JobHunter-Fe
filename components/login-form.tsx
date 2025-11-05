@@ -1,3 +1,9 @@
+"use client";
+
+import {
+  SignInSchema,
+  type TSignInSchema,
+} from "@/app/(auth)/components/schemas";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -6,71 +12,109 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { FieldDescription } from "@/components/ui/field";
 import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const signInForm = useForm<TSignInSchema>({
+    resolver: zodResolver(SignInSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const {
+    handleSubmit,
+    control,
+    formState: { isSubmitting },
+  } = signInForm;
+
+  const onSubmit = async (data: TSignInSchema) => {
+    try {
+      console.log("Login data:", data);
+    } catch (error) {
+      console.error("Login error:", error);
+    }
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
+          <CardTitle>Đăng nhập vào tài khoản của bạn</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            Nhập email của bạn bên dưới để đăng nhập vào tài khoản của bạn.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
-            <FieldGroup>
-              <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  className="rounded-xl"
-                  required
-                />
-              </Field>
-              <Field>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline text-gray-400"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  placeholder="*********"
-                  className="rounded-xl"
-                />
-              </Field>
-              <Field>
-                <Button type="submit" className="rounded-xl">
-                  Login
-                </Button>
-                <FieldDescription className="text-center text-gray-400">
-                  Don&apos;t have an account?{" "}
-                  <Link href="/signup">Sign up</Link>
-                </FieldDescription>
-              </Field>
-            </FieldGroup>
-          </form>
+          <Form {...signInForm}>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="you@example.com"
+                        className="rounded-xl"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="*********"
+                        className="rounded-xl"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="submit"
+                className="rounded-xl w-full"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Logging in..." : "Login"}
+              </Button>
+              <FieldDescription className="text-center text-gray-400">
+                Chưa có tài khoản?{" "}
+                <Link href="/signup" className="text-primary hover:underline">
+                  Đăng ký
+                </Link>
+              </FieldDescription>
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </div>
