@@ -1,54 +1,52 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatDate } from "@/utils/formatDate";
-import { Calendar, Users } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Job, Recruiter } from "@/types/model";
 
 interface RecruiterInfoProps {
   recruiter: Recruiter;
+  recruiterJobs: Job[];
 }
 
-export function RecruiterInfo({ recruiter }: RecruiterInfoProps) {
+export default function RecruiterInfo({
+  recruiter,
+  recruiterJobs,
+}: RecruiterInfoProps) {
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Giới Thiệu Công Ty</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-foreground leading-relaxed whitespace-pre-line">
-            {recruiter.description}
-          </p>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Thông Tin</CardTitle>
-        </CardHeader>
-        <CardContent>
+    <div className="lg:col-span-1">
+      <div className="sticky top-24">
+        <Card className="p-6">
+          <h2 className="text-xl font-bold text-foreground">
+            Thông Tin Liên Hệ
+          </h2>
           <div className="space-y-4">
-            <div className="flex items-start gap-3">
-              <Calendar className="h-5 w-5 text-primary mt-0.5" />
-              <div>
-                <p className="text-sm text-muted-foreground">Ngày tham gia</p>
-                <p className="font-medium text-foreground">
-                  {formatDate(recruiter.createdAt || "")}
-                </p>
-              </div>
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">Địa chỉ</p>
+              <p className="text-foreground font-medium">{recruiter.address}</p>
             </div>
-            <div className="flex items-start gap-3">
-              <Users className="h-5 w-5 text-primary mt-0.5" />
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  Công việc đang mở
-                </p>
-                <p className="font-medium text-foreground">
-                  {recruiter.jobs?.length || 0} vị trí
-                </p>
-              </div>
+            <Separator />
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">Website</p>
+              <a
+                href={recruiter.website || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline font-medium"
+              >
+                {recruiter.website || "N/A"}
+              </a>
+            </div>
+            <Separator />
+            <div>
+              <p className="text-sm text-muted-foreground mb-1">
+                Số lượng việc làm
+              </p>
+              <p className="text-foreground font-medium">
+                {recruiterJobs.length} công việc
+              </p>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 }
