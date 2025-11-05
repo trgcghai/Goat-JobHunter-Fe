@@ -59,8 +59,8 @@ export function SignupForm({ ...props }: SignupFormProps) {
                 className="rounded-xl"
                 placeholder="*********"
               />
+              <CheckPasswordStrength password="" />
             </Field>
-            <CheckPasswordStrength password="" />
             <Field>
               <FieldLabel htmlFor="confirm-password">
                 Confirm Password
