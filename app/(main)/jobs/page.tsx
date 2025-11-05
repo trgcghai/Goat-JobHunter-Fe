@@ -1,7 +1,6 @@
 "use client";
 
-import { JobFilter } from "@/app/(main)/jobs/components/JobFilter";
-import { JobList } from "@/app/(main)/jobs/components/JobList";
+import { JobFilter, JobList } from "@/app/(main)/jobs/components";
 import { Button } from "@/components/ui/button";
 import {
   Pagination,

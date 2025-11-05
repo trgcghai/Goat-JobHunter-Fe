@@ -24,7 +24,7 @@ interface JobFilterProps {
   onFilterChange: (filters: FilterOptions) => void;
 }
 
-export function JobFilter({ filters, onFilterChange }: JobFilterProps) {
+export default function JobFilter({ filters, onFilterChange }: JobFilterProps) {
   const handleSkillsChange = (options: Option[]) => {
     onFilterChange({
       ...filters,

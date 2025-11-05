@@ -1,6 +1,6 @@
 "use client";
 
-import { JobCard } from "@/app/(main)/jobs/components/JobCard";
+import { JobCard } from "@/app/(main)/jobs/components";
 import { FilterOptions } from "@/app/(main)/jobs/components/JobFilter";
 import { Job } from "@/types/model";
 
@@ -11,7 +11,7 @@ interface JobListProps {
   onFilterChange: (filters: FilterOptions) => void;
 }
 
-export function JobList({
+export default function JobList({
   jobs,
   viewMode,
   filters,

@@ -16,7 +16,7 @@ interface JobCardProps {
   onWorkingTypeClick?: (workingType: string) => void;
 }
 
-export function JobCard({
+export default function JobCard({
   job,
   viewMode,
   onLevelClick,
