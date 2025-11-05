@@ -1,12 +1,12 @@
 "use client";
 
-import { NotificationPopup } from "@/app/(main)/components/NotificationPopup";
-import { UserPopup } from "@/app/(main)/components/UserPopup";
+import NotificationPopup from "@/app/(main)/components/NotificationPopup";
+import UserPopup from "@/app/(main)/components/UserPopup";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 
-export function Header() {
+export default function Header() {
   // Replace with actual authentication logic
   const isLoggedIn = true;
 

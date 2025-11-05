@@ -6,7 +6,7 @@ import { formatDate } from "@/utils/formatDate";
 import { Calendar, DollarSign, MapPin } from "lucide-react";
 import Link from "next/link";
 
-export function FeaturedJobs() {
+export default function FeaturedJobs() {
   return (
     <section className="py-16 md:py-24 bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

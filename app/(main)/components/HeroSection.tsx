@@ -4,7 +4,7 @@ import MultipleSelector, { Option } from "@/components/ui/MultipleSelector";
 import { LOCATION_OPTIONS, SKILL_OPTIONS } from "@/constants/constant";
 import { useState } from "react";
 
-export function HeroSection() {
+export default function HeroSection() {
   const [filters, setFilters] = useState({
     location: "",
     skills: [] as string[],

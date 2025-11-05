@@ -1,7 +1,9 @@
-import { FeaturedEmployers } from "@/app/(main)/components/FeaturedEmployers";
-import { FeaturedJobs } from "@/app/(main)/components/FeaturedJobs";
-import { HeroSection } from "@/app/(main)/components/HeroSection";
-import { LatestBlogs } from "@/app/(main)/components/LatestBlogs";
+import {
+  FeaturedEmployers,
+  FeaturedJobs,
+  HeroSection,
+  LatestBlogs,
+} from "@/app/(main)/components";
 
 export default function Home() {
   return (

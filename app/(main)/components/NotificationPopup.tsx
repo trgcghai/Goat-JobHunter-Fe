@@ -23,7 +23,7 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 
-export function NotificationPopup() {
+export default function NotificationPopup() {
   const [notifications, setNotifications] =
     useState<NotificationType[]>(sampleNotifications);
 

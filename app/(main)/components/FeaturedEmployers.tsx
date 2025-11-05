@@ -10,7 +10,7 @@ import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-export function FeaturedEmployers() {
+export default function FeaturedEmployers() {
   return (
     <section className="py-16 md:py-24 bg-primary/5">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

@@ -5,7 +5,7 @@ import { formatDate } from "@/utils/formatDate";
 import Image from "next/image";
 import Link from "next/link";
 
-export function LatestBlogs() {
+export default function LatestBlogs() {
   return (
     <section className="py-16 md:py-24 bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
