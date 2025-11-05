@@ -1,7 +1,9 @@
 "use client";
 
-import { BlogActions } from "@/app/(main)/blogs/[id]/components/BlogActions";
-import { CommentSection } from "@/app/(main)/blogs/[id]/components/CommentSection";
+import {
+  BlogActions,
+  CommentSection,
+} from "@/app/(main)/blogs/[id]/components";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { allBlogs } from "@/constants/sample";

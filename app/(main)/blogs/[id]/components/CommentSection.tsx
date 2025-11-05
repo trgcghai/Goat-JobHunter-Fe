@@ -1,18 +1,22 @@
 "use client";
 
+import CommentItem, {
+  Comment,
+} from "@/app/(main)/blogs/[id]/components/CommentItem";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Send } from "lucide-react";
 import { useState } from "react";
-import { Comment, CommentItem } from "./CommentItem";
 
 interface CommentSectionProps {
   initialComments?: Comment[];
 }
 
-export function CommentSection({ initialComments = [] }: CommentSectionProps) {
+export default function CommentSection({
+  initialComments = [],
+}: CommentSectionProps) {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState<Comment[]>(initialComments);
 

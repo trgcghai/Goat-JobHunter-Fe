@@ -11,7 +11,7 @@ interface BlogActionsProps {
   onShare?: () => void;
 }
 
-export function BlogActions({
+export default function BlogActions({
   initialLikes = 0,
   totalComments = 0,
   onShare,

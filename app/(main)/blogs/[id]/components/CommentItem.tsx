@@ -21,7 +21,7 @@ interface CommentItemProps {
   onReply: (commentId: string, replyContent: string) => void;
 }
 
-export function CommentItem({ comment, onReply }: CommentItemProps) {
+export default function CommentItem({ comment, onReply }: CommentItemProps) {
   const [isReplying, setIsReplying] = useState(false);
   const [replyContent, setReplyContent] = useState("");
 
