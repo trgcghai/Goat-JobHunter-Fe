@@ -70,7 +70,7 @@ export function LoginForm({
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel required>Email</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="you@example.com"
@@ -87,7 +87,7 @@ export function LoginForm({
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel required>Password</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
@@ -109,7 +109,10 @@ export function LoginForm({
               </Button>
               <FieldDescription className="text-center text-gray-400">
                 Chưa có tài khoản?{" "}
-                <Link href="/signup" className="text-primary hover:underline">
+                <Link
+                  href="/signup"
+                  className="text-primary hover:underline underline underline-offset-2"
+                >
                   Đăng ký
                 </Link>
               </FieldDescription>
