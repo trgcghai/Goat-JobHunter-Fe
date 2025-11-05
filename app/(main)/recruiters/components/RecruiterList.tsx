@@ -1,6 +1,6 @@
 "use client";
 
-import { RecruiterCard } from "@/app/(main)/recruiters/components/RecruiterCard";
+import { RecruiterCard } from "@/app/(main)/recruiters/components";
 import { Recruiter } from "@/types/model";
 
 interface RecruiterListProps {
@@ -8,7 +8,10 @@ interface RecruiterListProps {
   viewMode: "list" | "grid";
 }
 
-export function RecruiterList({ recruiters, viewMode }: RecruiterListProps) {
+export default function RecruiterList({
+  recruiters,
+  viewMode,
+}: RecruiterListProps) {
   if (viewMode === "grid") {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

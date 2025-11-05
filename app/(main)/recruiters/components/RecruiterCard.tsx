@@ -13,7 +13,10 @@ interface RecruiterCardProps {
   viewMode: "list" | "grid";
 }
 
-export function RecruiterCard({ recruiter, viewMode }: RecruiterCardProps) {
+export default function RecruiterCard({
+  recruiter,
+  viewMode,
+}: RecruiterCardProps) {
   if (viewMode === "grid") {
     return (
       <Link href={`/recruiters/${recruiter.userId}`}>

@@ -1,12 +1,10 @@
 "use client";
 
+import {
+  RecruiterFilter,
+  RecruiterList,
+} from "@/app/(main)/recruiters/components";
 import { Button } from "@/components/ui/button";
-import { allRecruiter } from "@/constants/sample";
-import { Grid3x3, List } from "lucide-react";
-import { useMemo, useState } from "react";
-
-import { RecruiterFilter } from "@/app/(main)/recruiters/components/RecruiterFilter";
-import { RecruiterList } from "@/app/(main)/recruiters/components/RecruiterList";
 import {
   Pagination,
   PaginationContent,
@@ -16,6 +14,9 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { allRecruiter } from "@/constants/sample";
+import { Grid3x3, List } from "lucide-react";
+import { useMemo, useState } from "react";
 
 export default function EmployersPage() {
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");

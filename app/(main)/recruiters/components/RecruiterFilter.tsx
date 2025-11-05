@@ -16,7 +16,7 @@ interface RecruiterFilterProps {
   onFilterChange: (filters: RecruiterFilterOptions) => void;
 }
 
-export function RecruiterFilter({
+export default function RecruiterFilter({
   filters,
   onFilterChange,
 }: RecruiterFilterProps) {
