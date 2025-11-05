@@ -11,7 +11,7 @@ interface BlogCardProps {
   blog: Blog;
 }
 
-export function BlogCard({ blog }: BlogCardProps) {
+export default function BlogCard({ blog }: BlogCardProps) {
   return (
     <Link href={`/blogs/${blog.blogId}`}>
       <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col py-0 pb-6">

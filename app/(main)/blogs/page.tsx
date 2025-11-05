@@ -1,7 +1,6 @@
 "use client";
 
-import { BlogCard } from "@/app/(main)/blogs/components/BlogCard";
-import { BlogFilter } from "@/app/(main)/blogs/components/BlogFilter";
+import { BlogCard, BlogFilter } from "@/app/(main)/blogs/components";
 import {
   Pagination,
   PaginationContent,

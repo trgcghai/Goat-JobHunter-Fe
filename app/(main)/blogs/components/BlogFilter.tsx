@@ -13,7 +13,10 @@ interface BlogFilterProps {
   onFilterChange: (filters: BlogFilterOptions) => void;
 }
 
-export function BlogFilter({ filters, onFilterChange }: BlogFilterProps) {
+export default function BlogFilter({
+  filters,
+  onFilterChange,
+}: BlogFilterProps) {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onFilterChange({
       ...filters,
