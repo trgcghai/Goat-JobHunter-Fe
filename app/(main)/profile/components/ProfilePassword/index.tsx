@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { AlertCircle, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 
-export function ProfilePassword() {
+export default function ProfilePassword() {
   const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",

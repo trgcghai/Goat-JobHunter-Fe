@@ -7,7 +7,7 @@ import MultipleSelector, { Option } from "@/components/ui/MultipleSelector";
 import { SKILL_OPTIONS } from "@/constants/constant";
 import { useState } from "react";
 
-export function ProfileEmailNotification() {
+export default function ProfileEmailNotification() {
   const [skills, setSkills] = useState<string[]>([]);
   const [recruiters, setRecruiters] = useState<string[]>([]);
   const [selectedSkills, setSelectedSkills] = useState<Option[]>([]);

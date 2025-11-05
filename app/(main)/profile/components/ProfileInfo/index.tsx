@@ -10,7 +10,7 @@ import { User } from "@/types/model";
 import { Edit2 } from "lucide-react";
 import { useState } from "react";
 
-export function ProfileInfo() {
+export default function ProfileInfo() {
   const [showModal, setShowModal] = useState(false);
   const [profile, setProfile] = useState<User>(users[0]);
 

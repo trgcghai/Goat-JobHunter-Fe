@@ -1,15 +1,17 @@
 "use client";
 
-import { ProfileApplications } from "@/app/(main)/profile/components/ProfileApplication";
-import { ProfileEmailNotification } from "@/app/(main)/profile/components/ProfileEmailNotification";
-import { ProfileInfo } from "@/app/(main)/profile/components/ProfileInfo";
-import { ProfileNotifications } from "@/app/(main)/profile/components/ProfileNotifications";
-import { ProfilePassword } from "@/app/(main)/profile/components/ProfilePassword";
+import {
+  ProfileApplication,
+  ProfileEmailNotification,
+  ProfileInfo,
+  ProfileNotifications,
+  ProfilePassword,
+} from "@/app/(main)/profile/components";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Bell, Briefcase, Lock, Mail, UserIcon } from "lucide-react";
 import { useState } from "react";
 
-export function ProfileTabs() {
+export default function ProfileTabs() {
   const [activeTab, setActiveTab] = useState("notifications");
 
   return (
@@ -62,7 +64,7 @@ export function ProfileTabs() {
         </TabsContent>
 
         <TabsContent value="applications" className="space-y-4">
-          <ProfileApplications />
+          <ProfileApplication />
         </TabsContent>
 
         <TabsContent value="email" className="space-y-4">

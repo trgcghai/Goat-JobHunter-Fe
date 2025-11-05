@@ -1,5 +1,4 @@
-import { ProfileHeader } from "@/app/(main)/profile/components/ProfileHeader";
-import { ProfileTabs } from "@/app/(main)/profile/components/ProfileTabs";
+import { ProfileHeader, ProfileTabs } from "@/app/(main)/profile/components";
 import { users } from "@/constants/sample";
 
 const ProfilePage = () => {

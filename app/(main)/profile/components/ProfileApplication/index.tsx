@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { applications } from "@/constants/sample";
 import { useMemo } from "react";
 
-export function ProfileApplications() {
+export default function ProfileApplications() {
   // Filter applications by status
   const appliedJobs = useMemo(
     () =>

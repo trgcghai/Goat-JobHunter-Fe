@@ -9,7 +9,7 @@ interface ProfileHeaderProps {
   user: User;
 }
 
-export function ProfileHeader({ user }: ProfileHeaderProps) {
+export default function ProfileHeader({ user }: ProfileHeaderProps) {
   const formatDate = (date?: Date) => {
     if (!date) return "";
     return new Date(date).toLocaleDateString("vi-VN");

@@ -17,7 +17,7 @@ import { useState } from "react";
 
 const ITEMS_PER_PAGE = 10;
 
-export function ProfileNotifications() {
+export default function ProfileNotifications() {
   const [notifications, setNotifications] =
     useState<NotificationType[]>(sampleNotifications);
   const [currentPage, setCurrentPage] = useState(1);
