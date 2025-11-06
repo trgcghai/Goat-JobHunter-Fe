@@ -69,8 +69,7 @@ export default function FeaturedEmployers() {
                     variant="outline"
                     className="w-full border-primary text-primary hover:bg-primary/10 bg-transparent rounded-xl"
                   >
-                    Xem Công Ty
-                    <ArrowRight className="h-4 w-4" />
+                    Xem chi tiết thông tin
                   </Button>
                 </Link>
               </CardFooter>
@@ -85,6 +84,7 @@ export default function FeaturedEmployers() {
               className="border-primary text-primary hover:bg-primary/10 bg-transparent rounded-xl"
             >
               Khám Phá Thêm Nhà Tuyển Dụng
+              <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
         </div>

@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { blogs } from "@/constants/sample";
 import { formatDate } from "@/utils/formatDate";
+import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -63,8 +64,12 @@ export default function LatestBlogs() {
 
         <div className="mt-8 text-center">
           <Link href="/blogs">
-            <Button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl">
+            <Button
+              variant="outline"
+              className="border-primary text-primary hover:bg-primary/10 bg-transparent rounded-xl"
+            >
               Đọc Thêm Bài Viết
+              <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
         </div>

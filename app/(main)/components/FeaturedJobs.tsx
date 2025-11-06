@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { allJobs } from "@/constants/sample";
 import { formatDate } from "@/utils/formatDate";
-import { Calendar, DollarSign, MapPin } from "lucide-react";
+import { ArrowRight, Calendar, DollarSign, MapPin } from "lucide-react";
 import Link from "next/link";
 
 export default function FeaturedJobs() {
@@ -105,7 +105,8 @@ export default function FeaturedJobs() {
               variant="outline"
               className="border-primary text-primary hover:bg-primary/10 bg-transparent rounded-xl"
             >
-              Xem Tất Cả Việc Làm
+              Khám phá thêm các việc làm khác
+              <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
         </div>
