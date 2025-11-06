@@ -1,10 +1,21 @@
 import { api } from "@/services/api";
-import { IBackendRes, IModelPaginate } from "@/types/api";
-import type { Job } from "@/types/model";
+import type {
+  CountJobByRecruiterResponse,
+  CreateJobRequest,
+  CreateJobResponse,
+  DeleteJobRequest,
+  DeleteJobResponse,
+  FetchJobByIdRequest,
+  FetchJobByIdResponse,
+  FetchJobsRequest,
+  FetchJobsResponse,
+  UpdateJobRequest,
+  UpdateJobResponse,
+} from "./jobType";
 
 export const jobApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    createJob: builder.mutation<IBackendRes<Job>, Job>({
+    createJob: builder.mutation<CreateJobResponse, CreateJobRequest>({
       query: (job) => ({
         url: "/api/v1/jobs",
         method: "POST",
@@ -13,7 +24,7 @@ export const jobApi = api.injectEndpoints({
       invalidatesTags: ["Job"],
     }),
 
-    updateJob: builder.mutation<IBackendRes<Job>, { job: Job; jobId: string }>({
+    updateJob: builder.mutation<UpdateJobResponse, UpdateJobRequest>({
       query: ({ jobId, job }) => ({
         url: "/api/v1/jobs",
         method: "PUT",
@@ -22,7 +33,7 @@ export const jobApi = api.injectEndpoints({
       invalidatesTags: ["Job"],
     }),
 
-    deleteJob: builder.mutation<IBackendRes<Job>, string>({
+    deleteJob: builder.mutation<DeleteJobResponse, DeleteJobRequest>({
       query: (jobId) => ({
         url: `/api/v1/jobs/${jobId}`,
         method: "DELETE",
@@ -30,18 +41,28 @@ export const jobApi = api.injectEndpoints({
       invalidatesTags: ["Job"],
     }),
 
-    fetchJob: builder.query<IBackendRes<IModelPaginate<Job>>, string>({
-      query: (query) => ({ url: `/api/v1/jobs?${query}`, method: "GET" }),
+    fetchJobs: builder.query<FetchJobsResponse, FetchJobsRequest>({
+      query: (params) => ({
+        url: "/api/v1/jobs",
+        method: "GET",
+        params,
+      }),
       providesTags: ["Job"],
     }),
 
-    fetchJobById: builder.query<IBackendRes<Job>, string>({
-      query: (jobId) => ({ url: `/api/v1/jobs/${jobId}`, method: "GET" }),
+    fetchJobById: builder.query<FetchJobByIdResponse, FetchJobByIdRequest>({
+      query: (jobId) => ({
+        url: `/api/v1/jobs/${jobId}`,
+        method: "GET",
+      }),
       providesTags: ["Job"],
     }),
 
-    countJobByRecruiter: builder.query<IBackendRes<unknown>, void>({
-      query: () => ({ url: "/api/v1/jobs/recruiters", method: "GET" }),
+    countJobByRecruiter: builder.query<CountJobByRecruiterResponse, void>({
+      query: () => ({
+        url: "/api/v1/jobs/recruiters",
+        method: "GET",
+      }),
     }),
   }),
 });
@@ -50,7 +71,7 @@ export const {
   useCreateJobMutation,
   useUpdateJobMutation,
   useDeleteJobMutation,
-  useFetchJobQuery,
+  useFetchJobsQuery,
   useFetchJobByIdQuery,
   useCountJobByRecruiterQuery,
 } = jobApi;
