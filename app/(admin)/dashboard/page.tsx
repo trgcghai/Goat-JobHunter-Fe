@@ -24,42 +24,42 @@ export interface AdminTab {
 const AdminTabs: AdminTab[] = [
   {
     value: "jobs",
-    label: "Jobs",
+    label: "Việc làm",
     icon: <Briefcase className="w-4 h-4" />,
-    title: "Job Management",
-    description: "Manage job postings and applications",
+    title: "Quản lý Việc làm",
+    description: "Quản lý tin tuyển dụng và đơn ứng tuyển",
     component: <JobsTable />,
   },
   {
     value: "blogs",
-    label: "Blogs",
+    label: "Blog",
     icon: <FileText className="w-4 h-4" />,
-    title: "Blog Management",
-    description: "Manage blog posts and comments",
+    title: "Quản lý blog",
+    description: "Quản lý bài viết và bình luận",
     component: <BlogsTable />,
   },
   {
     value: "users",
-    label: "Users",
+    label: "Người dùng",
     icon: <Users className="w-4 h-4" />,
-    title: "User Management",
-    description: "Manage recruiter accounts and permissions",
+    title: "Quản lý người dùng",
+    description: "Quản lý tài khoản nhà tuyển dụng và quyền hạn",
     component: <RecruitersTable />,
   },
   {
     value: "roles",
-    label: "Roles",
+    label: "Vai trò",
     icon: <Shield className="w-4 h-4" />,
-    title: "Role Management",
-    description: "Create and manage user roles",
+    title: "Quản lý vai trò",
+    description: "Tạo và quản lý các vai trò người dùng",
     component: <RolesTable />,
   },
   {
     value: "permissions",
-    label: "Permissions",
+    label: "Quyền hạn",
     icon: <Lock className="w-4 h-4" />,
-    title: "Permission Management",
-    description: "Manage user permissions",
+    title: "Quản lý quyền hạn",
+    description: "Quản lý các quyền truy cập của người dùng",
     component: <PermissionsTable />,
   },
 ];
@@ -106,7 +106,8 @@ export default function AdminDashboard() {
                   <div className="flex items-center justify-between">
                     <div>
                       <h2 className="text-2xl font-semibold text-foreground">
-                        {tab.title}
+                        {tab.title.charAt(0).toUpperCase() +
+                          tab.title.slice(1).toLowerCase()}
                       </h2>
                       <p className="text-muted-foreground text-sm mt-1">
                         {tab.description}
