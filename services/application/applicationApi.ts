@@ -1,17 +1,25 @@
 import { api } from "@/services/api";
-import { IBackendRes, IModelPaginate } from "@/types/api";
-import type { Application } from "@/types/model";
+import type {
+  CreateApplicationRequest,
+  CreateApplicationResponse,
+  DeleteApplicationRequest,
+  DeleteApplicationResponse,
+  FetchApplicationByIdRequest,
+  FetchApplicationByIdResponse,
+  FetchApplicationsByApplicantResponse,
+  FetchApplicationsByRecruiterRequest,
+  FetchApplicationsByRecruiterResponse,
+  FetchApplicationsRequest,
+  FetchApplicationsResponse,
+  UpdateApplicationStatusRequest,
+  UpdateApplicationStatusResponse,
+} from "./applicationType";
 
 export const applicationApi = api.injectEndpoints({
   endpoints: (builder) => ({
     createApplication: builder.mutation<
-      IBackendRes<Application>,
-      {
-        resumeUrl: string;
-        email: string;
-        jobId: string;
-        userId: string | number;
-      }
+      CreateApplicationResponse,
+      CreateApplicationRequest
     >({
       query: ({ resumeUrl, email, jobId, userId }) => ({
         url: "/api/v1/applications",
@@ -28,8 +36,8 @@ export const applicationApi = api.injectEndpoints({
     }),
 
     updateApplicationStatus: builder.mutation<
-      IBackendRes<Application>,
-      { applicationId: string; status: string; resumeUrl: string }
+      UpdateApplicationStatusResponse,
+      UpdateApplicationStatusRequest
     >({
       query: ({ applicationId, status, resumeUrl }) => ({
         url: "/api/v1/applications",
@@ -39,7 +47,10 @@ export const applicationApi = api.injectEndpoints({
       invalidatesTags: ["Application"],
     }),
 
-    deleteApplication: builder.mutation<IBackendRes<Application>, string>({
+    deleteApplication: builder.mutation<
+      DeleteApplicationResponse,
+      DeleteApplicationRequest
+    >({
       query: (applicationId) => ({
         url: `/api/v1/applications/${applicationId}`,
         method: "DELETE",
@@ -47,7 +58,10 @@ export const applicationApi = api.injectEndpoints({
       invalidatesTags: ["Application"],
     }),
 
-    fetchApplicationById: builder.query<IBackendRes<Application>, string>({
+    fetchApplicationById: builder.query<
+      FetchApplicationByIdResponse,
+      FetchApplicationByIdRequest
+    >({
       query: (applicationId) => ({
         url: `/api/v1/applications/${applicationId}`,
         method: "GET",
@@ -55,34 +69,36 @@ export const applicationApi = api.injectEndpoints({
       providesTags: ["Application"],
     }),
 
-    fetchApplication: builder.query<
-      IBackendRes<IModelPaginate<Application>>,
-      string
+    fetchApplications: builder.query<
+      FetchApplicationsResponse,
+      FetchApplicationsRequest
     >({
-      query: (query) => ({
-        url: `/api/v1/all-applications?${query}`,
+      query: (params) => ({
+        url: "/api/v1/all-applications",
         method: "GET",
+        params,
       }),
       providesTags: ["Application"],
     }),
 
-    fetchApplicationByRecruiter: builder.query<
-      IBackendRes<IModelPaginate<Application>>,
-      string
+    fetchApplicationsByRecruiter: builder.query<
+      FetchApplicationsByRecruiterResponse,
+      FetchApplicationsByRecruiterRequest
     >({
-      query: (query) => ({
-        url: `/api/v1/applications?${query}`,
+      query: (params) => ({
+        url: "/api/v1/applications",
         method: "GET",
+        params,
       }),
       providesTags: ["Application"],
     }),
 
-    fetchApplicationByApplicant: builder.query<
-      IBackendRes<IModelPaginate<Application>>,
+    fetchApplicationsByApplicant: builder.query<
+      FetchApplicationsByApplicantResponse,
       void
     >({
       query: () => ({
-        url: `/api/v1/applications/by-applicant`,
+        url: "/api/v1/applications/by-applicant",
         method: "GET",
       }),
       providesTags: ["Application"],
@@ -95,7 +111,7 @@ export const {
   useUpdateApplicationStatusMutation,
   useDeleteApplicationMutation,
   useFetchApplicationByIdQuery,
-  useFetchApplicationQuery,
-  useFetchApplicationByRecruiterQuery,
-  useFetchApplicationByApplicantQuery,
+  useFetchApplicationsQuery,
+  useFetchApplicationsByRecruiterQuery,
+  useFetchApplicationsByApplicantQuery,
 } = applicationApi;
