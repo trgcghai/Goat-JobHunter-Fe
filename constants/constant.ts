@@ -87,9 +87,9 @@ export const EDUCATION_LIST = [
 ];
 
 export const LEVEL_OPTIONS: Option[] = [
-  { label: "Fresher", value: "FRESHER" },
-  { label: "Junior", value: "JUNIOR" },
-  { label: "Senior", value: "SENIOR" },
-  { label: "Intern", value: "INTERN" },
-  { label: "Middle", value: "MIDDLE" },
+  { label: "Fresher", value: "Fresher" },
+  { label: "Junior", value: "Junior" },
+  { label: "Senior", value: "Senior" },
+  { label: "Intern", value: "Intern" },
+  { label: "Middle", value: "Middle" },
 ];

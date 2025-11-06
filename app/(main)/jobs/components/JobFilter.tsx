@@ -98,6 +98,7 @@ export default function JobFilter({ filters, onFilterChange }: JobFilterProps) {
             value={selectedSkills}
             onChange={handleSkillsChange}
             defaultOptions={SKILL_OPTIONS}
+            maxSelected={4}
             placeholder="Tìm kiếm theo kỹ năng..."
             emptyIndicator={
               <p className="text-center text-sm text-muted-foreground">
