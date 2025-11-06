@@ -21,8 +21,12 @@ export default function FeaturedJobs() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {allJobs.slice(0, 3).map((job) => (
-            <Link key={job.jobId} href={`/jobs/${job.jobId}`}>
-              <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
+            <Link
+              key={job.jobId}
+              href={`/jobs/${job.jobId}`}
+              className="h-full"
+            >
+              <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col">
                 <CardHeader>
                   <div className="flex items-start justify-between mb-2">
                     <Badge variant="secondary" className="mb-2">
@@ -39,7 +43,7 @@ export default function FeaturedJobs() {
                     {job.title}
                   </h3>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex-1 flex flex-col">
                   <div className="space-y-2 text-sm text-muted-foreground mb-4">
                     <div className="flex items-center gap-2">
                       <MapPin className="h-4 w-4" />
@@ -72,7 +76,7 @@ export default function FeaturedJobs() {
                   </p>
 
                   {job.skills && job.skills.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-wrap gap-1 mt-auto">
                       {job.skills.slice(0, 3).map((skill) => (
                         <Badge
                           key={skill.skillId}

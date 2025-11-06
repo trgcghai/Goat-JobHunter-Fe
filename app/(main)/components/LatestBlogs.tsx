@@ -23,9 +23,9 @@ export default function LatestBlogs() {
             <Link
               key={blog.blogId}
               href={`/blogs/${blog.blogId}`}
-              className="block"
+              className="block h-full"
             >
-              <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer py-0 pb-4">
+              <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer py-0 pb-4 flex flex-col h-full">
                 <Image
                   src={blog.banner || "/placeholder.svg"}
                   alt={blog.title}

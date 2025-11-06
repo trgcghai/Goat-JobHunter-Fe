@@ -27,7 +27,7 @@ export default function FeaturedEmployers() {
           {recruiters.map((recruiter) => (
             <Card
               key={recruiter.userId}
-              className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer py-0 pb-4"
+              className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer py-0 pb-4 flex flex-col h-full"
             >
               <Image
                 src={recruiter.avatar || "/placeholder.svg"}
