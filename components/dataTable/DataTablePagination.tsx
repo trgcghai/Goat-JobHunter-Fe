@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { PAGINATION_PAGESIZE } from "@/constants/constant";
 import { Table } from "@tanstack/react-table";
 import {
   ChevronLeft,
@@ -38,12 +39,12 @@ export function DataTablePagination<TData>({
               table.setPageSize(Number(value));
             }}
           >
-            <SelectTrigger className="h-8 w-[70px]">
+            <SelectTrigger className="h-8 w-[70px] rounded-2xl">
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>
-            <SelectContent side="top">
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <SelectItem key={pageSize} value={`${pageSize}`}>
+            <SelectContent side="bottom" className="rounded-xl">
+              {PAGINATION_PAGESIZE.map((pageSize) => (
+                <SelectItem key={pageSize} value={pageSize.toString()}>
                   {pageSize}
                 </SelectItem>
               ))}

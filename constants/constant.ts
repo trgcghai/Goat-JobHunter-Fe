@@ -121,3 +121,5 @@ export const JOBFILTER_CONFIG = {
     maxSelectedMessage: "Bạn chỉ có thể chọn tối đa 3 nhà tuyển dụng",
   },
 };
+
+export const PAGINATION_PAGESIZE = [10, 20, 30, 40, 50];
