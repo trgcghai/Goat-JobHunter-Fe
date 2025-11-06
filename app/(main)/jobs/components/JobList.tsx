@@ -21,7 +21,7 @@ export default function JobList({
     if (onFilterChange && filters) {
       onFilterChange({
         ...filters,
-        level: filters.level === level ? "" : level,
+        level: filters.level.includes(level) ? [] : [level],
       });
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -31,7 +31,9 @@ export default function JobList({
     if (onFilterChange && filters) {
       onFilterChange({
         ...filters,
-        workingType: filters.workingType === workingType ? "" : workingType,
+        workingType: filters.workingType.includes(workingType)
+          ? []
+          : [workingType],
       });
       window.scrollTo({ top: 0, behavior: "smooth" });
     }

@@ -3,6 +3,12 @@
 import { JobFilter, JobList } from "@/app/(main)/jobs/components";
 import { Button } from "@/components/ui/button";
 import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import {
   Pagination,
   PaginationContent,
   PaginationEllipsis,
@@ -21,18 +27,20 @@ export default function JobsPage() {
   const itemsPerPage = viewMode === "grid" ? 9 : 10;
 
   const [filters, setFilters] = useState({
-    location: "",
+    location: [] as string[],
     skills: [] as string[],
-    employer: "",
-    level: "",
-    workingType: "",
+    employer: [] as string[],
+    level: [] as string[],
+    workingType: [] as string[],
   });
 
   const filteredJobs = useMemo(() => {
     return allJobs.filter((job) => {
       if (
         filters.location &&
-        !job.location?.toLowerCase().includes(filters.location.toLowerCase())
+        !job.location
+          ?.toLowerCase()
+          .includes(filters.location.join(",").toLowerCase())
       ) {
         return false;
       }
@@ -46,11 +54,14 @@ export default function JobsPage() {
         if (!hasSkill) return false;
       }
 
-      if (filters.level && job.level !== filters.level) {
+      if (filters.level.length > 0 && !filters.level.includes(job.level)) {
         return false;
       }
 
-      if (filters.workingType && job.workingType !== filters.workingType) {
+      if (
+        filters.workingType.length > 0 &&
+        !filters.workingType.includes(job.workingType || "")
+      ) {
         return false;
       }
 
@@ -127,14 +138,14 @@ export default function JobsPage() {
                 onFilterChange={handleFilterChange}
               />
             ) : (
-              <div className="rounded-lg border border-border bg-card p-12 text-center">
-                <p className="text-muted-foreground mb-2">
-                  Không tìm thấy công việc nào
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Thử thay đổi các bộ lọc của bạn
-                </p>
-              </div>
+              <Empty>
+                <EmptyHeader>
+                  <EmptyTitle>Không tìm thấy việc làm</EmptyTitle>
+                  <EmptyDescription>
+                    Không tìm thấy việc làm nào khớp với yêu cầu của bạn
+                  </EmptyDescription>
+                </EmptyHeader>
+              </Empty>
             )}
 
             {totalPages > 1 && (

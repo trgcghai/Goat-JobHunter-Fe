@@ -93,3 +93,31 @@ export const LEVEL_OPTIONS: Option[] = [
   { label: "Intern", value: "Intern" },
   { label: "Middle", value: "Middle" },
 ];
+
+export const JOBFILTER_CONFIG = {
+  skill: {
+    option: SKILL_OPTIONS,
+    maxSelected: 4,
+    maxSelectedMessage: "Bạn chỉ có thể chọn tối đa 4 kỹ năng",
+  },
+  location: {
+    option: LOCATION_OPTIONS,
+    maxSelected: 1,
+    maxSelectedMessage: "Bạn chỉ có thể chọn tối đa 1 địa điểm",
+  },
+  level: {
+    option: LEVEL_OPTIONS,
+    maxSelected: 5,
+    maxSelectedMessage: "Bạn chỉ có thể chọn tối đa 5 cấp độ",
+  },
+  workingType: {
+    option: WORKING_TYPE_OPTIONS,
+    maxSelected: 4,
+    maxSelectedMessage: "Bạn chỉ có thể chọn tối đa 4 hình thức làm việc",
+  },
+  recruiter: {
+    option: EMPLOYER_OPTIONS,
+    maxSelected: 3,
+    maxSelectedMessage: "Bạn chỉ có thể chọn tối đa 3 nhà tuyển dụng",
+  },
+};
