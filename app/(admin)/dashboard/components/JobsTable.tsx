@@ -4,7 +4,7 @@ import { DataTable } from "@/components/dataTable/DataTable";
 import { DataTableColumnHeader } from "@/components/dataTable/DataTableColumnHeader";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { Eye } from "lucide-react";
@@ -100,17 +100,21 @@ export const jobColumns: ColumnDef<Job>[] = [
   },
   {
     id: "actions",
+    enableSorting: false,
+    enableHiding: false,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Actions" />
+    ),
     cell: ({ row }) => {
       const job = row.original;
       return (
         <Button
-          variant="ghost"
-          size="sm"
-          className="gap-2"
+          variant="outline"
+          size="icon"
+          className="rounded-xl"
           onClick={() => console.log(job)}
         >
           <Eye className="w-4 h-4" />
-          View
         </Button>
       );
     },
@@ -159,9 +163,6 @@ const jobs: Job[] = [
 export default function JobsTable() {
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>All Jobs</CardTitle>
-      </CardHeader>
       <CardContent>
         <DataTable columns={jobColumns} data={jobs} />
       </CardContent>
