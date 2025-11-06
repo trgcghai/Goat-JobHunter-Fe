@@ -64,7 +64,7 @@ axiosInstance.interceptors.request.use(function (config) {
 });
 
 axiosInstance.interceptors.response.use(
-  (res) => res.data,
+  (res) => res,
   async (error) => {
     if (
       error.config &&

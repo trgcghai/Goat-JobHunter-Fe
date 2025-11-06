@@ -123,3 +123,9 @@ export const JOBFILTER_CONFIG = {
 };
 
 export const PAGINATION_PAGESIZE = [10, 20, 30, 40, 50];
+
+export enum ROLE {
+  SUPER_ADMIN = "SUPER_ADMIN",
+  HR = "HR",
+  APPLICANT = "APPLICANT",
+}

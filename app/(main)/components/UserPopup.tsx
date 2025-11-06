@@ -10,22 +10,29 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, User } from "lucide-react";
+import { ROLE } from "@/constants/constant";
+import { useUser } from "@/hooks/useUser";
+import { LogOut, Shield, User } from "lucide-react";
 import Link from "next/link";
 
-interface User {
-  name: string;
-  email: string;
-  role: string;
-  avatar: string;
-}
+export default function UserPopup() {
+  const { user, signOut, isSigningOut } = useUser();
 
-interface UserPopupProps {
-  user: User;
-  onLogout: () => void;
-}
+  if (!user) return null;
 
-export default function UserPopup({ user, onLogout }: UserPopupProps) {
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  const handleLogout = async () => {
+    await signOut();
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -33,15 +40,9 @@ export default function UserPopup({ user, onLogout }: UserPopupProps) {
           <Avatar className="h-10 w-10">
             <AvatarImage
               src={user.avatar || "/placeholder.svg"}
-              alt={user.name}
+              alt={user.fullName}
             />
-            <AvatarFallback>
-              {user.name
-                .split(" ")
-                .map((n) => n[0])
-                .join("")
-                .toUpperCase()}
-            </AvatarFallback>
+            <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -51,25 +52,23 @@ export default function UserPopup({ user, onLogout }: UserPopupProps) {
             <Avatar className="h-12 w-12">
               <AvatarImage
                 src={user.avatar || "/placeholder.svg"}
-                alt={user.name}
+                alt={user.fullName}
               />
-              <AvatarFallback>
-                {user.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")
-                  .toUpperCase()}
-              </AvatarFallback>
+              <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-semibold leading-none">{user.name}</p>
+              <p className="text-sm font-semibold leading-none">
+                {user.fullName}
+              </p>
               <p className="text-xs leading-none text-muted-foreground">
                 {user.email}
               </p>
             </div>
           </div>
         </DropdownMenuLabel>
+
         <DropdownMenuSeparator />
+
         <DropdownMenuItem asChild>
           <Link
             href="/profile"
@@ -79,13 +78,30 @@ export default function UserPopup({ user, onLogout }: UserPopupProps) {
             <span>Hồ Sơ Cá Nhân</span>
           </Link>
         </DropdownMenuItem>
+
+        {user.role.name === ROLE.SUPER_ADMIN && (
+          <>
+            <DropdownMenuItem asChild>
+              <Link
+                href="/dashboard"
+                className="flex items-center cursor-pointer rounded-xl"
+              >
+                <Shield className="mr-2 h-4 w-4" />
+                <span>Bảng Điều Khiển</span>
+              </Link>
+            </DropdownMenuItem>
+          </>
+        )}
+
         <DropdownMenuSeparator />
+
         <DropdownMenuItem
           className="text-destructive focus:text-destructive cursor-pointer rounded-xl"
-          onClick={onLogout}
+          onClick={handleLogout}
+          disabled={isSigningOut}
         >
           <LogOut className="mr-2 h-4 w-4 text-destructive" />
-          <span>Đăng Xuất</span>
+          <span>{isSigningOut ? "Đang đăng xuất..." : "Đăng Xuất"}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

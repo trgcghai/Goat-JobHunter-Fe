@@ -3,26 +3,12 @@
 import NotificationPopup from "@/app/(main)/components/NotificationPopup";
 import UserPopup from "@/app/(main)/components/UserPopup";
 import { Button } from "@/components/ui/button";
+import { useUser } from "@/hooks/useUser";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Header() {
-  // Replace with actual authentication logic
-  const isLoggedIn = true;
-
-  // Replace with actual user data
-  const user = {
-    name: "John Doe",
-    avatar:
-      "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=80",
-    email: "john.doe@example.com",
-    role: "Admin",
-  };
-
-  const handleLogout = () => {
-    // Implement logout logic here
-    console.log("Logout");
-  };
+  const { isSignedIn, isLoaded } = useUser();
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
@@ -66,7 +52,7 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-4">
-            {!isLoggedIn ? (
+            {!isSignedIn && (
               <>
                 <Link href="/signin">
                   <Button
@@ -86,10 +72,11 @@ export default function Header() {
                   </Button>
                 </Link>
               </>
-            ) : (
+            )}
+            {isSignedIn && isLoaded && (
               <>
                 <NotificationPopup />
-                <UserPopup user={user} onLogout={handleLogout} />
+                <UserPopup />
               </>
             )}
           </div>

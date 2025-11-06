@@ -22,15 +22,20 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const { signIn } = useUser();
+  const router = useRouter();
+
   const signInForm = useForm<TSignInSchema>({
     resolver: zodResolver(SignInSchema),
     defaultValues: {
@@ -47,7 +52,11 @@ export function LoginForm({
 
   const onSubmit = async (data: TSignInSchema) => {
     try {
-      console.log("Login data:", data);
+      const result = await signIn(data);
+
+      if (result.success) {
+        router.push("/");
+      }
     } catch (error) {
       console.error("Login error:", error);
     }
