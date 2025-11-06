@@ -1,10 +1,23 @@
 import { api } from "@/services/api";
-import { IBackendRes, IModelPaginate } from "@/types/api";
-import type { Permission } from "@/types/model";
+import type {
+  CreatePermissionRequest,
+  CreatePermissionResponse,
+  DeletePermissionRequest,
+  DeletePermissionResponse,
+  FetchPermissionByIdRequest,
+  FetchPermissionByIdResponse,
+  FetchPermissionsRequest,
+  FetchPermissionsResponse,
+  UpdatePermissionRequest,
+  UpdatePermissionResponse,
+} from "./permissionType";
 
 export const permissionApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    createPermission: builder.mutation<IBackendRes<Permission>, Permission>({
+    createPermission: builder.mutation<
+      CreatePermissionResponse,
+      CreatePermissionRequest
+    >({
       query: (permission) => ({
         url: "/api/v1/permissions",
         method: "POST",
@@ -14,8 +27,8 @@ export const permissionApi = api.injectEndpoints({
     }),
 
     updatePermission: builder.mutation<
-      IBackendRes<Permission>,
-      { permission: Permission; permissionId: string }
+      UpdatePermissionResponse,
+      UpdatePermissionRequest
     >({
       query: ({ permissionId, permission }) => ({
         url: "/api/v1/permissions",
@@ -25,7 +38,10 @@ export const permissionApi = api.injectEndpoints({
       invalidatesTags: ["Permission"],
     }),
 
-    deletePermission: builder.mutation<IBackendRes<Permission>, string>({
+    deletePermission: builder.mutation<
+      DeletePermissionResponse,
+      DeletePermissionRequest
+    >({
       query: (permissionId) => ({
         url: `/api/v1/permissions/${permissionId}`,
         method: "DELETE",
@@ -33,18 +49,22 @@ export const permissionApi = api.injectEndpoints({
       invalidatesTags: ["Permission"],
     }),
 
-    fetchPermission: builder.query<
-      IBackendRes<IModelPaginate<Permission>>,
-      string
+    fetchPermissions: builder.query<
+      FetchPermissionsResponse,
+      FetchPermissionsRequest
     >({
-      query: (query) => ({
-        url: `/api/v1/permissions?${query}`,
+      query: (params) => ({
+        url: "/api/v1/permissions",
         method: "GET",
+        params,
       }),
       providesTags: ["Permission"],
     }),
 
-    fetchPermissionById: builder.query<IBackendRes<Permission>, string>({
+    fetchPermissionById: builder.query<
+      FetchPermissionByIdResponse,
+      FetchPermissionByIdRequest
+    >({
       query: (permissionId) => ({
         url: `/api/v1/permissions/${permissionId}`,
         method: "GET",
@@ -58,6 +78,6 @@ export const {
   useCreatePermissionMutation,
   useUpdatePermissionMutation,
   useDeletePermissionMutation,
-  useFetchPermissionQuery,
+  useFetchPermissionsQuery,
   useFetchPermissionByIdQuery,
 } = permissionApi;
