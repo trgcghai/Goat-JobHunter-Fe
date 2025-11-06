@@ -16,11 +16,11 @@ export function DataTableEmpty() {
         <EmptyMedia variant="icon">
           <FileQuestion />
         </EmptyMedia>
-        <EmptyTitle>No data</EmptyTitle>
-        <EmptyDescription>No data found</EmptyDescription>
+        <EmptyTitle>Không có dữ liệu nào</EmptyTitle>
+        <EmptyDescription>Không tìm thấy dữ liệu</EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
-        <Button>Add data</Button>
+        <Button>Thêm dữ liệu mới</Button>
       </EmptyContent>
     </Empty>
   );

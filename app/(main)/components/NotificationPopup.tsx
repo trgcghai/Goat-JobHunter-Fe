@@ -14,14 +14,25 @@ import { NotificationType } from "@/types/model";
 import { formatDate } from "@/utils/formatDate";
 import {
   Bell,
+  BellRing,
   CheckCheck,
   Heart,
   MessageCircle,
+  RefreshCcwIcon,
   Trash2,
   UserPlus,
 } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
+
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import Link from "next/link";
 
 export default function NotificationPopup() {
   const [notifications, setNotifications] =
@@ -72,7 +83,7 @@ export default function NotificationPopup() {
         </div>
 
         <ScrollArea
-          className={cn(notifications.length > 0 ? "h-[400px]" : "h-48")}
+          className={cn(notifications.length > 0 ? "h-[400px]" : "h-[300px]")}
         >
           {notifications.length > 0 ? (
             <div className="divide-y divide-border">
@@ -119,12 +130,7 @@ export default function NotificationPopup() {
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <Bell className="h-12 w-12 text-muted-foreground/50 mb-3" />
-              <p className="text-sm text-muted-foreground">
-                Không có thông báo nào
-              </p>
-            </div>
+            <EmptyMuted />
           )}
         </ScrollArea>
 
@@ -207,5 +213,27 @@ function NotificationItem({
         </p>
       </div>
     </div>
+  );
+}
+
+export function EmptyMuted() {
+  return (
+    <Empty className="h-full bg-linear-to-b from-30%">
+      <EmptyHeader>
+        <EmptyMedia variant="icon" className="bg-white">
+          <BellRing />
+        </EmptyMedia>
+        <EmptyTitle>Không có thông báo nào</EmptyTitle>
+        <EmptyDescription>
+          Bạn đã xem tất cả thông báo. Các thông báo mới sẽ xuất hiện ở đây.
+        </EmptyDescription>
+      </EmptyHeader>
+      <EmptyContent>
+        <Button variant="default" size="sm" className="rounded-xl">
+          <RefreshCcwIcon />
+          Làm mới
+        </Button>
+      </EmptyContent>
+    </Empty>
   );
 }
