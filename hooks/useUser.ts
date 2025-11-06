@@ -7,42 +7,20 @@ import {
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import {
   useFetchAccountQuery,
-  useLoginMutation,
   useLogoutMutation,
-  useRegisterMutation,
   useResendCodeMutation,
+  useSigninMutation,
+  useSignupMutation,
   useVerifyCodeMutation,
 } from "@/services/auth/authApi";
-import { useUpdatePasswordMutation } from "@/services/user/userApi";
-import type { Contact } from "@/types/model";
+import {
+  SignInRequest,
+  SignUpRequest,
+  VerifyCodeRequest,
+} from "@/services/auth/authType";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
 import { toast } from "sonner";
-
-export interface SignInParams {
-  email: string;
-  password: string;
-}
-
-export interface SignUpParams {
-  contact: Contact;
-  password: string;
-  type: "recruiter" | "applicant";
-  username?: string;
-  address?: string;
-  fullName?: string;
-}
-
-export interface UpdatePasswordParams {
-  currentPassword: string;
-  newPassword: string;
-  rePassword: string;
-}
-
-export interface VerifyCodeParams {
-  email: string;
-  verificationCode: string;
-}
 
 export function useUser() {
   const router = useRouter();
@@ -54,15 +32,13 @@ export function useUser() {
   );
 
   // API mutations
-  const [loginMutation, { isLoading: isSigningIn }] = useLoginMutation();
-  const [registerMutation, { isLoading: isSigningUp }] = useRegisterMutation();
+  const [signinMutation, { isLoading: isSigningIn }] = useSigninMutation();
+  const [signupMutation, { isLoading: isSigningUp }] = useSignupMutation();
   const [logoutMutation, { isLoading: isSigningOut }] = useLogoutMutation();
   const [verifyCodeMutation, { isLoading: isVerifying }] =
     useVerifyCodeMutation();
   const [resendCodeMutation, { isLoading: isResending }] =
     useResendCodeMutation();
-  const [updatePasswordMutation, { isLoading: isUpdatingPassword }] =
-    useUpdatePasswordMutation();
 
   // Fetch account on mount if token exists
   const { data: accountData, isLoading: isLoadingAccount } =
@@ -80,9 +56,9 @@ export function useUser() {
    * Sign in user
    */
   const signIn = useCallback(
-    async ({ email, password }: SignInParams) => {
+    async (params: SignInRequest) => {
       try {
-        const response = await loginMutation({ email, password }).unwrap();
+        const response = await signinMutation(params).unwrap();
 
         console.log("response", response);
 
@@ -109,16 +85,16 @@ export function useUser() {
         return { success: false };
       }
     },
-    [dispatch, loginMutation],
+    [dispatch, signinMutation],
   );
 
   /**
    * Sign up new user
    */
   const signUp = useCallback(
-    async (params: SignUpParams) => {
+    async (params: SignUpRequest) => {
       try {
-        const response = await registerMutation(params).unwrap();
+        const response = await signupMutation(params).unwrap();
 
         if (response.data) {
           toast.success("Đăng ký thành công! Vui lòng xác thực email.");
@@ -133,7 +109,7 @@ export function useUser() {
         return { success: false };
       }
     },
-    [registerMutation],
+    [signupMutation],
   );
 
   /**
@@ -168,12 +144,9 @@ export function useUser() {
    * Verify email code
    */
   const verifyCode = useCallback(
-    async ({ email, verificationCode }: VerifyCodeParams) => {
+    async (params: VerifyCodeRequest) => {
       try {
-        const response = await verifyCodeMutation({
-          email,
-          verificationCode,
-        }).unwrap();
+        const response = await verifyCodeMutation(params).unwrap();
 
         if (response.statusCode === 200) {
           toast.success("Xác thực email thành công!");
@@ -209,40 +182,6 @@ export function useUser() {
     [resendCodeMutation],
   );
 
-  /**
-   * Update user password
-   */
-  const updatePassword = useCallback(
-    async (params: UpdatePasswordParams) => {
-      try {
-        const response = await updatePasswordMutation(params).unwrap();
-
-        if (response.statusCode === 200) {
-          toast.success("Đổi mật khẩu thành công!");
-          return { success: true };
-        }
-
-        toast.error("Đổi mật khẩu thất bại!");
-        return { success: false, error: "Update failed" };
-      } catch (error) {
-        console.error("error update password:", error);
-        toast.error("Đổi mật khẩu thất bại!");
-        return { success: false };
-      }
-    },
-    [updatePasswordMutation],
-  );
-
-  /**
-   * Update user info
-   */
-  const updateUser = useCallback(
-    (userData: AuthStateUser) => {
-      dispatch(updateUserAction(userData));
-    },
-    [dispatch],
-  );
-
   return {
     // User data
     user,
@@ -256,16 +195,11 @@ export function useUser() {
     verifyCode,
     resendCode,
 
-    // User methods
-    updateUser,
-    updatePassword,
-
     // Loading states
     isSigningIn,
     isSigningUp,
     isSigningOut,
     isVerifying,
     isResending,
-    isUpdatingPassword,
   };
 }

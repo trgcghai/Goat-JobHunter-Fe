@@ -1,26 +1,21 @@
 import { api } from "@/services/api";
-import { IBackendRes } from "@/types/api";
 import type {
-  Account,
-  Applicant,
-  Contact,
-  GetAccount,
-  Recruiter,
-} from "@/types/model";
+  FetchAccountResponse,
+  LogoutResponse,
+  RefreshTokenResponse,
+  ResendCodeRequest,
+  ResendCodeResponse,
+  SignInRequest,
+  SignInResponse,
+  SignUpRequest,
+  SignUpResponse,
+  VerifyCodeRequest,
+  VerifyCodeResponse,
+} from "./authType";
 
 export const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    register: builder.mutation<
-      IBackendRes<Recruiter | Applicant>,
-      {
-        contact: Contact;
-        password: string;
-        type: "recruiter" | "applicant";
-        username?: string;
-        address?: string;
-        fullName?: string;
-      }
-    >({
+    signup: builder.mutation<SignUpResponse, SignUpRequest>({
       query: (args) => {
         const { type, ...rest } = args;
         if (type === "recruiter") {
@@ -38,10 +33,7 @@ export const authApi = api.injectEndpoints({
       },
     }),
 
-    login: builder.mutation<
-      IBackendRes<Account>,
-      { email: string; password: string }
-    >({
+    signin: builder.mutation<SignInResponse, SignInRequest>({
       query: ({ email, password }) => ({
         url: "/api/v1/auth/login",
         method: "POST",
@@ -49,22 +41,19 @@ export const authApi = api.injectEndpoints({
       }),
     }),
 
-    fetchAccount: builder.query<IBackendRes<GetAccount>, void>({
+    fetchAccount: builder.query<FetchAccountResponse, void>({
       query: () => ({ url: "/api/v1/auth/account", method: "GET" }),
     }),
 
-    refreshToken: builder.query<IBackendRes<Account>, void>({
+    refreshToken: builder.query<RefreshTokenResponse, void>({
       query: () => ({ url: "/api/v1/auth/refresh", method: "GET" }),
     }),
 
-    logout: builder.mutation<IBackendRes<string>, void>({
+    logout: builder.mutation<LogoutResponse, void>({
       query: () => ({ url: "/api/v1/auth/logout", method: "POST" }),
     }),
 
-    verifyCode: builder.mutation<
-      IBackendRes<unknown>,
-      { email: string; verificationCode: string }
-    >({
+    verifyCode: builder.mutation<VerifyCodeResponse, VerifyCodeRequest>({
       query: ({ email, verificationCode }) => ({
         url: "/api/v1/auth/verify",
         method: "POST",
@@ -72,7 +61,7 @@ export const authApi = api.injectEndpoints({
       }),
     }),
 
-    resendCode: builder.mutation<IBackendRes<unknown>, { email: string }>({
+    resendCode: builder.mutation<ResendCodeResponse, ResendCodeRequest>({
       query: ({ email }) => ({
         url: `/api/v1/auth/resend?email=${email}`,
         method: "POST",
@@ -82,8 +71,8 @@ export const authApi = api.injectEndpoints({
 });
 
 export const {
-  useRegisterMutation,
-  useLoginMutation,
+  useSignupMutation,
+  useSigninMutation,
   useFetchAccountQuery,
   useRefreshTokenQuery,
   useLogoutMutation,
