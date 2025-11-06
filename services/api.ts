@@ -1,20 +1,49 @@
-import { RootState } from "@/lib/store";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import axiosInstance from "@/services/axios";
+import { BaseQueryFn, createApi } from "@reduxjs/toolkit/query/react";
+import { AxiosError, AxiosRequestConfig } from "axios";
 
-const baseQuery = fetchBaseQuery({
-  baseUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080",
-  prepareHeaders: (headers, { getState }) => {
-    const token = (getState() as RootState).auth.token;
-    if (token) {
-      headers.set("Authorization", `Bearer ${token}`);
+const axiosBaseQuery =
+  (
+    { baseUrl }: { baseUrl: string } = {
+      baseUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080",
+    },
+  ): BaseQueryFn<
+    {
+      url: string;
+      method?: AxiosRequestConfig["method"];
+      data?: AxiosRequestConfig["data"];
+      params?: AxiosRequestConfig["params"];
+      headers?: AxiosRequestConfig["headers"];
+    },
+    unknown,
+    unknown
+  > =>
+  async ({ url, method, data, params, headers }) => {
+    try {
+      const result = await axiosInstance({
+        url: baseUrl + url,
+        method,
+        data,
+        params,
+        headers,
+      });
+      return { data: result.data };
+    } catch (axiosError) {
+      const err = axiosError as AxiosError;
+      return {
+        error: {
+          status: err.response?.status,
+          data: err.response?.data || err.message,
+        },
+      };
     }
-    return headers;
-  },
-});
+  };
 
 export const api = createApi({
   reducerPath: "api",
-  baseQuery,
+  baseQuery: axiosBaseQuery({
+    baseUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080",
+  }),
   tagTypes: [
     "User",
     "Job",
