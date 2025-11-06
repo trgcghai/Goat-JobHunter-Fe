@@ -1,23 +1,19 @@
 "use client";
-
-import { AdminTab } from "@/app/(admin)/dashboard/page";
+import { AdminTab } from "@/app/(admin)/layout";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface AdminSidebarProps {
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
   tabs: AdminTab[];
 }
 
-export default function AdminSidebar({
-  activeTab,
-  setActiveTab,
-  tabs,
-}: AdminSidebarProps) {
+export default function AdminSidebar({ tabs }: AdminSidebarProps) {
+  const pathname = usePathname();
+
   return (
     <div className="fixed left-0 top-0 h-screen w-64 bg-sidebar border-r border-sidebar-border p-6 space-y-8">
       <div className="flex items-center gap-2">
@@ -35,17 +31,17 @@ export default function AdminSidebar({
       <nav className="space-y-2">
         {tabs.map((tab) => {
           return (
-            <Button
-              key={tab.value}
-              variant={activeTab === tab.value ? "default" : "ghost"}
-              onClick={() => setActiveTab(tab.value)}
-              className={cn(
-                "w-full flex items-center justify-start gap-3 px-4 py-3 rounded-xl transition-all",
-              )}
-            >
-              {tab.icon}
-              <span className="font-medium">{tab.label}</span>
-            </Button>
+            <Link key={tab.id} href={tab.url} className="block">
+              <Button
+                variant={pathname?.includes(tab.id) ? "default" : "ghost"}
+                className={cn(
+                  "w-full flex items-center justify-start gap-3 px-4 py-3 rounded-xl transition-all",
+                )}
+              >
+                {tab.icon}
+                <span className="font-medium">{tab.label}</span>
+              </Button>
+            </Link>
           );
         })}
       </nav>
