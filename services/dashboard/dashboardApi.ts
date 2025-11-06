@@ -1,36 +1,50 @@
 import { api } from "@/services/api";
-import { IBackendRes } from "@/types/api";
+import type {
+  StatisticsApplicationByYearRequest,
+  StatisticsApplicationByYearResponse,
+  StatisticsApplicationRequest,
+  StatisticsApplicationResponse,
+  StatisticsJobRequest,
+  StatisticsJobResponse,
+  StatisticsUserResponse,
+} from "./dashboardType";
 
 export const dashboardApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    statisticsUser: builder.query<IBackendRes<Record<string, number>>, void>({
-      query: () => ({ url: "/api/v1/dashboard/users", method: "GET" }),
+    statisticsUser: builder.query<StatisticsUserResponse, void>({
+      query: () => ({
+        url: "/api/v1/dashboard/users",
+        method: "GET",
+      }),
     }),
 
-    statisticsJob: builder.query<IBackendRes<Record<string, number>>, string>({
-      query: (query) => ({
-        url: `/api/v1/dashboard/jobs?${query}`,
+    statisticsJob: builder.query<StatisticsJobResponse, StatisticsJobRequest>({
+      query: (params) => ({
+        url: "/api/v1/dashboard/jobs",
         method: "GET",
+        params,
       }),
     }),
 
     statisticsApplication: builder.query<
-      IBackendRes<Record<string, number>>,
-      string
+      StatisticsApplicationResponse,
+      StatisticsApplicationRequest
     >({
-      query: (query) => ({
-        url: `/api/v1/dashboard/applications?${query}`,
+      query: (params) => ({
+        url: "/api/v1/dashboard/applications",
         method: "GET",
+        params,
       }),
     }),
 
     statisticsApplicationByYear: builder.query<
-      IBackendRes<Record<number, number>>,
-      { year: number; query: string }
+      StatisticsApplicationByYearResponse,
+      StatisticsApplicationByYearRequest
     >({
-      query: ({ year, query }) => ({
-        url: `/api/v1/dashboard/applications-year?year=${year}&${query}`,
+      query: ({ year, ...params }) => ({
+        url: "/api/v1/dashboard/applications-year",
         method: "GET",
+        params: { year, ...params },
       }),
     }),
   }),
