@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Footer() {
@@ -7,7 +8,15 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <span className="font-bold text-foreground">GOAT</span>
+              <Link href="/" className="flex items-center gap-2">
+                <Image
+                  src="/logo.png"
+                  alt="GOAT Logo"
+                  className=""
+                  width={80}
+                  height={80}
+                />
+              </Link>
             </div>
             <p className="text-sm text-muted-foreground">
               Nền tảng tìm kiếm việc làm tuyệt vời
