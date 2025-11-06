@@ -1,10 +1,20 @@
 import { api } from "@/services/api";
-import { IBackendRes, IModelPaginate } from "@/types/api";
-import type { Role } from "@/types/model";
+import type {
+  CreateRoleRequest,
+  CreateRoleResponse,
+  DeleteRoleRequest,
+  DeleteRoleResponse,
+  FetchRoleByIdRequest,
+  FetchRoleByIdResponse,
+  FetchRolesRequest,
+  FetchRolesResponse,
+  UpdateRoleRequest,
+  UpdateRoleResponse,
+} from "./roleType";
 
 export const roleApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    createRole: builder.mutation<IBackendRes<Role>, Role>({
+    createRole: builder.mutation<CreateRoleResponse, CreateRoleRequest>({
       query: (role) => ({
         url: "/api/v1/roles",
         method: "POST",
@@ -13,10 +23,7 @@ export const roleApi = api.injectEndpoints({
       invalidatesTags: ["Role"],
     }),
 
-    updateRole: builder.mutation<
-      IBackendRes<Role>,
-      { role: Role; roleId: string }
-    >({
+    updateRole: builder.mutation<UpdateRoleResponse, UpdateRoleRequest>({
       query: ({ roleId, role }) => ({
         url: "/api/v1/roles",
         method: "PUT",
@@ -25,7 +32,7 @@ export const roleApi = api.injectEndpoints({
       invalidatesTags: ["Role"],
     }),
 
-    deleteRole: builder.mutation<IBackendRes<Role>, string>({
+    deleteRole: builder.mutation<DeleteRoleResponse, DeleteRoleRequest>({
       query: (roleId) => ({
         url: `/api/v1/roles/${roleId}`,
         method: "DELETE",
@@ -33,13 +40,20 @@ export const roleApi = api.injectEndpoints({
       invalidatesTags: ["Role"],
     }),
 
-    fetchRole: builder.query<IBackendRes<IModelPaginate<Role>>, string>({
-      query: (query) => ({ url: `/api/v1/roles?${query}`, method: "GET" }),
+    fetchRoles: builder.query<FetchRolesResponse, FetchRolesRequest>({
+      query: (params) => ({
+        url: "/api/v1/roles",
+        method: "GET",
+        params,
+      }),
       providesTags: ["Role"],
     }),
 
-    fetchRoleById: builder.query<IBackendRes<Role>, string>({
-      query: (roleId) => ({ url: `/api/v1/roles/${roleId}`, method: "GET" }),
+    fetchRoleById: builder.query<FetchRoleByIdResponse, FetchRoleByIdRequest>({
+      query: (roleId) => ({
+        url: `/api/v1/roles/${roleId}`,
+        method: "GET",
+      }),
       providesTags: ["Role"],
     }),
   }),
@@ -49,6 +63,6 @@ export const {
   useCreateRoleMutation,
   useUpdateRoleMutation,
   useDeleteRoleMutation,
-  useFetchRoleQuery,
+  useFetchRolesQuery,
   useFetchRoleByIdQuery,
 } = roleApi;

@@ -1,21 +1,39 @@
 import { api } from "@/services/api";
-import { IBackendRes, IModelPaginate } from "@/types/api";
-import type { Account, FullUser, User } from "@/types/model";
+import type {
+  FetchUserByEmailResponse,
+  FetchUsersRequest,
+  FetchUsersResponse,
+  FollowRecruitersRequest,
+  FollowRecruitersResponse,
+  ResetPasswordRequest,
+  ResetPasswordResponse,
+  SaveJobsRequest,
+  SaveJobsResponse,
+  UpdatePasswordRequest,
+  UpdatePasswordResponse,
+} from "./userType";
 
 export const userApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    fetchUser: builder.query<IBackendRes<IModelPaginate<User>>, string>({
-      query: (query) => ({ url: `/api/v1/users?${query}`, method: "GET" }),
+    fetchUsers: builder.query<FetchUsersResponse, FetchUsersRequest>({
+      query: (params) => ({
+        url: "/api/v1/users",
+        method: "GET",
+        params,
+      }),
       providesTags: ["User"],
     }),
 
-    fetchUserByEmail: builder.mutation<IBackendRes<FullUser>, void>({
-      query: () => ({ url: "/api/v1/users", method: "POST" }),
+    fetchUserByEmail: builder.mutation<FetchUserByEmailResponse, void>({
+      query: () => ({
+        url: "/api/v1/users",
+        method: "POST",
+      }),
     }),
 
     updatePassword: builder.mutation<
-      IBackendRes<Account>,
-      { currentPassword: string; newPassword: string; rePassword: string }
+      UpdatePasswordResponse,
+      UpdatePasswordRequest
     >({
       query: (data) => ({
         url: "/api/v1/users/update-password",
@@ -25,8 +43,8 @@ export const userApi = api.injectEndpoints({
     }),
 
     resetPassword: builder.mutation<
-      IBackendRes<unknown>,
-      { email: string; newPassword: string }
+      ResetPasswordResponse,
+      ResetPasswordRequest
     >({
       query: (data) => ({
         url: "/api/v1/users/reset-password",
@@ -35,10 +53,7 @@ export const userApi = api.injectEndpoints({
       }),
     }),
 
-    saveJobs: builder.mutation<
-      IBackendRes<User>,
-      { userId: number; savedJobs: { jobId: number }[] }
-    >({
+    saveJobs: builder.mutation<SaveJobsResponse, SaveJobsRequest>({
       query: (data) => ({
         url: "/api/v1/users/saved-jobs",
         method: "PUT",
@@ -48,8 +63,8 @@ export const userApi = api.injectEndpoints({
     }),
 
     followRecruiters: builder.mutation<
-      IBackendRes<User>,
-      { userId: number; followedRecruiters: { userId: number }[] }
+      FollowRecruitersResponse,
+      FollowRecruitersRequest
     >({
       query: ({ userId, followedRecruiters }) => {
         const payload = followedRecruiters.map((fr) => ({
@@ -68,7 +83,7 @@ export const userApi = api.injectEndpoints({
 });
 
 export const {
-  useFetchUserQuery,
+  useFetchUsersQuery,
   useFetchUserByEmailMutation,
   useUpdatePasswordMutation,
   useResetPasswordMutation,

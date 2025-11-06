@@ -1,10 +1,18 @@
 import { api } from "@/services/api";
-import { IBackendRes, IModelPaginate } from "@/types/api";
-import type { Skill } from "@/types/model";
+import type {
+  CreateSkillRequest,
+  CreateSkillResponse,
+  DeleteSkillRequest,
+  DeleteSkillResponse,
+  FetchSkillsRequest,
+  FetchSkillsResponse,
+  UpdateSkillRequest,
+  UpdateSkillResponse,
+} from "./skillType";
 
 export const skillApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    createSkill: builder.mutation<IBackendRes<Skill>, { name: string }>({
+    createSkill: builder.mutation<CreateSkillResponse, CreateSkillRequest>({
       query: ({ name }) => ({
         url: "/api/v1/skills",
         method: "POST",
@@ -13,10 +21,7 @@ export const skillApi = api.injectEndpoints({
       invalidatesTags: ["Skill"],
     }),
 
-    updateSkill: builder.mutation<
-      IBackendRes<Skill>,
-      { skillId: string; name: string }
-    >({
+    updateSkill: builder.mutation<UpdateSkillResponse, UpdateSkillRequest>({
       query: ({ skillId, name }) => ({
         url: "/api/v1/skills",
         method: "PUT",
@@ -25,7 +30,7 @@ export const skillApi = api.injectEndpoints({
       invalidatesTags: ["Skill"],
     }),
 
-    deleteSkill: builder.mutation<IBackendRes<Skill>, string>({
+    deleteSkill: builder.mutation<DeleteSkillResponse, DeleteSkillRequest>({
       query: (skillId) => ({
         url: `/api/v1/skills/${skillId}`,
         method: "DELETE",
@@ -33,8 +38,12 @@ export const skillApi = api.injectEndpoints({
       invalidatesTags: ["Skill"],
     }),
 
-    fetchAllSkill: builder.query<IBackendRes<IModelPaginate<Skill>>, string>({
-      query: (query) => ({ url: `/api/v1/skills?${query}`, method: "GET" }),
+    fetchSkills: builder.query<FetchSkillsResponse, FetchSkillsRequest>({
+      query: (params) => ({
+        url: "/api/v1/skills",
+        method: "GET",
+        params,
+      }),
       providesTags: ["Skill"],
     }),
   }),
@@ -44,5 +53,5 @@ export const {
   useCreateSkillMutation,
   useUpdateSkillMutation,
   useDeleteSkillMutation,
-  useFetchAllSkillQuery,
+  useFetchSkillsQuery,
 } = skillApi;

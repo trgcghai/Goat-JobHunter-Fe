@@ -1,11 +1,14 @@
 import { api } from "@/services/api";
-import { IBackendRes } from "@/types/api";
+import type {
+  UploadSingleFileRequest,
+  UploadSingleFileResponse,
+} from "./uploadType";
 
 export const uploadApi = api.injectEndpoints({
   endpoints: (builder) => ({
     uploadSingleFile: builder.mutation<
-      IBackendRes<{ publicId: string; url: string }>,
-      { file: File; folderType: string }
+      UploadSingleFileResponse,
+      UploadSingleFileRequest
     >({
       query: ({ file, folderType }) => {
         const bodyFormData = new FormData();

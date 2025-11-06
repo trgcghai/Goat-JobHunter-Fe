@@ -1,23 +1,22 @@
 import { api } from "@/services/api";
-import { IBackendRes, IModelPaginate } from "@/types/api";
-import type { Contact, Recruiter } from "@/types/model";
+import type {
+  CreateRecruiterRequest,
+  CreateRecruiterResponse,
+  DeleteRecruiterRequest,
+  DeleteRecruiterResponse,
+  FetchRecruiterByIdRequest,
+  FetchRecruiterByIdResponse,
+  FetchRecruitersRequest,
+  FetchRecruitersResponse,
+  UpdateRecruiterRequest,
+  UpdateRecruiterResponse,
+} from "./recruiterType";
 
 export const recruiterApi = api.injectEndpoints({
   endpoints: (builder) => ({
     createRecruiter: builder.mutation<
-      IBackendRes<Recruiter>,
-      {
-        fullName: string;
-        password: string;
-        username: string;
-        contact: Contact;
-        address: string;
-        enabled: boolean;
-        description?: string;
-        avatar?: string;
-        role?: { roleId: string; name: string };
-        website?: string;
-      }
+      CreateRecruiterResponse,
+      CreateRecruiterRequest
     >({
       query: (data) => ({
         url: "/api/v1/recruiters",
@@ -28,20 +27,8 @@ export const recruiterApi = api.injectEndpoints({
     }),
 
     updateRecruiter: builder.mutation<
-      IBackendRes<Recruiter>,
-      {
-        recruiterId: string;
-        fullName: string;
-        password: string;
-        username: string;
-        contact: Contact;
-        address: string;
-        enabled: boolean;
-        description?: string;
-        avatar?: string;
-        role?: { roleId: string; name: string };
-        website?: string;
-      }
+      UpdateRecruiterResponse,
+      UpdateRecruiterRequest
     >({
       query: ({ recruiterId, ...data }) => ({
         url: "/api/v1/recruiters",
@@ -51,7 +38,10 @@ export const recruiterApi = api.injectEndpoints({
       invalidatesTags: ["Recruiter"],
     }),
 
-    deleteRecruiter: builder.mutation<IBackendRes<Recruiter>, string>({
+    deleteRecruiter: builder.mutation<
+      DeleteRecruiterResponse,
+      DeleteRecruiterRequest
+    >({
       query: (recruiterId) => ({
         url: `/api/v1/recruiters/${recruiterId}`,
         method: "DELETE",
@@ -59,15 +49,22 @@ export const recruiterApi = api.injectEndpoints({
       invalidatesTags: ["Recruiter"],
     }),
 
-    fetchRecruiter: builder.query<
-      IBackendRes<IModelPaginate<Recruiter>>,
-      string
+    fetchRecruiters: builder.query<
+      FetchRecruitersResponse,
+      FetchRecruitersRequest
     >({
-      query: (query) => ({ url: `/api/v1/recruiters?${query}`, method: "GET" }),
+      query: (params) => ({
+        url: "/api/v1/recruiters",
+        method: "GET",
+        params,
+      }),
       providesTags: ["Recruiter"],
     }),
 
-    fetchRecruiterById: builder.query<IBackendRes<Recruiter>, string>({
+    fetchRecruiterById: builder.query<
+      FetchRecruiterByIdResponse,
+      FetchRecruiterByIdRequest
+    >({
       query: (recruiterId) => ({
         url: `/api/v1/recruiters/${recruiterId}`,
         method: "GET",
@@ -81,6 +78,6 @@ export const {
   useCreateRecruiterMutation,
   useUpdateRecruiterMutation,
   useDeleteRecruiterMutation,
-  useFetchRecruiterQuery,
+  useFetchRecruitersQuery,
   useFetchRecruiterByIdQuery,
 } = recruiterApi;
