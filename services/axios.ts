@@ -35,7 +35,6 @@ const handleRefreshToken = async (): Promise<string | null> => {
 
       return newAccessToken;
     } catch (error) {
-      toast.error("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.");
       console.error("error handleRefreshToken axios: ", error);
 
       localStorage.removeItem("access_token");
