@@ -1,29 +1,23 @@
 "use client";
 
+import { AdminTab } from "@/app/(admin)/dashboard/page";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Briefcase, FileText, Lock, LogOut, Shield, Users } from "lucide-react";
+import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 interface AdminSidebarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  tabs: AdminTab[];
 }
 
 export default function AdminSidebar({
   activeTab,
   setActiveTab,
+  tabs,
 }: AdminSidebarProps) {
-  const menuItems = [
-    { id: "jobs", label: "Jobs", icon: Briefcase },
-    { id: "blogs", label: "Blogs", icon: FileText },
-    { id: "recruiters", label: "Recruiters", icon: Users },
-    { id: "users", label: "Users", icon: Users },
-    { id: "roles", label: "Roles", icon: Shield },
-    { id: "permissions", label: "Permissions", icon: Lock },
-  ];
-
   return (
     <div className="fixed left-0 top-0 h-screen w-64 bg-sidebar border-r border-sidebar-border p-6 space-y-8">
       <div className="flex items-center gap-2">
@@ -39,19 +33,18 @@ export default function AdminSidebar({
       </div>
 
       <nav className="space-y-2">
-        {menuItems.map((item) => {
-          const Icon = item.icon;
+        {tabs.map((tab) => {
           return (
             <Button
-              key={item.id}
-              variant={activeTab === item.id ? "default" : "ghost"}
-              onClick={() => setActiveTab(item.id)}
+              key={tab.value}
+              variant={activeTab === tab.value ? "default" : "ghost"}
+              onClick={() => setActiveTab(tab.value)}
               className={cn(
                 "w-full flex items-center justify-start gap-3 px-4 py-3 rounded-xl transition-all",
               )}
             >
-              <Icon className="w-5 h-5" />
-              <span className="font-medium">{item.label}</span>
+              {tab.icon}
+              <span className="font-medium">{tab.label}</span>
             </Button>
           );
         })}
