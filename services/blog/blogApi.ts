@@ -1,10 +1,24 @@
 import { api } from "@/services/api";
-import { IBackendRes, IModelPaginate } from "@/types/api";
-import type { Blog } from "@/types/model";
+import type {
+  CreateBlogRequest,
+  CreateBlogResponse,
+  DeleteBlogRequest,
+  DeleteBlogResponse,
+  FetchBlogByIdRequest,
+  FetchBlogByIdResponse,
+  FetchBlogsRequest,
+  FetchBlogsResponse,
+  FetchTagsRequest,
+  FetchTagsResponse,
+  LikeBlogRequest,
+  LikeBlogResponse,
+  UpdateBlogRequest,
+  UpdateBlogResponse,
+} from "./blogType";
 
 export const blogApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    createBlog: builder.mutation<IBackendRes<Blog>, Blog>({
+    createBlog: builder.mutation<CreateBlogResponse, CreateBlogRequest>({
       query: (blog) => ({
         url: "/api/v1/blogs",
         method: "POST",
@@ -13,10 +27,7 @@ export const blogApi = api.injectEndpoints({
       invalidatesTags: ["Blog"],
     }),
 
-    updateBlog: builder.mutation<
-      IBackendRes<Blog>,
-      { blog: Blog; blogId: string }
-    >({
+    updateBlog: builder.mutation<UpdateBlogResponse, UpdateBlogRequest>({
       query: ({ blogId, blog }) => ({
         url: "/api/v1/blogs",
         method: "PUT",
@@ -25,7 +36,7 @@ export const blogApi = api.injectEndpoints({
       invalidatesTags: ["Blog"],
     }),
 
-    deleteBlog: builder.mutation<IBackendRes<Blog>, string>({
+    deleteBlog: builder.mutation<DeleteBlogResponse, DeleteBlogRequest>({
       query: (blogId) => ({
         url: `/api/v1/blogs/${blogId}`,
         method: "DELETE",
@@ -33,20 +44,24 @@ export const blogApi = api.injectEndpoints({
       invalidatesTags: ["Blog"],
     }),
 
-    fetchBlog: builder.query<IBackendRes<IModelPaginate<Blog>>, string>({
-      query: (query) => ({ url: `/api/v1/blogs?${query}`, method: "GET" }),
+    fetchBlogs: builder.query<FetchBlogsResponse, FetchBlogsRequest>({
+      query: (params) => ({
+        url: "/api/v1/blogs",
+        method: "GET",
+        params,
+      }),
       providesTags: ["Blog"],
     }),
 
-    fetchBlogById: builder.query<IBackendRes<Blog>, string>({
-      query: (blogId) => ({ url: `/api/v1/blogs/${blogId}`, method: "GET" }),
+    fetchBlogById: builder.query<FetchBlogByIdResponse, FetchBlogByIdRequest>({
+      query: (blogId) => ({
+        url: `/api/v1/blogs/${blogId}`,
+        method: "GET",
+      }),
       providesTags: ["Blog"],
     }),
 
-    likeBlogs: builder.mutation<
-      IBackendRes<Blog>,
-      { blog: Blog; liked: boolean }
-    >({
+    likeBlog: builder.mutation<LikeBlogResponse, LikeBlogRequest>({
       query: ({ blog, liked }) => ({
         url: "/api/v1/blogs/liked-blogs",
         method: "PUT",
@@ -55,10 +70,11 @@ export const blogApi = api.injectEndpoints({
       invalidatesTags: ["Blog"],
     }),
 
-    fetchTag: builder.query<IBackendRes<string[]>, string>({
-      query: (keyword) => ({
-        url: `/api/v1/blogs/tags?keyword=${keyword}`,
+    fetchTags: builder.query<FetchTagsResponse, FetchTagsRequest>({
+      query: (params) => ({
+        url: "/api/v1/blogs/tags",
         method: "GET",
+        params,
       }),
     }),
   }),
@@ -68,8 +84,8 @@ export const {
   useCreateBlogMutation,
   useUpdateBlogMutation,
   useDeleteBlogMutation,
-  useFetchBlogQuery,
+  useFetchBlogsQuery,
   useFetchBlogByIdQuery,
-  useLikeBlogsMutation,
-  useFetchTagQuery,
+  useLikeBlogMutation,
+  useFetchTagsQuery,
 } = blogApi;
