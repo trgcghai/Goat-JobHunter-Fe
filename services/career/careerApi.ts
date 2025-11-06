@@ -1,10 +1,18 @@
 import { api } from "@/services/api";
-import { IBackendRes, IModelPaginate } from "@/types/api";
-import type { Career } from "@/types/model";
+import type {
+  CreateCareerRequest,
+  CreateCareerResponse,
+  DeleteCareerRequest,
+  DeleteCareerResponse,
+  FetchCareersRequest,
+  FetchCareersResponse,
+  UpdateCareerRequest,
+  UpdateCareerResponse,
+} from "./careerType";
 
 export const careerApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    createCareer: builder.mutation<IBackendRes<Career>, { name: string }>({
+    createCareer: builder.mutation<CreateCareerResponse, CreateCareerRequest>({
       query: ({ name }) => ({
         url: "/api/v1/careers",
         method: "POST",
@@ -13,10 +21,7 @@ export const careerApi = api.injectEndpoints({
       invalidatesTags: ["Career"],
     }),
 
-    updateCareer: builder.mutation<
-      IBackendRes<Career>,
-      { careerId: string; name: string }
-    >({
+    updateCareer: builder.mutation<UpdateCareerResponse, UpdateCareerRequest>({
       query: ({ careerId, name }) => ({
         url: "/api/v1/careers",
         method: "PUT",
@@ -25,7 +30,7 @@ export const careerApi = api.injectEndpoints({
       invalidatesTags: ["Career"],
     }),
 
-    deleteCareer: builder.mutation<IBackendRes<Career>, string>({
+    deleteCareer: builder.mutation<DeleteCareerResponse, DeleteCareerRequest>({
       query: (careerId) => ({
         url: `/api/v1/careers/${careerId}`,
         method: "DELETE",
@@ -33,8 +38,12 @@ export const careerApi = api.injectEndpoints({
       invalidatesTags: ["Career"],
     }),
 
-    fetchAllCareer: builder.query<IBackendRes<IModelPaginate<Career>>, string>({
-      query: (query) => ({ url: `/api/v1/careers?${query}`, method: "GET" }),
+    fetchCareers: builder.query<FetchCareersResponse, FetchCareersRequest>({
+      query: (params) => ({
+        url: "/api/v1/careers",
+        method: "GET",
+        params,
+      }),
       providesTags: ["Career"],
     }),
   }),
@@ -44,5 +53,5 @@ export const {
   useCreateCareerMutation,
   useUpdateCareerMutation,
   useDeleteCareerMutation,
-  useFetchAllCareerQuery,
+  useFetchCareersQuery,
 } = careerApi;
