@@ -1,28 +1,23 @@
 import { api } from "@/services/api";
-import { IBackendRes, IModelPaginate } from "@/types/api";
-import type { Applicant, Contact } from "@/types/model";
 import dayjs from "dayjs";
+import type {
+  CreateApplicantRequest,
+  CreateApplicantResponse,
+  DeleteApplicantRequest,
+  DeleteApplicantResponse,
+  FetchApplicantByIdRequest,
+  FetchApplicantByIdResponse,
+  FetchApplicantsRequest,
+  FetchApplicantsResponse,
+  UpdateApplicantRequest,
+  UpdateApplicantResponse,
+} from "./applicantType";
 
 export const applicantApi = api.injectEndpoints({
   endpoints: (builder) => ({
     createApplicant: builder.mutation<
-      IBackendRes<Applicant>,
-      {
-        fullName: string;
-        address: string;
-        contact: Contact;
-        dob: Date;
-        gender: string;
-        password: string;
-        username: string;
-        availableStatus: boolean;
-        enabled: boolean;
-        education?: string;
-        level?: string;
-        role?: { roleId: string; name: string };
-        avatar?: string;
-        resumeUrl?: string;
-      }
+      CreateApplicantResponse,
+      CreateApplicantRequest
     >({
       query: (data) => ({
         url: "/api/v1/applicants",
@@ -37,24 +32,8 @@ export const applicantApi = api.injectEndpoints({
     }),
 
     updateApplicant: builder.mutation<
-      IBackendRes<Applicant>,
-      {
-        applicantId: string;
-        fullName: string;
-        address: string;
-        contact: Contact;
-        dob: Date;
-        gender: string;
-        password: string;
-        username: string;
-        availableStatus: boolean;
-        enabled: boolean;
-        education?: string;
-        level?: string;
-        role?: { roleId: string; name: string };
-        avatar?: string;
-        resumeUrl?: string;
-      }
+      UpdateApplicantResponse,
+      UpdateApplicantRequest
     >({
       query: ({ applicantId, ...data }) => ({
         url: "/api/v1/applicants",
@@ -69,7 +48,10 @@ export const applicantApi = api.injectEndpoints({
       invalidatesTags: ["Applicant"],
     }),
 
-    deleteApplicant: builder.mutation<IBackendRes<Applicant>, string>({
+    deleteApplicant: builder.mutation<
+      DeleteApplicantResponse,
+      DeleteApplicantRequest
+    >({
       query: (applicantId) => ({
         url: `/api/v1/applicants/${applicantId}`,
         method: "DELETE",
@@ -78,14 +60,17 @@ export const applicantApi = api.injectEndpoints({
     }),
 
     fetchApplicant: builder.query<
-      IBackendRes<IModelPaginate<Applicant>>,
-      string
+      FetchApplicantsResponse,
+      FetchApplicantsRequest
     >({
-      query: (query) => ({ url: `/api/v1/applicants?${query}`, method: "GET" }),
+      query: (params) => ({ url: `/api/v1/applicants`, method: "GET", params }),
       providesTags: ["Applicant"],
     }),
 
-    fetchApplicantById: builder.query<IBackendRes<Applicant>, string>({
+    fetchApplicantById: builder.query<
+      FetchApplicantByIdResponse,
+      FetchApplicantByIdRequest
+    >({
       query: (applicantId) => ({
         url: `/api/v1/applicants/${applicantId}`,
         method: "GET",
