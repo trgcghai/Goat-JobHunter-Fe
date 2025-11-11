@@ -63,7 +63,7 @@ export function LoginForm({
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn("flex flex-col gap-6 w-md", className)} {...props}>
       <Card>
         <CardHeader>
           <CardTitle>Đăng nhập vào tài khoản của bạn</CardTitle>
@@ -114,7 +114,7 @@ export function LoginForm({
                 className="rounded-xl w-full"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Logging in..." : "Login"}
+                {isSubmitting ? "Đang đăng nhập..." : "Đăng nhập"}
               </Button>
               <FieldDescription className="text-center text-gray-400">
                 Chưa có tài khoản?{" "}
