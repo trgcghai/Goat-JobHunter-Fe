@@ -1,13 +1,14 @@
 import { api } from "@/services/api";
 import type {
+  ApplicantSignUpRequest,
   FetchAccountResponse,
   LogoutResponse,
+  RecruiterSignUpRequest,
   RefreshTokenResponse,
   ResendCodeRequest,
   ResendCodeResponse,
   SignInRequest,
   SignInResponse,
-  SignUpRequest,
   SignUpResponse,
   VerifyCodeRequest,
   VerifyCodeResponse,
@@ -15,22 +16,19 @@ import type {
 
 export const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    signup: builder.mutation<SignUpResponse, SignUpRequest>({
-      query: (args) => {
-        const { type, ...rest } = args;
-        if (type === "recruiter") {
-          return {
-            url: "/auth/register/recruiter",
-            method: "POST",
-            data: { ...rest, type },
-          };
-        }
-        return {
-          url: "/auth/register/applicant",
-          method: "POST",
-          data: { ...rest, type },
-        };
-      },
+    applicantSignup: builder.mutation<SignUpResponse, ApplicantSignUpRequest>({
+      query: (args) => ({
+        url: "/auth/register/applicant",
+        method: "POST",
+        data: args,
+      }),
+    }),
+    recruiterSignup: builder.mutation<SignUpResponse, RecruiterSignUpRequest>({
+      query: (args) => ({
+        url: "/auth/register/recruiter",
+        method: "POST",
+        data: args,
+      }),
     }),
 
     signin: builder.mutation<SignInResponse, SignInRequest>({
@@ -71,7 +69,8 @@ export const authApi = api.injectEndpoints({
 });
 
 export const {
-  useSignupMutation,
+  useApplicantSignupMutation,
+  useRecruiterSignupMutation,
   useSigninMutation,
   useFetchAccountQuery,
   useRefreshTokenQuery,

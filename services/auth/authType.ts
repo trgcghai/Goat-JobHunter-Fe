@@ -1,14 +1,26 @@
 import { IBackendRes } from "@/types/api";
-import { Applicant, Contact, Recruiter, User } from "@/types/model";
+import { Applicant, Recruiter, User } from "@/types/model";
 
-//  Sign Up
-export type SignUpRequest = {
-  contact: Contact;
+//  Applicant Sign up
+export type ApplicantSignUpRequest = {
+  contact: {
+    email: string;
+  };
   password: string;
-  type: "recruiter" | "applicant";
-  username?: string;
-  address?: string;
-  fullName?: string;
+  type: "applicant";
+};
+
+// Recruiter Sign up
+export type RecruiterSignUpRequest = {
+  password: string;
+  contact: {
+    email: string;
+    phone: string;
+  };
+  address: string;
+  fullName: string;
+  username: string;
+  type: "recruiter";
 };
 
 export type SignUpResponse = IBackendRes<Recruiter | Applicant>;

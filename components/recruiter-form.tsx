@@ -65,8 +65,6 @@ export function RecruiterForm({
   const onSubmit = async (data: TRecruiterSchema) => {
     try {
       console.log("Sign up recruiter data:", data);
-      // TODO: Call API to register recruiter
-      await new Promise((resolve) => setTimeout(resolve, 1000));
     } catch (error) {
       console.error("Sign up error:", error);
     }

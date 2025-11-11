@@ -27,6 +27,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -43,6 +44,7 @@ export function ApplicantForm({
   setSignUpType,
   ...props
 }: ApplicantFormProps) {
+  const { applicantSignUp } = useUser();
   const signUpForm = useForm<TApplicantSchema>({
     resolver: zodResolver(ApplicantSchema),
     defaultValues: {
@@ -61,6 +63,16 @@ export function ApplicantForm({
   const onSubmit = async (data: TApplicantSchema) => {
     try {
       console.log("Sign up applicant data:", data);
+      const result = await applicantSignUp({
+        ...data,
+        contact: { email: data.email },
+        type: "applicant",
+      });
+
+      if (result.success) {
+        // Additional actions on successful sign-up can be added here
+        console.log("sign up success, now go to verify code and then login");
+      }
     } catch (error) {
       console.error("Sign up error:", error);
     }

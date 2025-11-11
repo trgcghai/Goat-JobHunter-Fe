@@ -1,15 +1,17 @@
 import { clearUser, setUser, useAuthSlice } from "@/lib/features/authSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import {
+  useApplicantSignupMutation,
   useLogoutMutation,
+  useRecruiterSignupMutation,
   useResendCodeMutation,
   useSigninMutation,
-  useSignupMutation,
   useVerifyCodeMutation,
 } from "@/services/auth/authApi";
 import {
+  ApplicantSignUpRequest,
+  RecruiterSignUpRequest,
   SignInRequest,
-  SignUpRequest,
   VerifyCodeRequest,
 } from "@/services/auth/authType";
 import { User } from "@/types/model";
@@ -25,7 +27,10 @@ export function useUser() {
 
   // API mutations
   const [signinMutation, { isLoading: isSigningIn }] = useSigninMutation();
-  const [signupMutation, { isLoading: isSigningUp }] = useSignupMutation();
+  const [applicantSignupMutation, { isLoading: isApplicantSigningUp }] =
+    useApplicantSignupMutation();
+  const [recruiterSignupMutation, { isLoading: isRecruiterSigningUp }] =
+    useRecruiterSignupMutation();
   const [logoutMutation, { isLoading: isSigningOut }] = useLogoutMutation();
   const [verifyCodeMutation, { isLoading: isVerifying }] =
     useVerifyCodeMutation();
@@ -46,7 +51,7 @@ export function useUser() {
           toast.success("Đăng nhập thành công!");
           return { success: true, user: response?.data?.user };
         }
-        return { success: false, error: "Login failed" };
+        return { success: false };
       } catch (error) {
         console.error("error sigin:", error);
         toast.error("Đăng nhập thất bại!");
@@ -57,27 +62,47 @@ export function useUser() {
   );
 
   /**
-   * Sign up new user
+   * Sign up new applicant
    */
-  const signUp = useCallback(
-    async (params: SignUpRequest) => {
+  const applicantSignUp = useCallback(
+    async (params: ApplicantSignUpRequest) => {
       try {
-        const response = await signupMutation(params).unwrap();
+        const response = await applicantSignupMutation(params).unwrap();
 
-        if (response.data) {
-          toast.success("Đăng ký thành công! Vui lòng xác thực email.");
-          return { success: true, user: response.data };
+        if (response.statusCode === 201) {
+          toast.success("Đăng ký thành công!");
+          return { success: true };
         }
-
-        toast.error("Đăng ký thất bại!");
-        return { success: false, error: "Registration failed" };
+        return { success: false };
       } catch (error) {
-        console.error("error sign up:", error);
+        console.error("error sign up applicant:", error);
         toast.error("Đăng ký thất bại!");
         return { success: false };
       }
     },
-    [signupMutation],
+    [applicantSignupMutation],
+  );
+
+  /**
+   * Sign up new recruiter
+   */
+  const recruiterSignUp = useCallback(
+    async (params: RecruiterSignUpRequest) => {
+      try {
+        const response = await recruiterSignupMutation(params).unwrap();
+
+        if (response.statusCode === 201) {
+          toast.success("Đăng ký thành công!");
+          return { success: true };
+        }
+        return { success: false };
+      } catch (error) {
+        console.error("error sign up applicant:", error);
+        toast.error("Đăng ký thất bại!");
+        return { success: false };
+      }
+    },
+    [recruiterSignupMutation],
   );
 
   /**
@@ -152,14 +177,15 @@ export function useUser() {
 
     // Auth methods
     signIn,
-    signUp,
+    applicantSignUp,
+    recruiterSignUp,
     signOut,
     verifyCode,
     resendCode,
 
     // Loading states
     isSigningIn,
-    isSigningUp,
+    isSigningUp: isApplicantSigningUp || isRecruiterSigningUp,
     isSigningOut,
     isVerifying,
     isResending,
