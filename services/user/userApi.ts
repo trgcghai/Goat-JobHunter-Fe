@@ -17,7 +17,7 @@ export const userApi = api.injectEndpoints({
   endpoints: (builder) => ({
     fetchUsers: builder.query<FetchUsersResponse, FetchUsersRequest>({
       query: (params) => ({
-        url: "/api/v1/users",
+        url: "/users",
         method: "GET",
         params,
       }),
@@ -26,7 +26,7 @@ export const userApi = api.injectEndpoints({
 
     fetchUserByEmail: builder.mutation<FetchUserByEmailResponse, void>({
       query: () => ({
-        url: "/api/v1/users",
+        url: "/users",
         method: "POST",
       }),
     }),
@@ -36,7 +36,7 @@ export const userApi = api.injectEndpoints({
       UpdatePasswordRequest
     >({
       query: (data) => ({
-        url: "/api/v1/users/update-password",
+        url: "/users/update-password",
         method: "PUT",
         data,
       }),
@@ -47,7 +47,7 @@ export const userApi = api.injectEndpoints({
       ResetPasswordRequest
     >({
       query: (data) => ({
-        url: "/api/v1/users/reset-password",
+        url: "/users/reset-password",
         method: "PUT",
         data,
       }),
@@ -55,7 +55,7 @@ export const userApi = api.injectEndpoints({
 
     saveJobs: builder.mutation<SaveJobsResponse, SaveJobsRequest>({
       query: (data) => ({
-        url: "/api/v1/users/saved-jobs",
+        url: "/users/saved-jobs",
         method: "PUT",
         data,
       }),
@@ -72,7 +72,7 @@ export const userApi = api.injectEndpoints({
           type: "recruiter",
         }));
         return {
-          url: "/api/v1/users/followed-recruiters",
+          url: "/users/followed-recruiters",
           method: "PUT",
           data: { userId, followedRecruiters: payload },
         };

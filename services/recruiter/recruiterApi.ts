@@ -19,7 +19,7 @@ export const recruiterApi = api.injectEndpoints({
       CreateRecruiterRequest
     >({
       query: (data) => ({
-        url: "/api/v1/recruiters",
+        url: "/recruiters",
         method: "POST",
         data: { ...data, type: "recruiter" },
       }),
@@ -31,7 +31,7 @@ export const recruiterApi = api.injectEndpoints({
       UpdateRecruiterRequest
     >({
       query: ({ recruiterId, ...data }) => ({
-        url: "/api/v1/recruiters",
+        url: "/recruiters",
         method: "PUT",
         data: { userId: recruiterId, ...data, type: "recruiter" },
       }),
@@ -43,7 +43,7 @@ export const recruiterApi = api.injectEndpoints({
       DeleteRecruiterRequest
     >({
       query: (recruiterId) => ({
-        url: `/api/v1/recruiters/${recruiterId}`,
+        url: `/recruiters/${recruiterId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Recruiter"],
@@ -54,7 +54,7 @@ export const recruiterApi = api.injectEndpoints({
       FetchRecruitersRequest
     >({
       query: (params) => ({
-        url: "/api/v1/recruiters",
+        url: "/recruiters",
         method: "GET",
         params,
       }),
@@ -66,7 +66,7 @@ export const recruiterApi = api.injectEndpoints({
       FetchRecruiterByIdRequest
     >({
       query: (recruiterId) => ({
-        url: `/api/v1/recruiters/${recruiterId}`,
+        url: `/recruiters/${recruiterId}`,
         method: "GET",
       }),
       providesTags: ["Recruiter"],

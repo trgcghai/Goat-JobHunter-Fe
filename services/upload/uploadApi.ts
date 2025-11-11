@@ -15,7 +15,7 @@ export const uploadApi = api.injectEndpoints({
         bodyFormData.append("file", file);
         bodyFormData.append("folder", folderType);
         return {
-          url: "/api/v1/files",
+          url: "/files",
           method: "POST",
           data: bodyFormData,
         };

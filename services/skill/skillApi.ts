@@ -14,7 +14,7 @@ export const skillApi = api.injectEndpoints({
   endpoints: (builder) => ({
     createSkill: builder.mutation<CreateSkillResponse, CreateSkillRequest>({
       query: ({ name }) => ({
-        url: "/api/v1/skills",
+        url: "/skills",
         method: "POST",
         data: { name },
       }),
@@ -23,7 +23,7 @@ export const skillApi = api.injectEndpoints({
 
     updateSkill: builder.mutation<UpdateSkillResponse, UpdateSkillRequest>({
       query: ({ skillId, name }) => ({
-        url: "/api/v1/skills",
+        url: "/skills",
         method: "PUT",
         data: { skillId, name },
       }),
@@ -32,7 +32,7 @@ export const skillApi = api.injectEndpoints({
 
     deleteSkill: builder.mutation<DeleteSkillResponse, DeleteSkillRequest>({
       query: (skillId) => ({
-        url: `/api/v1/skills/${skillId}`,
+        url: `/skills/${skillId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Skill"],
@@ -40,7 +40,7 @@ export const skillApi = api.injectEndpoints({
 
     fetchSkills: builder.query<FetchSkillsResponse, FetchSkillsRequest>({
       query: (params) => ({
-        url: "/api/v1/skills",
+        url: "/skills",
         method: "GET",
         params,
       }),

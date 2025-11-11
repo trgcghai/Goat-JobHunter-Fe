@@ -1,12 +1,6 @@
+import { clearUser, setUser, useAuthSlice } from "@/lib/features/authSlice";
+import { useAppDispatch } from "@/lib/hooks";
 import {
-  AuthStateUser,
-  logout as logoutAction,
-  setCredentials,
-  updateUser as updateUserAction,
-} from "@/lib/features/authSlice";
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import {
-  useFetchAccountQuery,
   useLogoutMutation,
   useResendCodeMutation,
   useSigninMutation,
@@ -18,18 +12,16 @@ import {
   SignUpRequest,
   VerifyCodeRequest,
 } from "@/services/auth/authType";
+import { User } from "@/types/model";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { toast } from "sonner";
 
 export function useUser() {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  // Redux state
-  const { user, token, isAuthenticated } = useAppSelector(
-    (state) => state.auth,
-  );
+  const { user, isAuthenticated } = useAuthSlice();
 
   // API mutations
   const [signinMutation, { isLoading: isSigningIn }] = useSigninMutation();
@@ -40,18 +32,6 @@ export function useUser() {
   const [resendCodeMutation, { isLoading: isResending }] =
     useResendCodeMutation();
 
-  // Fetch account on mount if token exists
-  const { data: accountData, isLoading: isLoadingAccount } =
-    useFetchAccountQuery(undefined, { skip: !token });
-
-  // Update user from account data
-  useEffect(() => {
-    if (accountData?.data) {
-      const userData = accountData.data.user;
-      dispatch(updateUserAction(userData));
-    }
-  }, [accountData, dispatch]);
-
   /**
    * Sign in user
    */
@@ -60,20 +40,8 @@ export function useUser() {
       try {
         const response = await signinMutation(params).unwrap();
 
-        console.log("response", response);
-
         if (response.statusCode === 200 && response.message == "Success") {
-          const access_token = response.data?.access_token;
-
-          // Store token in localStorage
-          localStorage.setItem("access_token", access_token as string);
-
-          dispatch(
-            setCredentials({
-              user: response?.data?.user as AuthStateUser,
-              token: access_token as string,
-            }),
-          );
+          dispatch(setUser({ user: response?.data?.user as User }));
 
           toast.success("Đăng nhập thành công!");
           return { success: true, user: response?.data?.user };
@@ -119,20 +87,15 @@ export function useUser() {
     try {
       await logoutMutation().unwrap();
 
-      // Clear local storage
-      localStorage.removeItem("access_token");
-
       // Clear Redux state
-      dispatch(logoutAction());
+      dispatch(clearUser());
 
       toast.success("Đăng xuất thành công!");
       router.push("/");
 
       return { success: true };
     } catch (error) {
-      // Even if API fails, clear local state
-      localStorage.removeItem("access_token");
-      dispatch(logoutAction());
+      dispatch(clearUser());
       router.push("/");
 
       console.error("error sign out:", error);
@@ -186,7 +149,6 @@ export function useUser() {
     // User data
     user,
     isSignedIn: isAuthenticated,
-    isLoaded: !isLoadingAccount,
 
     // Auth methods
     signIn,

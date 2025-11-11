@@ -16,7 +16,7 @@ export const roleApi = api.injectEndpoints({
   endpoints: (builder) => ({
     createRole: builder.mutation<CreateRoleResponse, CreateRoleRequest>({
       query: (role) => ({
-        url: "/api/v1/roles",
+        url: "/roles",
         method: "POST",
         data: role,
       }),
@@ -25,7 +25,7 @@ export const roleApi = api.injectEndpoints({
 
     updateRole: builder.mutation<UpdateRoleResponse, UpdateRoleRequest>({
       query: ({ roleId, role }) => ({
-        url: "/api/v1/roles",
+        url: "/roles",
         method: "PUT",
         data: { roleId, ...role },
       }),
@@ -34,7 +34,7 @@ export const roleApi = api.injectEndpoints({
 
     deleteRole: builder.mutation<DeleteRoleResponse, DeleteRoleRequest>({
       query: (roleId) => ({
-        url: `/api/v1/roles/${roleId}`,
+        url: `/roles/${roleId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Role"],
@@ -42,7 +42,7 @@ export const roleApi = api.injectEndpoints({
 
     fetchRoles: builder.query<FetchRolesResponse, FetchRolesRequest>({
       query: (params) => ({
-        url: "/api/v1/roles",
+        url: "/roles",
         method: "GET",
         params,
       }),
@@ -51,7 +51,7 @@ export const roleApi = api.injectEndpoints({
 
     fetchRoleById: builder.query<FetchRoleByIdResponse, FetchRoleByIdRequest>({
       query: (roleId) => ({
-        url: `/api/v1/roles/${roleId}`,
+        url: `/roles/${roleId}`,
         method: "GET",
       }),
       providesTags: ["Role"],

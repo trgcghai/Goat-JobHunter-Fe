@@ -1,11 +1,5 @@
 import { IBackendRes } from "@/types/api";
-import {
-  Account,
-  Applicant,
-  Contact,
-  GetAccount,
-  Recruiter,
-} from "@/types/model";
+import { Applicant, Contact, Recruiter, User } from "@/types/model";
 
 //  Sign Up
 export type SignUpRequest = {
@@ -25,13 +19,13 @@ export type SignInRequest = {
   password: string;
 };
 
-export type SignInResponse = IBackendRes<Account>;
+export type SignInResponse = IBackendRes<{ user: User }>;
 
 // Fetch Account
-export type FetchAccountResponse = IBackendRes<GetAccount>;
+export type FetchAccountResponse = IBackendRes<{ user: User }>;
 
 // Refresh Token
-export type RefreshTokenResponse = IBackendRes<Account>;
+export type RefreshTokenResponse = IBackendRes<{ user: User }>;
 
 // Logout
 export type LogoutResponse = IBackendRes<string>;

@@ -17,7 +17,7 @@ export const jobApi = api.injectEndpoints({
   endpoints: (builder) => ({
     createJob: builder.mutation<CreateJobResponse, CreateJobRequest>({
       query: (job) => ({
-        url: "/api/v1/jobs",
+        url: "/jobs",
         method: "POST",
         data: job,
       }),
@@ -26,7 +26,7 @@ export const jobApi = api.injectEndpoints({
 
     updateJob: builder.mutation<UpdateJobResponse, UpdateJobRequest>({
       query: ({ jobId, job }) => ({
-        url: "/api/v1/jobs",
+        url: "/jobs",
         method: "PUT",
         data: { jobId, ...job },
       }),
@@ -35,7 +35,7 @@ export const jobApi = api.injectEndpoints({
 
     deleteJob: builder.mutation<DeleteJobResponse, DeleteJobRequest>({
       query: (jobId) => ({
-        url: `/api/v1/jobs/${jobId}`,
+        url: `/jobs/${jobId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Job"],
@@ -43,7 +43,7 @@ export const jobApi = api.injectEndpoints({
 
     fetchJobs: builder.query<FetchJobsResponse, FetchJobsRequest>({
       query: (params) => ({
-        url: "/api/v1/jobs",
+        url: "/jobs",
         method: "GET",
         params,
       }),
@@ -52,7 +52,7 @@ export const jobApi = api.injectEndpoints({
 
     fetchJobById: builder.query<FetchJobByIdResponse, FetchJobByIdRequest>({
       query: (jobId) => ({
-        url: `/api/v1/jobs/${jobId}`,
+        url: `/jobs/${jobId}`,
         method: "GET",
       }),
       providesTags: ["Job"],
@@ -60,7 +60,7 @@ export const jobApi = api.injectEndpoints({
 
     countJobByRecruiter: builder.query<CountJobByRecruiterResponse, void>({
       query: () => ({
-        url: "/api/v1/jobs/recruiters",
+        url: "/jobs/recruiters",
         method: "GET",
       }),
     }),

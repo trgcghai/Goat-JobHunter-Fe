@@ -19,7 +19,7 @@ export const permissionApi = api.injectEndpoints({
       CreatePermissionRequest
     >({
       query: (permission) => ({
-        url: "/api/v1/permissions",
+        url: "/permissions",
         method: "POST",
         data: permission,
       }),
@@ -31,7 +31,7 @@ export const permissionApi = api.injectEndpoints({
       UpdatePermissionRequest
     >({
       query: ({ permissionId, permission }) => ({
-        url: "/api/v1/permissions",
+        url: "/permissions",
         method: "PUT",
         data: { permissionId, ...permission },
       }),
@@ -43,7 +43,7 @@ export const permissionApi = api.injectEndpoints({
       DeletePermissionRequest
     >({
       query: (permissionId) => ({
-        url: `/api/v1/permissions/${permissionId}`,
+        url: `/permissions/${permissionId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Permission"],
@@ -54,7 +54,7 @@ export const permissionApi = api.injectEndpoints({
       FetchPermissionsRequest
     >({
       query: (params) => ({
-        url: "/api/v1/permissions",
+        url: "/permissions",
         method: "GET",
         params,
       }),
@@ -66,7 +66,7 @@ export const permissionApi = api.injectEndpoints({
       FetchPermissionByIdRequest
     >({
       query: (permissionId) => ({
-        url: `/api/v1/permissions/${permissionId}`,
+        url: `/permissions/${permissionId}`,
         method: "GET",
       }),
       providesTags: ["Permission"],

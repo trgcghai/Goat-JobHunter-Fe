@@ -22,7 +22,7 @@ export const applicationApi = api.injectEndpoints({
       CreateApplicationRequest
     >({
       query: ({ resumeUrl, email, jobId, userId }) => ({
-        url: "/api/v1/applications",
+        url: "/applications",
         method: "POST",
         data: {
           email,
@@ -40,7 +40,7 @@ export const applicationApi = api.injectEndpoints({
       UpdateApplicationStatusRequest
     >({
       query: ({ applicationId, status, resumeUrl }) => ({
-        url: "/api/v1/applications",
+        url: "/applications",
         method: "PUT",
         data: { applicationId, status, resumeUrl },
       }),
@@ -52,7 +52,7 @@ export const applicationApi = api.injectEndpoints({
       DeleteApplicationRequest
     >({
       query: (applicationId) => ({
-        url: `/api/v1/applications/${applicationId}`,
+        url: `/applications/${applicationId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Application"],
@@ -63,7 +63,7 @@ export const applicationApi = api.injectEndpoints({
       FetchApplicationByIdRequest
     >({
       query: (applicationId) => ({
-        url: `/api/v1/applications/${applicationId}`,
+        url: `/applications/${applicationId}`,
         method: "GET",
       }),
       providesTags: ["Application"],
@@ -74,7 +74,7 @@ export const applicationApi = api.injectEndpoints({
       FetchApplicationsRequest
     >({
       query: (params) => ({
-        url: "/api/v1/all-applications",
+        url: "/all-applications",
         method: "GET",
         params,
       }),
@@ -86,7 +86,7 @@ export const applicationApi = api.injectEndpoints({
       FetchApplicationsByRecruiterRequest
     >({
       query: (params) => ({
-        url: "/api/v1/applications",
+        url: "/applications",
         method: "GET",
         params,
       }),
@@ -98,7 +98,7 @@ export const applicationApi = api.injectEndpoints({
       void
     >({
       query: () => ({
-        url: "/api/v1/applications/by-applicant",
+        url: "/applications/by-applicant",
         method: "GET",
       }),
       providesTags: ["Application"],

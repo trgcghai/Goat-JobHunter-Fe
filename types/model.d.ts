@@ -1,65 +1,15 @@
-export type Account = {
-  access_token: string;
-  user: {
-    userId: string;
-    email: string;
-    fullName: string;
-    username: string;
-    avatar?: string;
-    type?: string;
-    enabled?: boolean;
-    role: {
-      roleId: string;
-      name: string;
-      active: boolean;
-      permissions: {
-        permissionId: string;
-        name: string;
-        apiPath: string;
-        method: string;
-        module: string;
-      }[];
-    };
-    savedJobs: Job[];
-    followedRecruiters: Recruiter[];
-    actorNotifications: Notification[];
-  };
-};
-
-export type GetAccount = Omit<Account, "access_token">;
-
 export type User = {
-  userId?: string;
+  userId: number;
+  email: string;
   fullName: string;
-  address?: string;
-  contact: Contact;
-  dob?: Date;
-  gender?: string;
-  password: string;
-  username?: string;
-  avatar?: string;
-  enabled?: boolean;
-
-  role?: {
-    roleId: string;
-    name: string;
-  };
-
-  savedJob?: {
-    jobId: string;
-    title: string;
-  };
-
-  followedRecruiter?: {
-    userId: string;
-    fullName: string;
-  };
-
-  createdAt?: string;
-  createdBy?: string;
-  isDeleted?: boolean;
-  deletedAt?: boolean | null;
-  updatedAt?: string;
+  username: string;
+  type: string;
+  avatar: string;
+  enabled: boolean;
+  role: Role;
+  savedJobs: Job[];
+  followedRecruiter: Recruiter[];
+  actorNotifications: NotificationType[];
 };
 
 export type Recruiter = User & {

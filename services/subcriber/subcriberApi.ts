@@ -20,7 +20,7 @@ export const subscriberApi = api.injectEndpoints({
       CreateSubscriberRequest
     >({
       query: (subs) => ({
-        url: "/api/v1/subscribers",
+        url: "/subscribers",
         method: "POST",
         data: subs,
       }),
@@ -32,7 +32,7 @@ export const subscriberApi = api.injectEndpoints({
       UpdateSubscriberRequest
     >({
       query: (subs) => ({
-        url: "/api/v1/subscribers",
+        url: "/subscribers",
         method: "PUT",
         data: subs,
       }),
@@ -44,7 +44,7 @@ export const subscriberApi = api.injectEndpoints({
       DeleteSubscriberRequest
     >({
       query: (id) => ({
-        url: `/api/v1/subscribers/${id}`,
+        url: `/subscribers/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Subscriber"],
@@ -55,7 +55,7 @@ export const subscriberApi = api.injectEndpoints({
       FetchSubscriberByIdRequest
     >({
       query: (id) => ({
-        url: `/api/v1/subscribers/${id}`,
+        url: `/subscribers/${id}`,
         method: "GET",
       }),
       providesTags: ["Subscriber"],
@@ -66,7 +66,7 @@ export const subscriberApi = api.injectEndpoints({
       FetchSubscribersRequest
     >({
       query: (params) => ({
-        url: "/api/v1/subscribers",
+        url: "/subscribers",
         method: "GET",
         params,
       }),
@@ -75,7 +75,7 @@ export const subscriberApi = api.injectEndpoints({
 
     getSubscriberSkills: builder.mutation<GetSubscriberSkillsResponse, void>({
       query: () => ({
-        url: "/api/v1/subscribers/skills",
+        url: "/subscribers/skills",
         method: "POST",
       }),
     }),

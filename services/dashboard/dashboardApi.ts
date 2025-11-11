@@ -13,14 +13,14 @@ export const dashboardApi = api.injectEndpoints({
   endpoints: (builder) => ({
     statisticsUser: builder.query<StatisticsUserResponse, void>({
       query: () => ({
-        url: "/api/v1/dashboard/users",
+        url: "/dashboard/users",
         method: "GET",
       }),
     }),
 
     statisticsJob: builder.query<StatisticsJobResponse, StatisticsJobRequest>({
       query: (params) => ({
-        url: "/api/v1/dashboard/jobs",
+        url: "/dashboard/jobs",
         method: "GET",
         params,
       }),
@@ -31,7 +31,7 @@ export const dashboardApi = api.injectEndpoints({
       StatisticsApplicationRequest
     >({
       query: (params) => ({
-        url: "/api/v1/dashboard/applications",
+        url: "/dashboard/applications",
         method: "GET",
         params,
       }),
@@ -42,7 +42,7 @@ export const dashboardApi = api.injectEndpoints({
       StatisticsApplicationByYearRequest
     >({
       query: ({ year, ...params }) => ({
-        url: "/api/v1/dashboard/applications-year",
+        url: "/dashboard/applications-year",
         method: "GET",
         params: { year, ...params },
       }),

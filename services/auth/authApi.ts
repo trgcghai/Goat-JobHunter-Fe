@@ -20,13 +20,13 @@ export const authApi = api.injectEndpoints({
         const { type, ...rest } = args;
         if (type === "recruiter") {
           return {
-            url: "/api/v1/auth/register/recruiter",
+            url: "/auth/register/recruiter",
             method: "POST",
             data: { ...rest, type },
           };
         }
         return {
-          url: "/api/v1/auth/register/applicant",
+          url: "/auth/register/applicant",
           method: "POST",
           data: { ...rest, type },
         };
@@ -35,27 +35,27 @@ export const authApi = api.injectEndpoints({
 
     signin: builder.mutation<SignInResponse, SignInRequest>({
       query: ({ email, password }) => ({
-        url: "/api/v1/auth/login",
+        url: "/auth/login",
         method: "POST",
         data: { email, password },
       }),
     }),
 
     fetchAccount: builder.query<FetchAccountResponse, void>({
-      query: () => ({ url: "/api/v1/auth/account", method: "GET" }),
+      query: () => ({ url: "/auth/account", method: "GET" }),
     }),
 
     refreshToken: builder.query<RefreshTokenResponse, void>({
-      query: () => ({ url: "/api/v1/auth/refresh", method: "GET" }),
+      query: () => ({ url: "/auth/refresh", method: "GET" }),
     }),
 
     logout: builder.mutation<LogoutResponse, void>({
-      query: () => ({ url: "/api/v1/auth/logout", method: "POST" }),
+      query: () => ({ url: "/auth/logout", method: "POST" }),
     }),
 
     verifyCode: builder.mutation<VerifyCodeResponse, VerifyCodeRequest>({
       query: ({ email, verificationCode }) => ({
-        url: "/api/v1/auth/verify",
+        url: "/auth/verify",
         method: "POST",
         data: { email, verificationCode },
       }),
@@ -63,7 +63,7 @@ export const authApi = api.injectEndpoints({
 
     resendCode: builder.mutation<ResendCodeResponse, ResendCodeRequest>({
       query: ({ email }) => ({
-        url: `/api/v1/auth/resend?email=${email}`,
+        url: `/auth/resend?email=${email}`,
         method: "POST",
       }),
     }),

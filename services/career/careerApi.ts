@@ -14,7 +14,7 @@ export const careerApi = api.injectEndpoints({
   endpoints: (builder) => ({
     createCareer: builder.mutation<CreateCareerResponse, CreateCareerRequest>({
       query: ({ name }) => ({
-        url: "/api/v1/careers",
+        url: "/careers",
         method: "POST",
         data: { name },
       }),
@@ -23,7 +23,7 @@ export const careerApi = api.injectEndpoints({
 
     updateCareer: builder.mutation<UpdateCareerResponse, UpdateCareerRequest>({
       query: ({ careerId, name }) => ({
-        url: "/api/v1/careers",
+        url: "/careers",
         method: "PUT",
         data: { careerId, name },
       }),
@@ -32,7 +32,7 @@ export const careerApi = api.injectEndpoints({
 
     deleteCareer: builder.mutation<DeleteCareerResponse, DeleteCareerRequest>({
       query: (careerId) => ({
-        url: `/api/v1/careers/${careerId}`,
+        url: `/careers/${careerId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Career"],
@@ -40,7 +40,7 @@ export const careerApi = api.injectEndpoints({
 
     fetchCareers: builder.query<FetchCareersResponse, FetchCareersRequest>({
       query: (params) => ({
-        url: "/api/v1/careers",
+        url: "/careers",
         method: "GET",
         params,
       }),

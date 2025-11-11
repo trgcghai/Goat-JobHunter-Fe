@@ -20,7 +20,7 @@ export const blogApi = api.injectEndpoints({
   endpoints: (builder) => ({
     createBlog: builder.mutation<CreateBlogResponse, CreateBlogRequest>({
       query: (blog) => ({
-        url: "/api/v1/blogs",
+        url: "/blogs",
         method: "POST",
         data: blog,
       }),
@@ -29,7 +29,7 @@ export const blogApi = api.injectEndpoints({
 
     updateBlog: builder.mutation<UpdateBlogResponse, UpdateBlogRequest>({
       query: ({ blogId, blog }) => ({
-        url: "/api/v1/blogs",
+        url: "/blogs",
         method: "PUT",
         data: { blogId, ...blog },
       }),
@@ -38,7 +38,7 @@ export const blogApi = api.injectEndpoints({
 
     deleteBlog: builder.mutation<DeleteBlogResponse, DeleteBlogRequest>({
       query: (blogId) => ({
-        url: `/api/v1/blogs/${blogId}`,
+        url: `/blogs/${blogId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Blog"],
@@ -46,7 +46,7 @@ export const blogApi = api.injectEndpoints({
 
     fetchBlogs: builder.query<FetchBlogsResponse, FetchBlogsRequest>({
       query: (params) => ({
-        url: "/api/v1/blogs",
+        url: "/blogs",
         method: "GET",
         params,
       }),
@@ -55,7 +55,7 @@ export const blogApi = api.injectEndpoints({
 
     fetchBlogById: builder.query<FetchBlogByIdResponse, FetchBlogByIdRequest>({
       query: (blogId) => ({
-        url: `/api/v1/blogs/${blogId}`,
+        url: `/blogs/${blogId}`,
         method: "GET",
       }),
       providesTags: ["Blog"],
@@ -63,7 +63,7 @@ export const blogApi = api.injectEndpoints({
 
     likeBlog: builder.mutation<LikeBlogResponse, LikeBlogRequest>({
       query: ({ blog, liked }) => ({
-        url: "/api/v1/blogs/liked-blogs",
+        url: "/blogs/liked-blogs",
         method: "PUT",
         data: { blog, liked },
       }),
@@ -72,7 +72,7 @@ export const blogApi = api.injectEndpoints({
 
     fetchTags: builder.query<FetchTagsResponse, FetchTagsRequest>({
       query: (params) => ({
-        url: "/api/v1/blogs/tags",
+        url: "/blogs/tags",
         method: "GET",
         params,
       }),

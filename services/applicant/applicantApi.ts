@@ -20,7 +20,7 @@ export const applicantApi = api.injectEndpoints({
       CreateApplicantRequest
     >({
       query: (data) => ({
-        url: "/api/v1/applicants",
+        url: "/applicants",
         method: "POST",
         data: {
           ...data,
@@ -36,7 +36,7 @@ export const applicantApi = api.injectEndpoints({
       UpdateApplicantRequest
     >({
       query: ({ applicantId, ...data }) => ({
-        url: "/api/v1/applicants",
+        url: "/applicants",
         method: "PUT",
         data: {
           userId: applicantId,
@@ -53,7 +53,7 @@ export const applicantApi = api.injectEndpoints({
       DeleteApplicantRequest
     >({
       query: (applicantId) => ({
-        url: `/api/v1/applicants/${applicantId}`,
+        url: `/applicants/${applicantId}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Applicant"],
@@ -63,7 +63,7 @@ export const applicantApi = api.injectEndpoints({
       FetchApplicantsResponse,
       FetchApplicantsRequest
     >({
-      query: (params) => ({ url: `/api/v1/applicants`, method: "GET", params }),
+      query: (params) => ({ url: `/applicants`, method: "GET", params }),
       providesTags: ["Applicant"],
     }),
 
@@ -72,7 +72,7 @@ export const applicantApi = api.injectEndpoints({
       FetchApplicantByIdRequest
     >({
       query: (applicantId) => ({
-        url: `/api/v1/applicants/${applicantId}`,
+        url: `/applicants/${applicantId}`,
         method: "GET",
       }),
       providesTags: ["Applicant"],
