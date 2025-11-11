@@ -31,6 +31,7 @@ import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 interface ApplicantFormProps extends React.ComponentProps<"div"> {
@@ -44,6 +45,7 @@ export function ApplicantForm({
   setSignUpType,
   ...props
 }: ApplicantFormProps) {
+  const router = useRouter();
   const { applicantSignUp } = useUser();
   const signUpForm = useForm<TApplicantSchema>({
     resolver: zodResolver(ApplicantSchema),
@@ -70,8 +72,7 @@ export function ApplicantForm({
       });
 
       if (result.success) {
-        // Additional actions on successful sign-up can be added here
-        console.log("sign up success, now go to verify code and then login");
+        router.push("/otp?email=" + encodeURIComponent(data.email));
       }
     } catch (error) {
       console.error("Sign up error:", error);
