@@ -13,39 +13,51 @@ interface RecruiterGridCardProps {
 const RecruiterGridCard = ({ recruiter }: RecruiterGridCardProps) => {
   return (
     <Link href={`/recruiters/${recruiter.userId}`} className="h-full">
-      <Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition-shadow cursor-pointer py-0 pb-4">
-        <Image
-          src={recruiter.avatar || "/placeholder.svg"}
-          alt={recruiter.fullName}
-          width={400}
-          height={160}
-          className="h-40 w-full object-cover"
-        />
-        <CardHeader>
-          <h3 className="font-bold text-lg text-foreground">
-            {recruiter.fullName}
-          </h3>
-          <p className="text-sm text-muted-foreground flex items-center gap-2">
-            <Mail className="h-4 w-4" />
-            <Link
-              href={recruiter.contact.email || "#"}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {recruiter.contact.email || "N/A"}
-            </Link>
-          </p>
-          <p className="text-sm text-muted-foreground flex items-center gap-2">
-            <MapPin className="h-4 w-4" />
-            <span>{capitalizeText(recruiter.address)}</span>
-          </p>
-          <p className="text-sm text-muted-foreground flex items-center gap-2">
-            <Phone className="h-4 w-4" />
-            <span>{recruiter.contact.phone}</span>
-          </p>
+      <Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition-shadow cursor-pointer py-4">
+        <CardHeader className="px-6 pt-4 pb-2">
+          <div className="flex items-center gap-4">
+            <div className="w-24 h-24 rounded-full overflow-hidden bg-muted shrink-0">
+              <Image
+                src={recruiter.avatar || "/placeholder.svg"}
+                alt={recruiter.fullName}
+                width={64}
+                height={64}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            <div className="flex-1 min-w-0">
+              <h3 className="font-bold text-lg text-foreground truncate">
+                {recruiter.fullName}
+              </h3>
+
+              <div className="mt-1 text-sm text-muted-foreground flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <Mail className="h-4 w-4" />
+                  <span className="truncate">
+                    {recruiter.contact.email || "N/A"}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  <span className="truncate">
+                    {capitalizeText(recruiter.address || "") || "N/A"}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Phone className="h-4 w-4" />
+                  <span className="truncate">
+                    {recruiter.contact.phone || "N/A"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </CardHeader>
-        <CardContent className="flex-1 mt-auto">
+
+        <CardContent className="flex-1 px-6 pt-2 pb-2">
           {recruiter.description ? (
             <MarkdownDisplay
               content={recruiter.description || ""}
