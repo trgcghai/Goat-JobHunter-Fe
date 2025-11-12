@@ -54,9 +54,9 @@ export default function JobDetailPage() {
     return (
       <Empty>
         <EmptyHeader>
-          <EmptyTitle>404 - Không tìm thấy</EmptyTitle>
+          <EmptyTitle>404 - Không tìm thấy công việc</EmptyTitle>
           <EmptyDescription>
-            Trang bạn đang tìm kiếm không tồn tại. Hãy thử lại sau.
+            Công việc bạn đang tìm kiếm không tồn tại. Hãy thử lại sau.
           </EmptyDescription>
         </EmptyHeader>
       </Empty>
