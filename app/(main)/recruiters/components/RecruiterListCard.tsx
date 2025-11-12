@@ -1,8 +1,9 @@
-import { Badge } from "@/components/ui/badge";
+import MarkdownDisplay from "@/components/MarkdownDisplay";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Recruiter } from "@/types/model";
-import { ArrowRight, Globe, MapPin } from "lucide-react";
+import capitalizeText from "@/utils/capitalizeText";
+import { ArrowRight, Mail, MapPin, Phone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -31,28 +32,31 @@ const RecruiterListCard = ({ recruiter }: RecruiterListCardProps) => {
               </h3>
               <div className="space-y-2 text-sm text-muted-foreground">
                 <div className="text-sm text-muted-foreground flex items-center gap-2">
-                  <Badge variant="default">Số lượng tuyển dụng việc làm</Badge>
-                </div>
-                <div className="text-sm text-muted-foreground flex items-center gap-2 mt-2">
                   <MapPin className="h-4 w-4" />
-                  <span>địa chỉ</span>
+                  <span>{capitalizeText(recruiter.address)}</span>
                 </div>
 
-                <div className="text-sm text-muted-foreground flex items-center gap-2 mt-2">
-                  <Globe className="h-4 w-4" />
+                <div className="text-sm text-muted-foreground flex items-center gap-2">
+                  <Mail className="h-4 w-4" />
                   <Link
-                    href={recruiter.website || "#"}
+                    href={recruiter.contact.email || "#"}
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    {recruiter.website || "N/A"}
+                    {recruiter.contact.email || "N/A"}
                   </Link>
                 </div>
+
+                <div className="text-sm text-muted-foreground flex items-center gap-2">
+                  <Phone className="h-4 w-4" />
+                  <span>{recruiter.contact.phone}</span>
+                </div>
               </div>
-              <p className="text-sm text-foreground line-clamp-2">
-                {recruiter.description}
-              </p>
+              <MarkdownDisplay
+                content={recruiter.description}
+                className="text-sm text-foreground line-clamp-2"
+              />
               <div className="flex justify-end w-full">
                 <Link href={`/recruiters/${recruiter.userId}`}>
                   <Button className="rounded-xl">

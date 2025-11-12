@@ -1,7 +1,8 @@
 import MarkdownDisplay from "@/components/MarkdownDisplay";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Recruiter } from "@/types/model";
-import { Briefcase, Globe, MapPin } from "lucide-react";
+import capitalizeText from "@/utils/capitalizeText";
+import { Mail, MapPin, Phone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -25,35 +26,36 @@ const RecruiterGridCard = ({ recruiter }: RecruiterGridCardProps) => {
             {recruiter.fullName}
           </h3>
           <p className="text-sm text-muted-foreground flex items-center gap-2">
-            <Globe className="h-4 w-4" />
+            <Mail className="h-4 w-4" />
             <Link
-              href={recruiter.website || "#"}
+              href={recruiter.contact.email || "#"}
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
             >
-              {recruiter.website || "N/A"}
+              {recruiter.contact.email || "N/A"}
             </Link>
           </p>
-          <p className="text-sm text-muted-foreground flex items-center gap-2 mt-2">
+          <p className="text-sm text-muted-foreground flex items-center gap-2">
             <MapPin className="h-4 w-4" />
-            <span>Địa chỉ</span>
+            <span>{capitalizeText(recruiter.address)}</span>
           </p>
-          <div className="rounded-lg bg-background flex items-center gap-2 mt-2">
-            <Briefcase className="h-4 w-4" />
-            <p className="text-sm">
-              <span className="font-semibold text-primary">
-                Số lượng tuyển dụng
-              </span>
-              <span className="text-muted-foreground"> vị trí đang tuyển</span>
-            </p>
-          </div>
+          <p className="text-sm text-muted-foreground flex items-center gap-2">
+            <Phone className="h-4 w-4" />
+            <span>{recruiter.contact.phone}</span>
+          </p>
         </CardHeader>
         <CardContent className="flex-1 mt-auto">
-          <MarkdownDisplay
-            content={recruiter.description || ""}
-            className="text-sm text-foreground line-clamp-2"
-          />
+          {recruiter.description ? (
+            <MarkdownDisplay
+              content={recruiter.description || ""}
+              className="text-sm text-foreground line-clamp-2"
+            />
+          ) : (
+            <p className="text-sm text-foreground line-clamp-2">
+              Không có mô tả
+            </p>
+          )}
         </CardContent>
       </Card>
     </Link>

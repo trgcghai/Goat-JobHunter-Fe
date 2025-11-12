@@ -13,8 +13,12 @@ export type User = {
 };
 
 export type Recruiter = User & {
-  description?: string;
-  website?: string;
+  description: string;
+  address: string;
+  contact: {
+    phone?: string;
+    email?: string;
+  };
 };
 
 export type Applicant = User & {
