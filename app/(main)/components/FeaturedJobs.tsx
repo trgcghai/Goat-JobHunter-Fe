@@ -1,8 +1,7 @@
+import { JobCard } from "@/app/(main)/jobs/components";
 import ErrorMessage from "@/components/ErrorMessage";
 import LoaderSpin from "@/components/LoaderSpin";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Empty,
   EmptyContent,
@@ -11,14 +10,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { Job } from "@/types/model";
-import { formatDate } from "@/utils/formatDate";
-import {
-  ArrowRight,
-  Calendar,
-  DollarSign,
-  MapPin,
-  RefreshCcwIcon,
-} from "lucide-react";
+import { ArrowRight, RefreshCcwIcon } from "lucide-react";
 import Link from "next/link";
 
 interface FeaturedJobsProps {
@@ -61,7 +53,7 @@ export default function FeaturedJobs({
             <EmptyContent>
               <Button variant="outline" className="rounded-xl" size="sm">
                 <RefreshCcwIcon />
-                Refresh
+                Tải lại
               </Button>
             </EmptyContent>
           </Empty>
@@ -70,82 +62,7 @@ export default function FeaturedJobs({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {jobs.length > 0 &&
             jobs.map((job) => (
-              <Link
-                key={job.jobId}
-                href={`/jobs/${job.jobId}`}
-                className="h-full"
-              >
-                <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col">
-                  <CardHeader>
-                    <div className="flex items-start justify-between mb-2">
-                      <Badge variant="secondary" className="mb-2">
-                        {job.level.charAt(0).toUpperCase() +
-                          job.level.slice(1).toLowerCase()}
-                      </Badge>
-                      <Badge
-                        variant={job.active ? "default" : "outline"}
-                        className="mb-2"
-                      >
-                        {job.active ? "Đang tuyển" : "Đã đóng"}
-                      </Badge>
-                    </div>
-                    <h3 className="font-bold text-lg text-foreground line-clamp-2 mb-1">
-                      {job.title}
-                    </h3>
-                  </CardHeader>
-                  <CardContent className="flex-1 flex flex-col">
-                    <div className="space-y-2 text-sm text-muted-foreground mb-4">
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4" />
-                        <span>{job.location}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Badge
-                          variant="outline"
-                          className="text-xs cursor-pointer hover:bg-accent transition-colors"
-                        >
-                          {job.workingType}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <DollarSign className="h-4 w-4" />
-                        <span className="font-semibold text-primary">
-                          ${job.salary.toLocaleString()}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4" />
-                        {job.createdAt && (
-                          <span>{formatDate(job.createdAt)}</span>
-                        )}
-                      </div>
-                    </div>
-
-                    <p className="text-sm text-foreground line-clamp-2 mb-4">
-                      {job.description}
-                    </p>
-
-                    {job.skills && job.skills.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-auto">
-                        {job.skills.slice(0, 3).map((skill) => (
-                          <Badge
-                            key={skill.skillId}
-                            variant="outline"
-                            className="text-xs"
-                          >
-                            {skill.name}
-                          </Badge>
-                        ))}
-                        {job.skills.length > 3 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{job.skills.length - 3}
-                          </Badge>
-                        )}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </Link>
+              <JobCard key={job.jobId} job={job} viewMode="grid" />
             ))}
         </div>
 

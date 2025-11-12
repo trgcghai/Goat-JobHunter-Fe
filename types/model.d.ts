@@ -51,7 +51,7 @@ export type Career = {
 };
 
 export type Job = {
-  jobId?: string;
+  jobId: string;
   description: string;
   startDate: Date;
   endDate: Date;
@@ -60,7 +60,7 @@ export type Job = {
   quantity: number;
   salary: number;
   title: string;
-  workingType?: string;
+  workingType: string;
   location?: string;
 
   recruiter?: {

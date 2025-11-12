@@ -55,7 +55,7 @@ export default function LatestBlogs({
             <EmptyContent>
               <Button variant="outline" className="rounded-xl" size="sm">
                 <RefreshCcwIcon />
-                Refresh
+                Tải lại
               </Button>
             </EmptyContent>
           </Empty>
