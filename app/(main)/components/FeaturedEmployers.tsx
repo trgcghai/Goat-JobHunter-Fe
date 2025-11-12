@@ -1,3 +1,5 @@
+import ErrorMessage from "@/components/ErrorMessage";
+import LoaderSpin from "@/components/LoaderSpin";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -5,12 +7,29 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { recruiters } from "@/constants/sample";
-import { ArrowRight } from "lucide-react";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { Recruiter } from "@/types/model";
+import { ArrowRight, RefreshCcwIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function FeaturedEmployers() {
+interface FeaturedEmployersProps {
+  recruiters: Recruiter[];
+  isLoading: boolean;
+  isError: boolean;
+}
+
+export default function FeaturedEmployers({
+  recruiters,
+  isLoading,
+  isError,
+}: FeaturedEmployersProps) {
   return (
     <section className="py-16 md:py-24 bg-primary/5">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -22,6 +41,30 @@ export default function FeaturedEmployers() {
             Các công ty hàng đầu đang tuyển dụng
           </p>
         </div>
+
+        {isLoading && <LoaderSpin />}
+
+        {isError && (
+          <ErrorMessage message="Không thể tải danh sách nhà tuyển dụng." />
+        )}
+
+        {recruiters.length === 0 && (
+          <Empty>
+            <EmptyHeader>
+              <EmptyTitle>Không Có Nhà Tuyển Dụng Nổi Bật</EmptyTitle>
+              <EmptyDescription>
+                Không có nhà tuyển dụng nổi bật nào vào lúc này. Vui lòng thử
+                lại sau.
+              </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+              <Button variant="outline" className="rounded-xl" size="sm">
+                <RefreshCcwIcon />
+                Refresh
+              </Button>
+            </EmptyContent>
+          </Empty>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {recruiters.map((recruiter) => (

@@ -1,12 +1,37 @@
+import ErrorMessage from "@/components/ErrorMessage";
+import LoaderSpin from "@/components/LoaderSpin";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { allJobs } from "@/constants/sample";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { Job } from "@/types/model";
 import { formatDate } from "@/utils/formatDate";
-import { ArrowRight, Calendar, DollarSign, MapPin } from "lucide-react";
+import {
+  ArrowRight,
+  Calendar,
+  DollarSign,
+  MapPin,
+  RefreshCcwIcon,
+} from "lucide-react";
 import Link from "next/link";
 
-export default function FeaturedJobs() {
+interface FeaturedJobsProps {
+  jobs: Job[];
+  isLoading: boolean;
+  isError: boolean;
+}
+
+export default function FeaturedJobs({
+  jobs,
+  isLoading,
+  isError,
+}: FeaturedJobsProps) {
   return (
     <section className="py-16 md:py-24 bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -19,84 +44,109 @@ export default function FeaturedJobs() {
           </p>
         </div>
 
+        {isLoading && <LoaderSpin />}
+
+        {isError && (
+          <ErrorMessage message="Không thể tải danh sách việc làm." />
+        )}
+
+        {jobs.length === 0 && (
+          <Empty>
+            <EmptyHeader>
+              <EmptyTitle>Không Có Việc Làm Nổi Bật</EmptyTitle>
+              <EmptyDescription>
+                Không có việc làm nổi bật nào vào lúc này. Vui lòng thử lại sau.
+              </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+              <Button variant="outline" className="rounded-xl" size="sm">
+                <RefreshCcwIcon />
+                Refresh
+              </Button>
+            </EmptyContent>
+          </Empty>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {allJobs.slice(0, 3).map((job) => (
-            <Link
-              key={job.jobId}
-              href={`/jobs/${job.jobId}`}
-              className="h-full"
-            >
-              <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col">
-                <CardHeader>
-                  <div className="flex items-start justify-between mb-2">
-                    <Badge variant="secondary" className="mb-2">
-                      {job.level}
-                    </Badge>
-                    <Badge
-                      variant={job.active ? "default" : "outline"}
-                      className="mb-2"
-                    >
-                      {job.active ? "Đang tuyển" : "Đã đóng"}
-                    </Badge>
-                  </div>
-                  <h3 className="font-bold text-lg text-foreground line-clamp-2 mb-1">
-                    {job.title}
-                  </h3>
-                </CardHeader>
-                <CardContent className="flex-1 flex flex-col">
-                  <div className="space-y-2 text-sm text-muted-foreground mb-4">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4" />
-                      <span>{job.location}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
+          {jobs.length > 0 &&
+            jobs.map((job) => (
+              <Link
+                key={job.jobId}
+                href={`/jobs/${job.jobId}`}
+                className="h-full"
+              >
+                <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col">
+                  <CardHeader>
+                    <div className="flex items-start justify-between mb-2">
+                      <Badge variant="secondary" className="mb-2">
+                        {job.level.charAt(0).toUpperCase() +
+                          job.level.slice(1).toLowerCase()}
+                      </Badge>
                       <Badge
-                        variant="outline"
-                        className="text-xs cursor-pointer hover:bg-accent transition-colors"
+                        variant={job.active ? "default" : "outline"}
+                        className="mb-2"
                       >
-                        {job.workingType}
+                        {job.active ? "Đang tuyển" : "Đã đóng"}
                       </Badge>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <DollarSign className="h-4 w-4" />
-                      <span className="font-semibold text-primary">
-                        ${job.salary.toLocaleString()}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      {job.createdAt && (
-                        <span>{formatDate(job.createdAt)}</span>
-                      )}
-                    </div>
-                  </div>
-
-                  <p className="text-sm text-foreground line-clamp-2 mb-4">
-                    {job.description}
-                  </p>
-
-                  {job.skills && job.skills.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-auto">
-                      {job.skills.slice(0, 3).map((skill) => (
+                    <h3 className="font-bold text-lg text-foreground line-clamp-2 mb-1">
+                      {job.title}
+                    </h3>
+                  </CardHeader>
+                  <CardContent className="flex-1 flex flex-col">
+                    <div className="space-y-2 text-sm text-muted-foreground mb-4">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4" />
+                        <span>{job.location}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
                         <Badge
-                          key={skill.skillId}
                           variant="outline"
-                          className="text-xs"
+                          className="text-xs cursor-pointer hover:bg-accent transition-colors"
                         >
-                          {skill.name}
+                          {job.workingType}
                         </Badge>
-                      ))}
-                      {job.skills.length > 3 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{job.skills.length - 3}
-                        </Badge>
-                      )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <DollarSign className="h-4 w-4" />
+                        <span className="font-semibold text-primary">
+                          ${job.salary.toLocaleString()}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        {job.createdAt && (
+                          <span>{formatDate(job.createdAt)}</span>
+                        )}
+                      </div>
                     </div>
-                  )}
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
+
+                    <p className="text-sm text-foreground line-clamp-2 mb-4">
+                      {job.description}
+                    </p>
+
+                    {job.skills && job.skills.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-auto">
+                        {job.skills.slice(0, 3).map((skill) => (
+                          <Badge
+                            key={skill.skillId}
+                            variant="outline"
+                            className="text-xs"
+                          >
+                            {skill.name}
+                          </Badge>
+                        ))}
+                        {job.skills.length > 3 && (
+                          <Badge variant="outline" className="text-xs">
+                            +{job.skills.length - 3}
+                          </Badge>
+                        )}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
         </div>
 
         <div className="mt-8 text-center">

@@ -1,12 +1,31 @@
+import ErrorMessage from "@/components/ErrorMessage";
+import LoaderSpin from "@/components/LoaderSpin";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { blogs } from "@/constants/sample";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { Blog } from "@/types/model";
 import { formatDate } from "@/utils/formatDate";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, RefreshCcwIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function LatestBlogs() {
+interface LatestBlogsProps {
+  blogs: Blog[];
+  isLoading: boolean;
+  isError: boolean;
+}
+
+export default function LatestBlogs({
+  blogs,
+  isLoading,
+  isError,
+}: LatestBlogsProps) {
   return (
     <section className="py-16 md:py-24 bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -18,6 +37,29 @@ export default function LatestBlogs() {
             Những bài viết hữu ích về sự nghiệp và công nghệ
           </p>
         </div>
+
+        {isLoading && <LoaderSpin />}
+
+        {isError && (
+          <ErrorMessage message="Không thể tải danh sách bài viết." />
+        )}
+
+        {blogs.length === 0 && (
+          <Empty>
+            <EmptyHeader>
+              <EmptyTitle>Không Có Bài Viết Nổi Bật</EmptyTitle>
+              <EmptyDescription>
+                Không có bài viết nổi bật nào vào lúc này. Vui lòng thử lại sau.
+              </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+              <Button variant="outline" className="rounded-xl" size="sm">
+                <RefreshCcwIcon />
+                Refresh
+              </Button>
+            </EmptyContent>
+          </Empty>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {blogs.map((blog) => (
