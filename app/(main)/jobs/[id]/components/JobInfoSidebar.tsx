@@ -1,9 +1,12 @@
 import { Badge } from "@/components/ui/badge";
+import useCurrencyFormat from "@/hooks/useCurrencyFormat";
 import { Job } from "@/types/model";
 import capitalizeText from "@/utils/capitalizeText";
 import { Building2 } from "lucide-react";
 
 function JobInfoSidebar({ job }: { job: Job }) {
+  const { format } = useCurrencyFormat();
+
   const infoItems = [
     {
       label: "Cấp độ",
@@ -20,7 +23,7 @@ function JobInfoSidebar({ job }: { job: Job }) {
     { label: "Số lượng", value: `${job.quantity} vị trí` },
     {
       label: "Mức lương",
-      value: `$${job.salary.toLocaleString()}`,
+      value: `${format(job.salary)}`,
       highlight: true,
     },
   ];
