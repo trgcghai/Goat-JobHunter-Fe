@@ -1,5 +1,4 @@
 import { RecruiterCard } from "@/app/(main)/recruiters/components";
-import ErrorMessage from "@/components/ErrorMessage";
 import LoaderSpin from "@/components/LoaderSpin";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +21,6 @@ interface FeaturedEmployersProps {
 export default function FeaturedEmployers({
   recruiters,
   isLoading,
-  isError,
 }: FeaturedEmployersProps) {
   return (
     <section className="py-16 md:py-24 bg-primary/5">
@@ -37,10 +35,6 @@ export default function FeaturedEmployers({
         </div>
 
         {isLoading && <LoaderSpin />}
-
-        {isError && (
-          <ErrorMessage message="Không thể tải danh sách nhà tuyển dụng." />
-        )}
 
         {recruiters.length === 0 && (
           <Empty>

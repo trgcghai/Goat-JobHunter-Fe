@@ -1,5 +1,4 @@
 import { JobCard } from "@/app/(main)/jobs/components";
-import ErrorMessage from "@/components/ErrorMessage";
 import LoaderSpin from "@/components/LoaderSpin";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,11 +18,7 @@ interface FeaturedJobsProps {
   isError: boolean;
 }
 
-export default function FeaturedJobs({
-  jobs,
-  isLoading,
-  isError,
-}: FeaturedJobsProps) {
+export default function FeaturedJobs({ jobs, isLoading }: FeaturedJobsProps) {
   return (
     <section className="py-16 md:py-24 bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -37,10 +32,6 @@ export default function FeaturedJobs({
         </div>
 
         {isLoading && <LoaderSpin />}
-
-        {isError && (
-          <ErrorMessage message="Không thể tải danh sách việc làm." />
-        )}
 
         {jobs.length === 0 && (
           <Empty>
