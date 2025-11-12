@@ -100,11 +100,13 @@ export const useJobsFilter = (options?: UseJobsFilterOptions) => {
   const hasPreviousPage = currentPage > 1;
 
   // Active filters count
-  const activeFiltersCount = Object.keys(filters).filter(
-    (key) => filters[key as keyof JobFilters] !== undefined,
-  ).length;
-
-  const hasActiveFilters = activeFiltersCount > 0;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const activeFiltersCount = Object.entries(filters).filter(([_, value]) => {
+    if (Array.isArray(value)) {
+      return value.length > 0;
+    }
+    return value !== undefined && value !== null && value !== "";
+  }).length;
 
   return {
     // Data
@@ -126,7 +128,6 @@ export const useJobsFilter = (options?: UseJobsFilterOptions) => {
     handleFilterChange,
     resetFilters,
     activeFiltersCount,
-    hasActiveFilters,
 
     // Pagination
     goToPage,

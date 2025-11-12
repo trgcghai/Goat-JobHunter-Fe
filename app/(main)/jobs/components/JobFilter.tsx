@@ -92,17 +92,16 @@ export default function JobFilter({
           </p>
         </div>
 
-        {activeFiltersCount > 0 && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onResetFilters}
-            className="rounded-xl"
-          >
-            <X className="h-4 w-4 mr-2" />
-            Xóa bộ lọc ({activeFiltersCount})
-          </Button>
-        )}
+        <Button
+          variant="default"
+          size="sm"
+          disabled={activeFiltersCount === 0}
+          onClick={onResetFilters}
+          className="rounded-xl"
+        >
+          <X className="h-4 w-4 mr-2" />
+          Xóa bộ lọc ({activeFiltersCount})
+        </Button>
       </div>
 
       <div className="mb-4 space-y-4">
