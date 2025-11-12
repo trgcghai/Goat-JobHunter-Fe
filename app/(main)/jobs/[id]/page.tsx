@@ -6,43 +6,55 @@ import {
   JobInfoSidebar,
   RelatedJobs,
 } from "@/app/(main)/jobs/[id]/components";
+import ErrorMessage from "@/components/ErrorMessage";
+import LoaderSpin from "@/components/LoaderSpin";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { Separator } from "@/components/ui/separator";
-import { allJobs } from "@/constants/sample";
+import { useFetchJobByIdQuery } from "@/services/job/jobApi";
 import { BookmarkPlus, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useMemo } from "react";
 
 export default function JobDetailPage() {
   const params = useParams<{ id: string }>();
-  const job = allJobs.find((j) => j.jobId === params.id);
+  const { data, isLoading, isError, isSuccess } = useFetchJobByIdQuery(
+    params.id,
+    {
+      skip: !params.id,
+    },
+  );
+
+  const job = useMemo(() => data?.data, [data]);
+
+  console.log(job);
 
   const handleApply = () => {
-    // TODO: Submit application to API
-    console.log("Applying to job:", params.id);
+    console.log("Ứng tuyển vào công việc: " + job?.title);
   };
 
   const handleSave = () => {
-    // TODO: Save/unsave job to database
-    console.log("Saving job:", params.id);
+    console.log("Lưu công việc: " + job?.title);
   };
 
   if (!job) {
     return (
-      <main className="min-h-screen bg-background">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-foreground mb-4">
-              Không tìm thấy công việc
-            </h1>
-            <Link href="/jobs">
-              <Button>Quay lại trang việc làm</Button>
-            </Link>
-          </div>
-        </div>
-      </main>
+      <Empty>
+        <EmptyHeader>
+          <EmptyTitle>404 - Không tìm thấy</EmptyTitle>
+          <EmptyDescription>
+            Trang bạn đang tìm kiếm không tồn tại. Hãy thử lại sau.
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
     );
   }
 
@@ -57,74 +69,82 @@ export default function JobDetailPage() {
           Quay lại trang việc làm
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <Card className="mb-8 py-0">
-              <JobHeader job={job} />
+        {isLoading && <LoaderSpin />}
 
-              <CardContent className="px-6 pb-6">
-                <Separator className="mb-4" />
-                <JobInfoGrid job={job} />
-                <Separator className="my-4" />
+        {isError && (
+          <ErrorMessage message="Có lỗi xảy ra khi tải thông tin công việc. Vui lòng thử lại sau." />
+        )}
 
-                <div>
-                  <h2 className="text-xl font-bold text-foreground mb-4">
-                    Mô Tả Công Việc
-                  </h2>
-                  <p className="text-muted-foreground whitespace-pre-line">
-                    {job?.description}
-                  </p>
-                </div>
+        {job && isSuccess && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <Card className="mb-8 py-0">
+                <JobHeader job={job} />
 
-                <Separator className="my-6" />
-                <div>
-                  <h2 className="text-xl font-bold text-foreground mb-4">
-                    Kỹ Năng Yêu Cầu
-                  </h2>
-                  <div className="flex flex-wrap gap-2">
-                    {(job?.skills || []).map((skill) => (
-                      <Badge
-                        key={skill.skillId}
-                        variant="outline"
-                        className="text-sm"
-                      >
-                        {skill.name}
-                      </Badge>
-                    ))}
+                <CardContent className="px-6 pb-6">
+                  <Separator className="mb-4" />
+                  <JobInfoGrid job={job} />
+                  <Separator className="my-4" />
+
+                  <div>
+                    <h2 className="text-xl font-bold text-foreground mb-4">
+                      Mô Tả Công Việc
+                    </h2>
+                    <p className="text-muted-foreground whitespace-pre-line">
+                      {job?.description}
+                    </p>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
 
-          <div className="lg:col-span-1">
-            <div className="sticky top-24 space-y-6">
-              <Card className="p-6">
-                <div className="space-y-3">
-                  <Button
-                    onClick={handleApply}
-                    disabled={!job.active}
-                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-base rounded-xl"
-                  >
-                    {!job.active ? "Đã Đóng" : "Ứng Tuyển Ngay"}
-                  </Button>
-
-                  <Button
-                    onClick={handleSave}
-                    variant="outline"
-                    className="w-full text-base flex items-center justify-center gap-2 rounded-xl border-border"
-                  >
-                    <BookmarkPlus className="w-5 h-5" />
-                    Lưu Việc Làm
-                  </Button>
-                </div>
-                <JobInfoSidebar job={job} />
+                  <Separator className="my-6" />
+                  <div>
+                    <h2 className="text-xl font-bold text-foreground mb-4">
+                      Kỹ Năng Yêu Cầu
+                    </h2>
+                    <div className="flex flex-wrap gap-2">
+                      {(job?.skills || []).map((skill) => (
+                        <Badge
+                          key={skill.skillId}
+                          variant="outline"
+                          className="text-sm"
+                        >
+                          {skill.name}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
               </Card>
+            </div>
 
-              <RelatedJobs currentJob={job} />
+            <div className="lg:col-span-1">
+              <div className="sticky top-24 space-y-6">
+                <Card className="p-6">
+                  <div className="space-y-3">
+                    <Button
+                      onClick={handleApply}
+                      disabled={!job.active}
+                      className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-base rounded-xl"
+                    >
+                      {!job.active ? "Đã Đóng" : "Ứng Tuyển Ngay"}
+                    </Button>
+
+                    <Button
+                      onClick={handleSave}
+                      variant="outline"
+                      className="w-full text-base flex items-center justify-center gap-2 rounded-xl border-border"
+                    >
+                      <BookmarkPlus className="w-5 h-5" />
+                      Lưu Việc Làm
+                    </Button>
+                  </div>
+                  <JobInfoSidebar job={job} />
+                </Card>
+
+                <RelatedJobs currentJob={job} />
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </main>
   );

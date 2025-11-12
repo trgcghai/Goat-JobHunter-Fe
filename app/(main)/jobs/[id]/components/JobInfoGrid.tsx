@@ -22,12 +22,12 @@ function JobInfoGrid({ job }: { job: Job }) {
     {
       icon: Calendar,
       label: "Ngày bắt đầu",
-      value: formatDate(job.startDate.toISOString()),
+      value: formatDate(job.startDate),
     },
     {
       icon: Clock,
       label: "Hạn nộp",
-      value: formatDate(job.endDate.toISOString()),
+      value: formatDate(job.endDate),
     },
     {
       icon: Calendar,

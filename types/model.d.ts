@@ -51,32 +51,24 @@ export type Career = {
 };
 
 export type Job = {
-  jobId: string;
+  jobId: number;
   description: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   active: boolean;
   level: string;
   quantity: number;
   salary: number;
   title: string;
   workingType: string;
-  location?: string;
-
-  recruiter?: {
-    userId: string;
-    fullName: string;
-    avatar?: string;
-    type?: string;
-  };
+  location: string;
+  recruiter: Recruiter;
   skills: Skill[];
   career: Career;
-
-  createdAt?: string;
-  createdBy?: string;
-  isDeleted?: boolean;
-  deletedAt?: boolean | null;
-  updatedAt?: string;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string | null;
+  updatedBy: string | null;
 };
 
 export type Application = {

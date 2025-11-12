@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { CardContent } from "@/components/ui/card";
 import { Job } from "@/types/model";
+import capitalizeText from "@/utils/capitalizeText";
 
 function JobHeader({ job }: { job: Job }) {
   return (
@@ -8,7 +9,7 @@ function JobHeader({ job }: { job: Job }) {
       <CardContent className="p-6 pb-0">
         <div className="flex flex-wrap gap-2 mb-4">
           <Badge variant="secondary" className="text-sm">
-            {job.level}
+            {capitalizeText(job.level)}
           </Badge>
           <Badge
             variant={job.active ? "default" : "outline"}
@@ -17,7 +18,7 @@ function JobHeader({ job }: { job: Job }) {
             {job.active ? "Đang tuyển" : "Đã đóng"}
           </Badge>
           <Badge variant="outline" className="text-sm">
-            {job.workingType}
+            {capitalizeText(job.workingType)}
           </Badge>
         </div>
         <h1 className="text-3xl font-bold text-foreground mb-2">{job.title}</h1>
