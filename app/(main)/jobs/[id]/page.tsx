@@ -8,6 +8,7 @@ import {
 } from "@/app/(main)/jobs/[id]/components";
 import ErrorMessage from "@/components/ErrorMessage";
 import LoaderSpin from "@/components/LoaderSpin";
+import MarkdownDisplay from "@/components/MarkdownDisplay";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,7 +19,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { Separator } from "@/components/ui/separator";
-import { useFetchJobByIdQuery } from "@/services/job/jobApi";
+import { useFetchJobByIdQuery, useFetchJobsQuery } from "@/services/job/jobApi";
 import { BookmarkPlus, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -33,9 +34,13 @@ export default function JobDetailPage() {
     },
   );
 
-  const job = useMemo(() => data?.data, [data]);
+  const {
+    data: relatedJobs,
+    isLoading: isRelatedJobsLoading,
+    isError: isRelatedJobsError,
+  } = useFetchJobsQuery({ page: 1, limit: 5 }, { skip: !params.id });
 
-  console.log(job);
+  const job = useMemo(() => data?.data, [data]);
 
   const handleApply = () => {
     console.log("Ứng tuyển vào công việc: " + job?.title);
@@ -90,9 +95,10 @@ export default function JobDetailPage() {
                     <h2 className="text-xl font-bold text-foreground mb-4">
                       Mô Tả Công Việc
                     </h2>
-                    <p className="text-muted-foreground whitespace-pre-line">
-                      {job?.description}
-                    </p>
+                    <MarkdownDisplay
+                      content={job.description}
+                      className="text-muted-foreground whitespace-pre-line"
+                    />
                   </div>
 
                   <Separator className="my-6" />
@@ -140,7 +146,11 @@ export default function JobDetailPage() {
                   <JobInfoSidebar job={job} />
                 </Card>
 
-                <RelatedJobs currentJob={job} />
+                <RelatedJobs
+                  jobs={relatedJobs?.data?.result || []}
+                  isLoading={isRelatedJobsLoading}
+                  isError={isRelatedJobsError}
+                />
               </div>
             </div>
           </div>
