@@ -1,12 +1,7 @@
+import { RecruiterCard } from "@/app/(main)/recruiters/components";
 import ErrorMessage from "@/components/ErrorMessage";
 import LoaderSpin from "@/components/LoaderSpin";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
 import {
   Empty,
   EmptyContent,
@@ -16,7 +11,6 @@ import {
 } from "@/components/ui/empty";
 import { Recruiter } from "@/types/model";
 import { ArrowRight, RefreshCcwIcon } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 
 interface FeaturedEmployersProps {
@@ -68,55 +62,11 @@ export default function FeaturedEmployers({
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {recruiters.map((recruiter) => (
-            <Card
+            <RecruiterCard
               key={recruiter.userId}
-              className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer py-0 pb-4 flex flex-col h-full"
-            >
-              <Image
-                src={recruiter.avatar || "/placeholder.svg"}
-                alt={recruiter.fullName}
-                width={400}
-                height={160}
-                className="h-40 w-full object-cover"
-              />
-              <CardHeader>
-                <h3 className="font-bold text-lg text-foreground">
-                  {recruiter.fullName}
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  {recruiter.website}
-                </p>
-              </CardHeader>
-              <CardContent className="flex-1">
-                <p className="text-sm text-foreground mb-4 line-clamp-2">
-                  {recruiter.description}
-                </p>
-                <div className="rounded-lg bg-background">
-                  <p className="text-sm">
-                    <span className="font-semibold text-primary">
-                      Số lượng tuyển dụng
-                    </span>
-                    <span className="text-muted-foreground">
-                      {" "}
-                      vị trí đang tuyển
-                    </span>
-                  </p>
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Link
-                  href={`/recruiters/${recruiter.userId}`}
-                  className="w-full"
-                >
-                  <Button
-                    variant="outline"
-                    className="w-full border-primary text-primary hover:bg-primary/10 bg-transparent rounded-xl"
-                  >
-                    Xem chi tiết thông tin
-                  </Button>
-                </Link>
-              </CardFooter>
-            </Card>
+              recruiter={recruiter}
+              viewMode="grid"
+            />
           ))}
         </div>
 
