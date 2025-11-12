@@ -42,7 +42,8 @@ const JobListCard = ({
                         onLevelClick?.(job.level);
                       }}
                     >
-                      {job.level}
+                      {job.level.charAt(0).toUpperCase() +
+                        job.level.slice(1).toLowerCase()}
                     </Badge>
                     <Badge variant={job.active ? "default" : "outline"}>
                       {job.active ? "Đang tuyển" : "Đã đóng"}
@@ -56,7 +57,8 @@ const JobListCard = ({
                         onWorkingTypeClick?.(job.workingType || "");
                       }}
                     >
-                      {job.workingType}
+                      {job.workingType.charAt(0).toUpperCase() +
+                        job.workingType.slice(1).toLowerCase()}
                     </Badge>
                   </div>
                   <h3 className="font-bold text-xl text-foreground mb-1 pr-12">

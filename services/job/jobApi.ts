@@ -28,7 +28,7 @@ export const jobApi = api.injectEndpoints({
       query: ({ jobId, job }) => ({
         url: "/jobs",
         method: "PUT",
-        data: { jobId, ...job },
+        data: { ...job, jobId },
       }),
       invalidatesTags: ["Job"],
     }),

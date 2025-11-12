@@ -1,14 +1,14 @@
 "use client";
 
 import { JobCard } from "@/app/(main)/jobs/components";
-import { FilterOptions } from "@/app/(main)/jobs/components/JobFilter";
+import { JobFilters } from "@/app/(main)/jobs/hooks/useJobsFilter";
 import { Job } from "@/types/model";
 
 interface JobListProps {
   jobs: Job[];
   viewMode: "list" | "grid";
-  filters: FilterOptions;
-  onFilterChange: (filters: FilterOptions) => void;
+  filters: JobFilters;
+  onFilterChange: (filters: JobFilters) => void;
 }
 
 export default function JobList({
@@ -21,7 +21,7 @@ export default function JobList({
     if (onFilterChange && filters) {
       onFilterChange({
         ...filters,
-        level: filters.level.includes(level) ? [] : [level],
+        level: filters.level && filters.level.includes(level) ? [] : [level],
       });
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -31,9 +31,10 @@ export default function JobList({
     if (onFilterChange && filters) {
       onFilterChange({
         ...filters,
-        workingType: filters.workingType.includes(workingType)
-          ? []
-          : [workingType],
+        workingType:
+          filters.workingType && filters.workingType.includes(workingType)
+            ? []
+            : [workingType],
       });
       window.scrollTo({ top: 0, behavior: "smooth" });
     }

@@ -1,6 +1,7 @@
 "use client";
 
 import { JobFilter, JobList } from "@/app/(main)/jobs/components";
+import useJobsFilter from "@/app/(main)/jobs/hooks/useJobsFilter";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -17,74 +18,59 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { allJobs } from "@/constants/sample";
-import { Grid3x3, List } from "lucide-react";
-import { useMemo, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Grid3x3, List, Loader2 } from "lucide-react";
+import { useState } from "react";
 
 export default function JobsPage() {
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
-  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = viewMode === "grid" ? 9 : 10;
 
-  const [filters, setFilters] = useState({
-    location: [] as string[],
-    skills: [] as string[],
-    employer: [] as string[],
-    level: [] as string[],
-    workingType: [] as string[],
+  const {
+    jobs,
+    isLoading,
+    isFetching,
+    isError,
+    filters,
+    handleFilterChange,
+    resetFilters,
+    currentPage,
+    totalPages,
+    totalItems,
+    goToPage,
+    nextPage,
+    previousPage,
+    hasNextPage,
+    hasPreviousPage,
+    activeFiltersCount,
+  } = useJobsFilter({
+    itemsPerPage,
+    initialFilters: {
+      location: [],
+      skills: [],
+      employer: [],
+      level: [],
+      workingType: [],
+    },
   });
 
-  const filteredJobs = useMemo(() => {
-    return allJobs.filter((job) => {
-      if (
-        filters.location &&
-        !job.location
-          ?.toLowerCase()
-          .includes(filters.location.join(",").toLowerCase())
-      ) {
-        return false;
-      }
-
-      if (filters.skills.length > 0) {
-        const hasSkill = filters.skills.some((skill) =>
-          job.skills?.some((jobSkill) =>
-            jobSkill.name?.toLowerCase().includes(skill.toLowerCase()),
-          ),
-        );
-        if (!hasSkill) return false;
-      }
-
-      if (filters.level.length > 0 && !filters.level.includes(job.level)) {
-        return false;
-      }
-
-      if (
-        filters.workingType.length > 0 &&
-        !filters.workingType.includes(job.workingType || "")
-      ) {
-        return false;
-      }
-
-      return true;
-    });
-  }, [filters.location, filters.skills, filters.level, filters.workingType]);
-
-  const totalPages = Math.ceil(filteredJobs.length / itemsPerPage);
-  const paginatedJobs = filteredJobs.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
+  // Generate page numbers for pagination
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+  const visiblePages = pageNumbers.slice(
+    Math.max(0, currentPage - 2),
+    Math.min(totalPages, currentPage + 1),
   );
-
-  const handleFilterChange = (newFilters: typeof filters) => {
-    setFilters(newFilters);
-    setCurrentPage(1);
-  };
 
   return (
     <main className="flex-1">
       <section className="border-b border-border bg-primary/5 py-8 md:py-12">
         <div className="max-w-7xl mx-auto lg:px-8 sm:px-6">
-          <JobFilter filters={filters} onFilterChange={handleFilterChange} />
+          <JobFilter
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            onResetFilters={resetFilters}
+            activeFiltersCount={activeFiltersCount}
+          />
         </div>
       </section>
 
@@ -92,26 +78,28 @@ export default function JobsPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="">
             <div className="mb-6 flex items-center justify-between">
-              <p className="text-sm text-muted-foreground">
-                Hiển thị{" "}
-                <span className="font-semibold text-foreground">
-                  {paginatedJobs.length}
-                </span>{" "}
-                trong{" "}
-                <span className="font-semibold text-foreground">
-                  {filteredJobs.length}
-                </span>{" "}
-                công việc
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="text-sm text-muted-foreground">
+                  Hiển thị{" "}
+                  <span className="font-semibold text-foreground">
+                    {jobs.length}
+                  </span>{" "}
+                  trong{" "}
+                  <span className="font-semibold text-foreground">
+                    {totalItems}
+                  </span>{" "}
+                  công việc
+                </p>
+                {isFetching && !isLoading && (
+                  <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                )}
+              </div>
 
               <div className="flex gap-2">
                 <Button
                   variant={viewMode === "list" ? "default" : "outline"}
                   size="sm"
-                  onClick={() => {
-                    setViewMode("list");
-                    setCurrentPage(1);
-                  }}
+                  onClick={() => setViewMode("list")}
                   className="rounded-xl"
                 >
                   <List className="h-4 w-4" />
@@ -119,10 +107,7 @@ export default function JobsPage() {
                 <Button
                   variant={viewMode === "grid" ? "default" : "outline"}
                   size="sm"
-                  onClick={() => {
-                    setViewMode("grid");
-                    setCurrentPage(1);
-                  }}
+                  onClick={() => setViewMode("grid")}
                   className="rounded-xl"
                 >
                   <Grid3x3 className="h-4 w-4" />
@@ -130,14 +115,35 @@ export default function JobsPage() {
               </div>
             </div>
 
-            {paginatedJobs.length > 0 ? (
-              <JobList
-                jobs={paginatedJobs}
-                viewMode={viewMode}
-                filters={filters}
-                onFilterChange={handleFilterChange}
-              />
-            ) : (
+            {isLoading && (
+              <div
+                className={
+                  viewMode === "grid"
+                    ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                    : "flex flex-col gap-4"
+                }
+              >
+                {Array.from({ length: itemsPerPage }).map((_, i) => (
+                  <Skeleton key={i} className="h-64 rounded-xl" />
+                ))}
+              </div>
+            )}
+
+            {isError && (
+              <Empty>
+                <EmptyHeader>
+                  <EmptyTitle>Có lỗi xảy ra</EmptyTitle>
+                  <EmptyDescription>
+                    Không thể tải danh sách công việc. Vui lòng thử lại sau.
+                  </EmptyDescription>
+                </EmptyHeader>
+                <Button onClick={() => window.location.reload()}>
+                  Thử lại
+                </Button>
+              </Empty>
+            )}
+
+            {!isLoading && !isError && jobs.length === 0 && (
               <Empty>
                 <EmptyHeader>
                   <EmptyTitle>Không tìm thấy việc làm</EmptyTitle>
@@ -145,26 +151,89 @@ export default function JobsPage() {
                     Không tìm thấy việc làm nào khớp với yêu cầu của bạn
                   </EmptyDescription>
                 </EmptyHeader>
+                {activeFiltersCount > 0 && (
+                  <Button onClick={resetFilters}>Xóa bộ lọc</Button>
+                )}
               </Empty>
             )}
 
-            {totalPages > 1 && (
+            {!isLoading && !isError && jobs.length > 0 && (
+              <JobList
+                jobs={jobs}
+                viewMode={viewMode}
+                filters={filters}
+                onFilterChange={handleFilterChange}
+              />
+            )}
+
+            {totalPages > 1 && !isLoading && (
               <div className="mt-8 flex items-center justify-center gap-2">
                 <Pagination>
                   <PaginationContent>
                     <PaginationItem>
-                      <PaginationPrevious href="#" className="rounded-xl" />
+                      <PaginationPrevious
+                        onClick={previousPage}
+                        className={`rounded-xl cursor-pointer ${
+                          !hasPreviousPage && "pointer-events-none opacity-50"
+                        }`}
+                      />
                     </PaginationItem>
+
+                    {currentPage > 2 && (
+                      <>
+                        <PaginationItem>
+                          <PaginationLink
+                            onClick={() => goToPage(1)}
+                            className="rounded-xl cursor-pointer"
+                          >
+                            1
+                          </PaginationLink>
+                        </PaginationItem>
+                        {currentPage > 3 && (
+                          <PaginationItem>
+                            <PaginationEllipsis />
+                          </PaginationItem>
+                        )}
+                      </>
+                    )}
+
+                    {visiblePages.map((page) => (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          onClick={() => goToPage(page)}
+                          isActive={page === currentPage}
+                          className="rounded-xl cursor-pointer"
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+
+                    {currentPage < totalPages - 1 && (
+                      <>
+                        {currentPage < totalPages - 2 && (
+                          <PaginationItem>
+                            <PaginationEllipsis />
+                          </PaginationItem>
+                        )}
+                        <PaginationItem>
+                          <PaginationLink
+                            onClick={() => goToPage(totalPages)}
+                            className="rounded-xl cursor-pointer"
+                          >
+                            {totalPages}
+                          </PaginationLink>
+                        </PaginationItem>
+                      </>
+                    )}
+
                     <PaginationItem>
-                      <PaginationLink href="#" className="rounded-xl">
-                        1
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationNext href="#" className="rounded-xl" />
+                      <PaginationNext
+                        onClick={nextPage}
+                        className={`rounded-xl cursor-pointer ${
+                          !hasNextPage && "pointer-events-none opacity-50"
+                        }`}
+                      />
                     </PaginationItem>
                   </PaginationContent>
                 </Pagination>

@@ -1,92 +1,108 @@
 "use client";
 
+import { JobFilters } from "@/app/(main)/jobs/hooks/useJobsFilter";
+import { Button } from "@/components/ui/button";
 import MultipleSelector, { Option } from "@/components/ui/MultipleSelector";
 import { JOBFILTER_CONFIG } from "@/constants/constant";
+import { X } from "lucide-react";
 import { toast } from "sonner";
 
-export interface FilterOptions {
-  location: string[];
-  skills: string[];
-  employer: string[];
-  level: string[];
-  workingType: string[];
-}
-
 interface JobFilterProps {
-  filters: FilterOptions;
-  onFilterChange: (filters: FilterOptions) => void;
+  filters: JobFilters;
+  onFilterChange: (filters: Partial<JobFilters>) => void;
+  onResetFilters: () => void;
+  activeFiltersCount: number;
 }
 
-export default function JobFilter({ filters, onFilterChange }: JobFilterProps) {
+export default function JobFilter({
+  filters,
+  onFilterChange,
+  onResetFilters,
+  activeFiltersCount,
+}: JobFilterProps) {
   const handleSkillsChange = (options: Option[]) => {
     onFilterChange({
-      ...filters,
       skills: options.map((opt) => opt.value),
     });
   };
 
   const handleLocationChange = (options: Option[]) => {
     onFilterChange({
-      ...filters,
       location: options.map((opt) => opt.value),
     });
   };
 
   const handleEmployerChange = (options: Option[]) => {
     onFilterChange({
-      ...filters,
       employer: options.map((opt) => opt.value),
     });
   };
 
   const handleLevelChange = (options: Option[]) => {
     onFilterChange({
-      ...filters,
       level: options.map((opt) => opt.value),
     });
   };
 
   const handleWorkingTypeChange = (options: Option[]) => {
     onFilterChange({
-      ...filters,
       workingType: options.map((opt) => opt.value),
     });
   };
 
-  const selectedSkills: Option[] = filters.skills.map((skill) => ({
-    value: skill,
-    label: skill,
-  }));
+  const selectedSkills: Option[] =
+    filters.skills?.map((skill) => ({
+      value: skill,
+      label: skill,
+    })) || [];
 
-  const selectedLocation: Option[] = filters.location.map((location) => ({
-    value: location,
-    label: location,
-  }));
+  const selectedLocation: Option[] =
+    filters.location?.map((location) => ({
+      value: location,
+      label: location,
+    })) || [];
 
-  const selectedEmployer: Option[] = filters.employer.map((employer) => ({
-    value: employer,
-    label: employer,
-  }));
+  const selectedEmployer: Option[] =
+    filters.employer?.map((employer) => ({
+      value: employer,
+      label: employer,
+    })) || [];
 
-  const selectedLevel: Option[] = filters.level.map((level) => ({
-    value: level,
-    label: level,
-  }));
+  const selectedLevel: Option[] =
+    filters.level?.map((level) => ({
+      value: level,
+      label: level,
+    })) || [];
 
-  const selectedWorkingType: Option[] = filters.workingType.map((type) => ({
-    value: type,
-    label: type,
-  }));
+  const selectedWorkingType: Option[] =
+    filters.workingType?.map((type) => ({
+      value: type,
+      label: type,
+    })) || [];
 
   return (
     <div className="bg-white rounded-xl border border-border p-6 mb-8">
-      <div className="mb-6">
-        <p className="text-xl md:text-4xl font-bold text-foreground mb-2">
-          Tìm kiếm việc làm
-        </p>
-        <p className="text-muted-foreground">
-          Khám phá các cơ hội việc làm hấp dẫn
-        </p>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <p className="text-xl md:text-4xl font-bold text-foreground mb-2">
+            Tìm kiếm việc làm
+          </p>
+          <p className="text-muted-foreground">
+            Khám phá các cơ hội việc làm hấp dẫn
+          </p>
+        </div>
+
+        {activeFiltersCount > 0 && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onResetFilters}
+            className="rounded-xl"
+          >
+            <X className="h-4 w-4 mr-2" />
+            Xóa bộ lọc ({activeFiltersCount})
+          </Button>
+        )}
       </div>
 
       <div className="mb-4 space-y-4">
