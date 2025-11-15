@@ -1,4 +1,5 @@
 import { api } from "@/services/api";
+import { buildSpringQuery } from "@/utils/buildSpringQuery";
 import type {
   CreateRecruiterRequest,
   CreateRecruiterResponse,
@@ -53,11 +54,21 @@ export const recruiterApi = api.injectEndpoints({
       FetchRecruitersResponse,
       FetchRecruitersRequest
     >({
-      query: (params) => ({
-        url: "/recruiters",
-        method: "GET",
-        params,
-      }),
+      query: (params) => {
+        const { params: queryParams } = buildSpringQuery({
+          params,
+          filterFields: ["fullName", "address", "enabled"],
+          textSearchFields: ["fullName", "address"], // Dùng LIKE search
+          defaultSort: "createdAt,desc",
+          sortableFields: ["fullName", "createdAt", "updatedAt"],
+        });
+
+        return {
+          url: "/recruiters",
+          method: "GET",
+          params: queryParams,
+        };
+      },
       providesTags: ["Recruiter"],
     }),
 

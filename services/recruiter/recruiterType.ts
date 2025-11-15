@@ -44,7 +44,8 @@ export type FetchRecruitersRequest = {
   page?: number;
   size?: number;
   sortBy?: string;
-  keyword?: string;
+  fullName?: string;
+  address?: string;
   enabled?: boolean;
 };
 

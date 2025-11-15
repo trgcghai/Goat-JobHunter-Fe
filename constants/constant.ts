@@ -125,6 +125,14 @@ export const JOBFILTER_CONFIG = {
   },
 };
 
+export const RECRUITERFILTER_CONFIG = {
+  location: {
+    option: LOCATION_OPTIONS,
+    maxSelected: 1,
+    maxSelectedMessage: "Bạn chỉ có thể chọn tối đa 1 địa điểm",
+  },
+};
+
 export const PAGINATION_PAGESIZE = [10, 20, 30, 40, 50];
 
 export enum ROLE {

@@ -4,8 +4,10 @@ import { RecruiterFilters } from "@/app/(main)/recruiters/hooks/useRecruitersFil
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import MultipleSelector, { Option } from "@/components/ui/MultipleSelector";
-import { JOBFILTER_CONFIG } from "@/constants/constant";
+import { RECRUITERFILTER_CONFIG } from "@/constants/constant";
+import { debounce } from "lodash";
 import { Search, X } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface RecruiterFilterProps {
@@ -21,19 +23,43 @@ export default function RecruiterFilter({
   onResetFilters,
   activeFiltersCount,
 }: RecruiterFilterProps) {
-  const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onFilterChange({ keyword: e.target.value });
+  // Local state for input value
+  const [nameInput, setNameInput] = useState(filters.fullName || "");
+
+  // Debounced filter change handler
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedFilterChange = useCallback(
+    debounce((value: string) => {
+      onFilterChange({ fullName: value });
+    }, 500), // 500ms delay
+    [onFilterChange],
+  );
+
+  // Cleanup debounce on unmount
+  useEffect(() => {
+    return () => {
+      debouncedFilterChange.cancel();
+    };
+  }, [debouncedFilterChange]);
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setNameInput(value); // Update local state immediately
+    debouncedFilterChange(value); // Debounced API call
   };
 
   const handleAddressChange = (options: Option[]) => {
+    // Convert array to comma-separated string
+    const addressString = options.map((opt) => opt.value).join(",");
     onFilterChange({
-      address: options.map((opt) => opt.value),
+      address: addressString || undefined,
     });
   };
 
   const handleSearch = () => {
-    // Trigger search by updating filters
-    onFilterChange({ ...filters });
+    // Force immediate search (cancel pending debounce)
+    debouncedFilterChange.cancel();
+    onFilterChange({ fullName: nameInput });
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -42,11 +68,13 @@ export default function RecruiterFilter({
     }
   };
 
-  const selectedAddress: Option[] =
-    filters.address?.map((addr) => ({
-      value: addr,
-      label: addr,
-    })) || [];
+  // Convert comma-separated string back to Options array for MultipleSelector
+  const selectedAddress: Option[] = filters.address
+    ? filters.address.split(",").map((addr) => ({
+        value: addr,
+        label: addr,
+      }))
+    : [];
 
   return (
     <div className="bg-white rounded-xl border border-border p-6 mb-8">
@@ -77,21 +105,21 @@ export default function RecruiterFilter({
         <div className="flex items-center gap-4">
           <Input
             type="text"
-            placeholder="Nhập tên công ty hoặc từ khóa..."
-            value={filters.keyword || ""}
-            onChange={handleKeywordChange}
-            onKeyUp={handleKeyPress}
+            placeholder="Nhập tên công ty..."
+            value={nameInput}
+            onChange={handleNameChange}
+            onKeyPress={handleKeyPress}
             className="rounded-xl w-full"
           />
 
           <MultipleSelector
             value={selectedAddress}
             onChange={handleAddressChange}
-            defaultOptions={JOBFILTER_CONFIG.location.option}
+            defaultOptions={RECRUITERFILTER_CONFIG.location.option}
             placeholder="Tìm kiếm theo địa điểm..."
-            maxSelected={JOBFILTER_CONFIG.location.maxSelected}
+            maxSelected={RECRUITERFILTER_CONFIG.location.maxSelected}
             onMaxSelected={() =>
-              toast.info(JOBFILTER_CONFIG.location.maxSelectedMessage)
+              toast.info(RECRUITERFILTER_CONFIG.location.maxSelectedMessage)
             }
             emptyIndicator={
               <p className="text-center text-sm text-muted-foreground">

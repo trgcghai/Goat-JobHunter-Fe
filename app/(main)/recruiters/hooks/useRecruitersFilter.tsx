@@ -2,11 +2,9 @@ import { useFetchRecruitersQuery } from "@/services/recruiter/recruiterApi";
 import { useMemo, useState } from "react";
 
 export interface RecruiterFilters {
-  keyword?: string;
-  address?: string[];
+  fullName?: string;
+  address?: string; // Changed from string[] to string
   enabled?: boolean;
-  page?: number;
-  size?: number;
 }
 
 export interface UseRecruitersFilterOptions {
@@ -25,16 +23,27 @@ export const useRecruitersFilter = (options?: UseRecruitersFilterOptions) => {
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [filters, setFilters] = useState<RecruiterFilters>(initialFilters);
 
-  // Build query params
+  // Build query params matching FetchRecruitersRequest
   const queryParams = useMemo(() => {
-    return {
+    const params: Record<string, string | number | boolean> = {
       page: currentPage,
-      limit: itemsPerPage,
-      sortBy: "createdAt",
-      ...filters,
-      // Convert address array to comma-separated string
-      address: filters.address?.length ? filters.address.join(",") : undefined,
+      size: itemsPerPage,
     };
+
+    // Add filters
+    if (filters.fullName) {
+      params.fullName = filters.fullName;
+    }
+
+    if (filters.address) {
+      params.address = filters.address;
+    }
+
+    if (filters.enabled !== undefined) {
+      params.enabled = filters.enabled;
+    }
+
+    return params;
   }, [currentPage, itemsPerPage, filters]);
 
   // Fetch recruiters with RTK Query
@@ -94,9 +103,6 @@ export const useRecruitersFilter = (options?: UseRecruitersFilterOptions) => {
   // Active filters count
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const activeFiltersCount = Object.entries(filters).filter(([_, value]) => {
-    if (Array.isArray(value)) {
-      return value.length > 0;
-    }
     return value !== undefined && value !== null && value !== "";
   }).length;
 

@@ -1,7 +1,7 @@
 import { sfEqual, sfIn, sfLike } from "spring-filter-query-builder";
 
 interface BuildQueryOptions {
-  params: Record<string, string | number | Array<string | number>>;
+  params: Record<string, string | number | boolean | Array<string | number>>;
   filterFields: string[];
   textSearchFields?: string[]; // Các field dùng LIKE search
   nestedArrayFields?: Record<string, string>; // Map field -> nested path, vd: { skills: "skills.name" }
@@ -10,7 +10,7 @@ interface BuildQueryOptions {
 }
 
 interface BuildQueryResult {
-  params: Record<string, string | number | Array<string | number>>;
+  params: Record<string, string | number | boolean | Array<string | number>>;
   filterQuery: string;
 }
 
@@ -52,7 +52,9 @@ export const buildSpringQuery = (
     }
     // Các trường hợp còn lại dùng sfEqual
     else if (!Array.isArray(value)) {
-      filterParts.push(sfEqual(field, value).toString());
+      const normalizedValue =
+        typeof value === "boolean" ? (value ? "true" : "false") : value;
+      filterParts.push(sfEqual(field, normalizedValue).toString());
     }
 
     // Xóa field đã xử lý

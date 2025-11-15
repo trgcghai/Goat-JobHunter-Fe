@@ -2,28 +2,37 @@ import MarkdownDisplay from "@/components/MarkdownDisplay";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Recruiter } from "@/types/model";
 import capitalizeText from "@/utils/capitalizeText";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 interface RecruiterGridCardProps {
   recruiter: Recruiter;
 }
 
 const RecruiterGridCard = ({ recruiter }: RecruiterGridCardProps) => {
+  const [imageError, setImageError] = useState(false);
+  const hasAvatar = recruiter.avatar && !imageError;
+
   return (
     <Link href={`/recruiters/${recruiter.userId}`} className="h-full">
       <Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition-shadow cursor-pointer py-4">
         <CardHeader className="px-6 pt-4 pb-2">
           <div className="flex items-center gap-4">
-            <div className="w-24 h-24 rounded-full overflow-hidden bg-muted shrink-0">
-              <Image
-                src={recruiter.avatar || "/placeholder.svg"}
-                alt={recruiter.fullName}
-                width={64}
-                height={64}
-                className="w-full h-full object-cover"
-              />
+            <div className="w-24 h-24 rounded-full overflow-hidden bg-muted shrink-0 flex items-center justify-center">
+              {hasAvatar ? (
+                <Image
+                  src={recruiter.avatar}
+                  alt={recruiter.fullName}
+                  width={96}
+                  height={96}
+                  className="w-full h-full object-cover"
+                  onError={() => setImageError(true)}
+                />
+              ) : (
+                <User className="w-12 h-12 text-muted-foreground" />
+              )}
             </div>
 
             <div className="flex-1 min-w-0">
