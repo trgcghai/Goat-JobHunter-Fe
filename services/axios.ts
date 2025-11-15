@@ -6,15 +6,16 @@ import axios from "axios";
 // Cấu hình mặc định cho các request
 // ============================================================
 const axiosClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BE_URL, // URL của backend
-  withCredentials: true, // cho phép gửi cookie trong request
-  timeout: 1000 * 60 * 10, // thời gian timeout là 10 phút
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  withCredentials: true,
+  timeout: 1000 * 60 * 10,
 });
 
 // ============================================================
 // Biến để track trạng thái refresh token
 // ============================================================
 let isRefreshing = false;
+let isLoggingOut = false; // Thêm flag để tránh logout nhiều lần
 let failedQueue: Array<{
   resolve: (value?: any) => void;
   reject: (reason?: any) => void;
@@ -37,19 +38,19 @@ const processQueue = (error: any, success: boolean = false) => {
 
 const refreshToken = async (): Promise<boolean> => {
   try {
-    await axios.post(
-      `${process.env.NEXT_PUBLIC_BE_URL}/auth/refresh`,
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
       {},
       {
-        withCredentials: true, // Gửi refresh token trong cookie
+        withCredentials: true,
       },
     );
 
-    // Cookie sẽ được tự động set bởi server
-    return true;
+    console.log("Refresh token success");
+    return response.status === 200;
   } catch (error) {
     console.error("Refresh token failed:", error);
-    throw error;
+    return false;
   }
 };
 
@@ -57,27 +58,52 @@ const refreshToken = async (): Promise<boolean> => {
 // Hàm logout redux state
 // ============================================================
 const performLogout = async () => {
-  const { store } = await import("@/lib/store");
-  const { clearUser } = await import("@/lib/features/authSlice");
+  // Tránh logout nhiều lần
+  if (isLoggingOut) {
+    console.log("Already logging out...");
+    return;
+  }
 
-  // Clear Redux state
-  store.dispatch(clearUser());
+  isLoggingOut = true;
+  console.log("Performing logout...");
 
-  // Redirect to login page
-  if (typeof window !== "undefined") {
-    window.location.href = "/";
+  try {
+    const { store } = await import("@/lib/store");
+    const { clearUser } = await import("@/lib/features/authSlice");
+
+    // Clear Redux state
+    store.dispatch(clearUser());
+
+    // Clear refresh flag
+    isRefreshing = false;
+
+    // Redirect to login page
+    if (typeof window !== "undefined") {
+      window.location.href = "/signin"; // Chuyển sang /login thay vì "/"
+    }
+  } catch (error) {
+    console.error("Logout error:", error);
+  } finally {
+    // Reset flag sau một khoảng thời gian
+    setTimeout(() => {
+      isLoggingOut = false;
+    }, 1000);
   }
 };
 
 // ============================================================
-// Interceptor: Xử lý lỗi 401, set isAuthenticated trong slice về false
+// Hàm logout redux state
 // ============================================================
 const handle401CodeWithoutRefresh = async () => {
-  const { store } = await import("@/lib/store");
-  const { setIsAuthenticated } = await import("@/lib/features/authSlice");
+  try {
+    const { store } = await import("@/lib/store");
+    const { setIsAuthenticated } = await import("@/lib/features/authSlice");
 
-  // Clear Redux state
-  store.dispatch(setIsAuthenticated(false));
+    // Clear Redux state
+    store.dispatch(setIsAuthenticated(false));
+  } catch (error) {
+    console.error("Handle 401 error:", error);
+  }
 };
 
 // ============================================================
@@ -91,10 +117,21 @@ axiosClient.interceptors.response.use(
       _retry?: boolean;
     };
 
-    // =====================
-    // CHECK LỖI JWT
-    // =====================
+    // Nếu không có config, reject ngay
+    if (!originalRequest) {
+      return Promise.reject(error);
+    }
+
     const isUnauthorized = error.response?.status === 401;
+    const isRefreshEndpoint = originalRequest.url?.includes("/auth/refresh");
+
+    // Nếu refresh token endpoint bị 401, logout ngay
+    if (isUnauthorized && isRefreshEndpoint) {
+      console.log("Refresh token endpoint returned 401, logging out...");
+      await performLogout();
+      return Promise.reject(error);
+    }
+
     const isRefreshTokenExpired =
       typeof error.response?.data === "object" &&
       error.response?.data !== null &&
@@ -102,14 +139,14 @@ axiosClient.interceptors.response.use(
       (error.response.data as { message?: string }).message ===
         "Refresh token is invalid or expired";
 
-    if (isUnauthorized && !originalRequest._retry) {
-      // xử lý unauthorized trước khi handle tới refresh token
-      handle401CodeWithoutRefresh();
+    if (isUnauthorized && !originalRequest._retry && !isRefreshEndpoint) {
+      // Xử lý unauthorized trước khi handle tới refresh token
+      await handle401CodeWithoutRefresh();
 
       // Nếu refresh token đã hết hạn, logout ngay
       if (isRefreshTokenExpired) {
         console.log("Refresh token expired, logging out...");
-        performLogout();
+        await performLogout();
         return Promise.reject(error);
       }
 
@@ -118,6 +155,7 @@ axiosClient.interceptors.response.use(
 
       if (isRefreshing) {
         // Nếu đang refresh, đưa request vào queue
+        console.log("Adding request to queue...");
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
@@ -138,10 +176,11 @@ axiosClient.interceptors.response.use(
         const refreshSuccess = await refreshToken();
 
         if (refreshSuccess) {
+          console.log("Token refreshed successfully, retrying failed requests");
           // Xử lý tất cả requests trong queue
           processQueue(null, true);
 
-          // Retry request gốc (cookie đã được update tự động)
+          // Retry request gốc
           return axiosClient(originalRequest);
         } else {
           throw new Error("Token refresh failed");
@@ -153,7 +192,7 @@ axiosClient.interceptors.response.use(
         processQueue(refreshError, false);
 
         // Logout
-        performLogout();
+        await performLogout();
 
         return Promise.reject(refreshError);
       } finally {
@@ -164,7 +203,5 @@ axiosClient.interceptors.response.use(
     return Promise.reject(error);
   },
 );
-
-// ============================================================
 
 export default axiosClient;

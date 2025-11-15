@@ -1,14 +1,14 @@
 export enum Level {
-  INTERN = "Intern",
-  FRESHER = "Fresher",
-  JUNIOR = "Junior",
-  MIDDLE = "Middle",
-  SENIOR = "Senior",
+  INTERN = "INTERN",
+  FRESHER = "FRESHER",
+  JUNIOR = "JUNIOR",
+  MIDDLE = "MIDDLE",
+  SENIOR = "SENIOR",
 }
 
 export enum WorkingType {
-  FULL_TIME = "Full time",
-  PART_TIME = "Part time",
-  ONLINE = "Online",
-  OFFLINE = "Offline",
+  FULLTIME = "FULLTIME",
+  PARTTIME = "PARTTIME",
+  ONLINE = "ONLINE",
+  OFFLINE = "OFFLINE",
 }

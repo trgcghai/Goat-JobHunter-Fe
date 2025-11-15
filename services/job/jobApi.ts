@@ -1,4 +1,5 @@
 import { api } from "@/services/api";
+import { buildSpringQuery } from "@/utils/buildSpringQuery";
 import type {
   CountJobByRecruiterResponse,
   CreateJobRequest,
@@ -42,11 +43,31 @@ export const jobApi = api.injectEndpoints({
     }),
 
     fetchJobs: builder.query<FetchJobsResponse, FetchJobsRequest>({
-      query: (params) => ({
-        url: "/jobs",
-        method: "GET",
-        params,
-      }),
+      query: (params) => {
+        const { params: queryParams } = buildSpringQuery({
+          params,
+          filterFields: [
+            "title",
+            "location",
+            "salary",
+            "active",
+            "level",
+            "workingType",
+          ],
+          textSearchFields: ["title", "location"], // Dùng LIKE search
+          nestedArrayFields: {
+            skills: "skills.name", // Map skills -> skills.name
+          },
+          defaultSort: "updatedAt,desc",
+          sortableFields: ["title", "salary", "createdAt", "updatedAt"],
+        });
+
+        return {
+          url: "/jobs",
+          method: "GET",
+          params: queryParams,
+        };
+      },
       providesTags: ["Job"],
     }),
 

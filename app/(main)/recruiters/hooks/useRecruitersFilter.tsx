@@ -6,7 +6,7 @@ export interface RecruiterFilters {
   address?: string[];
   enabled?: boolean;
   page?: number;
-  limit?: number;
+  size?: number;
 }
 
 export interface UseRecruitersFilterOptions {

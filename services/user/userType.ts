@@ -4,7 +4,7 @@ import type { Account, FullUser, User } from "@/types/model";
 // Fetch Users (with pagination)
 export type FetchUsersRequest = {
   page?: number;
-  limit?: number;
+  size?: number;
   sortBy?: string;
   keyword?: string;
   type?: "recruiter" | "applicant";

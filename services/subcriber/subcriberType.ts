@@ -19,7 +19,7 @@ export type DeleteSubscriberResponse = IBackendRes<Subscriber>;
 // Fetch Subscribers (with pagination)
 export type FetchSubscribersRequest = {
   page?: number;
-  limit?: number;
+  size?: number;
   sortBy?: string;
   keyword?: string;
   email?: string;

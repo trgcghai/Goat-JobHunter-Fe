@@ -42,7 +42,7 @@ export type DeleteRecruiterResponse = IBackendRes<Recruiter>;
 // Fetch Recruiters (with pagination)
 export type FetchRecruitersRequest = {
   page?: number;
-  limit?: number;
+  size?: number;
   sortBy?: string;
   keyword?: string;
   enabled?: boolean;

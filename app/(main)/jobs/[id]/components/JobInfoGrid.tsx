@@ -33,8 +33,8 @@ function JobInfoGrid({ job }: { job: Job }) {
     },
     {
       icon: Calendar,
-      label: "Đăng",
-      value: job.createdAt ? formatDate(job.createdAt) : "",
+      label: "Ngày đăng",
+      value: job.startDate ? formatDate(job.startDate) : "",
     },
   ];
 

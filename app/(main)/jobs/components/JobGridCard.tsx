@@ -98,7 +98,7 @@ const JobGridCard = ({
             </div>
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
-              {job.createdAt && <span>{formatDate(job.createdAt)}</span>}
+              {job.startDate && <span>{formatDate(job.startDate)}</span>}
             </div>
           </div>
 

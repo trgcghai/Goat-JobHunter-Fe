@@ -16,7 +16,7 @@ export default function Home() {
     isError: isErrorBlogs,
   } = useFetchBlogsQuery({
     page: 1,
-    limit: 3,
+    size: 3,
   });
   const {
     data: jobs,
@@ -24,13 +24,13 @@ export default function Home() {
     isError: isErrorJobs,
   } = useFetchJobsQuery({
     page: 1,
-    limit: 3,
+    size: 3,
   });
   const {
     data: recruiters,
     isLoading: isLoadingRecruiters,
     isError: isErrorRecruiters,
-  } = useFetchRecruitersQuery({ page: 1, limit: 3 });
+  } = useFetchRecruitersQuery({ page: 1, size: 3 });
 
   return (
     <>

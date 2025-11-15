@@ -21,6 +21,12 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "boringapi.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
   allowedDevOrigins: ["192.168.0.245"],

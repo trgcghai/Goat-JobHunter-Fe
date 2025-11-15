@@ -22,7 +22,7 @@ export type DeleteBlogResponse = IBackendRes<Blog>;
 // Fetch Blogs (with pagination)
 export type FetchBlogsRequest = {
   page?: number;
-  limit?: number;
+  size?: number;
   sortBy?: string;
   tags?: string[];
   keyword?: string;

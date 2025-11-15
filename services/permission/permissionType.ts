@@ -22,7 +22,7 @@ export type DeletePermissionResponse = IBackendRes<Permission>;
 // Fetch Permissions (with pagination)
 export type FetchPermissionsRequest = {
   page?: number;
-  limit?: number;
+  size?: number;
   sortBy?: string;
   keyword?: string;
   module?: string;

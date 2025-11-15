@@ -20,18 +20,19 @@ export type DeleteJobRequest = string; // jobId
 export type DeleteJobResponse = IBackendRes<Job>;
 
 // Fetch Jobs (with pagination)
-export type FetchJobsRequest = {
+export interface FetchJobsRequest {
   page?: number;
-  limit?: number;
-  sortBy?: string;
-  keyword?: string;
+  size?: number;
+  title?: string;
   location?: string;
-  career?: string;
-  salary?: string;
-  level?: string;
-  status?: string;
-  recruiterId?: string;
-};
+  level?: string | string[]; // Có thể là string hoặc array
+  workingType?: string | string[]; // Có thể là string hoặc array
+  salary?: number;
+  active?: boolean;
+  skills?: string[]; // Array of skill names
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any; // Allow dynamic keys
+}
 
 export type FetchJobsResponse = IBackendRes<IModelPaginate<Job>>;
 

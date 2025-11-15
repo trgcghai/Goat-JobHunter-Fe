@@ -24,7 +24,7 @@ export type DeleteSkillResponse = IBackendRes<Skill>;
 // Fetch Skills (with pagination)
 export type FetchSkillsRequest = {
   page?: number;
-  limit?: number;
+  size?: number;
   sortBy?: string;
   keyword?: string;
 };

@@ -33,7 +33,7 @@ export type FetchApplicationByIdResponse = IBackendRes<Application>;
 // Fetch All Applications (Admin)
 export type FetchApplicationsRequest = {
   page?: number;
-  limit?: number;
+  size?: number;
   sortBy?: string;
 };
 
@@ -45,7 +45,7 @@ export type FetchApplicationsResponse = IBackendRes<
 export type FetchApplicationsByRecruiterRequest = {
   recruiterId: string;
   page?: number;
-  limit?: number;
+  size?: number;
   sortBy?: string;
 };
 

@@ -22,7 +22,7 @@ export type DeleteRoleResponse = IBackendRes<Role>;
 // Fetch Roles (with pagination)
 export type FetchRolesRequest = {
   page?: number;
-  limit?: number;
+  size?: number;
   sortBy?: string;
   keyword?: string;
   active?: boolean;
