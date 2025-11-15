@@ -1,106 +1,136 @@
 "use client";
 
 import { BlogCard, BlogFilter } from "@/app/(main)/blogs/components";
+import useBlogsFilter from "@/app/(main)/blogs/hooks/useBlogsFilter";
+import CustomPagination from "@/components/CustomPagination";
+import { Button } from "@/components/ui/button";
 import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import { allBlogs } from "@/constants/sample";
-import { useMemo, useState } from "react";
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Loader2 } from "lucide-react";
 
 export default function BlogPage() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 9;
-
-  const [filters, setFilters] = useState({
-    searchTerm: "",
+  const {
+    blogs,
+    isLoading,
+    isFetching,
+    isError,
+    filters,
+    handleFilterChange,
+    resetFilters,
+    currentPage,
+    totalPages,
+    totalItems,
+    goToPage,
+    nextPage,
+    previousPage,
+    hasNextPage,
+    hasPreviousPage,
+    activeFiltersCount,
+  } = useBlogsFilter({
+    initialPage: 1,
+    itemsPerPage: 10,
+    initialFilters: {
+      title: "",
+      tags: [],
+    },
   });
-
-  const filteredBlogs = useMemo(() => {
-    return allBlogs.filter((blog) =>
-      blog.title.toLowerCase().includes(filters.searchTerm.toLowerCase()),
-    );
-  }, [filters]);
-
-  const totalPages = Math.ceil(filteredBlogs.length / itemsPerPage);
-  const paginatedBlogs = filteredBlogs.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage,
-  );
-
-  const handleFilterChange = (newFilters: typeof filters) => {
-    setFilters(newFilters);
-    setCurrentPage(1);
-  };
 
   return (
     <>
       <div className="mb-8">
-        <BlogFilter filters={filters} onFilterChange={handleFilterChange} />
+        <BlogFilter
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          onResetFilters={resetFilters}
+          activeFiltersCount={activeFiltersCount}
+        />
       </div>
 
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-foreground mb-2">
-          Bài Viết Mới Nhất
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          Hiển thị{" "}
-          <span className="font-semibold text-foreground">
-            {paginatedBlogs.length}
-          </span>{" "}
-          trong{" "}
-          <span className="font-semibold text-foreground">
-            {filteredBlogs.length}
-          </span>{" "}
-          bài viết
-        </p>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-foreground mb-2">
+            Bài Viết Mới Nhất
+          </h2>
+          <div className="flex items-center gap-2">
+            <p className="text-sm text-muted-foreground">
+              Hiển thị{" "}
+              <span className="font-semibold text-foreground">
+                {blogs.length}
+              </span>{" "}
+              trong{" "}
+              <span className="font-semibold text-foreground">
+                {totalItems}
+              </span>{" "}
+              bài viết
+            </p>
+            {isFetching && !isLoading && (
+              <Loader2 className="h-4 w-4 animate-spin text-primary" />
+            )}
+          </div>
+        </div>
       </div>
 
-      {paginatedBlogs.length > 0 ? (
+      {isLoading && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {Array.from({ length: 9 }).map((_, i) => (
+            <Skeleton key={i} className="h-80 rounded-xl" />
+          ))}
+        </div>
+      )}
+
+      {isError && (
+        <Empty>
+          <EmptyHeader>
+            <EmptyTitle>Có lỗi xảy ra</EmptyTitle>
+            <EmptyDescription>
+              Không thể tải danh sách bài viết. Vui lòng thử lại sau.
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
+      )}
+
+      {!isLoading && !isError && blogs.length === 0 && (
+        <Empty>
+          <EmptyHeader>
+            <EmptyTitle>Không tìm thấy bài viết</EmptyTitle>
+            <EmptyDescription>
+              Không tìm thấy bài viết nào khớp với yêu cầu của bạn
+            </EmptyDescription>
+          </EmptyHeader>
+          {activeFiltersCount > 0 && (
+            <Button onClick={resetFilters}>Xóa bộ lọc</Button>
+          )}
+        </Empty>
+      )}
+
+      {!isLoading && !isError && blogs.length > 0 && (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            {paginatedBlogs.map((blog) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
+            {blogs.map((blog) => (
               <BlogCard key={blog.blogId} blog={blog} />
             ))}
           </div>
 
-          {totalPages > 1 && (
-            <div className="mt-8 flex items-center justify-center gap-2">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious href="#" className="rounded-xl" />
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#" className="rounded-xl">
-                      1
-                    </PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationNext href="#" className="rounded-xl" />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
+          {!isLoading && (
+            <div className="mt-8">
+              <CustomPagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={goToPage}
+                onNextPage={nextPage}
+                onPreviousPage={previousPage}
+                hasNextPage={hasNextPage}
+                hasPreviousPage={hasPreviousPage}
+                visiblePageRange={2}
+              />
             </div>
           )}
         </>
-      ) : (
-        <div className="rounded-lg border border-border bg-card p-12 text-center">
-          <p className="text-muted-foreground mb-2">
-            Không tìm thấy bài viết nào
-          </p>
-          <p className="text-sm text-muted-foreground">
-            Thử tìm kiếm với từ khóa khác
-          </p>
-        </div>
       )}
     </>
   );

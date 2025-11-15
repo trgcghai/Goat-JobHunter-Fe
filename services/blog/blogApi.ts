@@ -1,4 +1,5 @@
 import { api } from "@/services/api";
+import { buildSpringQuery } from "@/utils/buildSpringQuery";
 import type {
   CreateBlogRequest,
   CreateBlogResponse,
@@ -45,11 +46,24 @@ export const blogApi = api.injectEndpoints({
     }),
 
     fetchBlogs: builder.query<FetchBlogsResponse, FetchBlogsRequest>({
-      query: (params) => ({
-        url: "/blogs",
-        method: "GET",
-        params,
-      }),
+      query: (params) => {
+        const { params: queryParams } = buildSpringQuery({
+          params,
+          filterFields: ["title", "content", "status", "authorId"],
+          textSearchFields: ["title", "content"], // LIKE search
+          nestedArrayFields: {
+            tags: "tags.name", // Map tags -> tags.name
+          },
+          defaultSort: "createdAt,desc",
+          sortableFields: ["title", "createdAt", "updatedAt"],
+        });
+
+        return {
+          url: "/blogs",
+          method: "GET",
+          params: queryParams,
+        };
+      },
       providesTags: ["Blog"],
     }),
 
