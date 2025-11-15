@@ -35,8 +35,8 @@ export default function RecruiterDetailPage() {
     skip: !recruiterId,
   });
 
-  const { data: jobsResp } = useFetchJobsQuery(
-    { page: 1, limit: 10, recruiterId },
+  const { data: jobsResp, isLoading: isJobsLoading } = useFetchJobsQuery(
+    { page: 1, size: 100, recruiterId }, // Changed limit to size, increased to get all jobs
     { skip: !recruiterId },
   );
 
@@ -45,8 +45,12 @@ export default function RecruiterDetailPage() {
   }, [recruiterResp]);
 
   const recruiterJobs = useMemo(() => {
-    return jobsResp?.data?.result || [];
-  }, [jobsResp]);
+    const jobs = jobsResp?.data?.result || [];
+    // Filter jobs by current recruiter ID
+    return jobs.filter(
+      (job) => job.recruiter?.userId.toString() == recruiterId,
+    );
+  }, [jobsResp, recruiterId]);
 
   if (!recruiter && (isRecruiterLoading || isRecruiterError === false)) {
     return <LoaderSpin />;
@@ -66,9 +70,9 @@ export default function RecruiterDetailPage() {
     return (
       <Empty>
         <EmptyHeader>
-          <EmptyTitle>404 - Không tìm thấy công việc</EmptyTitle>
+          <EmptyTitle>404 - Không tìm thấy nhà tuyển dụng</EmptyTitle>
           <EmptyDescription>
-            Công việc bạn đang tìm kiếm không tồn tại. Hãy thử lại sau.
+            Nhà tuyển dụng bạn đang tìm kiếm không tồn tại. Hãy thử lại sau.
           </EmptyDescription>
         </EmptyHeader>
       </Empty>
@@ -86,14 +90,17 @@ export default function RecruiterDetailPage() {
           Quay lại trang nhà tuyển dụng
         </Link>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:items-start">
           <div className="lg:col-span-2">
-            <Card className="mb-8 py-0">
+            <Card className="mb-8 py-0 h-full flex flex-col">
               <CardHeader className="p-6">
-                <RecruiterHeader recruiter={recruiter} />
+                <RecruiterHeader
+                  recruiter={recruiter}
+                  recruiterJobs={recruiterJobs}
+                />
               </CardHeader>
 
-              <CardContent className="px-6 pb-6">
+              <CardContent className="px-6 pb-6 flex-1">
                 <Separator className="mb-6" />
                 <div>
                   <h2 className="text-xl font-bold text-foreground mb-4">
@@ -114,11 +121,26 @@ export default function RecruiterDetailPage() {
             </Card>
           </div>
 
-          <RecruiterInfo recruiter={recruiter} />
+          <RecruiterInfo recruiter={recruiter} recruiterJobs={recruiterJobs} />
         </div>
 
-        {recruiterJobs.length > 0 && (
+        {isJobsLoading ? (
+          <div className="mt-12">
+            <LoaderSpin />
+          </div>
+        ) : recruiterJobs.length > 0 ? (
           <RecruiterJobs recruiterJobs={recruiterJobs} />
+        ) : (
+          <div className="mt-12">
+            <Empty>
+              <EmptyHeader>
+                <EmptyTitle>Chưa có việc làm</EmptyTitle>
+                <EmptyDescription>
+                  Nhà tuyển dụng này chưa đăng tuyển việc làm nào.
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
+          </div>
         )}
       </div>
     </main>

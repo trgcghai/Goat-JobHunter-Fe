@@ -62,10 +62,16 @@ const RecruiterListCard = ({ recruiter }: RecruiterListCardProps) => {
                   <span>{recruiter.contact.phone}</span>
                 </div>
               </div>
-              <MarkdownDisplay
-                content={recruiter.description}
-                className="text-sm text-foreground line-clamp-2"
-              />
+              {recruiter.description ? (
+                <MarkdownDisplay
+                  content={recruiter.description}
+                  className="text-sm text-foreground line-clamp-2"
+                />
+              ) : (
+                <p className="text-sm text-foreground line-clamp-2">
+                  Không có mô tả
+                </p>
+              )}
               <div className="flex justify-end w-full">
                 <Link href={`/recruiters/${recruiter.userId}`}>
                   <Button className="rounded-xl">
