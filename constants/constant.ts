@@ -1,5 +1,6 @@
 import { Option } from "@/components/ui/MultipleSelector";
-import { WorkingType } from "@/types/enum";
+import { Level, WorkingType } from "@/types/enum";
+import capitalizeText from "@/utils/capitalizeText";
 
 export const SKILL_OPTIONS: Option[] = [
   { value: "React", label: "React" },
@@ -32,7 +33,7 @@ export const WORKING_TYPE_OPTIONS: Option[] = Object.entries(WorkingType).map(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ([_, value]) => ({
     value: value,
-    label: value.charAt(0).toUpperCase() + value.slice(1),
+    label: capitalizeText(value.replace("_", " ").toLowerCase()),
   }),
 );
 
@@ -86,13 +87,15 @@ export const EDUCATION_LIST = [
   { label: "Kỹ sư", value: "ENGINEER" },
 ];
 
-export const LEVEL_OPTIONS: Option[] = [
-  { label: "Fresher", value: "Fresher" },
-  { label: "Junior", value: "Junior" },
-  { label: "Senior", value: "Senior" },
-  { label: "Intern", value: "Intern" },
-  { label: "Middle", value: "Middle" },
-];
+export const LEVEL_OPTIONS: Option[] = Object.entries(Level).map(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  ([_, value]) => {
+    return {
+      value: value,
+      label: capitalizeText(value.replace("_", " ").toLowerCase()),
+    };
+  },
+);
 
 export const JOBFILTER_CONFIG = {
   skill: {
@@ -107,13 +110,13 @@ export const JOBFILTER_CONFIG = {
   },
   level: {
     option: LEVEL_OPTIONS,
-    maxSelected: 5,
-    maxSelectedMessage: "Bạn chỉ có thể chọn tối đa 5 cấp độ",
+    maxSelected: LEVEL_OPTIONS.length - 1,
+    maxSelectedMessage: `Bạn chỉ có thể chọn tối đa ${LEVEL_OPTIONS.length - 1} cấp độ`,
   },
   workingType: {
     option: WORKING_TYPE_OPTIONS,
-    maxSelected: 4,
-    maxSelectedMessage: "Bạn chỉ có thể chọn tối đa 4 hình thức làm việc",
+    maxSelected: WORKING_TYPE_OPTIONS.length - 1,
+    maxSelectedMessage: `Bạn chỉ có thể chọn tối đa ${WORKING_TYPE_OPTIONS.length - 1} hình thức làm việc`,
   },
   recruiter: {
     option: EMPLOYER_OPTIONS,
