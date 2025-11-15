@@ -8,7 +8,6 @@ import {
 } from "@/app/(main)/jobs/[id]/components";
 import ErrorMessage from "@/components/ErrorMessage";
 import LoaderSpin from "@/components/LoaderSpin";
-import MarkdownDisplay from "@/components/MarkdownDisplay";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -41,6 +40,8 @@ export default function JobDetailPage() {
   } = useFetchJobsQuery({ page: 1, limit: 5 }, { skip: !params.id });
 
   const job = useMemo(() => data?.data, [data]);
+
+  console.log(job);
 
   const handleApply = () => {
     console.log("Ứng tuyển vào công việc: " + job?.title);
@@ -81,50 +82,39 @@ export default function JobDetailPage() {
         )}
 
         {job && isSuccess && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              <Card className="mb-8 py-0">
-                <JobHeader job={job} />
+          <>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+              <div className="lg:col-span-2">
+                <Card className="mb-8 py-0 h-full">
+                  <JobHeader job={job} />
 
-                <CardContent className="px-6 pb-6">
-                  <Separator className="mb-4" />
-                  <JobInfoGrid job={job} />
-                  <Separator className="my-4" />
+                  <CardContent className="px-6 pb-6">
+                    <Separator className="mb-4" />
+                    <JobInfoGrid job={job} />
 
-                  <div>
-                    <h2 className="text-xl font-bold text-foreground mb-4">
-                      Mô Tả Công Việc
-                    </h2>
-                    <MarkdownDisplay
-                      content={job.description}
-                      className="text-muted-foreground whitespace-pre-line"
-                    />
-                  </div>
-
-                  <Separator className="my-6" />
-                  <div>
-                    <h2 className="text-xl font-bold text-foreground mb-4">
-                      Kỹ Năng Yêu Cầu
-                    </h2>
-                    <div className="flex flex-wrap gap-2">
-                      {(job?.skills || []).map((skill) => (
-                        <Badge
-                          key={skill.skillId}
-                          variant="outline"
-                          className="text-sm"
-                        >
-                          {skill.name}
-                        </Badge>
-                      ))}
+                    <Separator className="my-6" />
+                    <div>
+                      <h2 className="text-xl font-bold text-foreground mb-4">
+                        Kỹ Năng Yêu Cầu
+                      </h2>
+                      <div className="flex flex-wrap gap-2">
+                        {(job?.skills || []).map((skill) => (
+                          <Badge
+                            key={skill.skillId}
+                            variant="outline"
+                            className="text-sm"
+                          >
+                            {skill.name}
+                          </Badge>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                  </CardContent>
+                </Card>
+              </div>
 
-            <div className="lg:col-span-1">
-              <div className="sticky top-24 space-y-6">
-                <Card className="p-6">
+              <div className="lg:col-span-1">
+                <Card className="p-6 h-full">
                   <div className="space-y-3">
                     <Button
                       onClick={handleApply}
@@ -145,15 +135,14 @@ export default function JobDetailPage() {
                   </div>
                   <JobInfoSidebar job={job} />
                 </Card>
-
-                <RelatedJobs
-                  jobs={relatedJobs?.data?.result || []}
-                  isLoading={isRelatedJobsLoading}
-                  isError={isRelatedJobsError}
-                />
               </div>
             </div>
-          </div>
+            <RelatedJobs
+              jobs={relatedJobs?.data?.result || []}
+              isLoading={isRelatedJobsLoading}
+              isError={isRelatedJobsError}
+            />
+          </>
         )}
       </div>
     </main>

@@ -1,4 +1,3 @@
-import MarkdownDisplay from "@/components/MarkdownDisplay";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -102,12 +101,7 @@ const JobListCard = ({
               </div>
             </CardHeader>
 
-            <CardContent className="p-0 mb-4">
-              <MarkdownDisplay
-                content={job.description}
-                className="prose max-w-none rounded text-sm text-foreground line-clamp-2 mb-4"
-              />
-
+            <CardContent className="p-0 mb-0">
               {job.skills && job.skills.length > 0 && (
                 <div className="flex flex-wrap gap-1">
                   {job.skills.map((skill) => (

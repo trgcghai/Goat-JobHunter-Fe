@@ -56,7 +56,6 @@ export type Career = {
 
 export type Job = {
   jobId: number;
-  description: string;
   startDate: string;
   endDate: string;
   active: boolean;
