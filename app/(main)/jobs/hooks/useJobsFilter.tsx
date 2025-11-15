@@ -7,10 +7,9 @@ export interface JobFilters {
   employer?: string[];
   level?: string[];
   workingType?: string[];
-  keyword?: string;
-  salary?: string;
-  career?: string;
-  status?: string;
+  title?: string;
+  salary?: number;
+  active?: boolean;
   recruiterId?: string;
 }
 
@@ -30,19 +29,47 @@ export const useJobsFilter = (options?: UseJobsFilterOptions) => {
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [filters, setFilters] = useState<JobFilters>(initialFilters);
 
-  // Build query params
+  // Build query params matching FetchJobsRequest
   const queryParams = useMemo(() => {
-    return {
+    const params: Record<string, string | number | string[] | boolean> = {
       page: currentPage,
-      limit: itemsPerPage,
-      sortBy: "createdAt",
-      ...filters,
-      // Convert arrays to comma-separated strings
-      location: filters.location?.join(","),
-      skills: filters.skills?.join(","),
-      level: filters.level?.join(","),
-      workingType: filters.workingType?.join(","),
+      size: itemsPerPage, // Changed from 'limit' to 'size'
     };
+
+    // Add filters
+    if (filters.title) {
+      params.title = filters.title;
+    }
+
+    if (filters.location && filters.location.length > 0) {
+      params.location = filters.location.join(",");
+    }
+
+    if (filters.level && filters.level.length > 0) {
+      params.level = filters.level; // API accepts string[] or string
+    }
+
+    if (filters.workingType && filters.workingType.length > 0) {
+      params.workingType = filters.workingType; // API accepts string[] or string
+    }
+
+    if (filters.skills && filters.skills.length > 0) {
+      params.skills = filters.skills; // API accepts string[]
+    }
+
+    if (filters.salary !== undefined) {
+      params.salary = filters.salary;
+    }
+
+    if (filters.active !== undefined) {
+      params.active = filters.active;
+    }
+
+    if (filters.recruiterId) {
+      params.recruiterId = filters.recruiterId;
+    }
+
+    return params;
   }, [currentPage, itemsPerPage, filters]);
 
   // Fetch jobs with RTK Query

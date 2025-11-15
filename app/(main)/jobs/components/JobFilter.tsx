@@ -32,12 +32,6 @@ export default function JobFilter({
     });
   };
 
-  const handleEmployerChange = (options: Option[]) => {
-    onFilterChange({
-      employer: options.map((opt) => opt.value),
-    });
-  };
-
   const handleLevelChange = (options: Option[]) => {
     onFilterChange({
       level: options.map((opt) => opt.value),
@@ -60,12 +54,6 @@ export default function JobFilter({
     filters.location?.map((location) => ({
       value: location,
       label: location,
-    })) || [];
-
-  const selectedEmployer: Option[] =
-    filters.employer?.map((employer) => ({
-      value: employer,
-      label: employer,
     })) || [];
 
   const selectedLevel: Option[] =
@@ -114,27 +102,11 @@ export default function JobFilter({
               toast.info(JOBFILTER_CONFIG.skill.maxSelectedMessage)
             }
             maxSelected={JOBFILTER_CONFIG.skill.maxSelected}
+            creatable={true}
             placeholder="Tìm kiếm theo kỹ năng..."
             emptyIndicator={
               <p className="text-center text-sm text-muted-foreground">
                 Không tìm thấy kỹ năng
-              </p>
-            }
-            className="rounded-xl w-full"
-          />
-
-          <MultipleSelector
-            value={selectedLocation}
-            onChange={handleLocationChange}
-            defaultOptions={JOBFILTER_CONFIG.location.option}
-            placeholder="Tìm kiếm theo địa điểm..."
-            maxSelected={JOBFILTER_CONFIG.location.maxSelected}
-            onMaxSelected={() =>
-              toast.info(JOBFILTER_CONFIG.location.maxSelectedMessage)
-            }
-            emptyIndicator={
-              <p className="text-center text-sm text-muted-foreground">
-                Không tìm thấy địa điểm
               </p>
             }
             className="rounded-xl w-full"
@@ -160,6 +132,23 @@ export default function JobFilter({
 
         <div className="flex items-center gap-4">
           <MultipleSelector
+            value={selectedLocation}
+            onChange={handleLocationChange}
+            defaultOptions={JOBFILTER_CONFIG.location.option}
+            placeholder="Tìm kiếm theo địa điểm..."
+            maxSelected={JOBFILTER_CONFIG.location.maxSelected}
+            onMaxSelected={() =>
+              toast.info(JOBFILTER_CONFIG.location.maxSelectedMessage)
+            }
+            emptyIndicator={
+              <p className="text-center text-sm text-muted-foreground">
+                Không tìm thấy địa điểm
+              </p>
+            }
+            className="rounded-xl w-full"
+          />
+
+          <MultipleSelector
             value={selectedWorkingType}
             onChange={handleWorkingTypeChange}
             defaultOptions={JOBFILTER_CONFIG.workingType.option}
@@ -171,23 +160,6 @@ export default function JobFilter({
             emptyIndicator={
               <p className="text-center text-sm text-muted-foreground">
                 Không tìm thấy hình thức
-              </p>
-            }
-            className="rounded-xl w-full"
-          />
-
-          <MultipleSelector
-            value={selectedEmployer}
-            onChange={handleEmployerChange}
-            defaultOptions={JOBFILTER_CONFIG.recruiter.option}
-            placeholder="Tìm kiếm nhà tuyển dụng..."
-            maxSelected={JOBFILTER_CONFIG.recruiter.maxSelected}
-            onMaxSelected={() =>
-              toast.info(JOBFILTER_CONFIG.recruiter.maxSelectedMessage)
-            }
-            emptyIndicator={
-              <p className="text-center text-sm text-muted-foreground">
-                Không tìm thấy nhà tuyển dụng
               </p>
             }
             className="rounded-xl w-full"

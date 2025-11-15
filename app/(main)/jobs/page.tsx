@@ -2,6 +2,7 @@
 
 import { JobFilter, JobList } from "@/app/(main)/jobs/components";
 import useJobsFilter from "@/app/(main)/jobs/hooks/useJobsFilter";
+import CustomPagination from "@/components/CustomPagination";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -9,15 +10,6 @@ import {
   EmptyHeader,
   EmptyTitle,
 } from "@/components/ui/empty";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Grid3x3, List, Loader2 } from "lucide-react";
 import { useState } from "react";
@@ -48,18 +40,10 @@ export default function JobsPage() {
     initialFilters: {
       location: [],
       skills: [],
-      employer: [],
       level: [],
       workingType: [],
     },
   });
-
-  // Generate page numbers for pagination
-  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
-  const visiblePages = pageNumbers.slice(
-    Math.max(0, currentPage - 2),
-    Math.min(totalPages, currentPage + 1),
-  );
 
   return (
     <main className="flex-1">
@@ -137,9 +121,6 @@ export default function JobsPage() {
                     Không thể tải danh sách công việc. Vui lòng thử lại sau.
                   </EmptyDescription>
                 </EmptyHeader>
-                <Button onClick={() => window.location.reload()}>
-                  Thử lại
-                </Button>
               </Empty>
             )}
 
@@ -166,77 +147,18 @@ export default function JobsPage() {
               />
             )}
 
-            {totalPages > 1 && !isLoading && (
-              <div className="mt-8 flex items-center justify-center gap-2">
-                <Pagination>
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious
-                        onClick={previousPage}
-                        className={`rounded-xl cursor-pointer ${
-                          !hasPreviousPage && "pointer-events-none opacity-50"
-                        }`}
-                      />
-                    </PaginationItem>
-
-                    {currentPage > 2 && (
-                      <>
-                        <PaginationItem>
-                          <PaginationLink
-                            onClick={() => goToPage(1)}
-                            className="rounded-xl cursor-pointer"
-                          >
-                            1
-                          </PaginationLink>
-                        </PaginationItem>
-                        {currentPage > 3 && (
-                          <PaginationItem>
-                            <PaginationEllipsis />
-                          </PaginationItem>
-                        )}
-                      </>
-                    )}
-
-                    {visiblePages.map((page) => (
-                      <PaginationItem key={page}>
-                        <PaginationLink
-                          onClick={() => goToPage(page)}
-                          isActive={page === currentPage}
-                          className="rounded-xl cursor-pointer"
-                        >
-                          {page}
-                        </PaginationLink>
-                      </PaginationItem>
-                    ))}
-
-                    {currentPage < totalPages - 1 && (
-                      <>
-                        {currentPage < totalPages - 2 && (
-                          <PaginationItem>
-                            <PaginationEllipsis />
-                          </PaginationItem>
-                        )}
-                        <PaginationItem>
-                          <PaginationLink
-                            onClick={() => goToPage(totalPages)}
-                            className="rounded-xl cursor-pointer"
-                          >
-                            {totalPages}
-                          </PaginationLink>
-                        </PaginationItem>
-                      </>
-                    )}
-
-                    <PaginationItem>
-                      <PaginationNext
-                        onClick={nextPage}
-                        className={`rounded-xl cursor-pointer ${
-                          !hasNextPage && "pointer-events-none opacity-50"
-                        }`}
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
+            {!isLoading && (
+              <div className="mt-8">
+                <CustomPagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={goToPage}
+                  onNextPage={nextPage}
+                  onPreviousPage={previousPage}
+                  hasNextPage={hasNextPage}
+                  hasPreviousPage={hasPreviousPage}
+                  visiblePageRange={2}
+                />
               </div>
             )}
           </div>

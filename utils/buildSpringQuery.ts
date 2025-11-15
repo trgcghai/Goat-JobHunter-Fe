@@ -78,7 +78,7 @@ export const buildSpringQuery = (
 
   // Xử lý pagination
   if (clone.page !== undefined) {
-    clone.page = Number(clone.page) - 1; // Backend dùng 0-indexed
+    clone.page = Number(clone.page);
   }
 
   if (clone.limit !== undefined) {
