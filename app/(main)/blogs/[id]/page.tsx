@@ -4,33 +4,44 @@ import {
   BlogActions,
   CommentSection,
 } from "@/app/(main)/blogs/[id]/components";
+import ErrorMessage from "@/components/ErrorMessage";
+import LoaderSpin from "@/components/LoaderSpin";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { allBlogs } from "@/constants/sample";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { useFetchBlogByIdQuery } from "@/services/blog/blogApi";
 import { formatDate } from "@/utils/formatDate";
 import { ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useMemo } from "react";
 
 const DetailBlogPage = () => {
   const params = useParams<{ id: string }>();
-  const blog = allBlogs.find((b) => b.blogId === params.id);
+
+  const { data, isLoading, isError } = useFetchBlogByIdQuery(params.id, {
+    skip: !params.id,
+  });
+
+  const blog = useMemo(() => {
+    return data?.data;
+  }, [data]);
 
   if (!blog) {
     return (
-      <main className="min-h-screen bg-background">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-foreground mb-4">
-              Không tìm thấy bài viết
-            </h1>
-            <Link href="/blogs">
-              <Button>Quay lại trang blog</Button>
-            </Link>
-          </div>
-        </div>
-      </main>
+      <Empty>
+        <EmptyHeader>
+          <EmptyTitle>404 - Không tìm thấy bài viết</EmptyTitle>
+          <EmptyDescription>
+            Bài viết bạn đang tìm kiếm không tồn tại. Hãy thử lại sau.
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
     );
   }
 
@@ -73,6 +84,12 @@ const DetailBlogPage = () => {
         <ChevronLeft className="w-4 h-4 mr-1" />
         Quay lại trang blog
       </Link>
+
+      {isLoading && <LoaderSpin />}
+
+      {isError && (
+        <ErrorMessage message="Có lỗi xảy ra khi tải thông tin bài viết. Vui lòng thử lại sau." />
+      )}
 
       {blog.banner && (
         <div className="relative w-full h-96 rounded-xl overflow-hidden mb-8">
@@ -133,8 +150,7 @@ const DetailBlogPage = () => {
             ))
           ) : (
             <p className="text-foreground leading-relaxed">
-              Nội dung bài viết sẽ được hiển thị ở đây. Đây là một bài viết mẫu
-              về {blog.title.toLowerCase()}.
+              Bài viết này hiện chưa có nội dung.
             </p>
           )}
         </div>
