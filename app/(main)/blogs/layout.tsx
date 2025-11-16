@@ -2,7 +2,10 @@
 
 import { TrendingBlogCard } from "@/app/(main)/blogs/components";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { allBlogs } from "@/constants/sample";
+import {
+  useFetchPopularBlogsQuery,
+  useFetchTagsQuery,
+} from "@/services/blog/blogApi";
 import { Tag, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
@@ -12,28 +15,20 @@ export default function BlogLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Get trending blogs (most reads)
-  const trendingBlogs = useMemo(() => {
-    return [...allBlogs]
-      .sort(
-        (a, b) => (b.activity?.totalReads || 0) - (a.activity?.totalReads || 0),
-      )
-      .slice(0, 5);
-  }, []);
+  const { data: tagsResponse } = useFetchTagsQuery({});
 
-  // Get all unique tags
   const popularTags = useMemo(() => {
-    const tagCount = new Map<string, number>();
-    allBlogs.forEach((blog) => {
-      blog.tags?.forEach((tag) => {
-        tagCount.set(tag, (tagCount.get(tag) || 0) + 1);
-      });
-    });
-    return Array.from(tagCount.entries())
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 10)
-      .map(([tag]) => tag);
-  }, []);
+    return tagsResponse?.data || [];
+  }, [tagsResponse]);
+
+  const { data: blogsResponse } = useFetchPopularBlogsQuery({
+    page: 1,
+    size: 5,
+  });
+
+  const trendingBlogs = useMemo(() => {
+    return blogsResponse?.data?.result || [];
+  }, [blogsResponse]);
 
   return (
     <div className="flex-1">
@@ -65,17 +60,25 @@ export default function BlogLayout({
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                      {popularTags.map((tag) => (
-                        <Link
-                          key={tag}
-                          href={`/blogs?tag=${tag}`}
-                          className="text-xs font-semibold text-primary bg-primary/10 px-3 py-1.5 rounded-full hover:bg-primary/20 transition-colors"
-                        >
-                          {tag}
-                        </Link>
-                      ))}
-                    </div>
+                    {popularTags.length > 0 ? (
+                      <div className="flex flex-wrap gap-2">
+                        {popularTags
+                          .map((item) => item[0])
+                          .map((tag) => (
+                            <Link
+                              key={tag}
+                              href={`/blogs?tags=${encodeURIComponent(tag)}`}
+                              className="text-xs font-semibold text-primary bg-primary/10 px-3 py-1.5 rounded-full hover:bg-primary/20 transition-colors"
+                            >
+                              {tag}
+                            </Link>
+                          ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        Chưa có tag nào
+                      </p>
+                    )}
                   </CardContent>
                 </Card>
 
@@ -89,15 +92,21 @@ export default function BlogLayout({
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-4">
-                      {trendingBlogs.map((blog, index) => (
-                        <TrendingBlogCard
-                          key={blog.blogId}
-                          blog={blog}
-                          index={index}
-                        />
-                      ))}
-                    </div>
+                    {trendingBlogs.length > 0 ? (
+                      <div className="space-y-4">
+                        {trendingBlogs.map((blog, index) => (
+                          <TrendingBlogCard
+                            key={blog.blogId}
+                            blog={blog}
+                            index={index}
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        Chưa có bài viết xu hướng
+                      </p>
+                    )}
                   </CardContent>
                 </Card>
               </div>

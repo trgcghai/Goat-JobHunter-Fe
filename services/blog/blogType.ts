@@ -48,4 +48,4 @@ export type FetchTagsRequest = {
   keyword?: string;
 };
 
-export type FetchTagsResponse = IBackendRes<string[]>;
+export type FetchTagsResponse = IBackendRes<[[string, number]]>;

@@ -3,12 +3,9 @@
 import { BlogFilters } from "@/app/(main)/blogs/hooks/useBlogsFilter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import MultipleSelector, { Option } from "@/components/ui/MultipleSelector";
-import { useFetchTagsQuery } from "@/services/blog/blogApi";
 import { debounce } from "lodash";
-import { Search, X } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
+import { X } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 
 interface BlogFilterProps {
   filters: BlogFilters;
@@ -25,16 +22,6 @@ export default function BlogFilter({
 }: BlogFilterProps) {
   // Local state for input value
   const [titleInput, setTitleInput] = useState(filters.title || "");
-
-  // Fetch tags from API
-  const { data: tagsResponse } = useFetchTagsQuery({});
-  const tagOptions: Option[] = useMemo(() => {
-    const tags = tagsResponse?.data || [];
-    return tags.map((tag) => ({
-      value: tag,
-      label: tag,
-    }));
-  }, [tagsResponse]);
 
   // Debounced filter change handler
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -58,12 +45,6 @@ export default function BlogFilter({
     debouncedFilterChange(value);
   };
 
-  const handleTagsChange = (options: Option[]) => {
-    onFilterChange({
-      tags: options.map((opt) => opt.value),
-    });
-  };
-
   const handleSearch = () => {
     debouncedFilterChange.cancel();
     onFilterChange({ title: titleInput });
@@ -74,12 +55,6 @@ export default function BlogFilter({
       handleSearch();
     }
   };
-
-  const selectedTags: Option[] =
-    filters.tags?.map((tag) => ({
-      value: tag,
-      label: tag,
-    })) || [];
 
   return (
     <div className="bg-white rounded-xl border border-border p-6 mb-8">
@@ -104,7 +79,7 @@ export default function BlogFilter({
         )}
       </div>
 
-      <div className="mb-4 space-y-4">
+      <div className="mb-4">
         <div className="flex items-center gap-4">
           <Input
             type="text"
@@ -112,31 +87,8 @@ export default function BlogFilter({
             value={titleInput}
             onChange={handleTitleChange}
             onKeyPress={handleKeyPress}
-            className="rounded-xl w-full"
+            className="rounded-xl flex-1"
           />
-
-          <MultipleSelector
-            value={selectedTags}
-            onChange={handleTagsChange}
-            defaultOptions={tagOptions}
-            placeholder="Chọn thẻ..."
-            maxSelected={5}
-            onMaxSelected={() => toast.info("Bạn chỉ có thể chọn tối đa 5 thẻ")}
-            emptyIndicator={
-              <p className="text-center text-sm text-muted-foreground">
-                Không tìm thấy thẻ
-              </p>
-            }
-            className="rounded-xl w-full"
-          />
-
-          <Button
-            onClick={handleSearch}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl"
-          >
-            <Search className="h-4 w-4 mr-2" />
-            Tìm kiếm
-          </Button>
         </div>
       </div>
     </div>

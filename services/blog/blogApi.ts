@@ -67,6 +67,41 @@ export const blogApi = api.injectEndpoints({
       providesTags: ["Blog"],
     }),
 
+    fetchPopularBlogs: builder.query<FetchBlogsResponse, FetchBlogsRequest>({
+      query: (params) => {
+        // Override sort to prioritize reads and likes
+        const modifiedParams = {
+          ...params,
+          sort: "activity.totalReads,desc", // Sort by reads descending
+        };
+
+        const { params: queryParams } = buildSpringQuery({
+          params: modifiedParams,
+          filterFields: ["title", "content", "status", "authorId"],
+          textSearchFields: ["title", "content"],
+          nestedArrayFields: {
+            tags: "tags.name",
+          },
+          defaultSort: "activity.totalReads,desc", // Default sort by reads
+          sortableFields: [
+            "title",
+            "createdAt",
+            "updatedAt",
+            "activity.totalReads",
+            "activity.totalLikes",
+            "activity.totalComments",
+          ],
+        });
+
+        return {
+          url: "/blogs",
+          method: "GET",
+          params: queryParams,
+        };
+      },
+      providesTags: ["Blog"],
+    }),
+
     fetchBlogById: builder.query<FetchBlogByIdResponse, FetchBlogByIdRequest>({
       query: (blogId) => ({
         url: `/blogs/${blogId}`,
@@ -99,6 +134,7 @@ export const {
   useUpdateBlogMutation,
   useDeleteBlogMutation,
   useFetchBlogsQuery,
+  useFetchPopularBlogsQuery,
   useFetchBlogByIdQuery,
   useLikeBlogMutation,
   useFetchTagsQuery,
