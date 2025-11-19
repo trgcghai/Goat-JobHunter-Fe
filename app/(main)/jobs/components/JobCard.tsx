@@ -5,7 +5,7 @@ import JobListCard from "@/app/(main)/jobs/components/JobListCard";
 import { useUser } from "@/hooks/useUser";
 import { useSaveJobsMutation } from "@/services/user/userApi";
 import { Job } from "@/types/model";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface JobCardProps {
@@ -21,23 +21,47 @@ export default function JobCard({
   onLevelClick,
   onWorkingTypeClick,
 }: JobCardProps) {
-  const [isSaved, setIsSaved] = useState(false);
   const [saveJobs, { isSuccess, isError }] = useSaveJobsMutation();
   const { isSignedIn, user } = useUser();
+  const [isSaved, setIsSaved] = useState(false);
+
+  useEffect(() => {
+    if (isSignedIn && user) {
+      const saved = user.savedJobs.some(
+        (savedJob) => savedJob.jobId === job.jobId,
+      );
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsSaved(saved);
+    }
+  }, [isSignedIn, job.jobId, user]);
 
   const handleSaveJob = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     if (!isSignedIn || !user) {
       toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
       return;
     }
 
-    e.preventDefault();
-    e.stopPropagation();
     setIsSaved(!isSaved);
-    // TODO: Call API to save/unsave job
-    console.log(isSaved ? "Unsaving job:" : "Saving job:", job.jobId);
 
-    await saveJobs({ userId: user.userId, savedJobs: [{ jobId: job.jobId }] });
+    if (isSaved) {
+      await saveJobs({
+        userId: user.userId,
+        savedJobs: user.savedJobs
+          .filter((job) => job.jobId !== job.jobId)
+          .map((j) => ({ jobId: j.jobId })),
+      });
+    } else {
+      await saveJobs({
+        userId: user.userId,
+        savedJobs: [
+          ...user.savedJobs.map((j) => ({ jobId: j.jobId })),
+          { jobId: job.jobId },
+        ],
+      });
+    }
 
     if (isSuccess) {
       toast.success(

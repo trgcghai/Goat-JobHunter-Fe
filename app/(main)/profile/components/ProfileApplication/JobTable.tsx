@@ -8,24 +8,42 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Job } from "@/types/model";
+import { useUser } from "@/hooks/useUser";
+import { useSaveJobsMutation } from "@/services/user/userApi";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { formatDate } from "@/utils/formatDate";
 import { ExternalLink, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
-interface JobTableProps {
-  jobs: Job[];
-}
+const JobTable = () => {
+  const { user } = useUser();
+  const [saveJobs, { isSuccess, isError }] = useSaveJobsMutation();
 
-const JobTable = ({ jobs }: JobTableProps) => {
-  if (jobs.length === 0) {
+  if ((user?.savedJobs || []).length === 0) {
     return <EmptyTable type="jobs" />;
   }
 
-  const handleUnsaveJob = (jobId: number) => {
-    // TODO: Implement unsave job logic
-    console.log("Unsave job:", jobId);
+  const handleUnsaveJob = async (jobId: number) => {
+    if (!user) {
+      toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
+      return;
+    }
+
+    await saveJobs({
+      userId: user.userId,
+      savedJobs: user.savedJobs
+        .filter((job) => job.jobId !== jobId)
+        .map((j) => ({ jobId: j.jobId })),
+    });
+
+    if (isSuccess) {
+      toast.success("Đã bỏ lưu công việc.");
+    }
+
+    if (isError) {
+      toast.error("Đã xảy ra lỗi. Vui lòng thử lại.");
+    }
   };
 
   return (
@@ -34,7 +52,7 @@ const JobTable = ({ jobs }: JobTableProps) => {
         <TableHeader>
           <TableRow>
             <TableHead>Tiêu đề</TableHead>
-            <TableHead>Công ty</TableHead>
+            <TableHead>Nhà tuyển dụng</TableHead>
             <TableHead>Địa điểm</TableHead>
             <TableHead>Mức lương</TableHead>
             <TableHead>Ngày bắt đầu</TableHead>
@@ -43,7 +61,7 @@ const JobTable = ({ jobs }: JobTableProps) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {jobs.map((job) => {
+          {(user?.savedJobs || []).map((job) => {
             const recruiter =
               typeof job.recruiter === "object" ? job.recruiter : undefined;
 

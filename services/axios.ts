@@ -38,12 +38,7 @@ const processQueue = (error: any, success: boolean = false) => {
 
 const refreshToken = async (): Promise<boolean> => {
   try {
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
-      {
-        withCredentials: true,
-      },
-    );
+    const response = await axiosClient.get(`/auth/refresh`);
 
     console.log("Refresh token success");
     return response.status === 200;

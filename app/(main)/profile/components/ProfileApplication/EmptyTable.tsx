@@ -20,7 +20,7 @@ const EmptyTable = ({ type }: EmptyTableProps) => {
         "Bạn chưa lưu việc làm nào. Bắt đầu khám phá và lưu những việc làm thú vị ngay hôm nay!",
     },
     applications: {
-      title: "Không có ứng tuyển nào đã lưu",
+      title: "Bạn chưa ứng tuyển vị trí nào",
       description:
         "Bạn chưa ứng tuyển vị trí nào. Bắt đầu khám phá và ứng tuyển những vị trí thú vị ngay hôm nay!",
     },

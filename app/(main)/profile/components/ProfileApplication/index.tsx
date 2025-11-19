@@ -4,16 +4,14 @@ import ApplicationTable from "@/app/(main)/profile/components/ProfileApplication
 import JobTable from "@/app/(main)/profile/components/ProfileApplication/JobTable";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Application, Job } from "@/types/model";
+import { Application } from "@/types/model";
 
 interface ProfileApplicationsProps {
   applications: Application[];
-  jobs: Job[];
 }
 
 export default function ProfileApplications({
   applications,
-  jobs,
 }: ProfileApplicationsProps) {
   return (
     <Card className="p-6">
@@ -32,7 +30,7 @@ export default function ProfileApplications({
         </TabsContent>
 
         <TabsContent value="saved">
-          <JobTable jobs={jobs} />
+          <JobTable />
         </TabsContent>
       </Tabs>
     </Card>

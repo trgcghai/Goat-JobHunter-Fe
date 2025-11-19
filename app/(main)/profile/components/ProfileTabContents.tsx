@@ -16,7 +16,7 @@ const ProfileTabContents = ({ user }: ProfileTabContentsProps) => {
   return (
     <>
       <TabsContent value="applications" className="space-y-4">
-        <ProfileApplication applications={[]} jobs={user?.savedJobs || []} />
+        <ProfileApplication applications={[]} />
       </TabsContent>
 
       <TabsContent value="notifications" className="space-y-4">
