@@ -19,7 +19,7 @@ const ApplicationTable = ({
   applications: Application[];
 }) => {
   if (applications.length === 0) {
-    return <EmptyTable />;
+    return <EmptyTable type="applications" />;
   }
 
   return (

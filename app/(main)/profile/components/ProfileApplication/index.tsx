@@ -1,30 +1,20 @@
 "use client";
 
 import ApplicationTable from "@/app/(main)/profile/components/ProfileApplication/ApplicationTable";
+import JobTable from "@/app/(main)/profile/components/ProfileApplication/JobTable";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { applications } from "@/constants/sample";
-import { useMemo } from "react";
+import { Application, Job } from "@/types/model";
 
-export default function ProfileApplications() {
-  // Filter applications by status
-  const appliedJobs = useMemo(
-    () =>
-      applications.filter(
-        (app) =>
-          app.status !== "Withdrawn" &&
-          app.status !== "Deleted" &&
-          !app.isDeleted,
-      ),
-    [],
-  );
+interface ProfileApplicationsProps {
+  applications: Application[];
+  jobs: Job[];
+}
 
-  const savedJobs = useMemo(
-    () =>
-      applications.filter((app) => app.status === "Saved" && !app.isDeleted),
-    [],
-  );
-
+export default function ProfileApplications({
+  applications,
+  jobs,
+}: ProfileApplicationsProps) {
   return (
     <Card className="p-6">
       <Tabs defaultValue="applied" className="w-full rounded-xl">
@@ -38,11 +28,11 @@ export default function ProfileApplications() {
         </TabsList>
 
         <TabsContent value="applied">
-          <ApplicationTable applications={appliedJobs} />
+          <ApplicationTable applications={applications} />
         </TabsContent>
 
         <TabsContent value="saved">
-          <ApplicationTable applications={savedJobs} />
+          <JobTable jobs={jobs} />
         </TabsContent>
       </Tabs>
     </Card>

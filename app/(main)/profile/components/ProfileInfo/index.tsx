@@ -56,7 +56,7 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
                 id="fullName"
                 value={profile.fullName || "Chưa cập nhật"}
                 disabled
-                className="rounded-xl"
+                className="rounded-xl text-gray-800"
               />
             </div>
             <div className="space-y-2">
@@ -67,7 +67,7 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
                 id="username"
                 value={profile.username || "Chưa cập nhật"}
                 disabled
-                className="rounded-xl"
+                className="rounded-xl text-gray-800"
               />
             </div>
           </div>
@@ -82,7 +82,7 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
                 type="email"
                 value={profile.contact.email || "Chưa cập nhật"}
                 disabled
-                className="rounded-xl"
+                className="rounded-xl text-gray-800"
               />
             </div>
             <div className="space-y-2">
@@ -93,7 +93,7 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
                 id="phone"
                 value={profile.contact?.phone || "Chưa cập nhật"}
                 disabled
-                className="rounded-xl"
+                className="rounded-xl text-gray-800"
               />
             </div>
           </div>
@@ -111,7 +111,7 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
                   "Chưa cập nhật"
                 }
                 disabled
-                className="rounded-xl"
+                className="rounded-xl text-gray-800"
               />
             </div>
             <div className="space-y-2">
@@ -122,21 +122,7 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
                 id="dob"
                 value={capitalize(profile.dob) || "Chưa cập nhật"}
                 disabled
-                className="rounded-xl capitalize"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2 col-span-2">
-              <Label className="capitalize" htmlFor="type">
-                Loại Tài Khoản
-              </Label>
-              <Input
-                id="type"
-                value={capitalize(profile.type) || "Chưa cập nhật"}
-                disabled
-                className="rounded-xl capitalize"
+                className="rounded-xl text-gray-800"
               />
             </div>
           </div>
@@ -151,7 +137,7 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
                   id="address"
                   value={profile.address || "Chưa cập nhật"}
                   disabled
-                  className="rounded-xl"
+                  className="rounded-xl text-gray-800"
                 />
               </div>
 
