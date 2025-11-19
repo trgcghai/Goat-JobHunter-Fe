@@ -46,7 +46,7 @@ export function ApplicantForm({
   ...props
 }: ApplicantFormProps) {
   const router = useRouter();
-  const { applicantSignUp } = useUser();
+  const { applicantSignUp, isSigningUp } = useUser();
   const signUpForm = useForm<TApplicantSchema>({
     resolver: zodResolver(ApplicantSchema),
     defaultValues: {
@@ -64,7 +64,6 @@ export function ApplicantForm({
 
   const onSubmit = async (data: TApplicantSchema) => {
     try {
-      console.log("Sign up applicant data:", data);
       const result = await applicantSignUp({
         ...data,
         contact: { email: data.email },
@@ -180,9 +179,11 @@ export function ApplicantForm({
               <Button
                 type="submit"
                 className="rounded-xl w-full"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isSigningUp}
               >
-                {isSubmitting ? "Đang tạo tài khoản..." : "Tạo tài khoản"}
+                {isSubmitting || isSigningUp
+                  ? "Đang tạo tài khoản..."
+                  : "Tạo tài khoản"}
               </Button>
 
               <FieldDescription className="text-center text-gray-400">

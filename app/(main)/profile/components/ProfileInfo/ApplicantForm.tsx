@@ -75,6 +75,9 @@ const ApplicantForm = ({ open, onOpenChange, profile }: ApplicantFormProps) => {
       console.error("Failed to update applicant:", error);
       toast.error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
     }
+
+    onOpenChange(false);
+    form.reset();
   };
 
   const handleCancel = () => {
@@ -93,131 +96,126 @@ const ApplicantForm = ({ open, onOpenChange, profile }: ApplicantFormProps) => {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="md:col-span-2 space-y-4">
-                <FormField
-                  control={form.control}
-                  name="fullName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Họ và tên</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          className="rounded-xl"
-                          placeholder="Họ và tên"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="username"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Tên hiển thị</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          className="rounded-xl"
-                          placeholder="Tên hiển thị"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="email"
-                          disabled
-                          className="rounded-xl"
-                          placeholder="Email"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Số điện thoại</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          className="rounded-xl"
-                          placeholder="Số điện thoại"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="dob"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Ngày sinh</FormLabel>
-                      <FormControl>
-                        <DatePicker
-                          {...field}
-                          placeholder="Ngày sinh"
-                          value={field.value}
-                          onChange={field.onChange}
-                          className="rounded-xl w-full border border-gray-300"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="gender"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Giới tính</FormLabel>
-                      <FormControl>
-                        <RadioGroup
-                          {...field}
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          defaultValue="comfortable"
-                          className="space-y-2"
-                        >
-                          {Object.entries(Gender).map(([key, value]) => {
-                            return (
-                              <div
-                                key={key}
-                                className="flex items-center gap-3"
-                              >
-                                <RadioGroupItem value={value} id={`r-${key}`} />
-                                <Label htmlFor={`r-${key}`}>
-                                  {capitalizeText(key)}
-                                </Label>
-                              </div>
-                            );
-                          })}
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+            <div className="grid grid-cols-1 gap-6">
+              <FormField
+                control={form.control}
+                name="fullName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Họ và tên</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        className="rounded-xl"
+                        placeholder="Họ và tên"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tên hiển thị</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        className="rounded-xl"
+                        placeholder="Tên hiển thị"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="email"
+                        disabled
+                        className="rounded-xl"
+                        placeholder="Email"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Số điện thoại</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        className="rounded-xl"
+                        placeholder="Số điện thoại"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dob"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Ngày sinh</FormLabel>
+                    <FormControl>
+                      <DatePicker
+                        {...field}
+                        placeholder="Ngày sinh"
+                        value={field.value}
+                        onChange={field.onChange}
+                        className="rounded-xl w-full border border-gray-300"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="gender"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Giới tính</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        {...field}
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        defaultValue="comfortable"
+                        className="space-y-2"
+                      >
+                        {Object.entries(Gender).map(([key, value]) => {
+                          return (
+                            <div key={key} className="flex items-center gap-3">
+                              <RadioGroupItem value={value} id={`r-${key}`} />
+                              <Label htmlFor={`r-${key}`}>
+                                {capitalizeText(key)}
+                              </Label>
+                            </div>
+                          );
+                        })}
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <div className="flex gap-3 pt-4 justify-end items-center border-t">

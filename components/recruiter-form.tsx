@@ -27,10 +27,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 interface RecruiterFormProps extends React.ComponentProps<"div"> {
   signUpType: SignUpType;
@@ -43,12 +46,14 @@ export function RecruiterForm({
   setSignUpType,
   ...props
 }: RecruiterFormProps) {
+  const router = useRouter();
+  const { recruiterSignUp, isSigningUp } = useUser();
   const signUpForm = useForm<TRecruiterSchema>({
     resolver: zodResolver(RecruiterSchema),
     defaultValues: {
       email: "",
       fullName: "",
-      userName: "",
+      username: "",
       phone: "",
       address: "",
       password: "",
@@ -64,7 +69,25 @@ export function RecruiterForm({
 
   const onSubmit = async (data: TRecruiterSchema) => {
     try {
-      console.log("Sign up recruiter data:", data);
+      const result = await recruiterSignUp({
+        ...data,
+        contact: { email: data.email, phone: data.phone },
+        type: "recruiter",
+      });
+
+      if (result.success) {
+        toast(
+          "Tạo tài khoản nhà tuyển dụng thành công. Vui lòng đợi admin xét duyện trước khi có thể đăng nhập",
+          {
+            action: {
+              label: "Xác nhận",
+              onClick: () => {
+                router.push("/");
+              },
+            },
+          },
+        );
+      }
     } catch (error) {
       console.error("Sign up error:", error);
     }
@@ -87,7 +110,9 @@ export function RecruiterForm({
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required>Email công ty</FormLabel>
+                    <FormLabel required className="capitalize">
+                      Email công ty
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="email"
@@ -130,7 +155,9 @@ export function RecruiterForm({
                   name="fullName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel required>Họ và tên</FormLabel>
+                      <FormLabel required className="capitalize">
+                        Họ và tên
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="text"
@@ -146,10 +173,12 @@ export function RecruiterForm({
 
                 <FormField
                   control={control}
-                  name="userName"
+                  name="username"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel required>Tên người dùng</FormLabel>
+                      <FormLabel required className="capitalize">
+                        Tên hiển thị
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="text"
@@ -168,7 +197,9 @@ export function RecruiterForm({
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel required>Số điện thoại</FormLabel>
+                      <FormLabel required className="capitalize">
+                        Số điện thoại
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="tel"
@@ -188,7 +219,9 @@ export function RecruiterForm({
                   name="address"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel required>Địa chỉ</FormLabel>
+                      <FormLabel required className="capitalize">
+                        Địa chỉ
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="text"
@@ -206,8 +239,10 @@ export function RecruiterForm({
                   control={control}
                   name="password"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel required>Mật khẩu</FormLabel>
+                    <FormItem className="col-span-2">
+                      <FormLabel required className="capitalize">
+                        Mật khẩu
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="password"
@@ -228,8 +263,10 @@ export function RecruiterForm({
                   control={control}
                   name="confirmPassword"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel required>Xác nhận mật khẩu</FormLabel>
+                    <FormItem className="col-span-2 mt-3">
+                      <FormLabel required className="capitalize">
+                        Xác nhận mật khẩu
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="password"
@@ -247,9 +284,11 @@ export function RecruiterForm({
               <Button
                 type="submit"
                 className="rounded-xl w-full"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isSigningUp}
               >
-                {isSubmitting ? "Đang tạo tài khoản..." : "Tạo tài khoản"}
+                {isSubmitting || isSigningUp
+                  ? "Đang tạo tài khoản..."
+                  : "Tạo tài khoản"}
               </Button>
 
               <FieldDescription className="text-center text-gray-400">

@@ -34,7 +34,7 @@ export const RecruiterSchema = z
       .nonempty("Email không được để trống")
       .email("Email không hợp lệ"),
     fullName: z.string().nonempty("Họ và tên không được để trống"),
-    userName: z.string().nonempty("Tên người dùng không được để trống"),
+    username: z.string().nonempty("Tên người dùng không được để trống"),
     phone: z
       .string()
       .nonempty("Số điện thoại không được để trống")

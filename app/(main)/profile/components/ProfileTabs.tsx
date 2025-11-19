@@ -15,8 +15,6 @@ interface ProfileTabsProps {
 export default function ProfileTabs({ user }: ProfileTabsProps) {
   const [activeTab, setActiveTab] = useState("applications");
 
-  console.log("user in profile tab ", user);
-
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
