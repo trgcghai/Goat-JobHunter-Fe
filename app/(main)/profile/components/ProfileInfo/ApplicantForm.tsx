@@ -26,8 +26,7 @@ import { Gender } from "@/types/enum";
 import { Applicant } from "@/types/model";
 import capitalizeText from "@/utils/capitalizeText";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Upload } from "lucide-react";
-import Image from "next/image";
+import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -35,17 +34,9 @@ interface ApplicantFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   profile: Applicant;
-  avatarPreview: string;
-  setAvatarPreview: (preview: string) => void;
 }
 
-const ApplicantForm = ({
-  open,
-  onOpenChange,
-  profile,
-  avatarPreview,
-  setAvatarPreview,
-}: ApplicantFormProps) => {
+const ApplicantForm = ({ open, onOpenChange, profile }: ApplicantFormProps) => {
   const [updateApplicant, { isLoading }] = useUpdateApplicantMutation();
   const form = useForm<ApplicantFormData>({
     resolver: zodResolver(applicantSchema),
@@ -56,21 +47,8 @@ const ApplicantForm = ({
       gender: profile.gender || Gender.NAM,
       email: profile.contact.email || "",
       phone: profile.contact.phone || "",
-      avatar: profile.avatar || "",
     },
   });
-
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatarPreview(reader.result as string);
-        form.setValue("avatar", reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const onSubmit = async (data: ApplicantFormData) => {
     console.log("submit data", data);
@@ -101,7 +79,6 @@ const ApplicantForm = ({
 
   const handleCancel = () => {
     onOpenChange(false);
-    setAvatarPreview(profile.avatar || "");
     form.reset();
   };
 
@@ -117,45 +94,6 @@ const ApplicantForm = ({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="space-y-4">
-                <FormLabel className="text-sm font-medium">
-                  Ảnh đại diện
-                </FormLabel>
-                <div className="flex flex-col items-center gap-4">
-                  <div className="relative w-full aspect-square rounded-full border overflow-hidden bg-muted">
-                    {avatarPreview ? (
-                      <Image
-                        src={avatarPreview}
-                        alt="Avatar preview"
-                        className="object-cover w-full h-full"
-                        fill
-                      />
-                    ) : (
-                      <div className="flex items-center justify-center h-full">
-                        <Upload className="w-8 h-8 text-muted-foreground" />
-                      </div>
-                    )}
-                  </div>
-                  <input
-                    type="file"
-                    id="avatar"
-                    accept="image/*"
-                    onChange={handleAvatarChange}
-                    className="hidden"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => document.getElementById("avatar")?.click()}
-                    className="w-full rounded-xl"
-                  >
-                    <Upload className="w-4 h-4 mr-2" />
-                    Chọn ảnh
-                  </Button>
-                </div>
-              </div>
-
               <div className="md:col-span-2 space-y-4">
                 <FormField
                   control={form.control}

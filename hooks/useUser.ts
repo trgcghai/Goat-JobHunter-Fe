@@ -45,7 +45,13 @@ export function useUser() {
       try {
         const response = await signinMutation(params).unwrap();
 
-        if (response.statusCode === 200 && response.message == "Success") {
+        console.log("response sign in", response);
+
+        if (response.statusCode === 400) {
+          throw new Error("Tài khoản đang bị khóa");
+        }
+
+        if (response.statusCode === 200) {
           dispatch(setUser({ user: response?.data?.user as User }));
 
           toast.success("Đăng nhập thành công!");
@@ -54,11 +60,25 @@ export function useUser() {
         return { success: false };
       } catch (error) {
         console.error("error sigin:", error);
+
+        // @ts-expect-error ts-ignore
+        if (error.status === 400 && error.data.message == "Account is locked") {
+          toast("Tài khoản của bạn đã bị khóa. Vui lòng kích hoạt lại.", {
+            action: {
+              label: "Kích hoạt ngay",
+              onClick: () => {
+                router.push("/otp?email=" + params.email);
+              },
+            },
+          });
+          return { success: false };
+        }
+
         toast.error("Đăng nhập thất bại!");
         return { success: false };
       }
     },
-    [dispatch, signinMutation],
+    [dispatch, signinMutation, router],
   );
 
   /**

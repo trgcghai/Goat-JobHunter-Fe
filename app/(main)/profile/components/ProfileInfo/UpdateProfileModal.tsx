@@ -4,7 +4,6 @@ import { SignUpType } from "@/app/(auth)/components/schemas";
 import ApplicantForm from "@/app/(main)/profile/components/ProfileInfo/ApplicantForm";
 import RecruiterForm from "@/app/(main)/profile/components/ProfileInfo/RecruiterForm";
 import { Applicant, Recruiter, User } from "@/types/model";
-import { useState } from "react";
 
 interface UpdateProfileModalProps {
   open: boolean;
@@ -17,8 +16,6 @@ export function UpdateProfileModal({
   onOpenChange,
   profile,
 }: UpdateProfileModalProps) {
-  const [avatarPreview, setAvatarPreview] = useState(profile.avatar || "");
-
   const isRecruiter = (user: User): user is Recruiter => {
     return user.type.toLowerCase() === SignUpType.RECRUITER.toLowerCase();
   };
@@ -33,8 +30,6 @@ export function UpdateProfileModal({
         open={open}
         onOpenChange={onOpenChange}
         profile={profile}
-        avatarPreview={avatarPreview}
-        setAvatarPreview={setAvatarPreview}
       />
     );
   }
@@ -45,8 +40,6 @@ export function UpdateProfileModal({
         open={open}
         onOpenChange={onOpenChange}
         profile={profile}
-        avatarPreview={avatarPreview}
-        setAvatarPreview={setAvatarPreview}
       />
     );
   }

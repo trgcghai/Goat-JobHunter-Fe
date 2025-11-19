@@ -46,13 +46,13 @@ export default function ProfileHeader({ user }: ProfileHeaderProps) {
               </h1>
             </div>
 
-            {user.username && (
-              <p className="text-sm text-muted-foreground mb-3">
-                @{user.username}
-              </p>
-            )}
-
             <div className="text-sm space-y-1">
+              {user.username && (
+                <p className="text-sm text-muted-foreground">
+                  @ {user.username}
+                </p>
+              )}
+
               {user.contact.email && (
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Mail className="h-4 w-4 shrink-0" />

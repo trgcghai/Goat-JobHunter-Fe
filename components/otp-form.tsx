@@ -25,7 +25,7 @@ import { toast } from "sonner";
 
 export function OTPForm({ ...props }: React.ComponentProps<typeof Card>) {
   const router = useRouter();
-  const { verifyCode, isVerifying } = useUser();
+  const { resendCode, verifyCode, isVerifying } = useUser();
   const searchParams = useSearchParams();
   const [otp, setOtp] = useState("");
 
@@ -48,6 +48,23 @@ export function OTPForm({ ...props }: React.ComponentProps<typeof Card>) {
       }
     } catch (error) {
       console.error("OTP verification error:", error);
+    }
+  };
+
+  const onResend = async () => {
+    try {
+      if (!searchParams.get("email")) {
+        toast.error("Lỗi khi gửi lại mã. Vui lòng thử lại.");
+        return;
+      }
+
+      const result = await resendCode(searchParams.get("email")!);
+
+      if (result.success) {
+        toast.success("Mã xác thực đã được gửi lại đến email của bạn.");
+      }
+    } catch (error) {
+      console.error("Resend OTP error:", error);
     }
   };
 
@@ -85,7 +102,10 @@ export function OTPForm({ ...props }: React.ComponentProps<typeof Card>) {
               {isVerifying ? "Đang xác thực..." : "Xác thực"}
             </Button>
             <FieldDescription className="text-center text-gray-400">
-              Không nhận được mã? <a href="#">Gửi lại</a>
+              Không nhận được mã?{" "}
+              <Button variant={"link"} className="p-0" onClick={onResend}>
+                Gửi lại
+              </Button>
             </FieldDescription>
           </FieldGroup>
         </FieldGroup>

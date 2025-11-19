@@ -18,7 +18,7 @@ import Link from "next/link";
 export default function UserPopup() {
   const { user, signOut, isSigningOut } = useUser();
 
-  if (!user) return null;
+  console.log(user);
 
   const getInitials = (name: string) => {
     return name
@@ -38,7 +38,7 @@ export default function UserPopup() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-10 w-10 rounded-full">
           <div className="p-3 rounded-full overflow-hidden bg-muted shrink-0 flex items-center justify-center">
-            {user.avatar ? (
+            {user?.avatar ? (
               <Avatar className="h-12 w-12">
                 <AvatarImage
                   src={user.avatar || "/placeholder.svg"}
@@ -56,7 +56,7 @@ export default function UserPopup() {
         <DropdownMenuLabel className="font-normal">
           <div className="flex items-center gap-3 py-2">
             <div className="p-3 rounded-full overflow-hidden bg-muted shrink-0 flex items-center justify-center">
-              {user.avatar ? (
+              {user?.avatar ? (
                 <Avatar className="h-12 w-12">
                   <AvatarImage
                     src={user.avatar || "/placeholder.svg"}
@@ -71,10 +71,10 @@ export default function UserPopup() {
 
             <div className="flex flex-col space-y-1">
               <p className="text-sm font-semibold leading-none">
-                {user.fullName ? user.fullName : "Người Dùng"}
+                {user?.fullName ? user.fullName : "Người Dùng"}
               </p>
               <p className="text-xs leading-none text-muted-foreground">
-                {user.contact.email}
+                {user?.contact.email}
               </p>
             </div>
           </div>
@@ -92,7 +92,7 @@ export default function UserPopup() {
           </Link>
         </DropdownMenuItem>
 
-        {user.role.name === ROLE.SUPER_ADMIN && (
+        {user?.role.name === ROLE.SUPER_ADMIN && (
           <>
             <DropdownMenuItem asChild>
               <Link

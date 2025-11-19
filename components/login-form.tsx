@@ -96,7 +96,7 @@ export function LoginForm({
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required>Password</FormLabel>
+                    <FormLabel required>Mật khẩu</FormLabel>
                     <FormControl>
                       <Input
                         type="password"

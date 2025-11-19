@@ -5,7 +5,6 @@ const recruiterSchema = z.object({
   fullName: z.string().min(1, "Họ tên không được để trống"),
   username: z.string().min(3, "Tên hiển thị phải có ít nhất 3 ký tự"),
   email: z.string().email("Email không hợp lệ"),
-  avatar: z.string().optional(),
   contactEmail: z
     .string()
     .email("Email liên hệ không hợp lệ")
@@ -30,7 +29,6 @@ const applicantSchema = z.object({
   username: z.string().min(3, "Tên hiển thị phải có ít nhất 3 ký tự"),
   dob: z.instanceof(Date, { message: "Ngày sinh không hợp lệ" }),
   gender: z.enum(Gender),
-  avatar: z.string().optional(),
   email: z.string().email("Email không hợp lệ"),
   phone: z
     .string()

@@ -15,13 +15,14 @@ const ProfilePage = () => {
 
   const user = useMemo(() => data?.data?.user, [data]);
 
-  if (!user) {
+  if (!user || isError) {
     return (
       <Empty>
         <EmptyHeader>
-          <EmptyTitle>404 - Không tìm thấy hồ sơ</EmptyTitle>
+          <EmptyTitle>Không tìm thấy hồ sơ</EmptyTitle>
           <EmptyDescription>
-            Hồ sơ bạn đang tìm kiếm không tồn tại. Hãy thử lại sau.
+            Hồ sơ bạn đang tìm kiếm không tồn tại hoặc đã xảy ra lỗi. Hãy thử
+            lại sau.
           </EmptyDescription>
         </EmptyHeader>
       </Empty>
@@ -30,19 +31,6 @@ const ProfilePage = () => {
 
   if (isLoading) {
     return <LoaderSpin fullScreen />;
-  }
-
-  if (isError) {
-    return (
-      <Empty>
-        <EmptyHeader>
-          <EmptyTitle>Lỗi tải hồ sơ</EmptyTitle>
-          <EmptyDescription>
-            Đã xảy ra lỗi khi tải hồ sơ của bạn. Vui lòng thử lại sau.
-          </EmptyDescription>
-        </EmptyHeader>
-      </Empty>
-    );
   }
 
   return (
