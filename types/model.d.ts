@@ -1,7 +1,15 @@
+import { Education, Gender, Level } from "@/types/enum";
+
 export type User = {
   userId: number;
-  email: string;
+  contact: {
+    phone?: string;
+    email: string;
+  };
+  address: string;
+  dob: string;
   fullName: string;
+  gender: Gender;
   username: string;
   type: string;
   avatar: string;
@@ -15,17 +23,13 @@ export type User = {
 export type Recruiter = User & {
   description: string;
   address: string;
-  contact: {
-    phone?: string;
-    email?: string;
-  };
 };
 
 export type Applicant = User & {
-  availableStatus?: boolean;
-  education?: string;
-  level?: string;
-  resumeUrl?: string;
+  availableStatus: boolean;
+  education: Education;
+  level: Level;
+  resumeUrl: string;
 };
 
 export type FullUser = Applicant & Recruiter;

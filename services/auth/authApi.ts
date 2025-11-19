@@ -65,6 +65,11 @@ export const authApi = api.injectEndpoints({
         method: "POST",
       }),
     }),
+
+    getMyAccount: builder.query<FetchAccountResponse, void>({
+      query: () => ({ url: "/auth/account", method: "GET" }),
+      providesTags: ["Account"],
+    }),
   }),
 });
 
@@ -77,4 +82,5 @@ export const {
   useLogoutMutation,
   useVerifyCodeMutation,
   useResendCodeMutation,
+  useGetMyAccountQuery,
 } = authApi;

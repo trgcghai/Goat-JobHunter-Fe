@@ -37,31 +37,44 @@ export default function UserPopup() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-          <Avatar className="h-10 w-10">
-            <AvatarImage
-              src={user.avatar || "/placeholder.svg"}
-              alt={user.fullName}
-            />
-            <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
-          </Avatar>
+          <div className="p-3 rounded-full overflow-hidden bg-muted shrink-0 flex items-center justify-center">
+            {user.avatar ? (
+              <Avatar className="h-12 w-12">
+                <AvatarImage
+                  src={user.avatar || "/placeholder.svg"}
+                  alt={user.fullName}
+                />
+                <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
+              </Avatar>
+            ) : (
+              <User className="h-5 w-5 text-muted-foreground" />
+            )}
+          </div>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-64 rounded-xl" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex items-center gap-3 py-2">
-            <Avatar className="h-12 w-12">
-              <AvatarImage
-                src={user.avatar || "/placeholder.svg"}
-                alt={user.fullName}
-              />
-              <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
-            </Avatar>
+            <div className="p-3 rounded-full overflow-hidden bg-muted shrink-0 flex items-center justify-center">
+              {user.avatar ? (
+                <Avatar className="h-12 w-12">
+                  <AvatarImage
+                    src={user.avatar || "/placeholder.svg"}
+                    alt={user.fullName}
+                  />
+                  <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
+                </Avatar>
+              ) : (
+                <User className="h-5 w-5 text-muted-foreground" />
+              )}
+            </div>
+
             <div className="flex flex-col space-y-1">
               <p className="text-sm font-semibold leading-none">
-                {user.fullName}
+                {user.fullName ? user.fullName : "Người Dùng"}
               </p>
               <p className="text-xs leading-none text-muted-foreground">
-                {user.email}
+                {user.contact.email}
               </p>
             </div>
           </div>

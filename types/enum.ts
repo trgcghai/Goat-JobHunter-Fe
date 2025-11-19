@@ -12,3 +12,16 @@ export enum WorkingType {
   ONLINE = "ONLINE",
   OFFLINE = "OFFLINE",
 }
+
+export enum Gender {
+  NAM = "MALE",
+  NỮ = "FEMALE",
+  KHÁC = "OTHER",
+}
+
+export enum Education {
+  COLLEGE = "Cao đẳng",
+  UNIVERSITY = "Đại học",
+  SCHOOL = "THPT",
+  ENGINEER = "Kỹ sư",
+}

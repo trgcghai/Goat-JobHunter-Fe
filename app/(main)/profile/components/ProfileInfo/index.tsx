@@ -1,27 +1,33 @@
 "use client";
 
+import { SignUpType } from "@/app/(auth)/components/schemas";
 import { UpdateProfileModal } from "@/app/(main)/profile/components/ProfileInfo/UpdateProfileModal";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { users } from "@/constants/sample";
-import { User } from "@/types/model";
+import { Textarea } from "@/components/ui/textarea";
+import { Recruiter, User } from "@/types/model";
+import capitalizeText from "@/utils/capitalizeText";
+import getRevertGenderKeyValue from "@/utils/getRevertGenderKeyValue";
+import { capitalize } from "lodash";
 import { Edit2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function ProfileInfo() {
+interface ProfileInfoProps {
+  user: User;
+}
+
+export default function ProfileInfo({ user }: ProfileInfoProps) {
   const [showModal, setShowModal] = useState(false);
-  const [profile, setProfile] = useState<User>(users[0]);
+  const [profile, setProfile] = useState<User>(user);
 
-  const handleUpdate = (updatedProfile: User) => {
-    setProfile(updatedProfile);
-    setShowModal(false);
-  };
+  useEffect(() => {
+    setProfile(user);
+  }, [user]);
 
-  const formatDate = (date?: Date) => {
-    if (!date) return "";
-    return new Date(date).toLocaleDateString("vi-VN");
+  const isRecruiter = (user: User): user is Recruiter => {
+    return profile.type.toLowerCase() == SignUpType.RECRUITER.toLowerCase();
   };
 
   return (
@@ -43,19 +49,23 @@ export default function ProfileInfo() {
         <div className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="fullName">Họ Tên</Label>
+              <Label className="capitalize" htmlFor="fullName">
+                Họ Tên
+              </Label>
               <Input
                 id="fullName"
-                value={profile.fullName || ""}
+                value={profile.fullName || "Chưa cập nhật"}
                 disabled
                 className="rounded-xl"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="username">Tên Đăng Nhập</Label>
+              <Label className="capitalize" htmlFor="username">
+                Tên hiển thị
+              </Label>
               <Input
                 id="username"
-                value={profile.username || ""}
+                value={profile.username || "Chưa cập nhật"}
                 disabled
                 className="rounded-xl"
               />
@@ -64,20 +74,24 @@ export default function ProfileInfo() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label className="capitalize" htmlFor="email">
+                Email
+              </Label>
               <Input
                 id="email"
                 type="email"
-                value={profile.contact?.email || ""}
+                value={profile.contact.email || "Chưa cập nhật"}
                 disabled
                 className="rounded-xl"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone">Số Điện Thoại</Label>
+              <Label className="capitalize" htmlFor="phone">
+                Số Điện Thoại
+              </Label>
               <Input
                 id="phone"
-                value={profile.contact?.phone || ""}
+                value={profile.contact?.phone || "Chưa cập nhật"}
                 disabled
                 className="rounded-xl"
               />
@@ -86,34 +100,74 @@ export default function ProfileInfo() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="dob">Ngày Sinh</Label>
+              <Label className="capitalize" htmlFor="gender">
+                Giới tính
+              </Label>
               <Input
-                id="dob"
-                value={formatDate(profile.dob)}
+                id="gender"
+                type="text"
+                value={
+                  capitalizeText(getRevertGenderKeyValue(profile.gender)) ||
+                  "Chưa cập nhật"
+                }
                 disabled
                 className="rounded-xl"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="gender">Giới Tính</Label>
+              <Label className="capitalize" htmlFor="dob">
+                Ngày sinh
+              </Label>
               <Input
-                id="gender"
-                value={profile.gender || ""}
+                id="dob"
+                value={capitalize(profile.dob) || "Chưa cập nhật"}
                 disabled
-                className="rounded-xl"
+                className="rounded-xl capitalize"
               />
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="address">Địa Chỉ</Label>
-            <Input
-              id="address"
-              value={profile.address || ""}
-              disabled
-              className="rounded-xl"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2 col-span-2">
+              <Label className="capitalize" htmlFor="type">
+                Loại Tài Khoản
+              </Label>
+              <Input
+                id="type"
+                value={capitalize(profile.type) || "Chưa cập nhật"}
+                disabled
+                className="rounded-xl capitalize"
+              />
+            </div>
           </div>
+
+          {isRecruiter(profile) && (
+            <>
+              <div className="space-y-2">
+                <Label className="capitalize" htmlFor="address">
+                  Địa Chỉ
+                </Label>
+                <Input
+                  id="address"
+                  value={profile.address || "Chưa cập nhật"}
+                  disabled
+                  className="rounded-xl"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="capitalize" htmlFor="description">
+                  Mô Tả Công Ty
+                </Label>
+                <Textarea
+                  id="description"
+                  value={profile.description || "Chưa cập nhật"}
+                  disabled
+                  className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm min-h-[100px] resize-none"
+                />
+              </div>
+            </>
+          )}
         </div>
       </Card>
 
@@ -121,7 +175,6 @@ export default function ProfileInfo() {
         open={showModal}
         onOpenChange={setShowModal}
         profile={profile}
-        onUpdate={handleUpdate}
       />
     </>
   );

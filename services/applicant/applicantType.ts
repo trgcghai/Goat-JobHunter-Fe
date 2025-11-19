@@ -23,21 +23,12 @@ export type CreateApplicantResponse = IBackendRes<Applicant>;
 
 // Update Applicant
 export type UpdateApplicantRequest = {
-  applicantId: string;
-  fullName: string;
-  address: string;
-  contact: Contact;
-  dob: Date;
-  gender: string;
-  password: string;
-  username: string;
-  availableStatus: boolean;
-  enabled: boolean;
-  education?: string;
-  level?: string;
-  role?: { roleId: string; name: string };
-  avatar?: string;
-  resumeUrl?: string;
+  userId: number;
+  fullName?: string;
+  username?: string;
+  gender?: string;
+  contact?: Contact;
+  dob?: Date;
 };
 
 export type UpdateApplicantResponse = IBackendRes<Applicant>;
