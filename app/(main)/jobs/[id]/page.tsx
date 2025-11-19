@@ -8,6 +8,7 @@ import {
 } from "@/app/(main)/jobs/[id]/components";
 import ErrorMessage from "@/components/ErrorMessage";
 import LoaderSpin from "@/components/LoaderSpin";
+import MarkdownDisplay from "@/components/MarkdownDisplay";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -92,9 +93,21 @@ export default function JobDetailPage() {
                     <Separator className="mb-4" />
                     <JobInfoGrid job={job} />
 
+                    <Separator className="mb-4" />
+
+                    <div>
+                      <h2 className="text-xl font-bold text-foreground mb-4 capitalize">
+                        Mô Tả Công Việc
+                      </h2>
+                      <MarkdownDisplay
+                        content={job.description}
+                        className="prose max-w-none rounded text-sm text-foreground line-clamp-2 mb-4"
+                      />
+                    </div>
+
                     <Separator className="my-6" />
                     <div>
-                      <h2 className="text-xl font-bold text-foreground mb-4">
+                      <h2 className="text-xl font-bold text-foreground mb-4 capitalize">
                         Kỹ Năng Yêu Cầu
                       </h2>
                       <div className="flex flex-wrap gap-2">
