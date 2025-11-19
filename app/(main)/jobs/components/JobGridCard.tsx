@@ -7,9 +7,9 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import useCurrencyFormat from "@/hooks/useCurrencyFormat";
 import { Job } from "@/types/model";
 import capitalizeText from "@/utils/capitalizeText";
+import { formatCurrency } from "@/utils/formatCurrency";
 import { formatDate } from "@/utils/formatDate";
 import { Bookmark, Calendar, DollarSign, MapPin } from "lucide-react";
 import Link from "next/link";
@@ -29,8 +29,6 @@ const JobGridCard = ({
   onLevelClick,
   onWorkingTypeClick,
 }: JobGridCardProps) => {
-  const { format } = useCurrencyFormat();
-
   return (
     <Link href={`/jobs/${job.jobId}`} className="block">
       <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer relative h-full flex flex-col">
@@ -93,7 +91,7 @@ const JobGridCard = ({
             <div className="flex items-center gap-2">
               <DollarSign className="h-4 w-4" />
               <span className="font-semibold text-primary">
-                {format(job.salary)}
+                {formatCurrency(job.salary)}
               </span>
             </div>
             <div className="flex items-center gap-2">

@@ -9,8 +9,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Job } from "@/types/model";
+import { formatCurrency } from "@/utils/formatCurrency";
 import { formatDate } from "@/utils/formatDate";
-import { ExternalLink, MapPin, Trash2 } from "lucide-react";
+import { ExternalLink, Trash2 } from "lucide-react";
 import Link from "next/link";
 
 interface JobTableProps {
@@ -32,23 +33,22 @@ const JobTable = ({ jobs }: JobTableProps) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>STT</TableHead>
             <TableHead>Tiêu đề</TableHead>
             <TableHead>Công ty</TableHead>
             <TableHead>Địa điểm</TableHead>
             <TableHead>Mức lương</TableHead>
-            <TableHead>Ngày lưu</TableHead>
-            <TableHead className="text-right">Thao tác</TableHead>
+            <TableHead>Ngày bắt đầu</TableHead>
+            <TableHead>Ngày kết thúc</TableHead>
+            <TableHead>Thao tác</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {jobs.map((job, index) => {
+          {jobs.map((job) => {
             const recruiter =
               typeof job.recruiter === "object" ? job.recruiter : undefined;
 
             return (
               <TableRow key={job.jobId}>
-                <TableCell className="font-medium">{index + 1}</TableCell>
                 <TableCell>
                   <div className="max-w-xs">
                     <Link
@@ -80,7 +80,6 @@ const JobTable = ({ jobs }: JobTableProps) => {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-1 max-w-xs">
-                    <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
                     <span className="truncate">{job.location || "N/A"}</span>
                   </div>
                 </TableCell>
@@ -88,7 +87,7 @@ const JobTable = ({ jobs }: JobTableProps) => {
                   <div className="max-w-xs">
                     {job.salary ? (
                       <span className="font-medium text-green-600">
-                        {job.salary}
+                        {formatCurrency(job.salary)}
                       </span>
                     ) : (
                       <span className="text-muted-foreground">Thỏa thuận</span>
@@ -96,10 +95,13 @@ const JobTable = ({ jobs }: JobTableProps) => {
                   </div>
                 </TableCell>
                 <TableCell>
-                  {job.updatedAt ? formatDate(job.updatedAt) : "-"}
+                  {job.startDate ? formatDate(job.startDate) : "-"}
                 </TableCell>
-                <TableCell className="text-right">
-                  <div className="flex items-center justify-end gap-2">
+                <TableCell>
+                  {job.endDate ? formatDate(job.endDate) : "-"}
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center justify-start gap-2">
                     <Link href={`/jobs/${job.jobId}`}>
                       <Button
                         variant="ghost"

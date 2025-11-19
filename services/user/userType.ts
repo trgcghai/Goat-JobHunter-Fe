@@ -1,5 +1,5 @@
 import type { IBackendRes, IModelPaginate } from "@/types/api";
-import type { Account, FullUser, User } from "@/types/model";
+import type { FullUser, User } from "@/types/model";
 
 // Fetch Users (with pagination)
 export type FetchUsersRequest = {
@@ -23,7 +23,7 @@ export type UpdatePasswordRequest = {
   rePassword: string;
 };
 
-export type UpdatePasswordResponse = IBackendRes<Account>;
+export type UpdatePasswordResponse = IBackendRes<User>;
 
 // Reset Password
 export type ResetPasswordRequest = {

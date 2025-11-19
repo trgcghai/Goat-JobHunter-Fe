@@ -2,9 +2,9 @@ import MarkdownDisplay from "@/components/MarkdownDisplay";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import useCurrencyFormat from "@/hooks/useCurrencyFormat";
 import { Job } from "@/types/model";
 import capitalizeText from "@/utils/capitalizeText";
+import { formatCurrency } from "@/utils/formatCurrency";
 import { formatDate } from "@/utils/formatDate";
 import { Bookmark, Calendar, MapPin } from "lucide-react";
 import Link from "next/link";
@@ -24,8 +24,6 @@ const JobListCard = ({
   onLevelClick,
   onWorkingTypeClick,
 }: JobListCardProps) => {
-  const { format } = useCurrencyFormat();
-
   return (
     <Link href={`/jobs/${job.jobId}`} className="block">
       <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer py-0 mb-4 relative">
@@ -93,7 +91,7 @@ const JobListCard = ({
                     />
                   </Button>
                   <div className="flex items-center gap-1 font-semibold text-primary text-lg">
-                    <span>{format(job.salary)}</span>
+                    <span>{formatCurrency(job.salary)}</span>
                   </div>
                   <p className="text-sm text-muted-foreground mt-1">
                     {job.quantity} vị trí

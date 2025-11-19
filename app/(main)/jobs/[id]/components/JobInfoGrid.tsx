@@ -1,10 +1,9 @@
-import useCurrencyFormat from "@/hooks/useCurrencyFormat";
 import { Job } from "@/types/model";
+import { formatCurrency } from "@/utils/formatCurrency";
 import { formatDate } from "@/utils/formatDate";
 import { Calendar, Clock, DollarSign, MapPin, Users } from "lucide-react";
 
 function JobInfoGrid({ job }: { job: Job }) {
-  const { format } = useCurrencyFormat();
   const infoItems = [
     {
       icon: MapPin,
@@ -14,7 +13,7 @@ function JobInfoGrid({ job }: { job: Job }) {
     {
       icon: DollarSign,
       label: "Lương",
-      value: `${format(job.salary)}`,
+      value: `${formatCurrency(job.salary)}`,
     },
     {
       icon: Users,
