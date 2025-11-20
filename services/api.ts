@@ -59,5 +59,22 @@ export const api = createApi({
     "Role",
     "Subscriber",
   ],
-  endpoints: () => ({}),
+  endpoints: (builder) => ({
+    ping: builder.query<string, void>({
+      query: () => ({
+        url: "/ping",
+        method: "GET",
+      }),
+    }),
+
+    clearCookies: builder.mutation<unknown, void>({
+      query: () => ({
+        url: "/clear-cookies",
+        method: "GET",
+      }),
+      invalidatesTags: ["User"], // Clear user cache after clearing cookies
+    }),
+  }),
 });
+
+export const { usePingQuery, useClearCookiesMutation } = api;

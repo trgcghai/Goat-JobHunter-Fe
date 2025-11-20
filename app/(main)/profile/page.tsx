@@ -15,6 +15,10 @@ const ProfilePage = () => {
 
   const user = useMemo(() => data?.data?.user, [data]);
 
+  if (isLoading) {
+    return <LoaderSpin fullScreen />;
+  }
+
   if (!user || isError) {
     return (
       <Empty>
@@ -27,10 +31,6 @@ const ProfilePage = () => {
         </EmptyHeader>
       </Empty>
     );
-  }
-
-  if (isLoading) {
-    return <LoaderSpin fullScreen />;
   }
 
   return (

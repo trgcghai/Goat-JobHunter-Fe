@@ -13,12 +13,8 @@ import { Application } from "@/types/model";
 import { formatDate } from "@/utils/formatDate";
 import { ExternalLink } from "lucide-react";
 
-const ApplicationTable = ({
-  applications,
-}: {
-  applications: Application[];
-}) => {
-  if (applications.length === 0) {
+const ApplicationTable = () => {
+  if ([].length === 0) {
     return <EmptyTable type="applications" />;
   }
 
@@ -36,7 +32,7 @@ const ApplicationTable = ({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {applications.map((application, index) => {
+          {([] as Application[]).map((application, index) => {
             const job =
               typeof application.job === "object" ? application.job : undefined;
 

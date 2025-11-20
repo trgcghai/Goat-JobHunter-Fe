@@ -51,12 +51,12 @@ const JobTable = () => {
     }
   };
 
-  if (jobs.length === 0) {
-    return <EmptyTable type="jobs" />;
-  }
-
   if (isLoading) {
     return <LoaderSpin />;
+  }
+
+  if (jobs.length === 0) {
+    return <EmptyTable type="jobs" />;
   }
 
   if (isError) {

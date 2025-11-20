@@ -4,15 +4,8 @@ import ApplicationTable from "@/app/(main)/profile/components/ProfileApplication
 import JobTable from "@/app/(main)/profile/components/ProfileApplication/JobTable";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Application } from "@/types/model";
 
-interface ProfileApplicationsProps {
-  applications: Application[];
-}
-
-export default function ProfileApplications({
-  applications,
-}: ProfileApplicationsProps) {
+export default function ProfileApplications() {
   return (
     <Card className="p-6">
       <Tabs defaultValue="applied" className="w-full rounded-xl">
@@ -26,7 +19,7 @@ export default function ProfileApplications({
         </TabsList>
 
         <TabsContent value="applied">
-          <ApplicationTable applications={applications} />
+          <ApplicationTable />
         </TabsContent>
 
         <TabsContent value="saved">

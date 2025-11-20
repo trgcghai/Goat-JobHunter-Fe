@@ -25,6 +25,7 @@ export default function JobCard({
   onLevelClick,
   onWorkingTypeClick,
 }: JobCardProps) {
+  const { user, isSignedIn } = useUser();
   const [saveJobs, { isSuccess: isSaveSuccess, isError: isSaveError }] =
     useSaveJobsMutation();
   const [unsaveJobs, { isSuccess: isUnsaveSuccess, isError: isUnsaveError }] =
@@ -35,10 +36,9 @@ export default function JobCard({
         jobIds: [job.jobId],
       },
       {
-        skip: !job,
+        skip: !job || !isSignedIn || !user,
       },
     );
-  const { isSignedIn, user } = useUser();
   const [isSaved, setIsSaved] = useState<boolean>(false);
 
   useEffect(() => {
