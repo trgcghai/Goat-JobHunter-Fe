@@ -18,8 +18,6 @@ import Link from "next/link";
 export default function UserPopup() {
   const { user, signOut, isSigningOut } = useUser();
 
-  console.log(user);
-
   const getInitials = (name: string) => {
     return name
       .split(" ")

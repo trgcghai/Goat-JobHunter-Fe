@@ -1,4 +1,5 @@
 import { api } from "@/services/api";
+import { buildSpringQuery } from "@/utils/buildSpringQuery";
 import type {
   CreateApplicationRequest,
   CreateApplicationResponse,
@@ -6,6 +7,7 @@ import type {
   DeleteApplicationResponse,
   FetchApplicationByIdRequest,
   FetchApplicationByIdResponse,
+  FetchApplicationsByApplicantRequest,
   FetchApplicationsByApplicantResponse,
   FetchApplicationsByRecruiterRequest,
   FetchApplicationsByRecruiterResponse,
@@ -95,12 +97,23 @@ export const applicationApi = api.injectEndpoints({
 
     fetchApplicationsByApplicant: builder.query<
       FetchApplicationsByApplicantResponse,
-      void
+      FetchApplicationsByApplicantRequest
     >({
-      query: () => ({
-        url: "/applications/by-applicant",
-        method: "GET",
-      }),
+      query: (params) => {
+        const { params: queryParams } = buildSpringQuery({
+          params,
+          filterFields: [], // Không filter
+          textSearchFields: [], // Không dùng LIKE search
+          nestedArrayFields: {}, // Không có nested array
+          defaultSort: "updatedAt,desc",
+        });
+
+        return {
+          url: "/applications/by-applicant",
+          method: "GET",
+          params: queryParams,
+        };
+      },
       providesTags: ["Application"],
     }),
   }),

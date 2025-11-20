@@ -57,3 +57,8 @@ export type FetchApplicationsByRecruiterResponse = IBackendRes<
 export type FetchApplicationsByApplicantResponse = IBackendRes<
   IModelPaginate<Application>
 >;
+
+export type FetchApplicationsByApplicantRequest = {
+  page?: number;
+  size?: number;
+};

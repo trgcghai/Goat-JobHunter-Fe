@@ -1,6 +1,5 @@
 import { clearUser, setUser, useAuthSlice } from "@/lib/features/authSlice";
 import { useAppDispatch } from "@/lib/hooks";
-import { useClearCookiesMutation } from "@/services/api";
 import {
   useApplicantSignupMutation,
   useLogoutMutation,
@@ -37,7 +36,6 @@ export function useUser() {
     useVerifyCodeMutation();
   const [resendCodeMutation, { isLoading: isResending }] =
     useResendCodeMutation();
-  const [clearCookies] = useClearCookiesMutation();
 
   /**
    * Sign in user
@@ -133,7 +131,6 @@ export function useUser() {
   const signOut = useCallback(async () => {
     try {
       await logoutMutation().unwrap();
-      await clearCookies().unwrap();
 
       // Clear Redux state
       dispatch(clearUser());
@@ -149,7 +146,7 @@ export function useUser() {
       console.error("error sign out:", error);
       return { success: false };
     }
-  }, [logoutMutation, clearCookies, dispatch, router]);
+  }, [logoutMutation, dispatch, router]);
 
   /**
    * Verify email code

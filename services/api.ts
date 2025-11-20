@@ -42,7 +42,7 @@ const axiosBaseQuery =
 export const api = createApi({
   reducerPath: "api",
   baseQuery: axiosBaseQuery({
-    baseUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080",
+    baseUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1",
   }),
   tagTypes: [
     "User",
@@ -67,14 +67,13 @@ export const api = createApi({
       }),
     }),
 
-    clearCookies: builder.mutation<unknown, void>({
+    clearCookies: builder.query<unknown, void>({
       query: () => ({
         url: "/clear-cookies",
         method: "GET",
       }),
-      invalidatesTags: ["User"], // Clear user cache after clearing cookies
     }),
   }),
 });
 
-export const { usePingQuery, useClearCookiesMutation } = api;
+export const { usePingQuery, useClearCookiesQuery } = api;
