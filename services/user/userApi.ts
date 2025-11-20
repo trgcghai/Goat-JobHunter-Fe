@@ -1,10 +1,13 @@
 import { api } from "@/services/api";
 import type {
+  CheckSavedJobsRequest,
+  CheckSavedJobsResponse,
   FetchUserByEmailResponse,
   FetchUsersRequest,
   FetchUsersResponse,
   FollowRecruitersRequest,
   FollowRecruitersResponse,
+  GetSavedJobsResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
   SaveJobsRequest,
@@ -53,10 +56,39 @@ export const userApi = api.injectEndpoints({
       }),
     }),
 
+    getSavedJobs: builder.query<GetSavedJobsResponse, void>({
+      query: () => ({
+        url: "/users/me/saved-jobs",
+        method: "GET",
+      }),
+      providesTags: ["User"],
+    }),
+
+    checkSavedJobs: builder.query<
+      CheckSavedJobsResponse,
+      CheckSavedJobsRequest
+    >({
+      query: (params) => ({
+        url: "/users/me/saved-jobs/contains",
+        method: "GET",
+        params: { jobIds: params.jobIds },
+      }),
+      providesTags: ["User"],
+    }),
+
     saveJobs: builder.mutation<SaveJobsResponse, SaveJobsRequest>({
       query: (data) => ({
-        url: "/users/saved-jobs",
+        url: "/users/me/saved-jobs",
         method: "PUT",
+        data,
+      }),
+      invalidatesTags: ["User"],
+    }),
+
+    unsaveJobs: builder.mutation<SaveJobsResponse, SaveJobsRequest>({
+      query: (data) => ({
+        url: "/users/me/saved-jobs",
+        method: "DELETE",
         data,
       }),
       invalidatesTags: ["User"],
@@ -87,6 +119,9 @@ export const {
   useFetchUserByEmailMutation,
   useUpdatePasswordMutation,
   useResetPasswordMutation,
+  useGetSavedJobsQuery,
+  useCheckSavedJobsQuery,
   useSaveJobsMutation,
+  useUnsaveJobsMutation,
   useFollowRecruitersMutation,
 } = userApi;

@@ -15,9 +15,6 @@ export type User = {
   avatar: string;
   enabled: boolean;
   role: Role;
-  savedJobs: Job[];
-  followedRecruiter: Recruiter[];
-  actorNotifications: NotificationType[];
 };
 
 export type Recruiter = User & {

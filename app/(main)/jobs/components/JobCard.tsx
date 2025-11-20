@@ -3,7 +3,11 @@
 import JobGridCard from "@/app/(main)/jobs/components/JobGridCard";
 import JobListCard from "@/app/(main)/jobs/components/JobListCard";
 import { useUser } from "@/hooks/useUser";
-import { useSaveJobsMutation } from "@/services/user/userApi";
+import {
+  useCheckSavedJobsQuery,
+  useSaveJobsMutation,
+  useUnsaveJobsMutation,
+} from "@/services/user/userApi";
 import { Job } from "@/types/model";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -21,19 +25,31 @@ export default function JobCard({
   onLevelClick,
   onWorkingTypeClick,
 }: JobCardProps) {
-  const [saveJobs, { isSuccess, isError }] = useSaveJobsMutation();
+  const [saveJobs, { isSuccess: isSaveSuccess, isError: isSaveError }] =
+    useSaveJobsMutation();
+  const [unsaveJobs, { isSuccess: isUnsaveSuccess, isError: isUnsaveError }] =
+    useUnsaveJobsMutation();
+  const { data: checkSavedJobsData, isSuccess: isCheckSavedSuccess } =
+    useCheckSavedJobsQuery(
+      {
+        jobIds: [job.jobId],
+      },
+      {
+        skip: !job,
+      },
+    );
   const { isSignedIn, user } = useUser();
-  const [isSaved, setIsSaved] = useState(false);
+  const [isSaved, setIsSaved] = useState<boolean>(false);
 
   useEffect(() => {
-    if (isSignedIn && user) {
-      const saved = user.savedJobs.some(
-        (savedJob) => savedJob.jobId === job.jobId,
-      );
+    if (isCheckSavedSuccess && checkSavedJobsData) {
+      const savedStatus = checkSavedJobsData?.data?.find(
+        (item) => item.jobId === job.jobId,
+      )?.result;
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setIsSaved(saved);
+      setIsSaved(!!savedStatus);
     }
-  }, [isSignedIn, job.jobId, user]);
+  }, [isCheckSavedSuccess, checkSavedJobsData, job.jobId]);
 
   const handleSaveJob = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -47,29 +63,22 @@ export default function JobCard({
     setIsSaved(!isSaved);
 
     if (isSaved) {
-      await saveJobs({
-        userId: user.userId,
-        savedJobs: user.savedJobs
-          .filter((job) => job.jobId !== job.jobId)
-          .map((j) => ({ jobId: j.jobId })),
+      await unsaveJobs({
+        jobIds: [job.jobId],
       });
     } else {
       await saveJobs({
-        userId: user.userId,
-        savedJobs: [
-          ...user.savedJobs.map((j) => ({ jobId: j.jobId })),
-          { jobId: job.jobId },
-        ],
+        jobIds: [job.jobId],
       });
     }
 
-    if (isSuccess) {
+    if (isSaveSuccess || isUnsaveSuccess) {
       toast.success(
         isSaved ? "Đã bỏ lưu công việc." : "Đã lưu công việc thành công.",
       );
     }
 
-    if (isError) {
+    if (isSaveError || isUnsaveError) {
       toast.error("Đã xảy ra lỗi. Vui lòng thử lại.");
       setIsSaved(!isSaved); // Revert state on error
     }

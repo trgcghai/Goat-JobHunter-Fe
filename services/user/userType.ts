@@ -1,5 +1,5 @@
 import type { IBackendRes, IModelPaginate } from "@/types/api";
-import type { FullUser, User } from "@/types/model";
+import type { FullUser, Job, User } from "@/types/model";
 
 // Fetch Users (with pagination)
 export type FetchUsersRequest = {
@@ -34,12 +34,29 @@ export type ResetPasswordRequest = {
 export type ResetPasswordResponse = IBackendRes<unknown>;
 
 // Save Jobs
+// Request types
 export type SaveJobsRequest = {
-  userId: number;
-  savedJobs: { jobId: number }[];
+  jobIds: number[];
 };
 
-export type SaveJobsResponse = IBackendRes<User>;
+export type CheckSavedJobsRequest = {
+  jobIds: number[];
+};
+
+// Response types
+export type GetSavedJobsResponse = IBackendRes<Job[]>;
+
+export type SaveJobsResponse = {
+  userId: number;
+  savedJobs: Job[];
+};
+
+export type CheckSavedJobsResponse = IBackendRes<
+  {
+    jobId: number;
+    result: boolean;
+  }[]
+>;
 
 // Follow Recruiters
 export type FollowRecruitersRequest = {
