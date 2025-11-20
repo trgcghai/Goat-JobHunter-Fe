@@ -24,8 +24,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useUpdateApplicantMutation } from "@/services/applicant/applicantApi";
 import { Gender } from "@/types/enum";
 import { Applicant } from "@/types/model";
-import capitalizeText from "@/utils/capitalizeText";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { capitalize } from "lodash";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -205,7 +205,7 @@ const ApplicantForm = ({ open, onOpenChange, profile }: ApplicantFormProps) => {
                             <div key={key} className="flex items-center gap-3">
                               <RadioGroupItem value={value} id={`r-${key}`} />
                               <Label htmlFor={`r-${key}`}>
-                                {capitalizeText(key)}
+                                {capitalize(key)}
                               </Label>
                             </div>
                           );

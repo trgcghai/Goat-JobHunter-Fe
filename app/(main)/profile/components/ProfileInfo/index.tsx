@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Recruiter, User } from "@/types/model";
-import capitalizeText from "@/utils/capitalizeText";
 import getRevertGenderKeyValue from "@/utils/getRevertGenderKeyValue";
 import { capitalize } from "lodash";
 import { Edit2 } from "lucide-react";
@@ -107,7 +106,7 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
                 id="gender"
                 type="text"
                 value={
-                  capitalizeText(getRevertGenderKeyValue(profile.gender)) ||
+                  capitalize(getRevertGenderKeyValue(profile.gender)) ||
                   "Chưa cập nhật"
                 }
                 disabled

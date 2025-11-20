@@ -1,6 +1,6 @@
 import { Option } from "@/components/ui/MultipleSelector";
 import { Level, WorkingType } from "@/types/enum";
-import capitalizeText from "@/utils/capitalizeText";
+import { capitalize } from "lodash";
 
 export const SKILL_OPTIONS: Option[] = [
   { value: "React", label: "React" },
@@ -33,7 +33,7 @@ export const WORKING_TYPE_OPTIONS: Option[] = Object.entries(WorkingType).map(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ([_, value]) => ({
     value: value,
-    label: capitalizeText(value.replace("_", " ").toLowerCase()),
+    label: capitalize(value.replace("_", " ").toLowerCase()),
   }),
 );
 
@@ -92,7 +92,7 @@ export const LEVEL_OPTIONS: Option[] = Object.entries(Level).map(
   ([_, value]) => {
     return {
       value: value,
-      label: capitalizeText(value.replace("_", " ").toLowerCase()),
+      label: capitalize(value.replace("_", " ").toLowerCase()),
     };
   },
 );

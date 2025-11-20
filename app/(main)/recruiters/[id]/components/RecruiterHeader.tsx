@@ -1,5 +1,5 @@
 import { Job, Recruiter } from "@/types/model";
-import capitalizeText from "@/utils/capitalizeText";
+import { capitalize } from "lodash";
 import { Briefcase, Mail, MapPin, Phone, User } from "lucide-react";
 import Image from "next/image";
 import { useMemo, useState } from "react";
@@ -51,7 +51,7 @@ export default function RecruiterHeader({
         <div className="gap-4 text-sm text-muted-foreground space-y-2">
           <div className="flex items-center gap-2">
             <MapPin className="h-4 w-4" />
-            <span>{address ? capitalizeText(address) : "N/A"}</span>
+            <span>{address ? capitalize(address) : "N/A"}</span>
           </div>
 
           <div className="flex items-center gap-2">

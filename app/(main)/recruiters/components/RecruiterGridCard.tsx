@@ -1,7 +1,7 @@
 import MarkdownDisplay from "@/components/MarkdownDisplay";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Recruiter } from "@/types/model";
-import capitalizeText from "@/utils/capitalizeText";
+import { capitalize } from "lodash";
 import { Mail, MapPin, Phone, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -51,7 +51,7 @@ const RecruiterGridCard = ({ recruiter }: RecruiterGridCardProps) => {
                 <div className="flex items-start gap-2">
                   <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
                   <span className="wrap-break-word">
-                    {capitalizeText(recruiter.address || "") || "N/A"}
+                    {capitalize(recruiter.address || "") || "N/A"}
                   </span>
                 </div>
 

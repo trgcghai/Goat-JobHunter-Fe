@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Job, Recruiter } from "@/types/model";
-import capitalizeText from "@/utils/capitalizeText";
+import { capitalize } from "lodash";
 import { useMemo } from "react";
 
 interface RecruiterInfoProps {
@@ -34,7 +34,7 @@ export default function RecruiterInfo({
             <div>
               <p className="text-sm text-muted-foreground mb-1">Địa chỉ</p>
               <p className="text-foreground font-medium">
-                {address ? capitalizeText(address) : "N/A"}
+                {address ? capitalize(address) : "N/A"}
               </p>
             </div>
             <Separator />

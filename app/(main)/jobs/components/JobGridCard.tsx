@@ -8,9 +8,9 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Job } from "@/types/model";
-import capitalizeText from "@/utils/capitalizeText";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { formatDate } from "@/utils/formatDate";
+import { capitalize } from "lodash";
 import { Bookmark, Calendar, DollarSign, MapPin } from "lucide-react";
 import Link from "next/link";
 
@@ -44,7 +44,7 @@ const JobGridCard = ({
                   onLevelClick?.(job.level);
                 }}
               >
-                {capitalizeText(job.level)}
+                {capitalize(job.level)}
               </Badge>
               <Badge
                 variant="outline"
@@ -55,7 +55,7 @@ const JobGridCard = ({
                   onWorkingTypeClick?.(job.workingType || "");
                 }}
               >
-                {capitalizeText(job.workingType)}
+                {capitalize(job.workingType)}
               </Badge>
               <Badge variant={job.active ? "default" : "outline"}>
                 {job.active ? "Đang tuyển" : "Đã đóng"}

@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Job } from "@/types/model";
-import capitalizeText from "@/utils/capitalizeText";
 import { formatCurrency } from "@/utils/formatCurrency";
+import { capitalize } from "lodash";
 import { Building2 } from "lucide-react";
 
 function JobInfoSidebar({ job }: { job: Job }) {
@@ -10,13 +10,13 @@ function JobInfoSidebar({ job }: { job: Job }) {
       label: "Cấp độ",
       value: (
         <Badge variant="secondary" className="capitalize">
-          {capitalizeText(job.level)}
+          {capitalize(job.level)}
         </Badge>
       ),
     },
     {
       label: "Hình thức",
-      value: <Badge variant="outline">{capitalizeText(job.workingType)}</Badge>,
+      value: <Badge variant="outline">{capitalize(job.workingType)}</Badge>,
     },
     { label: "Số lượng", value: `${job.quantity} vị trí` },
     {

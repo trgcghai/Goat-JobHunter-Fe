@@ -2,7 +2,7 @@ import MarkdownDisplay from "@/components/MarkdownDisplay";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Recruiter } from "@/types/model";
-import capitalizeText from "@/utils/capitalizeText";
+import { capitalize } from "lodash";
 import { ArrowRight, Mail, MapPin, Phone, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -42,7 +42,7 @@ const RecruiterListCard = ({ recruiter }: RecruiterListCardProps) => {
               <div className="space-y-2 text-sm text-muted-foreground">
                 <div className="text-sm text-muted-foreground flex items-center gap-2">
                   <MapPin className="h-4 w-4" />
-                  <span>{capitalizeText(recruiter.address)}</span>
+                  <span>{capitalize(recruiter.address)}</span>
                 </div>
 
                 <div className="text-sm text-muted-foreground flex items-center gap-2">
