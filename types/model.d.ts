@@ -192,7 +192,7 @@ export type Comment = {
 
 export type NotificationType = {
   notificationId?: string;
-  type: string;
+  type: "LIKE" | "COMMENT" | "REPLY";
   seen: boolean;
   blog: {
     blogId: string;

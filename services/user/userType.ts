@@ -1,5 +1,5 @@
 import type { IBackendRes, IModelPaginate } from "@/types/api";
-import type { FullUser, Job, User } from "@/types/model";
+import type { FullUser, Job, NotificationType, User } from "@/types/model";
 
 // Fetch Users (with pagination)
 export type FetchUsersRequest = {
@@ -65,3 +65,21 @@ export type FollowRecruitersRequest = {
 };
 
 export type FollowRecruitersResponse = IBackendRes<User>;
+
+// User's Notifications
+export type NotificationPaginationResponse = IBackendRes<
+  IModelPaginate<NotificationType>
+>;
+
+export type NotificationPaginationRequest = {
+  page?: number;
+  size?: number;
+};
+
+export type MarkNotificationsAsSeenRequest = IBackendRes<{
+  notificationIds: number[];
+}>;
+
+export type MarkNotificationsAsSeenResponse = IBackendRes<{
+  message: string;
+}>;

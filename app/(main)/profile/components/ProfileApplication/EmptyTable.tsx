@@ -27,7 +27,7 @@ const EmptyTable = ({ type }: EmptyTableProps) => {
   };
 
   return (
-    <Empty>
+    <Empty className="border">
       <EmptyHeader>
         <EmptyTitle>{config[type].title}</EmptyTitle>
         <EmptyDescription>{config[type].description}</EmptyDescription>

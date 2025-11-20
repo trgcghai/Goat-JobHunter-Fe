@@ -58,6 +58,7 @@ export const api = createApi({
     "Permission",
     "Role",
     "Subscriber",
+    "Notifications",
   ],
   endpoints: (builder) => ({
     ping: builder.query<string, void>({

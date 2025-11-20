@@ -1,4 +1,7 @@
 import { api } from "@/services/api";
+import { IBackendRes } from "@/types/api";
+import { NotificationType } from "@/types/model";
+import { buildSpringQuery } from "@/utils/buildSpringQuery";
 import type {
   CheckSavedJobsRequest,
   CheckSavedJobsResponse,
@@ -8,6 +11,10 @@ import type {
   FollowRecruitersRequest,
   FollowRecruitersResponse,
   GetSavedJobsResponse,
+  MarkNotificationsAsSeenRequest,
+  MarkNotificationsAsSeenResponse,
+  NotificationPaginationRequest,
+  NotificationPaginationResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
   SaveJobsRequest,
@@ -56,6 +63,7 @@ export const userApi = api.injectEndpoints({
       }),
     }),
 
+    // Saved Jobs APIs
     getSavedJobs: builder.query<GetSavedJobsResponse, void>({
       query: () => ({
         url: "/users/me/saved-jobs",
@@ -94,6 +102,7 @@ export const userApi = api.injectEndpoints({
       invalidatesTags: ["User"],
     }),
 
+    // Follow Recruiters API
     followRecruiters: builder.mutation<
       FollowRecruitersResponse,
       FollowRecruitersRequest
@@ -111,6 +120,55 @@ export const userApi = api.injectEndpoints({
       },
       invalidatesTags: ["User"],
     }),
+
+    // Notification APIs: mark as read, get, get latest
+    // GET /users/me/notifications - Lấy notifications có phân trang
+    getUsersNotifications: builder.query<
+      NotificationPaginationResponse,
+      NotificationPaginationRequest
+    >({
+      query: (params) => {
+        const { params: queryParams } = buildSpringQuery({
+          params,
+          filterFields: [], // Không filter
+          textSearchFields: [], // Không dùng LIKE search
+          nestedArrayFields: {}, // Không có nested array
+          defaultSort: "createdAt,desc",
+        });
+
+        return {
+          url: "/users/me/notifications",
+          method: "GET",
+          params: queryParams,
+        };
+      },
+      providesTags: ["Notifications"],
+    }),
+
+    // GET /users/me/notifications/latest - Lấy 10 notifications mới nhất
+    getLatestNotifications: builder.query<
+      IBackendRes<NotificationType[]>,
+      void
+    >({
+      query: () => ({
+        url: "/users/me/notifications/latest",
+        method: "GET",
+      }),
+      providesTags: ["Notifications"],
+    }),
+
+    // PUT /users/me/notifications - Đánh dấu notifications đã xem
+    markNotificationsAsSeen: builder.mutation<
+      MarkNotificationsAsSeenResponse,
+      MarkNotificationsAsSeenRequest
+    >({
+      query: (body) => ({
+        url: "/users/me/notifications",
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["Notifications"],
+    }),
   }),
 });
 
@@ -124,4 +182,7 @@ export const {
   useSaveJobsMutation,
   useUnsaveJobsMutation,
   useFollowRecruitersMutation,
+  useGetUsersNotificationsQuery,
+  useGetLatestNotificationsQuery,
+  useMarkNotificationsAsSeenMutation,
 } = userApi;
