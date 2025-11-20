@@ -46,6 +46,7 @@ export function LoginForm({
 
   const {
     handleSubmit,
+    setError,
     control,
     formState: { isSubmitting },
   } = signInForm;
@@ -56,6 +57,14 @@ export function LoginForm({
 
       if (result.success) {
         router.push("/");
+      } else {
+        // xử lý lỗi cụ thể
+        if (result.error === "Bad credentials") {
+          setError("root", {
+            type: "manual",
+            message: "Email hoặc mật khẩu không đúng",
+          });
+        }
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -109,6 +118,11 @@ export function LoginForm({
                   </FormItem>
                 )}
               />
+              {signInForm.formState.errors.root && (
+                <div className="p-3 rounded-xl text-sm bg-destructive/10 text-destructive border border-destructive/20">
+                  {signInForm.formState.errors.root.message}
+                </div>
+              )}
               <Button
                 type="submit"
                 className="rounded-xl w-full"

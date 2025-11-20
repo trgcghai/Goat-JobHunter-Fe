@@ -6,7 +6,6 @@ import {
   JobInfoSidebar,
   RelatedJobs,
 } from "@/app/(main)/jobs/[id]/components";
-import ErrorMessage from "@/components/ErrorMessage";
 import LoaderSpin from "@/components/LoaderSpin";
 import MarkdownDisplay from "@/components/MarkdownDisplay";
 import { Badge } from "@/components/ui/badge";
@@ -14,25 +13,61 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Empty,
+  EmptyContent,
   EmptyDescription,
   EmptyHeader,
   EmptyTitle,
 } from "@/components/ui/empty";
 import { Separator } from "@/components/ui/separator";
+import { useUser } from "@/hooks/useUser";
 import { useFetchJobByIdQuery, useFetchJobsQuery } from "@/services/job/jobApi";
+import {
+  useCheckSavedJobsQuery,
+  useSaveJobsMutation,
+  useUnsaveJobsMutation,
+} from "@/services/user/userApi";
 import { BookmarkPlus, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 
 export default function JobDetailPage() {
   const params = useParams<{ id: string }>();
+  const [isSaved, setIsSaved] = useState(false);
+  const { user, isSignedIn } = useUser();
+  const [saveJobs, { isSuccess: isSaveSuccess, isError: isSaveError }] =
+    useSaveJobsMutation();
+  const [unsaveJobs, { isSuccess: isUnsaveSuccess, isError: isUnsaveError }] =
+    useUnsaveJobsMutation();
+
   const { data, isLoading, isError, isSuccess } = useFetchJobByIdQuery(
     params.id,
     {
       skip: !params.id,
     },
   );
+  const job = useMemo(() => data?.data, [data]);
+
+  const { data: checkSavedJobsData, isSuccess: isCheckSavedSuccess } =
+    useCheckSavedJobsQuery(
+      {
+        jobIds: [job?.jobId as number],
+      },
+      {
+        skip: !job || !isSignedIn || !user,
+      },
+    );
+
+  useEffect(() => {
+    if (isCheckSavedSuccess && checkSavedJobsData) {
+      const savedStatus = checkSavedJobsData?.data?.find(
+        (item) => item.jobId === job?.jobId,
+      )?.result;
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsSaved(!!savedStatus);
+    }
+  }, [isCheckSavedSuccess, checkSavedJobsData, job?.jobId]);
 
   const {
     data: relatedJobs,
@@ -40,27 +75,63 @@ export default function JobDetailPage() {
     isError: isRelatedJobsError,
   } = useFetchJobsQuery({ page: 1, limit: 5 }, { skip: !params.id });
 
-  const job = useMemo(() => data?.data, [data]);
-
-  console.log(job);
-
   const handleApply = () => {
     console.log("Ứng tuyển vào công việc: " + job?.title);
   };
 
-  const handleSave = () => {
-    console.log("Lưu công việc: " + job?.title);
+  const handleToggleSave = async () => {
+    if (!isSignedIn || !user) {
+      toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
+      return;
+    }
+
+    if (!job) {
+      toast.error("Có lỗi khi lưu công việc. Vui lòng thử lại sau.");
+      return;
+    }
+
+    setIsSaved(!isSaved);
+
+    if (isSaved) {
+      await unsaveJobs({
+        jobIds: [job.jobId],
+      });
+    } else {
+      await saveJobs({
+        jobIds: [job.jobId],
+      });
+    }
+
+    if (isSaveSuccess || isUnsaveSuccess) {
+      toast.success(
+        isSaved ? "Đã bỏ lưu công việc." : "Đã lưu công việc thành công.",
+      );
+    }
+
+    if (isSaveError || isUnsaveError) {
+      toast.error("Đã xảy ra lỗi. Vui lòng thử lại.");
+      setIsSaved(!isSaved); // Revert state on error
+    }
   };
 
-  if (!job) {
+  if (isLoading) {
+    return <LoaderSpin />;
+  }
+
+  if (!job || isError) {
     return (
       <Empty>
         <EmptyHeader>
-          <EmptyTitle>404 - Không tìm thấy công việc</EmptyTitle>
+          <EmptyTitle>Có lỗi xảy ra khi tải thông tin công việc</EmptyTitle>
           <EmptyDescription>
-            Công việc bạn đang tìm kiếm không tồn tại. Hãy thử lại sau.
+            Vui lòng thử lại sau hoặc quay lại trang việc làm.
           </EmptyDescription>
         </EmptyHeader>
+        <EmptyContent>
+          <Link href="/jobs" className="text-primary hover:underline">
+            Quay lại trang việc làm
+          </Link>
+        </EmptyContent>
       </Empty>
     );
   }
@@ -75,12 +146,6 @@ export default function JobDetailPage() {
           <ChevronLeft className="w-4 h-4 mr-1" />
           Quay lại trang việc làm
         </Link>
-
-        {isLoading && <LoaderSpin />}
-
-        {isError && (
-          <ErrorMessage message="Có lỗi xảy ra khi tải thông tin công việc. Vui lòng thử lại sau." />
-        )}
 
         {job && isSuccess && (
           <>
@@ -138,12 +203,15 @@ export default function JobDetailPage() {
                     </Button>
 
                     <Button
-                      onClick={handleSave}
+                      onClick={handleToggleSave}
                       variant="outline"
                       className="w-full text-base flex items-center justify-center gap-2 rounded-xl border-border"
                     >
-                      <BookmarkPlus className="w-5 h-5" />
-                      Lưu Việc Làm
+                      <BookmarkPlus
+                        className="w-5 h-5"
+                        fill={isSaved ? "currentColor" : "none"}
+                      />
+                      {isSaved ? "Bỏ Lưu Công Việc" : "Lưu Công Việc"}
                     </Button>
                   </div>
                   <JobInfoSidebar job={job} />

@@ -14,6 +14,7 @@ import {
   SignInRequest,
   VerifyCodeRequest,
 } from "@/services/auth/authType";
+import { useUpdatePasswordMutation } from "@/services/user/userApi";
 import { User } from "@/types/model";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
@@ -36,6 +37,10 @@ export function useUser() {
     useVerifyCodeMutation();
   const [resendCodeMutation, { isLoading: isResending }] =
     useResendCodeMutation();
+  const [updatePasswordMutation, { isLoading: isUpdatingPassword }] =
+    useUpdatePasswordMutation();
+  // const [resetPasswordMutation, { isLoading: isResettingPassword }] =
+  //   useResetPasswordMutation();
 
   /**
    * Sign in user
@@ -71,7 +76,12 @@ export function useUser() {
               },
             },
           });
-          return { success: false };
+          return { success: false, error: "Account is locked" };
+        }
+
+        // @ts-expect-error ts-ignore
+        if (error.status === 400 && error.data.message == "Bad credentials") {
+          return { success: false, error: "Bad credentials" };
         }
 
         toast.error("Đăng nhập thất bại!");
@@ -190,6 +200,75 @@ export function useUser() {
     [resendCodeMutation],
   );
 
+  /**
+   * Update password (for logged-in users)
+   */
+  const updatePassword = useCallback(
+    async (params: {
+      oldPassword: string;
+      newPassword: string;
+      confirmPassword: string;
+    }) => {
+      try {
+        const response = await updatePasswordMutation({
+          currentPassword: params.oldPassword,
+          newPassword: params.newPassword,
+          rePassword: params.confirmPassword,
+        }).unwrap();
+
+        if (response.statusCode === 200) {
+          toast.success("Cập nhật mật khẩu thành công!");
+          return { success: true };
+        }
+
+        toast.error("Mật khẩu cũ không đúng!");
+        return { success: false, error: "Invalid old password" };
+      } catch (error) {
+        console.error("error update password:", error);
+
+        // @ts-expect-error ts-ignore
+        if (error.status === 400) {
+          toast.error("Mật khẩu cũ không đúng!");
+          return { success: false, error: "Invalid old password" };
+        }
+
+        toast.error("Cập nhật mật khẩu thất bại!");
+        return { success: false };
+      }
+    },
+    [updatePasswordMutation],
+  );
+
+  /**
+   * Reset password (for forgotten password)
+   */
+  const resetPassword = useCallback(async () => {
+    // try {
+    //   const response = await resetPasswordMutation(params).unwrap();
+
+    //   if (response.statusCode === 200) {
+    //     toast.success("Đặt lại mật khẩu thành công!");
+    //     return { success: true };
+    //   }
+
+    //   toast.error("Email không tồn tại!");
+    //   return { success: false, error: "Email not found" };
+    // } catch (error) {
+    //   console.error("error reset password:", error);
+
+    //   // @ts-expect-error ts-ignore
+    //   if (error.status === 404) {
+    //     toast.error("Email không tồn tại!");
+    //     return { success: false, error: "Email not found" };
+    //   }
+
+    //   toast.error("Đặt lại mật khẩu thất bại!");
+    //   return { success: false };
+    // }
+    console.log("Đặt lại mật khẩu");
+    return { success: false };
+  }, []);
+
   return {
     // User data
     user,
@@ -202,6 +281,8 @@ export function useUser() {
     signOut,
     verifyCode,
     resendCode,
+    updatePassword,
+    resetPassword,
 
     // Loading states
     isSigningIn,
@@ -209,5 +290,6 @@ export function useUser() {
     isSigningOut,
     isVerifying,
     isResending,
+    isUpdatingPassword,
   };
 }
