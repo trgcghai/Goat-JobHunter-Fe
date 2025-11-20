@@ -6,7 +6,7 @@ import {
   SignUpTypeOptions,
   TRecruiterSchema,
 } from "@/app/(auth)/components/schemas";
-import CheckPasswordStrength from "@/app/(main)/profile/components/ProfilePassword/CheckPasswordStrength";
+import CheckPasswordStrength from "@/components/CheckPasswordStrength";
 import { Button } from "@/components/ui/button";
 import {
   Card,

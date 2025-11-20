@@ -1,6 +1,6 @@
 "use client";
 
-import NotificationCard from "@/app/(main)/profile/components/ProfileNotifications/NotificationCard";
+import NotificationCard from "@/app/(main)/components/NotificationCard";
 import CustomPagination from "@/components/CustomPagination";
 import ErrorMessage from "@/components/ErrorMessage";
 import LoaderSpin from "@/components/LoaderSpin";

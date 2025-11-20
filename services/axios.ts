@@ -72,9 +72,9 @@ const performLogout = async () => {
     isRefreshing = false;
 
     // Redirect to login page
-    // if (typeof window !== "undefined") {
-    //   window.location.href = "/signin"; // Chuyển sang /login thay vì "/"
-    // }
+    if (typeof window !== "undefined") {
+      window.location.href = "/signin"; // Chuyển sang /login thay vì "/"
+    }
   } catch (error) {
     console.error("Logout error:", error);
   } finally {
