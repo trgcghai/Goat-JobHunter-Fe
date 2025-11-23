@@ -1,4 +1,5 @@
 import EmptyTable from "@/app/(main)/profile/components/ProfileApplication/EmptyTable";
+import ResumePreviewDialog from "@/app/(main)/profile/components/ProfileApplication/ResumePreivewDialog";
 import StatusBadge from "@/app/(main)/profile/components/ProfileApplication/StatusBadge";
 import CustomPagination from "@/components/CustomPagination";
 import ErrorMessage from "@/components/ErrorMessage";
@@ -13,12 +14,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useFetchApplicationsByApplicantQuery } from "@/services/application/applicationApi";
+import { Application } from "@/types/model";
 import { formatDate } from "@/utils/formatDate";
+import { capitalize } from "lodash";
 import { ExternalLink } from "lucide-react";
 import { useMemo, useState } from "react";
 
 const ApplicationTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedApplication, setSelectedApplication] =
+    useState<Application | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const { data, isLoading, isError, isSuccess, refetch } =
     useFetchApplicationsByApplicantQuery({
@@ -44,6 +50,11 @@ const ApplicationTable = () => {
     if (currentPage > 1) {
       setCurrentPage((prev) => prev - 1);
     }
+  };
+
+  const handlePreviewResume = (application: Application) => {
+    setSelectedApplication(application);
+    setIsPreviewOpen(true);
   };
 
   if (isLoading) {
@@ -96,7 +107,7 @@ const ApplicationTable = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <StatusBadge status={application.status} />
+                      <StatusBadge status={capitalize(application.status)} />
                     </TableCell>
                     <TableCell>
                       {application.createdAt
@@ -105,19 +116,14 @@ const ApplicationTable = () => {
                     </TableCell>
                     <TableCell className="text-right">
                       {application.resumeUrl ? (
-                        <a
-                          href={application.resumeUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="rounded-xl"
+                          onClick={() => handlePreviewResume(application)}
                         >
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="rounded-xl"
-                          >
-                            <ExternalLink className="h-4 w-4" />
-                          </Button>
-                        </a>
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
                       ) : (
                         "-"
                       )}
@@ -144,6 +150,14 @@ const ApplicationTable = () => {
           </div>
         )}
       </div>
+
+      {selectedApplication && (
+        <ResumePreviewDialog
+          open={isPreviewOpen}
+          onOpenChange={setIsPreviewOpen}
+          application={selectedApplication}
+        />
+      )}
     </>
   );
 };

@@ -77,20 +77,13 @@ export type Job = {
 };
 
 export type Application = {
-  applicationId?: string;
+  applicationId: string;
   email: string;
   resumeUrl: string;
   status: string;
-
-  user: string | { userId: string; fullName: string };
+  user: { userId: string; fullName: string };
   recruiterName: string;
-  job: string | { jobId: string; title: string };
-  history?: {
-    status: string;
-    updatedAt: Date;
-    updatedBy: { id: string; email: string };
-  }[];
-
+  job: { jobId: string; title: string };
   createdAt?: string;
   createdBy?: string;
   isDeleted?: boolean;
