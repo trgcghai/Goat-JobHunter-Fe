@@ -6,6 +6,7 @@ import {
   JobInfoSidebar,
   RelatedJobs,
 } from "@/app/(main)/jobs/[id]/components";
+import ResumeDialog from "@/app/(main)/jobs/[id]/components/ResumeDialog";
 import LoaderSpin from "@/components/LoaderSpin";
 import MarkdownDisplay from "@/components/MarkdownDisplay";
 import { Badge } from "@/components/ui/badge";
@@ -29,7 +30,7 @@ import {
   useSaveJobsMutation,
   useUnsaveJobsMutation,
 } from "@/services/user/userApi";
-import { BookmarkPlus, ChevronLeft } from "lucide-react";
+import { BookmarkPlus, ChevronLeft, Send } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -43,6 +44,7 @@ export default function JobDetailPage() {
     useSaveJobsMutation();
   const [unsaveJobs, { isSuccess: isUnsaveSuccess, isError: isUnsaveError }] =
     useUnsaveJobsMutation();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { data, isLoading, isError, isSuccess } = useFetchJobByIdQuery(
     params.id,
@@ -92,7 +94,17 @@ export default function JobDetailPage() {
   );
 
   const handleApply = () => {
-    console.log("Ứng tuyển vào công việc: " + job?.title);
+    if (!isSignedIn || !user) {
+      toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
+      return;
+    }
+
+    if (!job) {
+      toast.error("Có lỗi khi ứng tuyển công việc. Vui lòng thử lại sau.");
+      return;
+    }
+
+    setIsDialogOpen(true);
   };
 
   const handleToggleSave = async () => {
@@ -215,6 +227,7 @@ export default function JobDetailPage() {
                       disabled={!job.active}
                       className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-base rounded-xl"
                     >
+                      <Send className="w-5 h-5" />
                       {!job.active ? "Đã Đóng" : "Ứng Tuyển Ngay"}
                     </Button>
 
@@ -242,6 +255,16 @@ export default function JobDetailPage() {
           </>
         )}
       </div>
+
+      {job && (
+        <ResumeDialog
+          open={isDialogOpen}
+          onOpenChange={setIsDialogOpen}
+          job={job}
+          userId={user?.userId}
+          userEmail={user?.contact.email}
+        />
+      )}
     </main>
   );
 }
