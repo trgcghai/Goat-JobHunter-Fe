@@ -7,6 +7,7 @@ import {
   RelatedJobs,
 } from "@/app/(main)/jobs/[id]/components";
 import ResumeDialog from "@/app/(main)/jobs/[id]/components/ResumeDialog";
+import useDetailJob from "@/app/(main)/jobs/[id]/hooks/useDetailJob";
 import LoaderSpin from "@/components/LoaderSpin";
 import MarkdownDisplay from "@/components/MarkdownDisplay";
 import { Badge } from "@/components/ui/badge";
@@ -20,127 +21,29 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { Separator } from "@/components/ui/separator";
-import { useUser } from "@/hooks/useUser";
-import {
-  useFetchJobByIdQuery,
-  useFetchRelatedJobsQuery,
-} from "@/services/job/jobApi";
-import {
-  useCheckSavedJobsQuery,
-  useSaveJobsMutation,
-  useUnsaveJobsMutation,
-} from "@/services/user/userApi";
+import useJobActions from "@/hooks/useJobActions";
 import { BookmarkPlus, ChevronLeft, Send } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
 
 export default function JobDetailPage() {
   const params = useParams<{ id: string }>();
-  const [isSaved, setIsSaved] = useState(false);
-  const { user, isSignedIn } = useUser();
-  const [saveJobs, { isSuccess: isSaveSuccess, isError: isSaveError }] =
-    useSaveJobsMutation();
-  const [unsaveJobs, { isSuccess: isUnsaveSuccess, isError: isUnsaveError }] =
-    useUnsaveJobsMutation();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  const { data, isLoading, isError, isSuccess } = useFetchJobByIdQuery(
-    params.id,
-    {
-      skip: !params.id,
-    },
-  );
-  const job = useMemo(() => data?.data, [data]);
-
-  const { data: checkSavedJobsData, isSuccess: isCheckSavedSuccess } =
-    useCheckSavedJobsQuery(
-      {
-        jobIds: [job?.jobId as number],
-      },
-      {
-        skip: !job || !isSignedIn || !user,
-      },
-    );
-
-  useEffect(() => {
-    if (isCheckSavedSuccess && checkSavedJobsData) {
-      const savedStatus = checkSavedJobsData?.data?.find(
-        (item) => item.jobId === job?.jobId,
-      )?.result;
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setIsSaved(!!savedStatus);
-    }
-  }, [isCheckSavedSuccess, checkSavedJobsData, job?.jobId]);
-
+  const { handleToggleSaveJob } = useJobActions();
   const {
-    data: relatedJobsData,
-    isLoading: isRelatedJobsLoading,
-    isError: isRelatedJobsError,
-  } = useFetchRelatedJobsQuery(
-    {
-      skills: job?.skills.map((skill) => skill.name) || [],
-    },
-    { skip: !params.id || !job || !job.skills }, // Skip if job or skills are not available
-  );
-
-  const relatedJobs = useMemo(
-    () =>
-      (relatedJobsData?.data?.result || []).filter(
-        (job) => job.jobId.toString() != params.id,
-      ),
-    [params.id, relatedJobsData?.data?.result],
-  );
-
-  const handleApply = () => {
-    if (!isSignedIn || !user) {
-      toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
-      return;
-    }
-
-    if (!job) {
-      toast.error("Có lỗi khi ứng tuyển công việc. Vui lòng thử lại sau.");
-      return;
-    }
-
-    setIsDialogOpen(true);
-  };
-
-  const handleToggleSave = async () => {
-    if (!isSignedIn || !user) {
-      toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
-      return;
-    }
-
-    if (!job) {
-      toast.error("Có lỗi khi lưu công việc. Vui lòng thử lại sau.");
-      return;
-    }
-
-    setIsSaved(!isSaved);
-
-    if (isSaved) {
-      await unsaveJobs({
-        jobIds: [job.jobId],
-      });
-    } else {
-      await saveJobs({
-        jobIds: [job.jobId],
-      });
-    }
-
-    if (isSaveSuccess || isUnsaveSuccess) {
-      toast.success(
-        isSaved ? "Đã bỏ lưu công việc." : "Đã lưu công việc thành công.",
-      );
-    }
-
-    if (isSaveError || isUnsaveError) {
-      toast.error("Đã xảy ra lỗi. Vui lòng thử lại.");
-      setIsSaved(!isSaved); // Revert state on error
-    }
-  };
+    isSaved,
+    setIsSaved,
+    isDialogOpen,
+    setIsDialogOpen,
+    job,
+    isLoading,
+    isError,
+    isSuccess,
+    relatedJobs,
+    isRelatedJobsLoading,
+    isRelatedJobsError,
+    handleOpenCVDialog,
+    user,
+  } = useDetailJob(params.id);
 
   if (isLoading) {
     return <LoaderSpin />;
@@ -223,7 +126,7 @@ export default function JobDetailPage() {
                 <Card className="p-6 h-full">
                   <div className="space-y-3">
                     <Button
-                      onClick={handleApply}
+                      onClick={handleOpenCVDialog}
                       disabled={!job.active}
                       className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-base rounded-xl"
                     >
@@ -232,7 +135,9 @@ export default function JobDetailPage() {
                     </Button>
 
                     <Button
-                      onClick={handleToggleSave}
+                      onClick={(e) =>
+                        handleToggleSaveJob(e, job, isSaved, setIsSaved)
+                      }
                       variant="outline"
                       className="w-full text-base flex items-center justify-center gap-2 rounded-xl border-border"
                     >

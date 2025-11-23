@@ -10,46 +10,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useUser } from "@/hooks/useUser";
-import {
-  useGetSavedJobsQuery,
-  useUnsaveJobsMutation,
-} from "@/services/user/userApi";
+import useJobActions from "@/hooks/useJobActions";
+import { useGetSavedJobsQuery } from "@/services/user/userApi";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { formatDate } from "@/utils/formatDate";
 import { capitalize } from "lodash";
 import { ExternalLink, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
-import { toast } from "sonner";
 
 const JobTable = () => {
-  const { user } = useUser();
   const { data, isLoading, isError, isSuccess, refetch } =
     useGetSavedJobsQuery();
-  const [unsaveJobs, { isSuccess: isUnsaveSuccess, isError: isUnsaveError }] =
-    useUnsaveJobsMutation();
 
   const jobs = useMemo(() => data?.data || [], [data]);
 
-  const handleUnsaveJob = async (jobId: number) => {
-    if (!user) {
-      toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
-      return;
-    }
-
-    await unsaveJobs({
-      jobIds: [jobId],
-    });
-
-    if (isUnsaveSuccess) {
-      toast.success("Đã bỏ lưu công việc.");
-    }
-
-    if (isUnsaveError) {
-      toast.error("Đã xảy ra lỗi. Vui lòng thử lại.");
-    }
-  };
+  const { handleUnsaveJob } = useJobActions();
 
   if (isLoading) {
     return <LoaderSpin />;
@@ -157,7 +133,7 @@ const JobTable = () => {
                         variant="ghost"
                         size="sm"
                         className="rounded-xl text-destructive hover:text-destructive hover:bg-destructive/10"
-                        onClick={() => handleUnsaveJob(job.jobId)}
+                        onClick={() => handleUnsaveJob(job)}
                         title="Bỏ lưu"
                       >
                         <Trash2 className="h-4 w-4" />

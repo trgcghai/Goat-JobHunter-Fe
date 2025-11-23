@@ -2,15 +2,11 @@
 
 import JobGridCard from "@/app/(main)/jobs/components/JobGridCard";
 import JobListCard from "@/app/(main)/jobs/components/JobListCard";
+import useJobActions from "@/hooks/useJobActions";
 import { useUser } from "@/hooks/useUser";
-import {
-  useCheckSavedJobsQuery,
-  useSaveJobsMutation,
-  useUnsaveJobsMutation,
-} from "@/services/user/userApi";
+import { useCheckSavedJobsQuery } from "@/services/user/userApi";
 import { Job } from "@/types/model";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
 interface JobCardProps {
   job: Job;
@@ -26,10 +22,7 @@ export default function JobCard({
   onWorkingTypeClick,
 }: JobCardProps) {
   const { user, isSignedIn } = useUser();
-  const [saveJobs, { isSuccess: isSaveSuccess, isError: isSaveError }] =
-    useSaveJobsMutation();
-  const [unsaveJobs, { isSuccess: isUnsaveSuccess, isError: isUnsaveError }] =
-    useUnsaveJobsMutation();
+  const { handleToggleSaveJob } = useJobActions();
   const { data: checkSavedJobsData, isSuccess: isCheckSavedSuccess } =
     useCheckSavedJobsQuery(
       {
@@ -55,33 +48,7 @@ export default function JobCard({
     e.preventDefault();
     e.stopPropagation();
 
-    if (!isSignedIn || !user) {
-      toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
-      return;
-    }
-
-    setIsSaved(!isSaved);
-
-    if (isSaved) {
-      await unsaveJobs({
-        jobIds: [job.jobId],
-      });
-    } else {
-      await saveJobs({
-        jobIds: [job.jobId],
-      });
-    }
-
-    if (isSaveSuccess || isUnsaveSuccess) {
-      toast.success(
-        isSaved ? "Đã bỏ lưu công việc." : "Đã lưu công việc thành công.",
-      );
-    }
-
-    if (isSaveError || isUnsaveError) {
-      toast.error("Đã xảy ra lỗi. Vui lòng thử lại.");
-      setIsSaved(!isSaved); // Revert state on error
-    }
+    handleToggleSaveJob(e, job, isSaved, setIsSaved);
   };
 
   if (viewMode === "grid") {
