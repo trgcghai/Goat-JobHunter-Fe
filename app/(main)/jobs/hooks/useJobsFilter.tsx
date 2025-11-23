@@ -1,4 +1,4 @@
-import { useFetchJobsQuery } from "@/services/job/jobApi";
+import { useFetchJobsAvailableQuery } from "@/services/job/jobApi";
 import { useMemo, useState } from "react";
 
 export interface JobFilters {
@@ -9,7 +9,6 @@ export interface JobFilters {
   workingType?: string[];
   title?: string;
   salary?: number;
-  active?: boolean;
   recruiterId?: string;
 }
 
@@ -61,10 +60,6 @@ export const useJobsFilter = (options?: UseJobsFilterOptions) => {
       params.salary = filters.salary;
     }
 
-    if (filters.active !== undefined) {
-      params.active = filters.active;
-    }
-
     if (filters.recruiterId) {
       params.recruiterId = filters.recruiterId;
     }
@@ -79,7 +74,7 @@ export const useJobsFilter = (options?: UseJobsFilterOptions) => {
     isFetching,
     isError,
     error,
-  } = useFetchJobsQuery(queryParams);
+  } = useFetchJobsAvailableQuery(queryParams);
 
   // Extract data from response
   const jobs = jobsResponse?.data?.result || [];

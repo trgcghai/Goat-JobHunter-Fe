@@ -20,7 +20,10 @@ import {
 } from "@/components/ui/empty";
 import { Separator } from "@/components/ui/separator";
 import { useUser } from "@/hooks/useUser";
-import { useFetchJobByIdQuery, useFetchJobsQuery } from "@/services/job/jobApi";
+import {
+  useFetchJobByIdQuery,
+  useFetchRelatedJobsQuery,
+} from "@/services/job/jobApi";
 import {
   useCheckSavedJobsQuery,
   useSaveJobsMutation,
@@ -70,10 +73,23 @@ export default function JobDetailPage() {
   }, [isCheckSavedSuccess, checkSavedJobsData, job?.jobId]);
 
   const {
-    data: relatedJobs,
+    data: relatedJobsData,
     isLoading: isRelatedJobsLoading,
     isError: isRelatedJobsError,
-  } = useFetchJobsQuery({ page: 1, limit: 5 }, { skip: !params.id });
+  } = useFetchRelatedJobsQuery(
+    {
+      skills: job?.skills.map((skill) => skill.name) || [],
+    },
+    { skip: !params.id || !job || !job.skills }, // Skip if job or skills are not available
+  );
+
+  const relatedJobs = useMemo(
+    () =>
+      (relatedJobsData?.data?.result || []).filter(
+        (job) => job.jobId.toString() != params.id,
+      ),
+    [params.id, relatedJobsData?.data?.result],
+  );
 
   const handleApply = () => {
     console.log("Ứng tuyển vào công việc: " + job?.title);
@@ -219,7 +235,7 @@ export default function JobDetailPage() {
               </div>
             </div>
             <RelatedJobs
-              jobs={relatedJobs?.data?.result || []}
+              jobs={relatedJobs || []}
               isLoading={isRelatedJobsLoading}
               isError={isRelatedJobsError}
             />

@@ -6,7 +6,7 @@ import {
   LatestBlogs,
 } from "@/app/(main)/components";
 import { useFetchBlogsQuery } from "@/services/blog/blogApi";
-import { useFetchJobsQuery } from "@/services/job/jobApi";
+import { useFetchJobsAvailableQuery } from "@/services/job/jobApi";
 import { useFetchRecruitersQuery } from "@/services/recruiter/recruiterApi";
 
 export default function Home() {
@@ -22,7 +22,7 @@ export default function Home() {
     data: jobs,
     isLoading: isLoadingJobs,
     isError: isErrorJobs,
-  } = useFetchJobsQuery({
+  } = useFetchJobsAvailableQuery({
     page: 1,
     size: 3,
   });

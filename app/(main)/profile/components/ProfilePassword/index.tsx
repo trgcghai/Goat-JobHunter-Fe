@@ -75,7 +75,7 @@ export default function ProfilePassword() {
                     {...field}
                     type="password"
                     placeholder="Nhập mật khẩu cũ"
-                    className="rounded-xl pr-10"
+                    className="rounded-xl"
                   />
                 </FormControl>
                 <FormMessage />
@@ -94,7 +94,7 @@ export default function ProfilePassword() {
                     {...field}
                     type="password"
                     placeholder="Nhập mật khẩu mới"
-                    className="rounded-xl pr-10"
+                    className="rounded-xl"
                   />
                 </FormControl>
                 <FormMessage />
@@ -116,7 +116,7 @@ export default function ProfilePassword() {
                     {...field}
                     type="password"
                     placeholder="Xác nhận mật khẩu"
-                    className="rounded-xl pr-10"
+                    className="rounded-xl"
                   />
                 </FormControl>
                 <FormMessage />

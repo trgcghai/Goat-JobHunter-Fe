@@ -10,12 +10,12 @@ import {
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
-  EmptyTitle,
+  EmptyTitle
 } from "@/components/ui/empty";
 import {
   Popover,
   PopoverContent,
-  PopoverTrigger,
+  PopoverTrigger
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
@@ -40,19 +40,6 @@ export default function NotificationPopup() {
     console.log("mark all as read");
   };
 
-  if (isLoading) {
-    return <LoaderSpin />;
-  }
-
-  if (isError) {
-    return (
-      <ErrorMessage
-        message="Đã có lỗi xảy ra khi tải các thông báo. Vui lòng thử lại sau"
-        onRetry={refetch}
-      />
-    );
-  }
-
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -62,54 +49,79 @@ export default function NotificationPopup() {
           className="relative h-10 w-10 rounded-full bg-muted"
         >
           <Bell className="h-5 w-5" />
-          <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full text-xs font-semibold flex items-center justify-center p-0">
+          <Badge
+            className="absolute -top-1 -right-1 h-5 w-5 rounded-full text-xs font-semibold flex items-center justify-center p-0">
             {unreadCount > 9 ? "9+" : unreadCount}
           </Badge>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-96 p-0 rounded-xl" align="end">
-        <div className="flex items-center justify-between p-4 border-b border-border">
-          <h3 className="font-semibold text-foreground">Thông báo</h3>
-          {unreadCount > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-xs text-primary hover:text-primary/80 rounded-xl"
-              onClick={markAllAsRead}
+
+        {isLoading &&
+          <>
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <h3 className="font-semibold text-foreground">Thông báo</h3>
+            </div>
+            <LoaderSpin />
+          </>
+        }
+
+        {isError &&
+          <>
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <h3 className="font-semibold text-foreground">Thông báo</h3>
+            </div>
+            <ErrorMessage message="Đã có lỗi xảy ra khi tải các thông báo. Vui lòng thử lại sau" onRetry={refetch} />
+          </>
+        }
+
+        {isSuccess &&
+          <>
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <h3 className="font-semibold text-foreground">Thông báo</h3>
+              {unreadCount > 0 && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs text-primary hover:text-primary/80 rounded-xl"
+                  onClick={markAllAsRead}
+                >
+                  <CheckCheck className="h-4 w-4 mr-1" />
+                  Đánh dấu tất cả đã đọc
+                </Button>
+              )}
+            </div>
+
+            <ScrollArea
+              className={cn(notifications.length > 0 ? "h-[400px]" : "h-[250px]")}
             >
-              <CheckCheck className="h-4 w-4 mr-1" />
-              Đánh dấu tất cả đã đọc
-            </Button>
-          )}
-        </div>
+              <div className="divide-y divide-border">
+                {isSuccess &&
+                  notifications &&
+                  notifications.map((notification) => (
+                    <NotificationCard
+                      key={notification.notificationId}
+                      notification={notification}
+                      markAsRead={markAsRead}
+                      variant="compact"
+                    />
+                  ))}
+              </div>
 
-        <ScrollArea
-          className={cn(notifications.length > 0 ? "h-[400px]" : "h-[250px]")}
-        >
-          <div className="divide-y divide-border">
-            {isSuccess &&
-              notifications &&
-              notifications.map((notification) => (
-                <NotificationCard
-                  key={notification.notificationId}
-                  notification={notification}
-                  markAsRead={markAsRead}
-                  variant="compact"
-                />
-              ))}
-          </div>
+              {isSuccess && notifications.length === 0 && <EmptyMuted />}
+            </ScrollArea>
 
-          {isSuccess && notifications.length === 0 && <EmptyMuted />}
-        </ScrollArea>
+            <div className="p-3 border-t border-border">
+              <Link href="/profile?tab=notifications">
+                <Button variant="default" className="w-full text-sm rounded-xl">
+                  <Bell className="h-4 w-4 ml-2" />
+                  Xem tất cả thông báo
+                </Button>
+              </Link>
+            </div>
+          </>
+        }
 
-        <div className="p-3 border-t border-border">
-          <Link href="/profile?tab=notifications">
-            <Button variant="default" className="w-full text-sm rounded-xl">
-              <Bell className="h-4 w-4 ml-2" />
-              Xem tất cả thông báo
-            </Button>
-          </Link>
-        </div>
       </PopoverContent>
     </Popover>
   );

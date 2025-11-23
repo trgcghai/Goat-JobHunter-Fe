@@ -16,7 +16,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { Separator } from "@/components/ui/separator";
-import { useFetchJobsQuery } from "@/services/job/jobApi";
+import { useFetchJobsAvailableQuery } from "@/services/job/jobApi";
 import { useFetchRecruiterByIdQuery } from "@/services/recruiter/recruiterApi";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
@@ -35,10 +35,11 @@ export default function RecruiterDetailPage() {
     skip: !recruiterId,
   });
 
-  const { data: jobsResp, isLoading: isJobsLoading } = useFetchJobsQuery(
-    { page: 1, size: 100, recruiterId }, // Changed limit to size, increased to get all jobs
-    { skip: !recruiterId },
-  );
+  const { data: jobsResp, isLoading: isJobsLoading } =
+    useFetchJobsAvailableQuery(
+      { page: 1, size: 100, recruiterId }, // Changed limit to size, increased to get all jobs
+      { skip: !recruiterId },
+    );
 
   const recruiter = useMemo(() => {
     return recruiterResp?.data;
