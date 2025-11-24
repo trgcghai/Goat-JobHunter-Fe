@@ -133,8 +133,8 @@ export function LoginForm({
               <FieldDescription className="text-center text-gray-400">
                 Chưa có tài khoản?{" "}
                 <Link
-                  href="/signup"
-                  className="text-primary hover:underline underline underline-offset-2"
+                  href={isSubmitting ? "#" : "/signup"}
+                  className={`text-primary hover:underline underline underline-offset-2 ${isSubmitting ? "pointer-events-none" : ""}`}
                 >
                   Đăng ký
                 </Link>

@@ -189,8 +189,8 @@ export function ApplicantForm({
               <FieldDescription className="text-center text-gray-400">
                 Đã có tài khoản?{" "}
                 <Link
-                  href="/signin"
-                  className="text-primary hover:underline underline underline-offset-2"
+                  href={isSubmitting ? "#" : "/signin"}
+                  className={`text-primary hover:underline underline underline-offset-2 ${isSubmitting ? "pointer-events-none" : ""}`}
                 >
                   Đăng nhập
                 </Link>
