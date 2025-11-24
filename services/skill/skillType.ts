@@ -25,8 +25,7 @@ export type DeleteSkillResponse = IBackendRes<Skill>;
 export type FetchSkillsRequest = {
   page?: number;
   size?: number;
-  sortBy?: string;
-  keyword?: string;
+  name?: string;
 };
 
 export type FetchSkillsResponse = IBackendRes<IModelPaginate<Skill>>;

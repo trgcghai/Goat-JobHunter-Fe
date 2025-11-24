@@ -73,11 +73,15 @@ export const subscriberApi = api.injectEndpoints({
       providesTags: ["Subscriber"],
     }),
 
-    getSubscriberSkills: builder.mutation<GetSubscriberSkillsResponse, void>({
+    getCurrentUserSubscriberSkills: builder.query<
+      GetSubscriberSkillsResponse,
+      void
+    >({
       query: () => ({
         url: "/subscribers/skills",
-        method: "POST",
+        method: "GET",
       }),
+      providesTags: ["Subscriber"],
     }),
   }),
 });
@@ -88,5 +92,5 @@ export const {
   useDeleteSubscriberMutation,
   useFetchSubscriberByIdQuery,
   useFetchSubscribersQuery,
-  useGetSubscriberSkillsMutation,
+  useGetCurrentUserSubscriberSkillsQuery,
 } = subscriberApi;

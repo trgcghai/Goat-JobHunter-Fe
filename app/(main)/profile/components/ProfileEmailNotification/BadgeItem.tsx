@@ -1,27 +1,36 @@
+"use client";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { XIcon } from "lucide-react";
-import React from "react";
+import { Skill } from "@/types/model";
+import { X } from "lucide-react";
 
 interface BadgeItemProps {
-  item: string;
-  onRemove: (item: string) => void;
+  item: Skill;
+  onRemove: (item: Skill) => void;
+  disabled?: boolean;
 }
 
-const BadgeItem: React.FC<BadgeItemProps> = ({ item, onRemove }) => {
+export default function BadgeItem({
+  item,
+  onRemove,
+  disabled = false,
+}: BadgeItemProps) {
   return (
-    <Badge className="inline-flex items-center gap-2 bg-primary/10 text-primary rounded-full text-sm pl-4">
-      <span>{item}</span>
+    <Badge
+      variant="secondary"
+      className="text-sm py-1 px-3 rounded-xl flex items-center gap-2 w-fit"
+    >
+      <span>{item.name}</span>
       <Button
+        variant="ghost"
+        size="icon"
+        className="h-4 w-4 p-0 hover:bg-destructive/10 hover:text-destructive rounded-full"
         onClick={() => onRemove(item)}
-        variant={"ghost"}
-        size={"icon-sm"}
-        className="hover:text-destructive transition-colors text-lg font-semibold p-0"
+        disabled={disabled}
       >
-        <XIcon className="h-4 w-4" />
+        <X className="h-3 w-3" />
       </Button>
     </Badge>
   );
-};
-
-export default BadgeItem;
+}

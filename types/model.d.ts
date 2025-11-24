@@ -132,9 +132,9 @@ export type Select = {
 };
 
 export type Subscriber = {
-  subscriberId?: string;
-  name?: string;
-  email?: string;
+  subscriberId: number;
+  name: string;
+  email: string;
   skills: string[];
 
   createdBy?: string;

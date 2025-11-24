@@ -1,4 +1,5 @@
 import { api } from "@/services/api";
+import { buildSpringQuery } from "@/utils/buildSpringQuery";
 import type {
   CreateSkillRequest,
   CreateSkillResponse,
@@ -38,12 +39,21 @@ export const skillApi = api.injectEndpoints({
       invalidatesTags: ["Skill"],
     }),
 
-    fetchSkills: builder.query<FetchSkillsResponse, FetchSkillsRequest>({
-      query: (params) => ({
-        url: "/skills",
-        method: "GET",
-        params,
-      }),
+    getSkills: builder.query<FetchSkillsResponse, FetchSkillsRequest>({
+      query: (params) => {
+        const { params: queryParams } = buildSpringQuery({
+          params,
+          filterFields: [], // Không filter
+          textSearchFields: ["name"], // Không dùng LIKE search
+          nestedArrayFields: {}, // Không có nested array
+          defaultSort: "updatedAt,desc",
+        });
+        return {
+          url: "/skills",
+          method: "GET",
+          params: queryParams,
+        };
+      },
       providesTags: ["Skill"],
     }),
   }),
@@ -53,5 +63,5 @@ export const {
   useCreateSkillMutation,
   useUpdateSkillMutation,
   useDeleteSkillMutation,
-  useFetchSkillsQuery,
+  useGetSkillsQuery,
 } = skillApi;
