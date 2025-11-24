@@ -2,6 +2,7 @@ import { useUser } from "@/hooks/useUser";
 import {
   useCreateJobMutation,
   useDeleteJobMutation,
+  useUpdateJobMutation,
 } from "@/services/job/jobApi";
 import {
   useSaveJobsMutation,
@@ -18,6 +19,7 @@ const useJobActions = () => {
   const [unsaveJobs, { isSuccess: isUnsaveSuccess, isError: isUnsaveError }] =
     useUnsaveJobsMutation();
   const [createJob, { isLoading: isCreating }] = useCreateJobMutation();
+  const [updateJob, { isLoading: isUpdating }] = useUpdateJobMutation();
   const [deleteJob, { isLoading: isDeleting }] = useDeleteJobMutation();
 
   const handleUnsaveJob = async (job: Job | null) => {
@@ -124,13 +126,36 @@ const useJobActions = () => {
     [deleteJob],
   );
 
+  // Update existing job
+  const handleUpdateJob = useCallback(
+    async (jobId: number, jobData: any) => {
+      try {
+        const response = await updateJob({ jobId, ...jobData }).unwrap();
+
+        if (response.data) {
+          toast.success("Cập nhật công việc thành công!", {
+            description: `Đã cập nhật: ${jobData.title}`,
+          });
+          return response.data;
+        }
+      } catch (error) {
+        console.error("Failed to update job:", error);
+        toast.error("Không thể cập nhật công việc. Vui lòng thử lại sau.");
+        throw error;
+      }
+    },
+    [updateJob],
+  );
+
   return {
     isCreating,
     isDeleting,
+    isUpdating,
 
     handleUnsaveJob,
     handleToggleSaveJob,
     handleCreateJob,
+    handleUpdateJob,
     handleDeleteJob,
   };
 };

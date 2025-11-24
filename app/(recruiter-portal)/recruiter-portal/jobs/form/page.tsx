@@ -4,6 +4,7 @@ import {
   CreateJobFormData,
   createJobSchema,
 } from "@/app/(recruiter-portal)/recruiter-portal/jobs/form/components/schema";
+import LoaderSpin from "@/components/LoaderSpin";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -26,15 +27,33 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { LEVEL_OPTIONS, WORKING_TYPE_OPTIONS } from "@/constants/constant";
 import useJobActions from "@/hooks/useJobActions";
+import { useFetchJobByIdQuery } from "@/services/job/jobApi";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 export default function JobForm() {
   const router = useRouter();
-  const { handleCreateJob, isCreating } = useJobActions();
+  const searchParams = useSearchParams();
+  const jobId = searchParams.get("jobId");
+
+  const { handleCreateJob, handleUpdateJob, isCreating, isUpdating } =
+    useJobActions();
+
+  // Fetch job data if jobId exists (edit mode)
+  const {
+    data: jobData,
+    isLoading: isLoadingJob,
+    isError,
+  } = useFetchJobByIdQuery(jobId!, {
+    skip: !jobId,
+  });
+
+  const job = jobData?.data;
+  const isEditMode = !!jobId && !!job;
 
   const form = useForm<CreateJobFormData>({
     resolver: zodResolver(createJobSchema),
@@ -53,28 +72,89 @@ export default function JobForm() {
     },
   });
 
+  // Populate form with job data in edit mode
+  useEffect(() => {
+    if (job && isEditMode) {
+      form.reset({
+        title: job.title || "",
+        description: job.description || "",
+        location: job.location || "",
+        salary: job.salary || 0,
+        quantity: job.quantity || 1,
+        level: job.level || "",
+        workingType: job.workingType || "",
+        startDate: job.startDate
+          ? new Date(job.startDate).toISOString().split("T")[0]
+          : "",
+        endDate: job.endDate
+          ? new Date(job.endDate).toISOString().split("T")[0]
+          : "",
+        skillIds: job.skills?.map((skill) => skill.skillId) || [],
+        careerId: job.career?.careerId || "",
+      });
+    }
+  }, [job, isEditMode, form]);
+
   const onSubmit = async (data: CreateJobFormData) => {
     try {
-      await handleCreateJob(data);
+      if (isEditMode) {
+        // Update existing job
+        await handleUpdateJob(Number(jobId), data);
+      } else {
+        // Create new job
+        await handleCreateJob(data);
+      }
       router.push("/recruiter-portal/jobs");
     } catch (error) {
-      // Error handled in hook
-      console.error("Create job failed:", error);
+      console.error("Submit job failed:", error);
     }
   };
+
+  // Show loading while fetching job data
+  if (isLoadingJob) {
+    return <LoaderSpin />;
+  }
+
+  // Show error if job not found
+  if (isEditMode && isError) {
+    return (
+      <div className="space-y-4">
+        <Link href="/recruiter-portal/jobs">
+          <Button variant="link" className="rounded-xl p-0">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Quay lại
+          </Button>
+        </Link>
+        <Card className="p-6">
+          <div className="text-center">
+            <p className="text-lg font-medium text-destructive">
+              Không tìm thấy công việc
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              Công việc không tồn tại hoặc đã bị xóa
+            </p>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       <div className="space-y-2">
         <Link href="/recruiter-portal/jobs">
-          <Button variant="link" className="rounded-xl mb-4 p-0!">
-            <ArrowLeft className="h-4 w-4" />
+          <Button variant="link" className="rounded-xl mb-4 p-0">
+            <ArrowLeft className="h-4 w-4 mr-2" />
             Quay lại
           </Button>
         </Link>
-        <h1 className="text-2xl font-bold">Tạo công việc mới</h1>
+        <h1 className="text-2xl font-bold">
+          {isEditMode ? "Chỉnh sửa công việc" : "Tạo công việc mới"}
+        </h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Điền thông tin để đăng tuyển vị trí mới
+          {isEditMode
+            ? "Cập nhật thông tin công việc"
+            : "Điền thông tin để đăng tuyển vị trí mới"}
         </p>
       </div>
 
@@ -157,6 +237,7 @@ export default function JobForm() {
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger className="rounded-xl">
@@ -185,6 +266,7 @@ export default function JobForm() {
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
+                        value={field.value}
                       >
                         <FormControl>
                           <SelectTrigger className="rounded-xl">
@@ -284,20 +366,23 @@ export default function JobForm() {
               type="button"
               variant="outline"
               className="rounded-xl"
-              disabled={isCreating}
-              onClick={() => {
-                form.reset();
-                form.clearErrors();
-              }}
+              disabled={isCreating || isUpdating}
+              onClick={() => router.back()}
             >
               Hủy
             </Button>
-            <Button type="submit" className="rounded-xl" disabled={isCreating}>
-              {isCreating ? (
+            <Button
+              type="submit"
+              className="rounded-xl"
+              disabled={isCreating || isUpdating}
+            >
+              {isCreating || isUpdating ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  Đang tạo...
+                  {isEditMode ? "Đang cập nhật..." : "Đang tạo..."}
                 </>
+              ) : isEditMode ? (
+                "Cập nhật công việc"
               ) : (
                 "Tạo công việc"
               )}
