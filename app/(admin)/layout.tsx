@@ -1,14 +1,7 @@
-import { AdminSidebar } from "@/app/(admin)/dashboard/components";
+import Sidebar, { SidebarTab } from "@/components/Sidebar";
 import { Briefcase, FileText, Lock, Shield, Users } from "lucide-react";
 
-export interface AdminTab {
-  id: string;
-  label: string;
-  url: string;
-  icon: React.ReactNode;
-}
-
-export const AdminTabs: AdminTab[] = [
+export const AdminTabs: SidebarTab[] = [
   {
     id: "dashboard",
     label: "Tổng quan",
@@ -50,7 +43,7 @@ export const AdminTabs: AdminTab[] = [
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex min-h-screen bg-background">
-      <AdminSidebar tabs={AdminTabs} />
+      <Sidebar tabs={AdminTabs} />
 
       <main className="flex-1 ml-64 p-6">
         <div className="space-y-6">{children}</div>

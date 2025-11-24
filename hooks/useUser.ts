@@ -50,8 +50,6 @@ export function useUser() {
       try {
         const response = await signinMutation(params).unwrap();
 
-        console.log("response sign in", response);
-
         if (response.statusCode === 400) {
           throw new Error("Tài khoản đang bị khóa");
         }

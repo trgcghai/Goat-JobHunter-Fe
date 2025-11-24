@@ -1,18 +1,26 @@
 "use client";
-import { AdminTab } from "@/app/(admin)/layout";
 import { Button } from "@/components/ui/button";
+import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
 import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-interface AdminSidebarProps {
-  tabs: AdminTab[];
+export interface SidebarTab {
+  id: string;
+  label: string;
+  url: string;
+  icon: React.ReactNode;
 }
 
-export default function AdminSidebar({ tabs }: AdminSidebarProps) {
+interface AdminSidebarProps {
+  tabs: SidebarTab[];
+}
+
+export default function Sidebar({ tabs }: AdminSidebarProps) {
   const pathname = usePathname();
+  const { signOut } = useUser();
 
   return (
     <div className="fixed left-0 top-0 h-screen w-64 bg-sidebar border-r border-sidebar-border p-6 space-y-8">
@@ -47,9 +55,13 @@ export default function AdminSidebar({ tabs }: AdminSidebarProps) {
       </nav>
 
       <div className="absolute bottom-6 left-6 right-6 space-y-2 pt-4">
-        <Button variant={"destructive"} className="w-full rounded-xl">
+        <Button
+          variant={"destructive"}
+          className="w-full rounded-xl"
+          onClick={signOut}
+        >
           <LogOut className="w-5 h-5" />
-          <span className="font-medium">Logout</span>
+          <span className="font-medium">Đăng xuất</span>
         </Button>
       </div>
     </div>

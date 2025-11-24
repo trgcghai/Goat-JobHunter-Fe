@@ -56,7 +56,9 @@ export function LoginForm({
       const result = await signIn(data);
 
       if (result.success) {
-        router.push("/");
+        router.push(
+          result.user?.type == "recruiter" ? "/recruiter-portal" : "/",
+        );
       } else {
         // xử lý lỗi cụ thể
         if (result.error === "Bad credentials") {
