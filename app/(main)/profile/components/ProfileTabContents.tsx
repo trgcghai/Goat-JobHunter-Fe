@@ -6,13 +6,8 @@ import {
   ProfilePassword,
 } from "@/app/(main)/profile/components";
 import { TabsContent } from "@/components/ui/tabs";
-import { User } from "@/types/model";
 
-interface ProfileTabContentsProps {
-  user: User;
-}
-
-const ProfileTabContents = ({ user }: ProfileTabContentsProps) => {
+const ProfileTabContents = () => {
   return (
     <>
       <TabsContent value="applications" className="space-y-4">
@@ -32,7 +27,7 @@ const ProfileTabContents = ({ user }: ProfileTabContentsProps) => {
       </TabsContent>
 
       <TabsContent value="info" className="space-y-4">
-        <ProfileInfo user={user} />
+        <ProfileInfo />
       </TabsContent>
     </>
   );

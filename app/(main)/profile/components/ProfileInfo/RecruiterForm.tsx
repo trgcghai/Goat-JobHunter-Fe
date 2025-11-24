@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useUser } from "@/hooks/useUser";
 import { Recruiter } from "@/types/model";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
@@ -27,20 +28,20 @@ import { useForm } from "react-hook-form";
 interface RecruiterFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  profile: Recruiter;
 }
 
-function RecruiterForm({ open, onOpenChange, profile }: RecruiterFormProps) {
+function RecruiterForm({ open, onOpenChange }: RecruiterFormProps) {
+  const { user: profile } = useUser();
   const form = useForm<RecruiterFormData>({
     resolver: zodResolver(recruiterSchema),
     defaultValues: {
-      fullName: profile.fullName || "",
-      username: profile.username || "",
-      email: profile.contact.email || "",
-      contactEmail: profile.contact?.email || "",
-      contactPhone: profile.contact?.phone || "",
-      address: profile.address || "",
-      description: profile.description || "",
+      fullName: profile?.fullName || "",
+      username: profile?.username || "",
+      email: profile?.contact.email || "",
+      contactEmail: profile?.contact?.email || "",
+      contactPhone: profile?.contact?.phone || "",
+      address: profile?.address || "",
+      description: (profile as Recruiter)?.description || "",
     },
   });
 

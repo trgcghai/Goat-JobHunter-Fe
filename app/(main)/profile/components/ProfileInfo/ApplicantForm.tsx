@@ -21,9 +21,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useUpdateApplicantMutation } from "@/services/applicant/applicantApi";
+import { useUser } from "@/hooks/useUser";
 import { Gender } from "@/types/enum";
-import { Applicant } from "@/types/model";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { capitalize } from "lodash";
 import { Loader2 } from "lucide-react";
@@ -33,48 +32,44 @@ import { toast } from "sonner";
 interface ApplicantFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  profile: Applicant;
 }
 
-const ApplicantForm = ({ open, onOpenChange, profile }: ApplicantFormProps) => {
-  const [updateApplicant, { isLoading }] = useUpdateApplicantMutation();
+const ApplicantForm = ({ open, onOpenChange }: ApplicantFormProps) => {
+  const {
+    user: profile,
+    handleUpdateApplicant,
+    isUpdatingApplicant,
+  } = useUser();
   const form = useForm<ApplicantFormData>({
     resolver: zodResolver(applicantSchema),
     defaultValues: {
-      fullName: profile.fullName || "",
-      username: profile.username || "",
-      dob: profile.dob ? new Date(profile.dob) : undefined,
-      gender: profile.gender || Gender.NAM,
-      email: profile.contact.email || "",
-      phone: profile.contact.phone || "",
+      fullName: profile?.fullName || "",
+      username: profile?.username || "",
+      dob: profile?.dob ? new Date(profile?.dob) : undefined,
+      gender: profile?.gender || Gender.NAM,
+      email: profile?.contact.email || "",
+      phone: profile?.contact.phone || "",
     },
   });
 
   const onSubmit = async (data: ApplicantFormData) => {
-    console.log("submit data", data);
-
-    try {
-      const response = await updateApplicant({
-        userId: profile.userId,
-        fullName: data.fullName,
-        username: data.username,
-        dob: data.dob,
-        gender: data.gender,
-        contact: {
-          email: data.email,
-          phone: data.phone,
-        },
-      });
-
-      if (response.error) {
-        throw new Error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
-      }
-
-      toast.success("Cập nhật thông tin thành công!");
-    } catch (error) {
-      console.error("Failed to update applicant:", error);
-      toast.error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
+    if (!profile?.userId) {
+      toast.error(
+        "Không thể cập nhật thông tin ứng viên. Vui lòng thử lại sau.",
+      );
+      return;
     }
+
+    handleUpdateApplicant(profile.userId, {
+      fullName: data.fullName,
+      username: data.username,
+      dob: data.dob.toISOString(),
+      gender: data.gender,
+      contact: {
+        email: data.email,
+        phone: data.phone,
+      },
+    });
 
     onOpenChange(false);
     form.reset();
@@ -229,10 +224,10 @@ const ApplicantForm = ({ open, onOpenChange, profile }: ApplicantFormProps) => {
               </Button>
               <Button
                 type="submit"
-                disabled={isLoading}
+                disabled={isUpdatingApplicant}
                 className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-6"
               >
-                {isLoading ? (
+                {isUpdatingApplicant ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin mr-2" />
                     Đang lưu...
