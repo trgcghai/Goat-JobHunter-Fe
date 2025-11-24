@@ -1,6 +1,5 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,65 +12,67 @@ import {
 import { ROLE } from "@/constants/constant";
 import { useUser } from "@/hooks/useUser";
 import { LogOut, Shield, User } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function UserPopup() {
   const { user, signOut, isSigningOut } = useUser();
-
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
+  const [imageError, setImageError] = useState(false);
 
   const handleLogout = async () => {
     await signOut();
   };
 
+  const hasAvatar = user?.avatar && !imageError;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-          <div className="p-3 rounded-full overflow-hidden bg-muted shrink-0 flex items-center justify-center">
-            {user?.avatar ? (
-              <Avatar className="h-12 w-12">
-                <AvatarImage
-                  src={user.avatar || "/placeholder.svg"}
-                  alt={user.fullName}
-                />
-                <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
-              </Avatar>
-            ) : (
+        <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0">
+          {hasAvatar ? (
+            <div className="h-10 w-10 rounded-full overflow-hidden bg-muted flex items-center justify-center">
+              <Image
+                src={user.avatar}
+                alt={user.fullName || "User"}
+                width={40}
+                height={40}
+                className="h-full w-full object-cover"
+                onError={() => setImageError(true)}
+              />
+            </div>
+          ) : (
+            <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
               <User className="h-5 w-5 text-muted-foreground" />
-            )}
-          </div>
+            </div>
+          )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-64 rounded-xl" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex items-center gap-3 py-2">
-            <div className="p-3 rounded-full overflow-hidden bg-muted shrink-0 flex items-center justify-center">
-              {user?.avatar ? (
-                <Avatar className="h-12 w-12">
-                  <AvatarImage
-                    src={user.avatar || "/placeholder.svg"}
-                    alt={user.fullName}
-                  />
-                  <AvatarFallback>{getInitials(user.fullName)}</AvatarFallback>
-                </Avatar>
-              ) : (
-                <User className="h-5 w-5 text-muted-foreground" />
-              )}
-            </div>
+            {hasAvatar ? (
+              <div className="h-12 w-12 rounded-full overflow-hidden bg-muted shrink-0 flex items-center justify-center">
+                <Image
+                  src={user.avatar}
+                  alt={user.fullName || "User"}
+                  width={48}
+                  height={48}
+                  className="h-full w-full object-cover"
+                  onError={() => setImageError(true)}
+                />
+              </div>
+            ) : (
+              <div className="h-12 w-12 rounded-full bg-muted shrink-0 flex items-center justify-center">
+                <User className="h-6 w-6 text-muted-foreground" />
+              </div>
+            )}
 
-            <div className="flex flex-col space-y-1">
-              <p className="text-sm font-semibold leading-none">
+            <div className="flex flex-col space-y-1 min-w-0">
+              <p className="text-sm font-semibold leading-none truncate">
                 {user?.fullName ? user.fullName : "Người Dùng"}
               </p>
-              <p className="text-xs leading-none text-muted-foreground">
+              <p className="text-xs leading-none text-muted-foreground truncate">
                 {user?.contact.email}
               </p>
             </div>
