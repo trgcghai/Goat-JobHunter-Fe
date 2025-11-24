@@ -117,7 +117,7 @@ const ApplicationTable = () => {
                     <TableCell className="text-right">
                       {application.resumeUrl ? (
                         <Button
-                          variant="outline"
+                          variant="ghost"
                           size="sm"
                           className="rounded-xl"
                           onClick={() => handlePreviewResume(application)}

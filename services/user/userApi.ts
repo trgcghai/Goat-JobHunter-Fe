@@ -69,7 +69,16 @@ export const userApi = api.injectEndpoints({
         url: "/users/me/saved-jobs",
         method: "GET",
       }),
-      providesTags: ["User"],
+      providesTags: (result) =>
+        result?.data
+          ? [
+              ...result.data.map((job) => ({
+                type: "SavedJob" as const,
+                id: job.jobId,
+              })),
+              { type: "SavedJob", id: "LIST" },
+            ]
+          : [{ type: "SavedJob", id: "LIST" }],
     }),
 
     checkSavedJobs: builder.query<
@@ -81,7 +90,13 @@ export const userApi = api.injectEndpoints({
         method: "GET",
         params: { jobIds: params.jobIds },
       }),
-      providesTags: ["User"],
+      providesTags: (_, __, arg) =>
+        arg.jobIds
+          ? arg.jobIds.map((jobId) => ({
+              type: "SavedJob" as const,
+              id: jobId,
+            }))
+          : [],
     }),
 
     saveJobs: builder.mutation<SaveJobsResponse, SaveJobsRequest>({
@@ -90,7 +105,13 @@ export const userApi = api.injectEndpoints({
         method: "PUT",
         data,
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: (_, __, arg) => [
+        { type: "SavedJob", id: "LIST" },
+        ...arg.jobIds.map((jobId) => ({
+          type: "SavedJob" as const,
+          id: jobId,
+        })),
+      ],
     }),
 
     unsaveJobs: builder.mutation<SaveJobsResponse, SaveJobsRequest>({
@@ -99,7 +120,13 @@ export const userApi = api.injectEndpoints({
         method: "DELETE",
         data,
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: (_, __, arg) => [
+        { type: "SavedJob", id: "LIST" },
+        ...arg.jobIds.map((jobId) => ({
+          type: "SavedJob" as const,
+          id: jobId,
+        })),
+      ],
     }),
 
     // Follow Recruiters API
