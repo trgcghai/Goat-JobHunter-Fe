@@ -47,14 +47,7 @@ const RecruiterListCard = ({ recruiter }: RecruiterListCardProps) => {
 
                 <div className="text-sm text-muted-foreground flex items-center gap-2">
                   <Mail className="h-4 w-4" />
-                  <Link
-                    href={recruiter.contact.email || "#"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    {recruiter.contact.email || "N/A"}
-                  </Link>
+                  <p>{recruiter.contact.email || "N/A"}</p>
                 </div>
 
                 <div className="text-sm text-muted-foreground flex items-center gap-2">
@@ -73,12 +66,10 @@ const RecruiterListCard = ({ recruiter }: RecruiterListCardProps) => {
                 </p>
               )}
               <div className="flex justify-end w-full">
-                <Link href={`/recruiters/${recruiter.userId}`}>
-                  <Button className="rounded-xl">
-                    Xem Công Ty
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </Link>
+                <Button className="rounded-xl">
+                  Xem Công Ty
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
               </div>
             </div>
           </div>
