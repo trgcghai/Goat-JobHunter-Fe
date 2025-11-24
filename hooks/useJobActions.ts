@@ -1,9 +1,14 @@
 import { useUser } from "@/hooks/useUser";
 import {
+  useCreateJobMutation,
+  useDeleteJobMutation,
+} from "@/services/job/jobApi";
+import {
   useSaveJobsMutation,
   useUnsaveJobsMutation,
 } from "@/services/user/userApi";
 import { Job } from "@/types/model";
+import { useCallback } from "react";
 import { toast } from "sonner";
 
 const useJobActions = () => {
@@ -12,6 +17,8 @@ const useJobActions = () => {
     useSaveJobsMutation();
   const [unsaveJobs, { isSuccess: isUnsaveSuccess, isError: isUnsaveError }] =
     useUnsaveJobsMutation();
+  const [createJob, { isLoading: isCreating }] = useCreateJobMutation();
+  const [deleteJob, { isLoading: isDeleting }] = useDeleteJobMutation();
 
   const handleUnsaveJob = async (job: Job | null) => {
     if (!user) {
@@ -75,7 +82,57 @@ const useJobActions = () => {
     }
   };
 
-  return { handleUnsaveJob, handleToggleSaveJob };
+  // Create new job
+  const handleCreateJob = useCallback(
+    async (jobData: any) => {
+      try {
+        const response = await createJob(jobData).unwrap();
+
+        if (response.data) {
+          toast.success("Tạo công việc thành công!", {
+            description: `Đã tạo công việc: ${jobData.title}`,
+          });
+          return response.data;
+        }
+      } catch (error) {
+        console.error("Failed to create job:", error);
+        toast.error("Không thể tạo công việc. Vui lòng thử lại sau.");
+        throw error;
+      }
+    },
+    [createJob],
+  );
+
+  // Delete job
+  const handleDeleteJob = useCallback(
+    async (jobId: number, jobTitle?: string) => {
+      try {
+        const response = await deleteJob(jobId.toString()).unwrap();
+
+        if (response.data) {
+          toast.success("Xóa công việc thành công!", {
+            description: jobTitle ? `Đã xóa: ${jobTitle}` : undefined,
+          });
+          return response.data;
+        }
+      } catch (error) {
+        console.error("Failed to delete job:", error);
+        toast.error("Không thể xóa công việc. Vui lòng thử lại sau.");
+        throw error;
+      }
+    },
+    [deleteJob],
+  );
+
+  return {
+    isCreating,
+    isDeleting,
+
+    handleUnsaveJob,
+    handleToggleSaveJob,
+    handleCreateJob,
+    handleDeleteJob,
+  };
 };
 
 export default useJobActions;
