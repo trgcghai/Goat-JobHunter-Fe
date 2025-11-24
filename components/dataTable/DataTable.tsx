@@ -4,7 +4,6 @@ import { useDataTable } from "@/components/dataTable/useDataTable";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableContent } from "./DataTableContent";
 import { DataTablePagination } from "./DataTablePagination";
-import { DataTableViewOptions } from "./DataTableViewOptions";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -27,10 +26,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        {toolbar}
-        <DataTableViewOptions table={table} />
-      </div>
+      <div className="flex items-center justify-between">{toolbar}</div>
       <DataTableContent table={table} columns={columns} />
       <DataTablePagination table={table} />
     </div>

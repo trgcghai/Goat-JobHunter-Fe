@@ -1,4 +1,4 @@
-import JobsTable from "@/app/(admin)/admin/job/JobsTable";
+import JobsTable from "@/app/(recruiter-portal)/recruiter-portal/jobs/components/JobsTable";
 
 const AdminJobPage = () => {
   return (
@@ -13,7 +13,7 @@ const AdminJobPage = () => {
           </p>
         </div>
       </div>
-      <JobsTable />
+      <JobsTable jobs={[]} />
     </div>
   );
 };

@@ -16,7 +16,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { Separator } from "@/components/ui/separator";
-import { useFetchJobsAvailableQuery } from "@/services/job/jobApi";
+import { useFetchJobsByRecruiterQuery } from "@/services/job/jobApi";
 import { useFetchRecruiterByIdQuery } from "@/services/recruiter/recruiterApi";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
@@ -36,7 +36,7 @@ export default function RecruiterDetailPage() {
   });
 
   const { data: jobsResp, isLoading: isJobsLoading } =
-    useFetchJobsAvailableQuery(
+    useFetchJobsByRecruiterQuery(
       { page: 1, size: 100, recruiterId }, // Changed limit to size, increased to get all jobs
       { skip: !recruiterId },
     );

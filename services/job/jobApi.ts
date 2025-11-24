@@ -1,13 +1,14 @@
 import { api } from "@/services/api";
 import { buildSpringQuery } from "@/utils/buildSpringQuery";
 import type {
-  CountJobByRecruiterResponse,
   CreateJobRequest,
   CreateJobResponse,
   DeleteJobRequest,
   DeleteJobResponse,
+  FetchJobByCurrentRecruiterRequest,
   FetchJobByIdRequest,
   FetchJobByIdResponse,
+  FetchJobByRecruiterRequest,
   FetchJobsRequest,
   FetchJobsResponse,
   UpdateJobRequest,
@@ -80,14 +81,7 @@ export const jobApi = api.injectEndpoints({
       providesTags: ["Job"],
     }),
 
-    countJobByRecruiter: builder.query<CountJobByRecruiterResponse, void>({
-      query: () => ({
-        url: "/jobs/recruiters",
-        method: "GET",
-      }),
-    }),
-
-    // New endpoint: Fetch available jobs (active = true) for applicants
+    // Fetch available jobs (active = true) for applicants
     fetchJobsAvailable: builder.query<
       FetchJobsResponse,
       Omit<FetchJobsRequest, "active">
@@ -123,7 +117,7 @@ export const jobApi = api.injectEndpoints({
       providesTags: ["Job"],
     }),
 
-    // New endpoint: Fetch related jobs based on skills (active = true) for job detail page
+    // Fetch related jobs based on skills (active = true) for job detail page
     fetchRelatedJobs: builder.query<
       FetchJobsResponse,
       {
@@ -156,6 +150,63 @@ export const jobApi = api.injectEndpoints({
       },
       providesTags: ["Job"],
     }),
+
+    // fetch jobs by recruiter id
+    fetchJobsByRecruiter: builder.query<
+      FetchJobsResponse,
+      FetchJobByRecruiterRequest
+    >({
+      query: ({ recruiterId, ...params }) => {
+        const { params: queryParams } = buildSpringQuery({
+          params: {
+            ...params,
+            active: true,
+          },
+          filterFields: ["title", "location", "salary", "level", "workingType"],
+          textSearchFields: ["title", "location"], // Dùng LIKE search
+          nestedArrayFields: {
+            skills: "skills.name", // Map skills -> skills.name
+          },
+          defaultSort: "updatedAt,desc",
+          sortableFields: ["title", "salary", "createdAt", "updatedAt"],
+        });
+        return {
+          url: `/recruiters/${recruiterId}/jobs`,
+          method: "GET",
+          params: queryParams,
+        };
+      },
+      providesTags: ["Job"],
+    }),
+
+    // fetch jobs by current login recruiter
+    fetchJobsByCurrentRecruiter: builder.query<
+      FetchJobsResponse,
+      FetchJobByCurrentRecruiterRequest
+    >({
+      query: (params) => {
+        const { params: queryParams } = buildSpringQuery({
+          params: {
+            ...params,
+            active: true,
+          },
+          filterFields: ["title", "location", "salary", "level", "workingType"],
+          textSearchFields: ["title", "location"], // Dùng LIKE search
+          nestedArrayFields: {
+            skills: "skills.name", // Map skills -> skills.name
+          },
+          defaultSort: "updatedAt,desc",
+          sortableFields: ["title", "salary", "createdAt", "updatedAt"],
+        });
+
+        return {
+          url: `/recruiters/me/jobs`,
+          method: "GET",
+          params: queryParams,
+        };
+      },
+      providesTags: ["Job"],
+    }),
   }),
 });
 
@@ -165,7 +216,8 @@ export const {
   useDeleteJobMutation,
   useFetchJobsQuery,
   useFetchJobByIdQuery,
-  useCountJobByRecruiterQuery,
   useFetchJobsAvailableQuery,
   useFetchRelatedJobsQuery,
+  useFetchJobsByRecruiterQuery,
+  useFetchJobsByCurrentRecruiterQuery,
 } = jobApi;
