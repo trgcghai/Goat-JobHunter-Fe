@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import MultipleSelector, { Option } from "@/components/ui/MultipleSelector";
 import {
   Select,
   SelectContent,
@@ -28,17 +29,22 @@ import { Textarea } from "@/components/ui/textarea";
 import { LEVEL_OPTIONS, WORKING_TYPE_OPTIONS } from "@/constants/constant";
 import useJobActions from "@/hooks/useJobActions";
 import { useFetchJobByIdQuery } from "@/services/job/jobApi";
+import { useGetSkillsQuery } from "@/services/skill/skillApi";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { debounce } from "lodash";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 
 export default function JobForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const jobId = searchParams.get("jobId");
+
+  const [inputValue, setInputValue] = useState<string>("");
+  const [debouncedInputValue, setDebouncedInputValue] = useState<string>("");
 
   const { handleCreateJob, handleUpdateJob, isCreating, isUpdating } =
     useJobActions();
@@ -51,6 +57,18 @@ export default function JobForm() {
   } = useFetchJobByIdQuery(jobId!, {
     skip: !jobId,
   });
+
+  // Fetch skills from API
+  const { data: skillsData, isFetching: isFetchingSkills } = useGetSkillsQuery(
+    {
+      page: 1,
+      size: 20,
+      name: debouncedInputValue,
+    },
+    {
+      skip: !debouncedInputValue || debouncedInputValue.length < 2,
+    },
+  );
 
   const job = jobData?.data;
   const isEditMode = !!jobId && !!job;
@@ -67,10 +85,40 @@ export default function JobForm() {
       workingType: "",
       startDate: "",
       endDate: "",
-      skillIds: [],
+      skills: [],
       careerId: "",
     },
   });
+
+  // Convert API skills to options
+  const skillOptions = useMemo<Option[]>(() => {
+    if (!debouncedInputValue || debouncedInputValue.length < 2) return [];
+
+    if (!skillsData?.data?.result) return [];
+
+    const selectedSkillIds = form.watch("skills").map((s) => s.skillId);
+
+    return skillsData.data.result
+      .filter((skill) => !selectedSkillIds.includes(skill.skillId))
+      .map((skill) => ({
+        label: skill.name,
+        value: skill.skillId,
+      }));
+  }, [skillsData, debouncedInputValue, form]);
+
+  // Debounced search
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSearch = useCallback(
+    debounce((value: string) => {
+      setDebouncedInputValue(value);
+    }, 500),
+    [],
+  );
+
+  const handleInputValueChange = (value: string) => {
+    setInputValue(value);
+    debouncedSearch(value);
+  };
 
   // Populate form with job data in edit mode
   useEffect(() => {
@@ -89,7 +137,11 @@ export default function JobForm() {
         endDate: job.endDate
           ? new Date(job.endDate).toISOString().split("T")[0]
           : "",
-        skillIds: job.skills?.map((skill) => skill.skillId) || [],
+        skills:
+          job.skills?.map((skill) => ({
+            skillId: skill.skillId,
+            name: skill.name,
+          })) || [],
         careerId: job.career?.careerId || "",
       });
     }
@@ -97,12 +149,16 @@ export default function JobForm() {
 
   const onSubmit = async (data: CreateJobFormData) => {
     try {
+      // Convert skills to skillIds array for API
+      const submitData = {
+        ...data,
+        skillIds: data.skills.map((skill) => skill.skillId),
+      };
+
       if (isEditMode) {
-        // Update existing job
-        await handleUpdateJob(Number(jobId), data);
+        await handleUpdateJob(Number(jobId), submitData);
       } else {
-        // Create new job
-        await handleCreateJob(data);
+        await handleCreateJob(submitData);
       }
       router.push("/recruiter-portal/jobs");
     } catch (error) {
@@ -110,12 +166,10 @@ export default function JobForm() {
     }
   };
 
-  // Show loading while fetching job data
   if (isLoadingJob) {
     return <LoaderSpin />;
   }
 
-  // Show error if job not found
   if (isEditMode && isError) {
     return (
       <div className="space-y-4">
@@ -160,6 +214,7 @@ export default function JobForm() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          {/* Basic Information */}
           <Card>
             <CardHeader>
               <CardTitle>Thông tin cơ bản</CardTitle>
@@ -222,6 +277,7 @@ export default function JobForm() {
             </CardContent>
           </Card>
 
+          {/* Job Details */}
           <Card>
             <CardHeader>
               <CardTitle>Chi tiết công việc</CardTitle>
@@ -358,9 +414,70 @@ export default function JobForm() {
                   )}
                 />
               </div>
+
+              {/* Skills MultipleSelector */}
+              <FormField
+                control={form.control}
+                name="skills"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel required>Kỹ năng yêu cầu</FormLabel>
+                    <FormControl>
+                      <MultipleSelector
+                        options={skillOptions}
+                        value={field.value.map((skill) => ({
+                          label: skill.name,
+                          value: skill.skillId,
+                        }))}
+                        onChange={(selectedOptions: Option[]) => {
+                          field.onChange(
+                            selectedOptions.map((opt) => ({
+                              skillId: opt.value,
+                              name: opt.label,
+                            })),
+                          );
+                        }}
+                        inputValue={inputValue}
+                        onInputValueChange={handleInputValueChange}
+                        placeholder="Nhập tên kỹ năng..."
+                        loadingIndicator={
+                          isFetchingSkills && (
+                            <div className="flex items-center justify-center py-2">
+                              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                              <span className="ml-2 text-sm text-muted-foreground">
+                                Đang tìm kiếm...
+                              </span>
+                            </div>
+                          )
+                        }
+                        emptyIndicator={
+                          <p className="text-center text-sm text-muted-foreground py-2">
+                            {inputValue.length < 2
+                              ? "Nhập ít nhất 2 ký tự để tìm kiếm"
+                              : "Không tìm thấy kỹ năng"}
+                          </p>
+                        }
+                        className="rounded-xl"
+                        hidePlaceholderWhenSelected
+                        maxSelected={10}
+                        onMaxSelected={(maxLimit) => {
+                          console.log(
+                            `Chỉ có thể chọn tối đa ${maxLimit} kỹ năng`,
+                          );
+                        }}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Chọn 1-10 kỹ năng. Nhập ít nhất 2 ký tự để tìm kiếm.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </CardContent>
           </Card>
 
+          {/* Submit Buttons */}
           <div className="flex justify-end gap-4">
             <Button
               type="button"

@@ -29,8 +29,13 @@ export const createJobSchema = z
     workingType: z.string().min(1, "Hình thức làm việc không được để trống"),
     startDate: z.string().min(1, "Ngày bắt đầu không được để trống"),
     endDate: z.string().min(1, "Ngày kết thúc không được để trống"),
-    skillIds: z
-      .array(z.string())
+    skills: z
+      .array(
+        z.object({
+          skillId: z.string(),
+          name: z.string(),
+        }),
+      )
       .min(1, "Phải chọn ít nhất 1 kỹ năng")
       .max(10, "Chỉ được chọn tối đa 10 kỹ năng"),
     careerId: z.string().min(1, "Ngành nghề không được để trống"),
