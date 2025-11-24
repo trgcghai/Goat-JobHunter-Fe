@@ -1,25 +1,20 @@
 "use client";
 import { ProfileHeader, ProfileTabs } from "@/app/(main)/profile/components";
-import LoaderSpin from "@/components/LoaderSpin";
 import {
   Empty,
   EmptyDescription,
   EmptyHeader,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { useUser } from "@/hooks/useUser";
 import { useGetMyAccountQuery } from "@/services/auth/authApi";
-import { useMemo } from "react";
 
 const ProfilePage = () => {
-  const { data, isLoading, isError } = useGetMyAccountQuery();
+  // Fetch user data to ensure it's up-to-date when accessing the profile page, the data returned is stored in the redux store handle by rtk query automatically
+  useGetMyAccountQuery();
+  const { user, isSignedIn } = useUser(); // Get user data from redux store
 
-  const user = useMemo(() => data?.data?.user, [data]);
-
-  if (isLoading) {
-    return <LoaderSpin fullScreen />;
-  }
-
-  if (!user || isError) {
+  if (!user || !isSignedIn) {
     return (
       <Empty>
         <EmptyHeader>
@@ -35,8 +30,8 @@ const ProfilePage = () => {
 
   return (
     <main className="flex-1">
-      <ProfileHeader user={user} />
-      <ProfileTabs user={user} />
+      <ProfileHeader />
+      <ProfileTabs />
     </main>
   );
 };

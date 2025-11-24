@@ -1,4 +1,6 @@
+import { setUser } from "@/lib/features/authSlice";
 import { api } from "@/services/api";
+import { User } from "@/types/model";
 import type {
   ApplicantSignUpRequest,
   FetchAccountResponse,
@@ -39,10 +41,6 @@ export const authApi = api.injectEndpoints({
       }),
     }),
 
-    fetchAccount: builder.query<FetchAccountResponse, void>({
-      query: () => ({ url: "/auth/account", method: "GET" }),
-    }),
-
     refreshToken: builder.query<RefreshTokenResponse, void>({
       query: () => ({ url: "/auth/refresh", method: "GET" }),
     }),
@@ -68,7 +66,16 @@ export const authApi = api.injectEndpoints({
 
     getMyAccount: builder.query<FetchAccountResponse, void>({
       query: () => ({ url: "/auth/account", method: "GET" }),
-      providesTags: ["Account"],
+      providesTags: ["Account", "Applicant", "Recruiter"],
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          // Dispatch action to save user data to slice
+          dispatch(setUser({ user: data?.data?.user as User }));
+        } catch (error) {
+          console.error("Failed to fetch account:", error);
+        }
+      },
     }),
   }),
 });
@@ -77,7 +84,6 @@ export const {
   useApplicantSignupMutation,
   useRecruiterSignupMutation,
   useSigninMutation,
-  useFetchAccountQuery,
   useRefreshTokenQuery,
   useLogoutMutation,
   useVerifyCodeMutation,
