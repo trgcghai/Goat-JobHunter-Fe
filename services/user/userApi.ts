@@ -3,6 +3,7 @@ import { IBackendRes } from "@/types/api";
 import { NotificationType } from "@/types/model";
 import { buildSpringQuery } from "@/utils/buildSpringQuery";
 import type {
+  CheckRecruitersFollowedResponse,
   CheckSavedJobsRequest,
   CheckSavedJobsResponse,
   FetchUserByEmailResponse,
@@ -10,6 +11,7 @@ import type {
   FetchUsersResponse,
   FollowRecruitersRequest,
   FollowRecruitersResponse,
+  GetFollowedRecruiters,
   GetSavedJobsResponse,
   MarkNotificationsAsSeenRequest,
   MarkNotificationsAsSeenResponse,
@@ -129,22 +131,50 @@ export const userApi = api.injectEndpoints({
       ],
     }),
 
-    // Follow Recruiters API
+    // Follow Recruiters APIs for current user
+    // -- Followed recruiters --
+    getFollowedRecruiters: builder.query<GetFollowedRecruiters, void>({
+      query: () => ({
+        url: "/users/me/followed-recruiters",
+        method: "GET",
+      }),
+      providesTags: ["User"],
+    }),
+
+    // Check if recruiters are followed. Pass recruiterIds: number[]
+    checkRecruitersFollowed: builder.query<
+      CheckRecruitersFollowedResponse,
+      FollowRecruitersRequest
+    >({
+      query: ({ recruiterIds }) => ({
+        url: "/users/me/followed-recruiters/contains",
+        params: { recruiterIds }, // array -> repeated param
+      }),
+    }),
+
+    // Follow recruiters (body: { recruiterIds: number[] }), returns UserResponse
     followRecruiters: builder.mutation<
       FollowRecruitersResponse,
       FollowRecruitersRequest
     >({
-      query: ({ userId, followedRecruiters }) => {
-        const payload = followedRecruiters.map((fr) => ({
-          userId: fr.userId,
-          type: "recruiter",
-        }));
-        return {
-          url: "/users/followed-recruiters",
-          method: "PUT",
-          data: { userId, followedRecruiters: payload },
-        };
-      },
+      query: (body) => ({
+        url: "/users/me/followed-recruiters",
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["User"],
+    }),
+
+    // Unfollow recruiters (DELETE with body { recruiterIds })
+    unfollowRecruiters: builder.mutation<
+      FollowRecruitersResponse,
+      FollowRecruitersRequest
+    >({
+      query: (body) => ({
+        url: "/users/me/followed-recruiters",
+        method: "DELETE",
+        body,
+      }),
       invalidatesTags: ["User"],
     }),
 
@@ -200,15 +230,25 @@ export const userApi = api.injectEndpoints({
 });
 
 export const {
+  // hooks for user information endpoints
   useFetchUsersQuery,
   useFetchUserByEmailMutation,
   useUpdatePasswordMutation,
   useResetPasswordMutation,
+
+  // hooks for saved jobs endpoints
   useGetSavedJobsQuery,
   useCheckSavedJobsQuery,
   useSaveJobsMutation,
   useUnsaveJobsMutation,
+
+  // hooks for follow recruiters endpoints
+  useGetFollowedRecruitersQuery,
+  useCheckRecruitersFollowedQuery,
   useFollowRecruitersMutation,
+  useUnfollowRecruitersMutation,
+
+  // hooks for user's notifications endpoints
   useGetUsersNotificationsQuery,
   useGetLatestNotificationsQuery,
   useMarkNotificationsAsSeenMutation,

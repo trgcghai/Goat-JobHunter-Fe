@@ -1,5 +1,6 @@
 "use client";
 
+import RecruiterTable from "@/app/(main)/profile/components/ProfileEmailNotification/RecruiterTable";
 import SkillSubcription from "@/app/(main)/profile/components/ProfileEmailNotification/SkillSubcription";
 import { Card } from "@/components/ui/card";
 
@@ -16,11 +17,7 @@ export default function ProfileEmailNotification() {
           Nhận thêm thông báo khi nhà tuyển dụng bạn yêu thích có việc làm mới.
         </p>
 
-        <div className="text-center py-8 border-2 border-dashed border-border rounded-xl">
-          <p className="text-sm text-muted-foreground">
-            Tính năng đang được phát triển
-          </p>
-        </div>
+        <RecruiterTable />
       </Card>
     </div>
   );

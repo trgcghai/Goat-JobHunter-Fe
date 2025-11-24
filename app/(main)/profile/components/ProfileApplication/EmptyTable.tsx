@@ -1,43 +1,40 @@
-import { Button } from "@/components/ui/button";
-import {
-  Empty,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyTitle,
-} from "@/components/ui/empty";
-import { ArrowUpRightIcon } from "lucide-react";
-import Link from "next/link";
-
 interface EmptyTableProps {
-  type: "jobs" | "applications";
+  type?: "jobs" | "applications" | "recruiters";
 }
 
-const EmptyTable = ({ type }: EmptyTableProps) => {
-  const config = {
-    jobs: {
-      title: "Không có việc làm nào đã lưu",
-      description:
-        "Bạn chưa lưu việc làm nào. Bắt đầu khám phá và lưu những việc làm thú vị ngay hôm nay!",
-    },
-    applications: {
-      title: "Bạn chưa ứng tuyển vị trí nào",
-      description:
-        "Bạn chưa ứng tuyển vị trí nào. Bắt đầu khám phá và ứng tuyển những vị trí thú vị ngay hôm nay!",
-    },
+const EmptyTable = ({ type = "jobs" }: EmptyTableProps) => {
+  const getMessage = () => {
+    switch (type) {
+      case "applications":
+        return {
+          title: "Chưa có đơn ứng tuyển",
+          description: "Hãy bắt đầu ứng tuyển các công việc phù hợp với bạn",
+        };
+      case "recruiters":
+        return {
+          title: "Chưa theo dõi nhà tuyển dụng nào",
+          description:
+            "Hãy theo dõi các nhà tuyển dụng để nhận thông báo việc làm mới",
+        };
+      default:
+        return {
+          title: "Chưa có công việc đã lưu",
+          description: "Hãy lưu các công việc yêu thích để xem sau",
+        };
+    }
   };
 
+  const message = getMessage();
+
   return (
-    <Empty className="border">
-      <EmptyHeader>
-        <EmptyTitle>{config[type].title}</EmptyTitle>
-        <EmptyDescription>{config[type].description}</EmptyDescription>
-      </EmptyHeader>
-      <Button variant="default" asChild className="rounded-xl" size="sm">
-        <Link href="/jobs">
-          Khám phá ngay <ArrowUpRightIcon />
-        </Link>
-      </Button>
-    </Empty>
+    <div className="text-center py-12 border-2 border-dashed border-border rounded-xl">
+      <p className="text-lg font-medium text-muted-foreground">
+        {message.title}
+      </p>
+      <p className="text-sm text-muted-foreground mt-2">
+        {message.description}
+      </p>
+    </div>
   );
 };
 
