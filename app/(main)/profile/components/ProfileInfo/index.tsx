@@ -7,26 +7,19 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useUser } from "@/hooks/useUser";
 import { Recruiter, User } from "@/types/model";
 import getRevertGenderKeyValue from "@/utils/getRevertGenderKeyValue";
 import { capitalize } from "lodash";
 import { Edit2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-interface ProfileInfoProps {
-  user: User;
-}
-
-export default function ProfileInfo({ user }: ProfileInfoProps) {
+export default function ProfileInfo() {
   const [showModal, setShowModal] = useState(false);
-  const [profile, setProfile] = useState<User>(user);
-
-  useEffect(() => {
-    setProfile(user);
-  }, [user]);
+  const { user } = useUser();
 
   const isRecruiter = (user: User): user is Recruiter => {
-    return profile.type.toLowerCase() == SignUpType.RECRUITER.toLowerCase();
+    return user?.type.toLowerCase() == SignUpType.RECRUITER.toLowerCase();
   };
 
   return (
@@ -53,7 +46,7 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
               </Label>
               <Input
                 id="fullName"
-                value={profile.fullName || "Chưa cập nhật"}
+                value={user?.fullName || "Chưa cập nhật"}
                 disabled
                 className="rounded-xl text-gray-800"
               />
@@ -64,7 +57,7 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
               </Label>
               <Input
                 id="username"
-                value={profile.username || "Chưa cập nhật"}
+                value={user?.username || "Chưa cập nhật"}
                 disabled
                 className="rounded-xl text-gray-800"
               />
@@ -79,7 +72,7 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
               <Input
                 id="email"
                 type="email"
-                value={profile.contact.email || "Chưa cập nhật"}
+                value={user?.contact.email || "Chưa cập nhật"}
                 disabled
                 className="rounded-xl text-gray-800"
               />
@@ -90,7 +83,7 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
               </Label>
               <Input
                 id="phone"
-                value={profile.contact?.phone || "Chưa cập nhật"}
+                value={user?.contact?.phone || "Chưa cập nhật"}
                 disabled
                 className="rounded-xl text-gray-800"
               />
@@ -106,8 +99,9 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
                 id="gender"
                 type="text"
                 value={
-                  capitalize(getRevertGenderKeyValue(profile.gender)) ||
-                  "Chưa cập nhật"
+                  user?.gender
+                    ? capitalize(getRevertGenderKeyValue(user.gender))
+                    : "Chưa cập nhật"
                 }
                 disabled
                 className="rounded-xl text-gray-800"
@@ -119,14 +113,14 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
               </Label>
               <Input
                 id="dob"
-                value={capitalize(profile.dob) || "Chưa cập nhật"}
+                value={capitalize(user?.dob) || "Chưa cập nhật"}
                 disabled
                 className="rounded-xl text-gray-800"
               />
             </div>
           </div>
 
-          {isRecruiter(profile) && (
+          {isRecruiter(user!) && (
             <>
               <div className="space-y-2">
                 <Label className="capitalize" htmlFor="address">
@@ -134,7 +128,7 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
                 </Label>
                 <Input
                   id="address"
-                  value={profile.address || "Chưa cập nhật"}
+                  value={user?.address || "Chưa cập nhật"}
                   disabled
                   className="rounded-xl text-gray-800"
                 />
@@ -146,7 +140,7 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
                 </Label>
                 <Textarea
                   id="description"
-                  value={profile.description || "Chưa cập nhật"}
+                  value={user?.description || "Chưa cập nhật"}
                   disabled
                   className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm min-h-[100px] resize-none"
                 />
@@ -159,7 +153,8 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
       <UpdateProfileModal
         open={showModal}
         onOpenChange={setShowModal}
-        profile={profile}
+        isRecruiter={isRecruiter(user!)}
+        isApplicant={!isRecruiter(user!)}
       />
     </>
   );

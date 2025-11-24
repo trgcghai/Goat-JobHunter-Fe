@@ -1,5 +1,6 @@
 import { clearUser, setUser, useAuthSlice } from "@/lib/features/authSlice";
 import { useAppDispatch } from "@/lib/hooks";
+import { useUpdateApplicantMutation } from "@/services/applicant/applicantApi";
 import {
   useApplicantSignupMutation,
   useLogoutMutation,
@@ -15,7 +16,7 @@ import {
   VerifyCodeRequest,
 } from "@/services/auth/authType";
 import { useUpdatePasswordMutation } from "@/services/user/userApi";
-import { User } from "@/types/model";
+import { Applicant, User } from "@/types/model";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { toast } from "sonner";
@@ -39,8 +40,7 @@ export function useUser() {
     useResendCodeMutation();
   const [updatePasswordMutation, { isLoading: isUpdatingPassword }] =
     useUpdatePasswordMutation();
-  // const [resetPasswordMutation, { isLoading: isResettingPassword }] =
-  //   useResetPasswordMutation();
+  const [updateApplicant, { isLoading }] = useUpdateApplicantMutation();
 
   /**
    * Sign in user
@@ -269,6 +269,35 @@ export function useUser() {
     return { success: false };
   }, []);
 
+  /**
+   * Update applicant information
+   */
+  const handleUpdateApplicant = useCallback(
+    async (userId: number, data: Partial<Applicant & User>) => {
+      try {
+        const response = await updateApplicant({
+          userId: userId,
+          fullName: data.fullName ? data.fullName : user?.fullName,
+          username: data.username ? data.username : user?.username,
+          dob: data.dob ? new Date(data.dob) : new Date(user?.dob || ""),
+          gender: data.gender ? data.gender : user?.gender,
+          contact: data.contact ? data.contact : user?.contact,
+          avatar: data.avatar ? data.avatar : user?.avatar,
+        });
+
+        if (response.error) {
+          throw new Error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
+        }
+
+        toast.success("Cập nhật thông tin thành công!");
+      } catch (error) {
+        console.error("Failed to update applicant:", error);
+        toast.error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
+      }
+    },
+    [updateApplicant, user],
+  );
+
   return {
     // User data
     user,
@@ -291,5 +320,9 @@ export function useUser() {
     isVerifying,
     isResending,
     isUpdatingPassword,
+
+    // Update applicant
+    handleUpdateApplicant,
+    isUpdatingApplicant: isLoading,
   };
 }

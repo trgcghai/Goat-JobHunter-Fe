@@ -29,6 +29,7 @@ export type UpdateApplicantRequest = {
   gender?: string;
   contact?: Contact;
   dob?: Date;
+  avatar?: string;
 };
 
 export type UpdateApplicantResponse = IBackendRes<Applicant>;
