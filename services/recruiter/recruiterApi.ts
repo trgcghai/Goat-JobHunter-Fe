@@ -50,6 +50,7 @@ export const recruiterApi = api.injectEndpoints({
       invalidatesTags: ["Recruiter"],
     }),
 
+    // For Admin - Fetch all recruiters (enabled & disabled)
     fetchRecruiters: builder.query<
       FetchRecruitersResponse,
       FetchRecruitersRequest
@@ -59,6 +60,32 @@ export const recruiterApi = api.injectEndpoints({
           params,
           filterFields: ["fullName", "address", "enabled"],
           textSearchFields: ["fullName", "address"], // Dùng LIKE search
+          defaultSort: "createdAt,desc",
+          sortableFields: ["fullName", "createdAt", "updatedAt"],
+        });
+
+        return {
+          url: "/recruiters",
+          method: "GET",
+          params: queryParams,
+        };
+      },
+      providesTags: ["Recruiter"],
+    }),
+
+    // For Client - Fetch only enabled recruiters
+    fetchAvailableRecruiters: builder.query<
+      FetchRecruitersResponse,
+      Omit<FetchRecruitersRequest, "enabled">
+    >({
+      query: (params) => {
+        const { params: queryParams } = buildSpringQuery({
+          params: {
+            ...params,
+            enabled: true, // Force enabled = true
+          },
+          filterFields: ["fullName", "address", "enabled"],
+          textSearchFields: ["fullName", "address"],
           defaultSort: "createdAt,desc",
           sortableFields: ["fullName", "createdAt", "updatedAt"],
         });
@@ -90,5 +117,6 @@ export const {
   useUpdateRecruiterMutation,
   useDeleteRecruiterMutation,
   useFetchRecruitersQuery,
+  useFetchAvailableRecruitersQuery,
   useFetchRecruiterByIdQuery,
 } = recruiterApi;

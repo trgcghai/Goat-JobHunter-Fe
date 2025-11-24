@@ -1,4 +1,4 @@
-import { useFetchRecruitersQuery } from "@/services/recruiter/recruiterApi";
+import { useFetchAvailableRecruitersQuery } from "@/services/recruiter/recruiterApi";
 import { useMemo, useState } from "react";
 
 export interface RecruiterFilters {
@@ -53,7 +53,7 @@ export const useRecruitersFilter = (options?: UseRecruitersFilterOptions) => {
     isFetching,
     isError,
     error,
-  } = useFetchRecruitersQuery(queryParams);
+  } = useFetchAvailableRecruitersQuery(queryParams);
 
   // Extract data from response
   const recruiters = recruitersResponse?.data?.result || [];

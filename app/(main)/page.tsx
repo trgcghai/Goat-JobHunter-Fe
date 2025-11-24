@@ -7,7 +7,7 @@ import {
 } from "@/app/(main)/components";
 import { useFetchBlogsQuery } from "@/services/blog/blogApi";
 import { useFetchJobsAvailableQuery } from "@/services/job/jobApi";
-import { useFetchRecruitersQuery } from "@/services/recruiter/recruiterApi";
+import { useFetchAvailableRecruitersQuery } from "@/services/recruiter/recruiterApi";
 
 export default function Home() {
   const {
@@ -30,7 +30,7 @@ export default function Home() {
     data: recruiters,
     isLoading: isLoadingRecruiters,
     isError: isErrorRecruiters,
-  } = useFetchRecruitersQuery({ page: 1, size: 3 });
+  } = useFetchAvailableRecruitersQuery({ page: 1, size: 3 });
 
   return (
     <>
