@@ -104,7 +104,7 @@ export default function RecruiterFilter({
         <div className="flex items-center gap-4">
           <Input
             type="text"
-            placeholder="Nhập tên công ty..."
+            placeholder="Nhập tên nhà tuyển dụng..."
             value={nameInput}
             onChange={handleNameChange}
             onKeyPress={handleKeyPress}

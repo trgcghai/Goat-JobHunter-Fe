@@ -1,15 +1,71 @@
+import { useUser } from "@/hooks/useUser";
 import {
   useFollowRecruitersMutation,
   useUnfollowRecruitersMutation,
 } from "@/services/user/userApi";
+import { Recruiter } from "@/types/model";
 import { useCallback } from "react";
 import { toast } from "sonner";
 
 const useRecruiterActions = () => {
-  const [followRecruiters, { isLoading: isFollowing }] =
-    useFollowRecruitersMutation();
-  const [unfollowRecruiters, { isLoading: isUnfollowing }] =
-    useUnfollowRecruitersMutation();
+  const { user, isSignedIn } = useUser();
+  const [
+    followRecruiters,
+    {
+      isLoading: isFollowing,
+      isSuccess: isFollowSuccess,
+      isError: isFollowError,
+    },
+  ] = useFollowRecruitersMutation();
+  const [
+    unfollowRecruiters,
+    {
+      isLoading: isUnfollowing,
+      isSuccess: isUnfollowSuccess,
+      isError: isUnfollowError,
+    },
+  ] = useUnfollowRecruitersMutation();
+
+  // Toggle follow recruiter
+  const handleToggleFollowRecruiter = async (
+    e: React.MouseEvent,
+    recruiter: Recruiter,
+    isFollowed: boolean,
+    setIsFollowed: React.Dispatch<React.SetStateAction<boolean>>,
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!isSignedIn || !user) {
+      toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
+      return;
+    }
+
+    setIsFollowed(!isFollowed);
+
+    if (isFollowed) {
+      await unfollowRecruiters({
+        recruiterIds: [recruiter.userId],
+      });
+    } else {
+      await followRecruiters({
+        recruiterIds: [recruiter.userId],
+      });
+    }
+
+    if (isFollowSuccess || isUnfollowSuccess) {
+      toast.success(
+        isFollowed
+          ? "Đã hủy theo dõi nhà tuyển dụng."
+          : "Đã theo dõi nhà tuyển dụng thành công.",
+      );
+    }
+
+    if (isFollowError || isUnfollowError) {
+      toast.error("Đã xảy ra lỗi. Vui lòng thử lại.");
+      setIsFollowed(!isFollowed); // Revert state on error
+    }
+  };
 
   // Follow multiple recruiters
   const handleFollowRecruiters = useCallback(
@@ -52,6 +108,7 @@ const useRecruiterActions = () => {
     isLoading: isFollowing || isUnfollowing,
 
     // Actions
+    handleToggleFollowRecruiter,
     handleFollowRecruiters,
     handleUnfollowRecruiters,
   };

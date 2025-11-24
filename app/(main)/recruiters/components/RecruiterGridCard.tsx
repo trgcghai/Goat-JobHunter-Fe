@@ -1,17 +1,25 @@
+"use client";
+
 import MarkdownDisplay from "@/components/MarkdownDisplay";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Recruiter } from "@/types/model";
-import { capitalize } from "lodash";
-import { Mail, MapPin, Phone, User } from "lucide-react";
+import { Heart, Mail, MapPin, Phone, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
 interface RecruiterGridCardProps {
   recruiter: Recruiter;
+  isFollowed: boolean;
+  handleFollowRecruiter: (e: React.MouseEvent) => void;
 }
 
-const RecruiterGridCard = ({ recruiter }: RecruiterGridCardProps) => {
+const RecruiterGridCard = ({
+  recruiter,
+  isFollowed,
+  handleFollowRecruiter,
+}: RecruiterGridCardProps) => {
   const [imageError, setImageError] = useState(false);
   const hasAvatar = recruiter.avatar && !imageError;
 
@@ -31,7 +39,9 @@ const RecruiterGridCard = ({ recruiter }: RecruiterGridCardProps) => {
                   onError={() => setImageError(true)}
                 />
               ) : (
-                <User className="w-12 h-12 text-muted-foreground" />
+                <div className="w-full h-full flex items-center justify-center">
+                  <User className="h-10 w-10 text-muted-foreground" />
+                </div>
               )}
             </div>
 
@@ -51,7 +61,7 @@ const RecruiterGridCard = ({ recruiter }: RecruiterGridCardProps) => {
                 <div className="flex items-start gap-2">
                   <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
                   <span className="wrap-break-word">
-                    {capitalize(recruiter.address || "") || "N/A"}
+                    {recruiter.address || "N/A"}
                   </span>
                 </div>
 
@@ -78,6 +88,20 @@ const RecruiterGridCard = ({ recruiter }: RecruiterGridCardProps) => {
             </p>
           )}
         </CardContent>
+
+        <div className="px-6 pb-4">
+          <Button
+            variant={isFollowed ? "secondary" : "default"}
+            size="sm"
+            className="w-full rounded-xl"
+            onClick={handleFollowRecruiter}
+          >
+            <Heart
+              className={`h-4 w-4 mr-2 ${isFollowed ? "fill-current" : ""}`}
+            />
+            {isFollowed ? "Đang theo dõi" : "Theo dõi"}
+          </Button>
+        </div>
       </Card>
     </Link>
   );

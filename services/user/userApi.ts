@@ -157,10 +157,10 @@ export const userApi = api.injectEndpoints({
       FollowRecruitersResponse,
       FollowRecruitersRequest
     >({
-      query: (body) => ({
+      query: (data) => ({
         url: "/users/me/followed-recruiters",
         method: "PUT",
-        body,
+        data,
       }),
       invalidatesTags: ["User"],
     }),
@@ -170,10 +170,10 @@ export const userApi = api.injectEndpoints({
       FollowRecruitersResponse,
       FollowRecruitersRequest
     >({
-      query: (body) => ({
+      query: (data) => ({
         url: "/users/me/followed-recruiters",
         method: "DELETE",
-        body,
+        data,
       }),
       invalidatesTags: ["User"],
     }),
