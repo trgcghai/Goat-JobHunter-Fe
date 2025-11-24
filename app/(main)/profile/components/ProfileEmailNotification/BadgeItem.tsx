@@ -18,8 +18,8 @@ export default function BadgeItem({
 }: BadgeItemProps) {
   return (
     <Badge
-      variant="secondary"
-      className="text-sm py-1 px-3 rounded-xl flex items-center gap-2 w-fit"
+      variant="default"
+      className="text-sm py-1 px-3 rounded-full flex items-center gap-2 w-fit"
     >
       <span>{item.name}</span>
       <Button

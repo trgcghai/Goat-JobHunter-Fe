@@ -43,8 +43,8 @@ export const skillApi = api.injectEndpoints({
       query: (params) => {
         const { params: queryParams } = buildSpringQuery({
           params,
-          filterFields: [], // Không filter
-          textSearchFields: ["name"], // Không dùng LIKE search
+          filterFields: ["name"], // Không filter
+          textSearchFields: ["name"], // Tìm kiếm theo tên kỹ năng
           nestedArrayFields: {}, // Không có nested array
           defaultSort: "updatedAt,desc",
         });

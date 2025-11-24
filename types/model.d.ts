@@ -135,7 +135,7 @@ export type Subscriber = {
   subscriberId: number;
   name: string;
   email: string;
-  skills: string[];
+  skills: Skill[];
 
   createdBy?: string;
   isDeleted?: boolean;

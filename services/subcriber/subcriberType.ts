@@ -1,5 +1,5 @@
 import type { IBackendRes, IModelPaginate } from "@/types/api";
-import type { Subscriber } from "@/types/model";
+import type { Skill, Subscriber } from "@/types/model";
 
 // Create Subscriber
 export type CreateSubscriberRequest = Subscriber;
@@ -33,4 +33,13 @@ export type FetchSubscriberByIdRequest = string; // subscriberId
 export type FetchSubscriberByIdResponse = IBackendRes<Subscriber>;
 
 // Get Subscriber Skills
-export type GetSubscriberSkillsResponse = IBackendRes<Subscriber>;
+export type GetSubscriberSkillsResponse = IBackendRes<{
+  subscriberId: number;
+  email: string;
+  name: string;
+  skills: Skill[];
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
+}>;
