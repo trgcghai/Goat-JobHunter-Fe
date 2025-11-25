@@ -11,14 +11,17 @@ import { useMemo, useState } from "react";
 type ActionType = "delete" | "toggle" | null;
 
 const JobActionsCell = ({ job }: { job: Job }) => {
-  const { handleToggleStatus, handleDeleteJob } = useJobActions();
+  const {
+    handleToggleStatus,
+    handleDeleteJob,
+    isActivating,
+    isDeactivating,
+    isDeleting,
+  } = useJobActions();
   const [actionType, setActionType] = useState<ActionType>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   // Xử lý logic confirm
   const handleConfirm = async () => {
-    setIsLoading(true);
-
     try {
       if (actionType === "delete") {
         await handleDeleteJob(job.jobId, job.title);
@@ -28,8 +31,6 @@ const JobActionsCell = ({ job }: { job: Job }) => {
       setActionType(null);
     } catch (error) {
       console.error("Action failed", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -96,7 +97,7 @@ const JobActionsCell = ({ job }: { job: Job }) => {
       <Button
         variant="outline"
         size="icon"
-        disabled={isLoading}
+        disabled={isActivating || isDeactivating}
         className={`rounded-xl ${
           job.active
             ? "text-orange-500 hover:text-orange-600 hover:bg-orange-50 border-orange-200"
@@ -128,10 +129,10 @@ const JobActionsCell = ({ job }: { job: Job }) => {
         size="icon"
         className="rounded-xl text-destructive hover:text-destructive hover:bg-destructive/10"
         title="Xóa"
-        disabled={isLoading}
+        disabled={isDeleting}
         onClick={() => setActionType("delete")}
       >
-        {isLoading && actionType === "delete" ? (
+        {isDeleting && actionType === "delete" ? (
           <Loader2 className="w-4 h-4 animate-spin" />
         ) : (
           <Trash2 className="w-4 h-4" />
@@ -146,8 +147,8 @@ const JobActionsCell = ({ job }: { job: Job }) => {
         confirmText={dialogConfig.confirmText}
         confirmBtnClass={dialogConfig.confirmBtnClass}
         onConfirm={handleConfirm}
-        isLoading={isLoading}
-        disableCancel={isLoading}
+        isLoading={isActivating || isDeactivating || isDeleting}
+        disableCancel={isActivating || isDeactivating || isDeleting}
       />
     </div>
   );
