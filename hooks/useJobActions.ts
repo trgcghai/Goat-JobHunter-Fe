@@ -1,7 +1,9 @@
 import { JobFormData } from "@/app/(recruiter-portal)/recruiter-portal/jobs/form/components/schema";
 import { useUser } from "@/hooks/useUser";
 import {
+  useActivateJobsMutation,
   useCreateJobMutation,
+  useDeactivateJobsMutation,
   useDeleteJobMutation,
   useUpdateJobMutation,
 } from "@/services/job/jobApi";
@@ -22,6 +24,9 @@ const useJobActions = () => {
   const [createJob, { isLoading: isCreating }] = useCreateJobMutation();
   const [updateJob, { isLoading: isUpdating }] = useUpdateJobMutation();
   const [deleteJob, { isLoading: isDeleting }] = useDeleteJobMutation();
+  const [activateJob, { isLoading: isActivating }] = useActivateJobsMutation();
+  const [deactivateJob, { isLoading: isDeactivating }] =
+    useDeactivateJobsMutation();
 
   const handleUnsaveJob = async (job: Job | null) => {
     if (!user) {
@@ -186,16 +191,35 @@ const useJobActions = () => {
     [updateJob, user],
   );
 
+  const handleToggleStatus = async (jobId: number, isActive: boolean) => {
+    try {
+      if (isActive) {
+        await deactivateJob({ jobIds: [jobId] }).unwrap();
+      } else {
+        await activateJob({ jobIds: [jobId] }).unwrap();
+      }
+    } catch (error) {
+      console.error("Failed to toggle job status:", error);
+      toast.error(
+        "Không thể thay đổi trạng thái công việc. Vui lòng thử lại sau.",
+      );
+      throw error;
+    }
+  };
+
   return {
     isCreating,
     isDeleting,
     isUpdating,
+    isActivating,
+    isDeactivating,
 
     handleUnsaveJob,
     handleToggleSaveJob,
     handleCreateJob,
     handleUpdateJob,
     handleDeleteJob,
+    handleToggleStatus,
   };
 };
 

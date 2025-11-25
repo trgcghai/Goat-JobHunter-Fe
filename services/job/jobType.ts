@@ -62,3 +62,16 @@ export type FetchJobByCurrentRecruiterRequest = Omit<
 export type FetchJobByIdRequest = string; // jobId
 
 export type FetchJobByIdResponse = IBackendRes<Job>;
+
+// activate and deactivate job
+export type ToggleJobActiveRequest = {
+  jobIds: number[];
+};
+
+export type ToggleJobActiveResponse = IBackendRes<
+  {
+    jobId: number;
+    active: boolean;
+    status: "success" | "failed";
+  }[]
+>;

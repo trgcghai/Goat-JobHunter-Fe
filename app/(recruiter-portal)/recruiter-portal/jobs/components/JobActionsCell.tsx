@@ -14,12 +14,12 @@ import {
 import { Button } from "@/components/ui/button";
 import useJobActions from "@/hooks/useJobActions";
 import { Job } from "@/types/model";
-import { Eye, Loader2, Pencil, Trash2 } from "lucide-react";
+import { Ban, CheckCircle, Eye, Loader2, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
 const JobActionsCell = ({ job }: { job: Job }) => {
-  const { handleDeleteJob, isDeleting } = useJobActions();
+  const { handleToggleStatus, handleDeleteJob, isDeleting } = useJobActions();
   const [open, setOpen] = useState(false);
 
   const onDelete = async () => {
@@ -28,6 +28,14 @@ const JobActionsCell = ({ job }: { job: Job }) => {
       setOpen(false);
     } catch (error) {
       console.error("Delete failed", error);
+    }
+  };
+
+  const onToggleStatus = async () => {
+    try {
+      await handleToggleStatus(job.jobId, job.active);
+    } catch (error) {
+      console.error("Toggle status failed", error);
     }
   };
 
@@ -43,6 +51,27 @@ const JobActionsCell = ({ job }: { job: Job }) => {
           <Eye className="w-4 h-4" />
         </Button>
       </Link>
+
+      <Button
+        variant="outline"
+        size="icon"
+        className={`rounded-xl ${
+          job.active
+            ? "text-orange-500 hover:text-orange-600 hover:bg-orange-50 border-orange-200"
+            : "text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200"
+        }`}
+        onClick={onToggleStatus}
+        title={
+          job.active ? "Ngừng tuyển (Deactivate)" : "Đăng tuyển lại (Activate)"
+        }
+      >
+        {job.active ? (
+          <Ban className="w-4 h-4" />
+        ) : (
+          <CheckCircle className="w-4 h-4" />
+        )}
+      </Button>
+
       <Link href={`/recruiter-portal/jobs/form?jobId=${job.jobId}`}>
         <Button
           variant="outline"

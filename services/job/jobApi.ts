@@ -11,6 +11,8 @@ import type {
   FetchJobByRecruiterRequest,
   FetchJobsRequest,
   FetchJobsResponse,
+  ToggleJobActiveRequest,
+  ToggleJobActiveResponse,
   UpdateJobRequest,
   UpdateJobResponse,
 } from "./jobType";
@@ -207,6 +209,32 @@ export const jobApi = api.injectEndpoints({
       },
       providesTags: ["Job"],
     }),
+
+    // activate jobs
+    activateJobs: builder.mutation<
+      ToggleJobActiveResponse,
+      ToggleJobActiveRequest
+    >({
+      query: (data) => ({
+        url: "/jobs/active",
+        method: "PUT",
+        data,
+      }),
+      invalidatesTags: ["Job"],
+    }),
+
+    // deactivate jobs
+    deactivateJobs: builder.mutation<
+      ToggleJobActiveResponse,
+      ToggleJobActiveRequest
+    >({
+      query: (data) => ({
+        url: "/jobs/deactivate",
+        method: "PUT",
+        data,
+      }),
+      invalidatesTags: ["Job"],
+    }),
   }),
 });
 
@@ -220,4 +248,6 @@ export const {
   useFetchRelatedJobsQuery,
   useFetchJobsByRecruiterQuery,
   useFetchJobsByCurrentRecruiterQuery,
+  useActivateJobsMutation,
+  useDeactivateJobsMutation,
 } = jobApi;
