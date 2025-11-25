@@ -4,6 +4,7 @@ import { Application } from "@/types/model";
 import { Check, FileText, X } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import EmailDialog from "@/app/(recruiter-portal)/recruiter-portal/applications/components/EmailDialog";
 
 interface ApplicationActionsCellProps {
   application: Application;
@@ -12,67 +13,28 @@ interface ApplicationActionsCellProps {
 const ApplicationActionsCell = ({
   application,
 }: ApplicationActionsCellProps) => {
-  const [actionType, setActionType] = useState<"accept" | "reject" | null>(
-    null,
-  );
+  const [mode, setMode] = useState<"accept" | "reject" | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleAccept = async () => {
-    console.log("ACCEPTED Application ID:", application.applicationId);
-  };
-
-  const handleReject = async () => {
-    console.log("REJECTED Application ID:", application.applicationId);
-  };
-
-  const onConfirm = async () => {
+  const handleSendEmail = async (payload: Record<string, string | number>) => {
     setIsLoading(true);
     try {
-      if (actionType === "accept") {
-        await handleAccept();
-      } else if (actionType === "reject") {
-        await handleReject();
-      }
-      setActionType(null);
-    } catch (error) {
-      console.error(error);
+      console.log("Send email payload:", payload);
+    } catch (err) {
+      console.error(err);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Config nội dung Dialog dựa trên action
+  const dialogOpen = !!mode;
+
   const dialogConfig = useMemo(() => {
     return {
-      title:
-        actionType === "accept" ? "Chấp nhận hồ sơ này?" : "Từ chối hồ sơ này?",
-      description:
-        actionType === "accept" ? (
-          <>
-            Bạn có chắc chắn muốn chấp nhận ứng viên{" "}
-            <span className="font-bold text-foreground">
-              {application.user.fullName}
-            </span>
-            ?
-          </>
-        ) : (
-          <>
-            Bạn có chắc chắn muốn từ chối ứng viên{" "}
-            <span className="font-bold text-foreground">
-              {application.user.fullName}
-            </span>
-            ? Hành động này không thể hoàn tác.
-          </>
-        ),
-      confirmText: actionType === "accept" ? "Chấp nhận" : "Từ chối",
-      confirmBtnClass:
-        actionType === "accept"
-          ? "bg-green-600 hover:bg-green-700 text-white"
-          : "bg-destructive hover:bg-destructive/90 text-white",
+      mode: mode as "accept" | "reject",
     };
-  }, [actionType, application.user.fullName]);
+  }, [mode]);
 
-  // Disable buttons nếu đã xử lý rồi
   const isProcessed = useMemo(
     () =>
       application.status === "ACCEPTED" || application.status === "REJECTED",
@@ -97,7 +59,7 @@ const ApplicationActionsCell = ({
         size="icon"
         className="rounded-xl text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200"
         title="Chấp nhận"
-        onClick={() => setActionType("accept")}
+        onClick={() => setMode("accept")}
         disabled={isProcessed || isLoading}
       >
         <Check className="w-4 h-4" />
@@ -108,22 +70,19 @@ const ApplicationActionsCell = ({
         size="icon"
         className="rounded-xl text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/20"
         title="Từ chối"
-        onClick={() => setActionType("reject")}
+        onClick={() => setMode("reject")}
         disabled={isProcessed || isLoading}
       >
         <X className="w-4 h-4" />
       </Button>
 
-      <ConfirmDialog
-        open={!!actionType}
-        onOpenChange={(open) => !open && setActionType(null)}
-        title={dialogConfig.title}
-        description={dialogConfig.description}
-        confirmText={dialogConfig.confirmText}
-        confirmBtnClass={dialogConfig.confirmBtnClass}
-        onConfirm={onConfirm}
+      <EmailDialog
+        open={dialogOpen}
+        onOpenChange={(open) => !open && setMode(null)}
+        mode={dialogConfig.mode}
+        application={application}
         isLoading={isLoading}
-        disableCancel={isLoading}
+        onSend={handleSendEmail}
       />
     </div>
   );
