@@ -34,6 +34,8 @@ const ApplicationTable = () => {
   const applications = useMemo(() => data?.data?.result || [], [data]);
   const meta = useMemo(() => data?.data?.meta, [data]);
 
+  console.log(applications);
+
   const totalPages = useMemo(() => meta?.pages || 0, [meta]);
 
   const handlePageChange = (page: number) => {

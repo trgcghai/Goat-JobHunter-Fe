@@ -9,7 +9,6 @@ import type {
   FetchApplicationByIdResponse,
   FetchApplicationsByApplicantRequest,
   FetchApplicationsByApplicantResponse,
-  FetchApplicationsByRecruiterRequest,
   FetchApplicationsByRecruiterResponse,
   FetchApplicationsRequest,
   FetchApplicationsResponse,
@@ -75,23 +74,49 @@ export const applicationApi = api.injectEndpoints({
       FetchApplicationsResponse,
       FetchApplicationsRequest
     >({
-      query: (params) => ({
-        url: "/all-applications",
-        method: "GET",
-        params,
-      }),
+      query: (params) => {
+        const { params: queryParams } = buildSpringQuery({
+          params,
+          filterFields: ["jobTitle", "status"], // Filter theo status
+          textSearchFields: ["jobTitle"], // LIKE search cho job title
+          nestedFields: {
+            jobTitle: "job.title", // Nested field cho job title
+          },
+          defaultSort: "createdAt,desc",
+          sortableFields: ["createdAt", "status"],
+        });
+
+        return {
+          url: "/all-applications",
+          method: "GET",
+          params: queryParams,
+        };
+      },
       providesTags: ["Application"],
     }),
 
     fetchApplicationsByRecruiter: builder.query<
       FetchApplicationsByRecruiterResponse,
-      FetchApplicationsByRecruiterRequest
+      FetchApplicationsRequest
     >({
-      query: (params) => ({
-        url: "/applications",
-        method: "GET",
-        params,
-      }),
+      query: (params) => {
+        const { params: queryParams } = buildSpringQuery({
+          params,
+          filterFields: ["jobTitle", "status"], // Filter theo status (array sẽ dùng sfIn)
+          textSearchFields: ["jobTitle"], // LIKE search cho job title
+          nestedFields: {
+            jobTitle: "job.title", // Nested field cho job title
+          },
+          defaultSort: "createdAt,desc",
+          sortableFields: ["createdAt", "status"],
+        });
+
+        return {
+          url: "/applications",
+          method: "GET",
+          params: queryParams,
+        };
+      },
       providesTags: ["Application"],
     }),
 
@@ -102,9 +127,7 @@ export const applicationApi = api.injectEndpoints({
       query: (params) => {
         const { params: queryParams } = buildSpringQuery({
           params,
-          filterFields: [], // Không filter
-          textSearchFields: [], // Không dùng LIKE search
-          nestedArrayFields: {}, // Không có nested array
+          filterFields: [], // Không có filter đặc biệt
           defaultSort: "updatedAt,desc",
         });
 

@@ -1,4 +1,10 @@
-import { Education, Gender, Level, WorkingType } from "@/types/enum";
+import {
+  ApplicationStatus,
+  Education,
+  Gender,
+  Level,
+  WorkingType,
+} from "@/types/enum";
 
 export type User = {
   userId: number;
@@ -75,18 +81,15 @@ export type Job = {
 };
 
 export type Application = {
-  applicationId: string;
+  applicationId: number;
   email: string;
   resumeUrl: string;
-  status: string;
+  status: ApplicationStatus;
   user: { userId: string; fullName: string };
-  recruiterName: string;
   job: { jobId: string; title: string };
-  createdAt?: string;
-  createdBy?: string;
-  isDeleted?: boolean;
-  deletedAt?: boolean | null;
-  updatedAt?: string;
+  recruiterName: string;
+  createdAt: string;
+  createdBy: string;
 };
 
 export type Permission = {

@@ -35,19 +35,13 @@ export type FetchApplicationsRequest = {
   page?: number;
   size?: number;
   sortBy?: string;
+  jobTitle?: string;
+  status?: string[];
 };
 
 export type FetchApplicationsResponse = IBackendRes<
   IModelPaginate<Application>
 >;
-
-// Fetch Applications By Recruiter
-export type FetchApplicationsByRecruiterRequest = {
-  recruiterId?: string;
-  page?: number;
-  size?: number;
-  sortBy?: string;
-};
 
 export type FetchApplicationsByRecruiterResponse = IBackendRes<
   IModelPaginate<Application>

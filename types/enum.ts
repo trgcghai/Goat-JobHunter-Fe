@@ -25,3 +25,9 @@ export enum Education {
   SCHOOL = "THPT",
   ENGINEER = "Kỹ sư",
 }
+
+export enum ApplicationStatus {
+  PENDING = "PENDING",
+  ACCEPTED = "ACCEPTED",
+  REJECTED = "REJECTED",
+}

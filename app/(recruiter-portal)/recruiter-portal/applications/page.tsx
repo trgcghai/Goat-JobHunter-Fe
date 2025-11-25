@@ -1,15 +1,66 @@
 "use client";
-import { useFetchApplicationsByRecruiterQuery } from "@/services/application/applicationApi";
+import ApplicationFilter from "@/app/(recruiter-portal)/recruiter-portal/applications/components/ApplicationFilter";
+import ApplicationsTable from "@/app/(recruiter-portal)/recruiter-portal/applications/components/ApplicationsTable";
+import { useApplicationManagement } from "@/app/(recruiter-portal)/recruiter-portal/applications/hooks/useApplicationManagement";
+import { DataTablePagination } from "@/components/dataTable/DataTablePagination";
+import LoaderSpin from "@/components/LoaderSpin";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 const ApplicationsManagement = () => {
-  const { data } = useFetchApplicationsByRecruiterQuery({
-    page: 1,
-    size: 10,
-  });
+  const {
+    applications,
+    meta,
+    isLoading,
+    page,
+    size,
+    filters,
+    handlePageChange,
+    handleSizeChange,
+    handleFilterChange,
+    resetFilters,
+  } = useApplicationManagement();
 
-  console.log(data);
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-xl font-semibold">Danh sách ứng viên</h1>
+            <p className="text-sm text-muted-foreground">
+              Quản lý các ứng viên đã nộp đơn
+            </p>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <ApplicationFilter
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            onResetFilters={resetFilters}
+          />
 
-  return <div>ApplicationsManagement</div>;
+          {isLoading ? (
+            <div className="flex justify-center py-8">
+              <LoaderSpin />
+            </div>
+          ) : (
+            <>
+              <ApplicationsTable applications={applications} />
+
+              <DataTablePagination
+                currentPage={page}
+                totalPages={meta.pages}
+                pageSize={size}
+                totalItems={meta.total}
+                currentItemsCount={applications.length}
+                onPageChange={handlePageChange}
+                onSizeChange={handleSizeChange}
+              />
+            </>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
 };
 
 export default ApplicationsManagement;

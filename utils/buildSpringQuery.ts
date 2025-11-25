@@ -1,10 +1,12 @@
+// utils/buildSpringQuery.ts
 import { sfEqual, sfIn, sfLike } from "spring-filter-query-builder";
 
 interface BuildQueryOptions {
   params: Record<string, string | number | boolean | Array<string | number>>;
   filterFields: string[];
   textSearchFields?: string[]; // Các field dùng LIKE search
-  nestedArrayFields?: Record<string, string>; // Map field -> nested path, vd: { skills: "skills.name" }
+  nestedFields?: Record<string, string>; // Map field -> nested path, vd: { jobTitle: "job.title" }
+  nestedArrayFields?: Record<string, string>; // Map field -> nested path cho array, vd: { skills: "skills.name" }
   defaultSort?: string; // Default sort, vd: "updatedAt,desc"
   sortableFields?: string[]; // Các field có thể sort
 }
@@ -20,22 +22,31 @@ interface BuildQueryResult {
  * @returns Object chứa params đã xử lý và filter query string
  */
 export const buildSpringQuery = (
-  options: BuildQueryOptions,
+  options: BuildQueryOptions
 ): BuildQueryResult => {
   const {
     params,
     filterFields,
     textSearchFields = [],
+    nestedFields = {},
     nestedArrayFields = {},
     defaultSort = "updatedAt,desc",
-    sortableFields = ["title", "salary", "createdAt", "updatedAt"],
+    sortableFields = ["title", "salary", "createdAt", "updatedAt"]
   } = options;
 
   const clone = { ...params };
   const filterParts: string[] = [];
 
-  // Build filter query
+  // 1. Xử lý các filterFields thông thường (root level)
   for (const field of filterFields) {
+
+    if (
+      Object.prototype.hasOwnProperty.call(nestedFields, field) ||
+      Object.prototype.hasOwnProperty.call(nestedArrayFields, field)
+    ) {
+      continue;
+    }
+
     const value = clone[field];
 
     if (value === undefined || value === null || value === "") {
@@ -54,21 +65,55 @@ export const buildSpringQuery = (
     else if (!Array.isArray(value)) {
       const normalizedValue =
         typeof value === "boolean" ? (value ? "true" : "false") : value;
-      filterParts.push(sfEqual(field, normalizedValue).toString());
+      filterParts.push(sfEqual(field, normalizedValue as string | number).toString());
     }
 
     // Xóa field đã xử lý
     delete clone[field];
   }
 
-  // Xử lý nested array fields (vd: skills -> skills.name)
+  // 2. Xử lý các nested fields (vd: jobTitle -> job.title)
+  //    Support in / like / equal like root level
+  for (const [field, nestedPath] of Object.entries(nestedFields)) {
+    const value = clone[field];
+
+    if (value === undefined || value === null || value === "") {
+      continue;
+    }
+
+    if (Array.isArray(value) && value.length > 0) {
+      filterParts.push(sfIn(nestedPath, value).toString());
+    } else if (typeof value === "string" && textSearchFields.includes(field)) {
+      filterParts.push(sfLike(nestedPath, value).toString());
+    } else if (!Array.isArray(value)) {
+      const normalizedValue =
+        typeof value === "boolean" ? (value ? "true" : "false") : value;
+      filterParts.push(sfEqual(nestedPath, normalizedValue as string | number).toString());
+    }
+
+    delete clone[field];
+  }
+
+  // 3. Xử lý nested array fields (vd: skills -> skills.name)
+  //    Allow array (in), string (like), or single value (equal)
   for (const [field, nestedPath] of Object.entries(nestedArrayFields)) {
     const value = clone[field];
 
-    if (value && Array.isArray(value) && value.length > 0) {
-      filterParts.push(sfIn(nestedPath, value).toString());
-      delete clone[field];
+    if (value === undefined || value === null || value === "") {
+      continue;
     }
+
+    if (Array.isArray(value) && value.length > 0) {
+      filterParts.push(sfIn(nestedPath, value).toString());
+    } else if (typeof value === "string" && textSearchFields.includes(field)) {
+      filterParts.push(sfLike(nestedPath, value).toString());
+    } else if (!Array.isArray(value)) {
+      const normalizedValue =
+        typeof value === "boolean" ? (value ? "true" : "false") : value;
+      filterParts.push(sfEqual(nestedPath, normalizedValue as string | number).toString());
+    }
+
+    delete clone[field];
   }
 
   // Combine filters với AND
@@ -112,6 +157,6 @@ export const buildSpringQuery = (
 
   return {
     params: clone,
-    filterQuery,
+    filterQuery
   };
 };
