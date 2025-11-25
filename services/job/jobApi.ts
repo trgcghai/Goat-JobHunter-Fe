@@ -216,7 +216,7 @@ export const jobApi = api.injectEndpoints({
       ToggleJobActiveRequest
     >({
       query: (data) => ({
-        url: "/jobs/active",
+        url: "/jobs/activate",
         method: "PUT",
         data,
       }),
