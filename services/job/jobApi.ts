@@ -160,11 +160,15 @@ export const jobApi = api.injectEndpoints({
     >({
       query: ({ recruiterId, ...params }) => {
         const { params: queryParams } = buildSpringQuery({
-          params: {
-            ...params,
-            active: true,
-          },
-          filterFields: ["title", "location", "salary", "level", "workingType"],
+          params,
+          filterFields: [
+            "title",
+            "location",
+            "salary",
+            "level",
+            "workingType",
+            "active",
+          ],
           textSearchFields: ["title", "location"], // Dùng LIKE search
           nestedArrayFields: {
             skills: "skills.name", // Map skills -> skills.name
@@ -188,11 +192,15 @@ export const jobApi = api.injectEndpoints({
     >({
       query: (params) => {
         const { params: queryParams } = buildSpringQuery({
-          params: {
-            ...params,
-            active: true,
-          },
-          filterFields: ["title", "location", "salary", "level", "workingType"],
+          params,
+          filterFields: [
+            "title",
+            "location",
+            "salary",
+            "level",
+            "workingType",
+            "active",
+          ],
           textSearchFields: ["title", "location"], // Dùng LIKE search
           nestedArrayFields: {
             skills: "skills.name", // Map skills -> skills.name

@@ -53,10 +53,7 @@ export type FetchJobByRecruiterRequest = {
   recruiterId: string;
 } & Omit<FetchJobsRequest, "active">;
 
-export type FetchJobByCurrentRecruiterRequest = Omit<
-  FetchJobsRequest,
-  "active"
->;
+export type FetchJobByCurrentRecruiterRequest = FetchJobsRequest;
 
 // Fetch Job By Id
 export type FetchJobByIdRequest = string; // jobId

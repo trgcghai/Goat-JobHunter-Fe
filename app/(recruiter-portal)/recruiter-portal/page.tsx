@@ -18,6 +18,8 @@ const RecruiterPortal = () => {
     if (!hasRecruiterRole) {
       // Not recruiter, redirect to home
       router.replace("/");
+    } else {
+      router.replace("/recruiter-portal/jobs");
     }
   }, [user, router]);
 
