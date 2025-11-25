@@ -2,18 +2,18 @@
 
 import LoaderSpin from "@/components/LoaderSpin";
 import { useUser } from "@/hooks/useUser";
+import { useGetMyAccountQuery } from "@/services/auth/authApi";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 const RecruiterPortal = () => {
+  useGetMyAccountQuery();
   const router = useRouter();
   const { user } = useUser();
 
   useEffect(() => {
-    if (!user) return;
-
     // Check if user has recruiter role
-    const hasRecruiterRole = user?.role?.name == "recruiter";
+    const hasRecruiterRole = user?.role?.name == "HR";
 
     if (!hasRecruiterRole) {
       // Not recruiter, redirect to home

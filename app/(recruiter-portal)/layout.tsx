@@ -1,5 +1,10 @@
+"use client";
 import Sidebar, { SidebarTab } from "@/components/Sidebar";
+import { useUser } from "@/hooks/useUser";
+import { useGetMyAccountQuery } from "@/services/auth/authApi";
 import { Briefcase, FileText, Users } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export const RecruiterTabs: SidebarTab[] = [
   {
@@ -29,6 +34,23 @@ export const RecruiterTabs: SidebarTab[] = [
 ];
 
 const RecruiterLayout = ({ children }: { children: React.ReactNode }) => {
+  useGetMyAccountQuery();
+  const router = useRouter();
+  const { user } = useUser();
+
+  useEffect(() => {
+    // Check if user has recruiter role
+    const hasRecruiterRole = user?.role?.name == "HR";
+
+    if (!hasRecruiterRole) {
+      // Not recruiter, redirect to home
+      router.replace("/");
+    } else {
+      // Has recruiter role, redirect to jobs page
+      router.replace("/recruiter-portal/jobs");
+    }
+  }, [user, router]);
+
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar tabs={RecruiterTabs} />

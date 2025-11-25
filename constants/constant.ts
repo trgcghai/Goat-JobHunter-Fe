@@ -1,6 +1,5 @@
 import { Option } from "@/components/ui/MultipleSelector";
 import { Level, WorkingType } from "@/types/enum";
-import { capitalize } from "lodash";
 
 export const SKILL_OPTIONS: Option[] = [
   { value: "React", label: "React" },
@@ -29,13 +28,20 @@ export const EMPLOYER_OPTIONS: Option[] = [
   { value: "InfraTech", label: "InfraTech" },
 ];
 
-export const WORKING_TYPE_OPTIONS: Option[] = Object.entries(WorkingType).map(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  ([_, value]) => ({
-    value: value,
-    label: capitalize(value.replace("_", " ").toLowerCase()),
-  }),
-);
+export const LEVEL_OPTIONS = [
+  { value: Level.INTERN, label: "Intern" },
+  { value: Level.FRESHER, label: "Fresher" },
+  { value: Level.JUNIOR, label: "Junior" }, // Value phải là "JUNIOR", không phải "Junior"
+  { value: Level.MIDDLE, label: "Middle" },
+  { value: Level.SENIOR, label: "Senior" }, // Thêm nếu backend có
+];
+
+export const WORKING_TYPE_OPTIONS = [
+  { value: WorkingType.FULLTIME, label: "Full time" },
+  { value: WorkingType.PARTTIME, label: "Part time" },
+  { value: WorkingType.ONLINE, label: "Online" },
+  { value: WorkingType.OFFLINE, label: "Offline" },
+];
 
 export const ROLE_LIST = [
   { label: "Admin", value: "SUPER_ADMIN" },
@@ -86,16 +92,6 @@ export const EDUCATION_LIST = [
   { label: "THPT", value: "SCHOOL" },
   { label: "Kỹ sư", value: "ENGINEER" },
 ];
-
-export const LEVEL_OPTIONS: Option[] = Object.entries(Level).map(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  ([_, value]) => {
-    return {
-      value: value,
-      label: capitalize(value.replace("_", " ").toLowerCase()),
-    };
-  },
-);
 
 export const JOBFILTER_CONFIG = {
   skill: {

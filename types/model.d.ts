@@ -1,4 +1,4 @@
-import { Education, Gender, Level } from "@/types/enum";
+import { Education, Gender, Level, WorkingType } from "@/types/enum";
 
 export type User = {
   userId: number;
@@ -61,11 +61,11 @@ export type Job = {
   startDate: string;
   endDate: string;
   active: boolean;
-  level: string;
+  level: Level;
   quantity: number;
   salary: number;
   title: string;
-  workingType: string;
+  workingType: WorkingType;
   location: string;
   recruiter: Recruiter;
   skills: Skill[];

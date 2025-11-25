@@ -55,10 +55,10 @@ export function LoginForm({
     try {
       const result = await signIn(data);
 
+      console.log(result.user);
+
       if (result.success) {
-        router.push(
-          result.user?.type == "recruiter" ? "/recruiter-portal" : "/",
-        );
+        router.push(result.user?.type == "HR" ? "/recruiter-portal" : "/");
       } else {
         // xử lý lỗi cụ thể
         if (result.error === "Bad credentials") {
