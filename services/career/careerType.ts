@@ -25,8 +25,7 @@ export type DeleteCareerResponse = IBackendRes<Career>;
 export type FetchCareersRequest = {
   page?: number;
   size?: number;
-  sortBy?: string;
-  keyword?: string;
+  name?: string;
 };
 
 export type FetchCareersResponse = IBackendRes<IModelPaginate<Career>>;

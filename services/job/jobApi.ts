@@ -27,7 +27,7 @@ export const jobApi = api.injectEndpoints({
     }),
 
     updateJob: builder.mutation<UpdateJobResponse, UpdateJobRequest>({
-      query: ({ jobId, job }) => ({
+      query: ({ jobId, ...job }) => ({
         url: "/jobs",
         method: "PUT",
         data: { ...job, jobId },

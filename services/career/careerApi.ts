@@ -1,4 +1,5 @@
 import { api } from "@/services/api";
+import { buildSpringQuery } from "@/utils/buildSpringQuery";
 import type {
   CreateCareerRequest,
   CreateCareerResponse,
@@ -39,11 +40,22 @@ export const careerApi = api.injectEndpoints({
     }),
 
     fetchCareers: builder.query<FetchCareersResponse, FetchCareersRequest>({
-      query: (params) => ({
-        url: "/careers",
-        method: "GET",
-        params,
-      }),
+      query: (params) => {
+        const { params: queryParams } = buildSpringQuery({
+          params,
+          filterFields: ["name"],
+          textSearchFields: ["name"], // LIKE search
+          nestedArrayFields: {},
+          defaultSort: "createdAt,desc",
+          sortableFields: ["createdAt", "updatedAt"],
+        });
+
+        return {
+          url: "/careers",
+          method: "GET",
+          params: queryParams,
+        };
+      },
       providesTags: ["Career"],
     }),
   }),

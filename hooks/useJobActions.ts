@@ -1,3 +1,4 @@
+import { JobFormData } from "@/app/(recruiter-portal)/recruiter-portal/jobs/form/components/schema";
 import { useUser } from "@/hooks/useUser";
 import {
   useCreateJobMutation,
@@ -86,9 +87,28 @@ const useJobActions = () => {
 
   // Create new job
   const handleCreateJob = useCallback(
-    async (jobData: any) => {
+    async (jobData: JobFormData) => {
       try {
-        const response = await createJob(jobData).unwrap();
+        if (!user?.userId) {
+          toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
+          return;
+        }
+
+        const response = await createJob({
+          recruiterId: user.userId,
+          active: true,
+          careerId: Number(jobData.career),
+          skillIds: jobData.skills.map((skill) => Number(skill.skillId)),
+          description: jobData.description,
+          endDate: jobData.endDate,
+          location: jobData.location,
+          level: jobData.level,
+          quantity: jobData.quantity,
+          salary: jobData.salary,
+          startDate: jobData.startDate,
+          title: jobData.title,
+          workingType: jobData.workingType,
+        }).unwrap();
 
         if (response.data) {
           toast.success("Tạo công việc thành công!", {
@@ -102,7 +122,7 @@ const useJobActions = () => {
         throw error;
       }
     },
-    [createJob],
+    [createJob, user],
   );
 
   // Delete job
@@ -128,9 +148,28 @@ const useJobActions = () => {
 
   // Update existing job
   const handleUpdateJob = useCallback(
-    async (jobId: number, jobData: any) => {
+    async (jobId: number, jobData: JobFormData) => {
       try {
-        const response = await updateJob({ jobId, ...jobData }).unwrap();
+        if (!user?.userId) {
+          toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
+          return;
+        }
+
+        const response = await updateJob({
+          jobId: jobId.toString(),
+          active: true,
+          careerId: Number(jobData.career),
+          skillIds: jobData.skills.map((skill) => Number(skill.skillId)),
+          description: jobData.description,
+          endDate: jobData.endDate,
+          location: jobData.location,
+          level: jobData.level,
+          quantity: jobData.quantity,
+          salary: jobData.salary,
+          startDate: jobData.startDate,
+          title: jobData.title,
+          workingType: jobData.workingType,
+        }).unwrap();
 
         if (response.data) {
           toast.success("Cập nhật công việc thành công!", {
@@ -144,7 +183,7 @@ const useJobActions = () => {
         throw error;
       }
     },
-    [updateJob],
+    [updateJob, user],
   );
 
   return {

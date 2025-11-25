@@ -45,9 +45,6 @@ const RecruiterLayout = ({ children }: { children: React.ReactNode }) => {
     if (!hasRecruiterRole) {
       // Not recruiter, redirect to home
       router.replace("/");
-    } else {
-      // Has recruiter role, redirect to jobs page
-      router.replace("/recruiter-portal/jobs");
     }
   }, [user, router]);
 

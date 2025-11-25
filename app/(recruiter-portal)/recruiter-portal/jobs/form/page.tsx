@@ -2,14 +2,15 @@
 
 import JobForm from "@/app/(recruiter-portal)/recruiter-portal/jobs/form/components/JobForm";
 import {
-  CreateJobFormData,
-  createJobSchema,
+  JobFormData,
+  jobSchema,
 } from "@/app/(recruiter-portal)/recruiter-portal/jobs/form/components/schema";
 import LoaderSpin from "@/components/LoaderSpin";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Option } from "@/components/ui/MultipleSelector";
 import useJobActions from "@/hooks/useJobActions";
+import { useFetchCareersQuery } from "@/services/career/careerApi";
 import { useFetchJobByIdQuery } from "@/services/job/jobApi";
 import { useGetSkillsQuery } from "@/services/skill/skillApi";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -53,10 +54,16 @@ export default function JobFormPage() {
     },
   );
 
+  // Fetch careers for career select options
+  const { data: careersData } = useFetchCareersQuery({
+    page: 1,
+    size: 100, // Lấy 100 ngành nghề
+  });
+
   const job = useMemo(() => jobData?.data, [jobData]);
 
-  const form = useForm<CreateJobFormData>({
-    resolver: zodResolver(createJobSchema),
+  const form = useForm<JobFormData>({
+    resolver: zodResolver(jobSchema),
     defaultValues: {
       title: "",
       description: "",
@@ -68,7 +75,7 @@ export default function JobFormPage() {
       startDate: "",
       endDate: "",
       skills: [],
-      careerId: "",
+      career: "",
     },
   });
 
@@ -90,7 +97,7 @@ export default function JobFormPage() {
           name: skill.name,
         })),
       );
-      form.setValue("careerId", job.career.careerId || "");
+      form.setValue("career", String(job.career?.careerId || ""));
     }
   }, [form, job]);
 
@@ -110,6 +117,15 @@ export default function JobFormPage() {
       }));
   }, [skillsData, debouncedInputValue, form]);
 
+  const careerOptions = useMemo<Option[]>(() => {
+    return (
+      careersData?.data?.result.map((career) => ({
+        label: career.name || "",
+        value: String(career.careerId), // Convert ID sang string cho Select value
+      })) || []
+    );
+  }, [careersData]);
+
   // Debounced search
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSearch = useCallback(
@@ -124,26 +140,22 @@ export default function JobFormPage() {
     debouncedSearch(value);
   };
 
-  const onSubmit = async (data: CreateJobFormData) => {
-    try {
-      // Convert skills to skillIds array for API
-      const submitData = {
-        ...data,
-        skillIds: data.skills.map((skill) => skill.skillId),
-      };
+  const onSubmit = async (data: JobFormData) => {
+    console.log("Submitted data: ", data);
 
-      if (job) {
-        await handleUpdateJob(Number(jobId), submitData);
-        toast.success("Cập nhật công việc thành công");
-      } else {
-        await handleCreateJob(submitData);
-        toast.success("Tạo công việc thành công");
-      }
-      router.push("/recruiter-portal/jobs");
-    } catch (error) {
-      console.error("Submit job failed:", error);
-      toast.error("Đã xảy ra lỗi khi lưu công việc. Vui lòng thử lại.");
+    const submitData = {
+      ...data,
+      skillIds: data.skills.map((skill) => skill.skillId),
+    };
+
+    if (job) {
+      await handleUpdateJob(Number(jobId), submitData);
+      toast.success("Cập nhật công việc thành công");
+    } else {
+      await handleCreateJob(submitData);
+      toast.success("Tạo công việc thành công");
     }
+    router.push("/recruiter-portal/jobs");
   };
 
   if (isLoadingJob) {
@@ -196,6 +208,7 @@ export default function JobFormPage() {
         form={form}
         onSubmit={onSubmit}
         skillOptions={skillOptions}
+        careerOptions={careerOptions}
         inputValue={inputValue}
         handleInputValueChange={handleInputValueChange}
         isFetchingSkills={isFetchingSkills}

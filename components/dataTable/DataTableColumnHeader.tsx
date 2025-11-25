@@ -33,7 +33,7 @@ export function DataTableColumnHeader<TData, TValue>({
     return (
       <div
         className={cn(
-          "text-gray-500 font-semibold flex items-center space-x-2 py-2 ml-3",
+          "text-gray-500 font-semibold flex items-center space-x-2 py-2",
           className,
         )}
       >

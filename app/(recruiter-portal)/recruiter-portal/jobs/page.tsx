@@ -13,6 +13,8 @@ const RecruiterJobPage = () => {
     size: 20,
   });
 
+  console.log(data);
+
   return (
     <Card>
       <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

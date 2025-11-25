@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const createJobSchema = z
+export const jobSchema = z
   .object({
     title: z
       .string()
@@ -32,13 +32,13 @@ export const createJobSchema = z
     skills: z
       .array(
         z.object({
-          skillId: z.string(),
+          skillId: z.string().or(z.number()),
           name: z.string(),
         }),
       )
       .min(1, "Phải chọn ít nhất 1 kỹ năng")
       .max(10, "Chỉ được chọn tối đa 10 kỹ năng"),
-    careerId: z.string().min(1, "Ngành nghề không được để trống"),
+    career: z.string().min(1, "Ngành nghề không được để trống"),
   })
   .refine(
     (data) => {
@@ -52,4 +52,4 @@ export const createJobSchema = z
     },
   );
 
-export type CreateJobFormData = z.infer<typeof createJobSchema>;
+export type JobFormData = z.infer<typeof jobSchema>;

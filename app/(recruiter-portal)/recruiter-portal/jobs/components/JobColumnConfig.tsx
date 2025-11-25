@@ -1,11 +1,11 @@
+import JobActionsCell from "@/app/(recruiter-portal)/recruiter-portal/jobs/components/JobActionsCell";
 import { DataTableColumnHeader } from "@/components/dataTable/DataTableColumnHeader";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Job } from "@/types/model";
 import { formatDate } from "@/utils/formatDate";
 import { ColumnDef } from "@tanstack/react-table";
-import { Eye, Pencil, Trash2 } from "lucide-react";
+import { capitalize } from "lodash";
 import Link from "next/link";
 
 export const jobColumns: ColumnDef<Job>[] = [
@@ -55,7 +55,7 @@ export const jobColumns: ColumnDef<Job>[] = [
     ),
     cell: ({ row }) => (
       <Badge variant="outline" className="capitalize">
-        {row.getValue("level")}
+        {capitalize(row.getValue("level"))}
       </Badge>
     ),
     filterFn: (row, id, value) => {
@@ -70,7 +70,7 @@ export const jobColumns: ColumnDef<Job>[] = [
     ),
     cell: ({ row }) => (
       <Badge variant="secondary" className="capitalize">
-        {row.getValue("workingType")}
+        {capitalize(row.getValue("workingType"))}
       </Badge>
     ),
     filterFn: (row, id, value) => {
@@ -120,74 +120,14 @@ export const jobColumns: ColumnDef<Job>[] = [
     },
   },
   {
-    accessorKey: "createdAt",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Ngày tạo" />
-    ),
-    cell: ({ row }) => {
-      const createdAt = row.getValue("createdAt") as string;
-      return <div>{formatDate(createdAt)}</div>;
-    },
-  },
-  {
-    accessorKey: "updatedAt",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Cập nhật" />
-    ),
-    cell: ({ row }) => {
-      const updatedAt = row.getValue("updatedAt") as string | null;
-      return <div>{updatedAt ? formatDate(updatedAt) : "-"}</div>;
-    },
-  },
-  {
     id: "actions",
     enableSorting: false,
     enableHiding: false,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Thao tác" />
     ),
-    cell: ({ row }) => {
-      const job = row.original;
-      return (
-        <div className="flex items-center gap-2">
-          <Link href={`/jobs/${job.jobId}`}>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-xl"
-              title="Xem chi tiết"
-            >
-              <Eye className="w-4 h-4" />
-            </Button>
-          </Link>
-          <Link href={`/recruiter-portal/jobs/${job.jobId}/edit`}>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-xl"
-              title="Chỉnh sửa"
-            >
-              <Pencil className="w-4 h-4" />
-            </Button>
-          </Link>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-xl text-destructive hover:text-destructive hover:bg-destructive/10"
-            onClick={() => console.log("Delete job:", job.jobId)}
-            title="Xóa"
-          >
-            <Trash2 className="w-4 h-4" />
-          </Button>
-        </div>
-      );
-    },
+    cell: ({ row }) => <JobActionsCell job={row.original} />,
   },
 ];
 
-export const recruiterJobColumns = jobColumns.filter(
-  (column) =>
-    !["level", "workingType"].includes(
-      ("accessorKey" in column ? column.accessorKey : column.id) as string,
-    ),
-);
+export const recruiterJobColumns = jobColumns;

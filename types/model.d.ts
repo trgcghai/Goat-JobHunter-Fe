@@ -44,15 +44,13 @@ export type Skill = {
 };
 
 export type Career = {
-  careerId?: string;
+  careerId: number;
   name?: string;
 
-  createdAt?: string;
-  createdBy?: string;
-  updatedAt?: string;
-  updatedBy?: string;
-  isDeleted?: boolean;
-  deletedAt?: boolean | null;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string | null;
+  updatedBy: string | null;
 };
 
 export type Job = {

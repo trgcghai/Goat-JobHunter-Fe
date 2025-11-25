@@ -2,15 +2,28 @@ import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type { Job } from "@/types/model";
 
 // Create Job
-export type CreateJobRequest = Job;
+export type CreateJobRequest = {
+  title: string;
+  location: string;
+  salary: number;
+  quantity: number;
+  description: string;
+  level: string;
+  startDate: string; // LocalDate format: YYYY-MM-DD
+  endDate: string; // LocalDate format: YYYY-MM-DD
+  active: boolean;
+  workingType: string;
+  careerId: number;
+  skillIds: number[];
+  recruiterId: number;
+};
 
 export type CreateJobResponse = IBackendRes<Job>;
 
 // Update Job
 export type UpdateJobRequest = {
   jobId: string;
-  job: Job;
-};
+} & Partial<Omit<CreateJobRequest, "recruiterId">>; // recruiterId không được cập nhật
 
 export type UpdateJobResponse = IBackendRes<Job>;
 

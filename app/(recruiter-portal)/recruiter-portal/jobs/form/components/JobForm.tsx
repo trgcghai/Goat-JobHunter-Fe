@@ -1,4 +1,4 @@
-import { CreateJobFormData } from "@/app/(recruiter-portal)/recruiter-portal/jobs/form/components/schema";
+import { JobFormData } from "@/app/(recruiter-portal)/recruiter-portal/jobs/form/components/schema";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -25,9 +25,10 @@ import { Loader2 } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 
 interface JobFormProps {
-  form: UseFormReturn<CreateJobFormData>;
-  onSubmit: (data: CreateJobFormData) => void;
+  form: UseFormReturn<JobFormData>;
+  onSubmit: (data: JobFormData) => void;
   skillOptions: Option[];
+  careerOptions: Option[];
   inputValue: string;
   handleInputValueChange: (value: string) => void;
   isFetchingSkills: boolean;
@@ -40,6 +41,7 @@ const JobForm = ({
   form,
   onSubmit,
   skillOptions,
+  careerOptions,
   inputValue,
   handleInputValueChange,
   isFetchingSkills,
@@ -122,9 +124,6 @@ const JobForm = ({
                 control={form.control}
                 name="level"
                 render={({ field }) => {
-                  console.log("field value, ", field.value);
-                  console.log("LEVEL_OPTIONS value, ", LEVEL_OPTIONS);
-
                   return (
                     <FormItem>
                       <FormLabel required>Cấp độ</FormLabel>
@@ -134,7 +133,7 @@ const JobForm = ({
                         defaultValue={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className="rounded-xl">
+                          <SelectTrigger className="rounded-xl w-full">
                             <SelectValue placeholder="Chọn cấp độ" />
                           </SelectTrigger>
                         </FormControl>
@@ -164,7 +163,7 @@ const JobForm = ({
                         onValueChange={field.onChange}
                       >
                         <FormControl>
-                          <SelectTrigger className="rounded-xl">
+                          <SelectTrigger className="rounded-xl w-full">
                             <SelectValue placeholder="Chọn hình thức" />
                           </SelectTrigger>
                         </FormControl>
@@ -257,6 +256,35 @@ const JobForm = ({
 
             <FormField
               control={form.control}
+              name="career"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel required>Ngành nghề</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="rounded-xl w-full">
+                        <SelectValue placeholder="Chọn ngành nghề" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {careerOptions.map((career) => (
+                        <SelectItem key={career.value} value={career.value}>
+                          {career.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="skills"
               render={({ field }) => (
                 <FormItem>
@@ -266,7 +294,7 @@ const JobForm = ({
                       options={skillOptions}
                       value={field.value.map((skill) => ({
                         label: skill.name,
-                        value: skill.skillId,
+                        value: skill.skillId.toString(),
                       }))}
                       onChange={(selectedOptions: Option[]) => {
                         field.onChange(
