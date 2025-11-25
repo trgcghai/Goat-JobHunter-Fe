@@ -43,7 +43,7 @@ export type FetchApplicationsResponse = IBackendRes<
 
 // Fetch Applications By Recruiter
 export type FetchApplicationsByRecruiterRequest = {
-  recruiterId: string;
+  recruiterId?: string;
   page?: number;
   size?: number;
   sortBy?: string;

@@ -22,9 +22,11 @@ import {
 } from "@/components/ui/empty";
 import { Separator } from "@/components/ui/separator";
 import useJobActions from "@/hooks/useJobActions";
+import { useCountApplicationsQuery } from "@/services/job/jobApi";
 import { BookmarkPlus, ChevronLeft, Send } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useMemo } from "react";
 
 export default function JobDetailPage() {
   const params = useParams<{ id: string }>();
@@ -44,6 +46,22 @@ export default function JobDetailPage() {
     handleOpenCVDialog,
     user,
   } = useDetailJob(params.id);
+
+  const { data } = useCountApplicationsQuery(
+    { jobIds: job ? [job.jobId] : [] },
+    {
+      skip: !job,
+    },
+  );
+
+  const numberOfApplications = useMemo(() => {
+    if (data) {
+      return (
+        data.data?.find((item) => item.jobId == job?.jobId)?.applications || 0
+      );
+    }
+    return 0;
+  }, [data, job?.jobId]);
 
   if (isLoading) {
     return <LoaderSpin />;
@@ -148,7 +166,10 @@ export default function JobDetailPage() {
                       {isSaved ? "Bỏ Lưu Công Việc" : "Lưu Công Việc"}
                     </Button>
                   </div>
-                  <JobInfoSidebar job={job} />
+                  <JobInfoSidebar
+                    job={job}
+                    numberOfApplications={numberOfApplications}
+                  />
                 </Card>
               </div>
             </div>

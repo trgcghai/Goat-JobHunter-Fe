@@ -1,10 +1,16 @@
 import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import { Job } from "@/types/model";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { capitalize } from "lodash";
 import { Building2 } from "lucide-react";
 
-function JobInfoSidebar({ job }: { job: Job }) {
+interface JobInfoSidebarProps {
+  job: Job;
+  numberOfApplications: number;
+}
+
+function JobInfoSidebar({ job, numberOfApplications }: JobInfoSidebarProps) {
   const infoItems = [
     {
       label: "Cấp độ",
@@ -32,17 +38,26 @@ function JobInfoSidebar({ job }: { job: Job }) {
         <Building2 className="w-5 h-5" />
         Thông Tin Công Việc
       </h3>
-      <div className="space-y-3">
-        {infoItems.map((item, index) => (
-          <div key={index} className="flex justify-between items-center">
-            <span className="text-muted-foreground">{item.label}</span>
-            <span
-              className={item.highlight ? "text-primary font-semibold" : ""}
-            >
-              {item.value}
-            </span>
-          </div>
-        ))}
+      <div className="flex flex-col">
+        <div className="flex-1 space-y-3 mb-4">
+          {infoItems.map((item, index) => (
+            <div key={index} className="flex justify-between items-center">
+              <span className="text-muted-foreground">{item.label}</span>
+              <span
+                className={item.highlight ? "text-primary font-semibold" : ""}
+              >
+                {item.value}
+              </span>
+            </div>
+          ))}
+        </div>
+        <Separator className="my-4" />
+        <div className="flex justify-between items-center bg-primary/10 px-4 py-2 mt-4 border border-primary rounded-xl">
+          <span className="text-primary">Số lượng đơn đã nộp:</span>
+          <span className="text-primary font-semibold">
+            {numberOfApplications}
+          </span>
+        </div>
       </div>
     </div>
   );

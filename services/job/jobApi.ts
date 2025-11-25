@@ -11,7 +11,8 @@ import type {
   FetchJobByRecruiterRequest,
   FetchJobsRequest,
   FetchJobsResponse,
-  ToggleJobActiveRequest,
+  JobApplicationCountResponse,
+  JobIdsRequest,
   ToggleJobActiveResponse,
   UpdateJobRequest,
   UpdateJobResponse,
@@ -219,10 +220,7 @@ export const jobApi = api.injectEndpoints({
     }),
 
     // activate jobs
-    activateJobs: builder.mutation<
-      ToggleJobActiveResponse,
-      ToggleJobActiveRequest
-    >({
+    activateJobs: builder.mutation<ToggleJobActiveResponse, JobIdsRequest>({
       query: (data) => ({
         url: "/jobs/activate",
         method: "PUT",
@@ -232,16 +230,29 @@ export const jobApi = api.injectEndpoints({
     }),
 
     // deactivate jobs
-    deactivateJobs: builder.mutation<
-      ToggleJobActiveResponse,
-      ToggleJobActiveRequest
-    >({
+    deactivateJobs: builder.mutation<ToggleJobActiveResponse, JobIdsRequest>({
       query: (data) => ({
         url: "/jobs/deactivate",
         method: "PUT",
         data,
       }),
       invalidatesTags: ["Job"],
+    }),
+
+    // count applications for jobs
+    countApplications: builder.query<
+      JobApplicationCountResponse,
+      JobIdsRequest
+    >({
+      query: ({ jobIds }) => {
+        return {
+          url: "/jobs/count-applications",
+          method: "GET",
+          params: {
+            jobIds: jobIds.join(","),
+          },
+        };
+      },
     }),
   }),
 });
@@ -258,4 +269,5 @@ export const {
   useFetchJobsByCurrentRecruiterQuery,
   useActivateJobsMutation,
   useDeactivateJobsMutation,
+  useCountApplicationsQuery,
 } = jobApi;

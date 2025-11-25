@@ -61,7 +61,7 @@ export type FetchJobByIdRequest = string; // jobId
 export type FetchJobByIdResponse = IBackendRes<Job>;
 
 // activate and deactivate job
-export type ToggleJobActiveRequest = {
+export type JobIdsRequest = {
   jobIds: number[];
 };
 
@@ -70,5 +70,13 @@ export type ToggleJobActiveResponse = IBackendRes<
     jobId: number;
     active: boolean;
     status: "success" | "failed";
+  }[]
+>;
+
+// count applications for jobs
+export type JobApplicationCountResponse = IBackendRes<
+  {
+    jobId: number;
+    applications: number;
   }[]
 >;
