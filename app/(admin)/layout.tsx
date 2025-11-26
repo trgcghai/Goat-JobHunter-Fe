@@ -1,7 +1,7 @@
 import Sidebar, { SidebarTab } from "@/components/Sidebar";
 import { Briefcase, FileText, Lock, Shield, Users } from "lucide-react";
 
-export const AdminTabs: SidebarTab[] = [
+const AdminTabs: SidebarTab[] = [
   {
     id: "dashboard",
     label: "Tổng quan",

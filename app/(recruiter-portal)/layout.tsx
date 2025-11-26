@@ -6,7 +6,7 @@ import { Briefcase, FileText, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-export const RecruiterTabs: SidebarTab[] = [
+const RecruiterTabs: SidebarTab[] = [
   {
     id: "jobs",
     label: "Quản lý việc làm",

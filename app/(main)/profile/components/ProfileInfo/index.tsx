@@ -1,13 +1,10 @@
 "use client";
 
-import { SignUpType } from "@/app/(auth)/components/schemas";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useUser } from "@/hooks/useUser";
-import { Recruiter, User } from "@/types/model";
 import getRevertGenderKeyValue from "@/utils/getRevertGenderKeyValue";
 import { capitalize } from "lodash";
 import { Edit2 } from "lucide-react";
