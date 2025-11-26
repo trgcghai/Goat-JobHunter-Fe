@@ -1,7 +1,6 @@
 "use client";
 
 import { SignUpType } from "@/app/(auth)/components/schemas";
-import { UpdateProfileModal } from "@/app/(main)/profile/components/ProfileInfo/UpdateProfileModal";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,14 +12,11 @@ import getRevertGenderKeyValue from "@/utils/getRevertGenderKeyValue";
 import { capitalize } from "lodash";
 import { Edit2 } from "lucide-react";
 import { useState } from "react";
+import ApplicantForm from "@/app/(main)/profile/components/ProfileInfo/ApplicantForm";
 
 export default function ProfileInfo() {
   const [showModal, setShowModal] = useState(false);
   const { user } = useUser();
-
-  const isRecruiter = (user: User): user is Recruiter => {
-    return user?.type.toLowerCase() == SignUpType.RECRUITER.toLowerCase();
-  };
 
   return (
     <>
@@ -119,43 +115,9 @@ export default function ProfileInfo() {
               />
             </div>
           </div>
-
-          {isRecruiter(user!) && (
-            <>
-              <div className="space-y-2">
-                <Label className="capitalize" htmlFor="address">
-                  Địa Chỉ
-                </Label>
-                <Input
-                  id="address"
-                  value={user?.address || "Chưa cập nhật"}
-                  disabled
-                  className="rounded-xl text-gray-800"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="capitalize" htmlFor="description">
-                  Mô Tả Công Ty
-                </Label>
-                <Textarea
-                  id="description"
-                  value={user?.description || "Chưa cập nhật"}
-                  disabled
-                  className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm min-h-[100px] resize-none"
-                />
-              </div>
-            </>
-          )}
         </div>
       </Card>
-
-      <UpdateProfileModal
-        open={showModal}
-        onOpenChange={setShowModal}
-        isRecruiter={isRecruiter(user!)}
-        isApplicant={!isRecruiter(user!)}
-      />
+      <ApplicantForm open={showModal} onOpenChange={setShowModal} />;
     </>
   );
 }

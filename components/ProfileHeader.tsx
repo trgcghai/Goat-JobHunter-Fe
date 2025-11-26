@@ -7,8 +7,14 @@ import { useUser } from "@/hooks/useUser";
 import { capitalize } from "lodash";
 import { Camera, Mail, Shield, User as UserIcon } from "lucide-react";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
-export default function ProfileHeader() {
+interface ProfileHeaderProps {
+  fullPage?: boolean;
+  type: "applicant" | "recruiter";
+}
+
+export default function ProfileHeader({ fullPage = false, type}: ProfileHeaderProps) {
   const [imageError, setImageError] = useState(false);
   const [isAvatarDialogOpen, setIsAvatarDialogOpen] = useState(false);
   const { user } = useUser();
@@ -16,7 +22,7 @@ export default function ProfileHeader() {
 
   return (
     <div className="border-b border-border bg-card">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+      <div className={cn(!fullPage && "mx-auto max-w-7xl px-4 sm:px-6 lg:px-8", "py-8")}>
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
           <div className="relative group">
             <div className="h-36 w-36 rounded-full border-4 border-primary/10 overflow-hidden bg-muted flex items-center justify-center">
@@ -71,13 +77,6 @@ export default function ProfileHeader() {
                   <span className="truncate">{user?.contact.email}</span>
                 </div>
               )}
-
-              {user?.type && (
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Shield className="h-4 w-4 shrink-0" />
-                  <span className="capitalize">{capitalize(user?.type)}</span>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -86,6 +85,7 @@ export default function ProfileHeader() {
       <UpdateAvatarDialog
         open={isAvatarDialogOpen}
         onOpenChange={setIsAvatarDialogOpen}
+        type={type}
       />
     </div>
   );

@@ -1,5 +1,5 @@
 "use client";
-import { ProfileHeader, ProfileTabs } from "@/app/(main)/profile/components";
+import { ProfileTabs } from "@/app/(main)/profile/components";
 import {
   Empty,
   EmptyDescription,
@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/empty";
 import { useUser } from "@/hooks/useUser";
 import { useGetMyAccountQuery } from "@/services/auth/authApi";
+import ProfileHeader from "@/components/ProfileHeader";
 
 const ProfilePage = () => {
   // Fetch user data to ensure it's up-to-date when accessing the profile page, the data returned is stored in the redux store handle by rtk query automatically
@@ -30,7 +31,7 @@ const ProfilePage = () => {
 
   return (
     <main className="flex-1">
-      <ProfileHeader />
+      <ProfileHeader type={"applicant"} />
       <ProfileTabs />
     </main>
   );

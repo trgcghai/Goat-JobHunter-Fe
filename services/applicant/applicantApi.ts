@@ -36,15 +36,11 @@ export const applicantApi = api.injectEndpoints({
       UpdateApplicantRequest
     >({
       query: (data) => ({
-        url: "/applicants",
-        method: "PUT",
-        data: {
-          type: "applicant",
-          password: "12345678", // for validation at backend, this field will be ignored
-          ...data,
-        },
+        url: `/applicants`,
+        method: 'PUT',
+        data,
       }),
-      invalidatesTags: ["Applicant", "Account"],
+      invalidatesTags: (result, error, { id }) => [{ type: 'Applicant', id }, "Account"],
     }),
 
     deleteApplicant: builder.mutation<

@@ -1,5 +1,6 @@
 import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type { Contact, Recruiter } from "@/types/model";
+import { Gender } from "@/types/enum";
 
 // Create Recruiter
 export type CreateRecruiterRequest = {
@@ -19,18 +20,17 @@ export type CreateRecruiterResponse = IBackendRes<Recruiter>;
 
 // Update Recruiter
 export type UpdateRecruiterRequest = {
-  recruiterId: string;
-  fullName: string;
-  password: string;
+  userId: number,
   username: string;
+  fullName: string;
   contact: Contact;
   address: string;
-  enabled: boolean;
-  description?: string;
-  avatar?: string;
-  role?: { roleId: string; name: string };
-  website?: string;
-};
+  dob: Date,
+  gender: Gender,
+  description: string;
+  website: string;
+  avatar: string;
+}
 
 export type UpdateRecruiterResponse = IBackendRes<Recruiter>;
 

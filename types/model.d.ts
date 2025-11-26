@@ -26,6 +26,7 @@ export type User = {
 export type Recruiter = User & {
   description: string;
   address: string;
+  website: string;
 };
 
 export type Applicant = User & {

@@ -1,6 +1,6 @@
 "use client";
 
-import useUpdateAvatar from "@/app/(main)/profile/hooks/useUpdateAvatar";
+import useUpdateAvatar, { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from "@/app/(main)/profile/hooks/useUpdateAvatar";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,21 +18,16 @@ import {
 import { capitalize } from "lodash";
 import { ImageIcon, Loader2, X } from "lucide-react";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ACCEPTED_IMAGE_TYPES = {
-  "image/jpeg": [".jpg", ".jpeg"],
-  "image/png": [".png"],
-  "image/webp": [".webp"],
-};
-
 interface UpdateAvatarDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  type: "applicant" | "recruiter";
 }
 
 export default function UpdateAvatarDialog({
   open,
   onOpenChange,
+  type,
 }: UpdateAvatarDialogProps) {
   const {
     selectedImage,
@@ -43,7 +38,7 @@ export default function UpdateAvatarDialog({
     handleRemoveImage,
     handleSubmit,
     handleError,
-  } = useUpdateAvatar();
+  } = useUpdateAvatar(type);
 
   const handleUploadAndUpdate = async () => {
     await handleSubmit();

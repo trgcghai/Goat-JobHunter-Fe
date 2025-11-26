@@ -31,10 +31,10 @@ export const recruiterApi = api.injectEndpoints({
       UpdateRecruiterResponse,
       UpdateRecruiterRequest
     >({
-      query: ({ recruiterId, ...data }) => ({
-        url: "/recruiters",
+      query: (data) => ({
+        url: `/recruiters`,
         method: "PUT",
-        data: { userId: recruiterId, ...data, type: "recruiter" },
+        data,
       }),
       invalidatesTags: ["Recruiter"],
     }),

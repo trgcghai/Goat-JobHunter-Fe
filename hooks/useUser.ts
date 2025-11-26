@@ -7,19 +7,21 @@ import {
   useRecruiterSignupMutation,
   useResendCodeMutation,
   useSigninMutation,
-  useVerifyCodeMutation,
+  useVerifyCodeMutation
 } from "@/services/auth/authApi";
 import {
   ApplicantSignUpRequest,
   RecruiterSignUpRequest,
   SignInRequest,
-  VerifyCodeRequest,
+  VerifyCodeRequest
 } from "@/services/auth/authType";
 import { useUpdatePasswordMutation } from "@/services/user/userApi";
-import { Applicant, User } from "@/types/model";
+import { Applicant, Recruiter, User } from "@/types/model";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { toast } from "sonner";
+import { useUpdateRecruiterMutation } from "@/services/recruiter/recruiterApi";
+import { ApplicantFormData } from "@/app/(main)/profile/components/ProfileInfo/schema";
 
 export function useUser() {
   const router = useRouter();
@@ -40,7 +42,8 @@ export function useUser() {
     useResendCodeMutation();
   const [updatePasswordMutation, { isLoading: isUpdatingPassword }] =
     useUpdatePasswordMutation();
-  const [updateApplicant, { isLoading }] = useUpdateApplicantMutation();
+  const [updateApplicant, { isLoading: isUpdatingApplicant }] = useUpdateApplicantMutation();
+  const [updateRecruiter, { isLoading: isUpdatingRecruiter }] = useUpdateRecruiterMutation();
 
   /**
    * Sign in user
@@ -71,8 +74,8 @@ export function useUser() {
               label: "Kích hoạt ngay",
               onClick: () => {
                 router.push("/otp?email=" + params.email);
-              },
-            },
+              }
+            }
           });
           return { success: false, error: "Account is locked" };
         }
@@ -86,7 +89,7 @@ export function useUser() {
         return { success: false };
       }
     },
-    [dispatch, signinMutation, router],
+    [dispatch, signinMutation, router]
   );
 
   /**
@@ -108,7 +111,7 @@ export function useUser() {
         return { success: false };
       }
     },
-    [applicantSignupMutation],
+    [applicantSignupMutation]
   );
 
   /**
@@ -130,7 +133,7 @@ export function useUser() {
         return { success: false };
       }
     },
-    [recruiterSignupMutation],
+    [recruiterSignupMutation]
   );
 
   /**
@@ -177,7 +180,7 @@ export function useUser() {
         return { success: false };
       }
     },
-    [verifyCodeMutation],
+    [verifyCodeMutation]
   );
 
   /**
@@ -195,7 +198,7 @@ export function useUser() {
         return { success: false };
       }
     },
-    [resendCodeMutation],
+    [resendCodeMutation]
   );
 
   /**
@@ -211,7 +214,7 @@ export function useUser() {
         const response = await updatePasswordMutation({
           currentPassword: params.oldPassword,
           newPassword: params.newPassword,
-          rePassword: params.confirmPassword,
+          rePassword: params.confirmPassword
         }).unwrap();
 
         if (response.statusCode === 200) {
@@ -234,7 +237,7 @@ export function useUser() {
         return { success: false };
       }
     },
-    [updatePasswordMutation],
+    [updatePasswordMutation]
   );
 
   /**
@@ -271,20 +274,37 @@ export function useUser() {
    * Update applicant information
    */
   const handleUpdateApplicant = useCallback(
-    async (userId: number, data: Partial<Applicant & User>) => {
+    async (userId: number, data: Partial<Applicant>) => {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const updatedData: Record<string, any> = {};
+
+        // Chỉ thêm các field không undefined/null
+        for (const key in data) {
+          const value = data[key as keyof Applicant];
+          if (value !== undefined && value !== null) {
+            updatedData[key] = value;
+          }
+        }
+
+        // Nếu không có field nào để update
+        if (Object.keys(updatedData).length === 0) {
+          return;
+        }
+
+        // @ts-expect-error Không cần check kỹ lưỡng kiểu dữ liệu ở đây
         const response = await updateApplicant({
-          userId: userId,
-          fullName: data.fullName ? data.fullName : user?.fullName,
-          username: data.username ? data.username : user?.username,
-          dob: data.dob ? new Date(data.dob) : new Date(user?.dob || ""),
-          gender: data.gender ? data.gender : user?.gender,
-          contact: data.contact ? data.contact : user?.contact,
-          avatar: data.avatar ? data.avatar : user?.avatar,
+          userId,
+          ...updatedData,
         });
 
         if (response.error) {
           throw new Error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
+        }
+
+        // Update Redux state
+        if (response.data?.data) {
+          dispatch(setUser({ user: response.data.data as User }));
         }
 
         toast.success("Cập nhật thông tin thành công!");
@@ -293,8 +313,55 @@ export function useUser() {
         toast.error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
       }
     },
-    [updateApplicant, user],
+    [updateApplicant, dispatch]
   );
+
+  /**
+   * Update recruiter information
+   */
+  const handleUpdateRecruiter = useCallback(
+    async (userId: number, data: Partial<Recruiter>) => {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const updatedData: Record<string, any> = {};
+
+        // Chỉ thêm các field không undefined/null
+        for (const key in data) {
+          const value = data[key as keyof Recruiter];
+          if (value !== undefined && value !== null) {
+            updatedData[key] = value;
+          }
+        }
+
+        // Nếu không có field nào để update
+        if (Object.keys(updatedData).length === 0) {
+          return;
+        }
+
+        // @ts-expect-error Không cần check kỹ lưỡng kiểu dữ liệu ở đây
+        const response = await updateRecruiter({
+          userId,
+          ...updatedData,
+        });
+
+        if (response.error) {
+          throw new Error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
+        }
+
+        // Update Redux state
+        if (response.data?.data) {
+          dispatch(setUser({ user: response.data.data as User }));
+        }
+
+        toast.success("Cập nhật thông tin thành công!");
+      } catch (error) {
+        console.error("Failed to update recruiter:", error);
+        toast.error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
+      }
+    },
+    [updateRecruiter, dispatch]
+  );
+
 
   return {
     // User data
@@ -321,6 +388,10 @@ export function useUser() {
 
     // Update applicant
     handleUpdateApplicant,
-    isUpdatingApplicant: isLoading,
+    isUpdatingApplicant,
+
+    // Update recruiter
+    handleUpdateRecruiter,
+    isUpdatingRecruiter
   };
 }
