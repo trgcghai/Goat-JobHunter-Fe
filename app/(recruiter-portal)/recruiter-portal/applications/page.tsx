@@ -5,6 +5,9 @@ import { useApplicationManagement } from "@/app/(recruiter-portal)/recruiter-por
 import { DataTablePagination } from "@/components/dataTable/DataTablePagination";
 import LoaderSpin from "@/components/LoaderSpin";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import ApplicationActions from "@/app/(recruiter-portal)/recruiter-portal/applications/components/ApplicationActions";
+import { useState } from "react";
+import { Application } from "@/types/model";
 
 const ApplicationsManagement = () => {
   const {
@@ -19,6 +22,9 @@ const ApplicationsManagement = () => {
     handleFilterChange,
     resetFilters,
   } = useApplicationManagement();
+  const [selectedItems, setSelectedItems] = useState<Application[]>([]);
+
+  console.log(selectedItems);
 
   return (
     <div className="space-y-6">
@@ -44,7 +50,12 @@ const ApplicationsManagement = () => {
             </div>
           ) : (
             <>
-              <ApplicationsTable applications={applications} />
+              <ApplicationActions
+                selectedCount={selectedItems.length}
+                selectedIds={selectedItems.map(item => item.applicationId)}
+              />
+
+              <ApplicationsTable applications={applications} onSelectionChange={setSelectedItems} />
 
               <DataTablePagination
                 currentPage={page}
