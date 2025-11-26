@@ -5,12 +5,13 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
+  DialogFooter
 } from "@/components/ui/dialog";
 import { Application } from "@/types/model";
 import AcceptForm from "./AcceptForm";
 import RejectForm from "./RejectForm";
 import { AcceptFormData, RejectFormData } from "./schema";
+import { InterviewType } from "@/types/enum";
 
 interface EmailDialogProps {
   open: boolean;
@@ -18,7 +19,7 @@ interface EmailDialogProps {
   mode: "accept" | "reject";
   application: Application;
   isLoading?: boolean;
-  onSend: (payload: Record<string, string | number>) => Promise<void>;
+  onSend: (payload: Record<string, string | number | Date | InterviewType>) => Promise<void>;
 }
 
 const EmailDialog = ({
@@ -27,16 +28,16 @@ const EmailDialog = ({
                        mode,
                        application,
                        isLoading = false,
-                       onSend,
+                       onSend
                      }: EmailDialogProps) => {
   const onAcceptSubmit = async (data: AcceptFormData) => {
     await onSend({
       mode: "accept",
       applicationId: application.applicationId,
-      to: application.email,
-      interviewAt: data.interviewAt,
+      interviewDate: data.interviewDate,
+      interviewType: data.interviewType,
       location: data.location,
-      notes: data.notes || "",
+      notes: data.notes || ""
     });
     onOpenChange(false);
   };
@@ -45,8 +46,7 @@ const EmailDialog = ({
     await onSend({
       mode: "reject",
       applicationId: application.applicationId,
-      to: application.email,
-      reason: data.reason,
+      reason: data.reason
     });
     onOpenChange(false);
   };
@@ -76,12 +76,6 @@ const EmailDialog = ({
           <div className="flex items-center gap-3 p-4 rounded-xl border border-gray-200 bg-gray-50">
             <div>
               <p className="text-sm font-medium text-gray-900">
-                Họ tên:{" "}
-                {application.user.fullName
-                  ? application.user.fullName
-                  : "Chưa cung cấp"}
-              </p>
-              <p className="text-sm text-gray-500">
                 Email: {application.email}
               </p>
             </div>

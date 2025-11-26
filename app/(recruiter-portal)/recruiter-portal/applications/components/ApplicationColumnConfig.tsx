@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Application } from "@/types/model";
 import { formatDate } from "@/utils/formatDate";
 import { ColumnDef } from "@tanstack/react-table";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -34,6 +35,28 @@ const getStatusLabel = (status: string) => {
 };
 
 export const applicationColumns: ColumnDef<Application>[] = [
+  {
+    id: "select",
+    enableSorting: false,
+    enableHiding: false,
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+  },
   {
     accessorKey: "user.fullName",
     enableSorting: false,

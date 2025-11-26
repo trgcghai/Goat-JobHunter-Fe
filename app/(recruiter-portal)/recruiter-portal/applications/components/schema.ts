@@ -1,8 +1,12 @@
 import * as z from "zod";
+import { InterviewType } from "@/types/enum";
 
 export const acceptSchema = z.object({
-  interviewAt: z.string().min(1, "Vui lòng chọn thời gian phỏng vấn"),
+  interviewDate: z.instanceof(Date, {error: "Vui lòng chọn ngày phỏng vấn"}).refine((date) => date > new Date(), {
+    message: "Ngày phỏng vấn phải là ngày trong tương lai",
+  }),
   location: z.string().min(1, "Vui lòng nhập địa điểm phỏng vấn"),
+  interviewType: z.enum(InterviewType, {error: "Vui lòng chọn hình thức phỏng vấn"}),
   notes: z.string().optional(),
 });
 

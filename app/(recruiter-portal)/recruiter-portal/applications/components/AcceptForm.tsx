@@ -6,12 +6,16 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { acceptSchema, AcceptFormData } from "./schema";
 import { useEffect } from "react";
+import { InterviewType } from "@/types/enum";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { capitalize } from "lodash";
+import { DatePicker } from "@/components/ui/example-date-picker";
 
 interface AcceptFormProps {
   onSubmit: (data: AcceptFormData) => Promise<void>;
@@ -22,10 +26,11 @@ const AcceptForm = ({ onSubmit, open }: AcceptFormProps) => {
   const form = useForm<AcceptFormData>({
     resolver: zodResolver(acceptSchema),
     defaultValues: {
-      interviewAt: "",
+      interviewDate: undefined,
+      interviewType: InterviewType.PERSON,
       location: "",
-      notes: "",
-    },
+      notes: ""
+    }
   });
 
   useEffect(() => {
@@ -43,16 +48,46 @@ const AcceptForm = ({ onSubmit, open }: AcceptFormProps) => {
       >
         <FormField
           control={form.control}
-          name="interviewAt"
+          name="interviewDate"
           render={({ field }) => (
             <FormItem>
               <FormLabel required>Thời gian phỏng vấn</FormLabel>
               <FormControl>
-                <Input
-                  type="datetime-local"
+                <DatePicker
                   {...field}
-                  className="rounded-xl"
+                  placeholder="Ngày phỏng vấn"
+                  value={field.value}
+                  onChange={field.onChange}
+                  className="rounded-xl w-full border border-gray-300"
                 />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="interviewType"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel required>Hình thức phỏng vấn</FormLabel>
+              <FormControl>
+                <Select
+                  value={field.value}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger className="rounded-xl w-full">
+                    <SelectValue placeholder="Chọn hình thức phỏng vấn" />
+                  </SelectTrigger>
+                  <SelectContent side="bottom" className="rounded-xl">
+                    {Object.entries(InterviewType).map(([key, value]) => (
+                      <SelectItem key={key} value={value}>
+                        {capitalize(value)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </FormControl>
               <FormMessage />
             </FormItem>

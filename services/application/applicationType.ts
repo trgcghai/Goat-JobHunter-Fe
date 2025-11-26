@@ -1,5 +1,6 @@
 import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type { Application } from "@/types/model";
+import { InterviewType } from "@/types/enum";
 
 // Create Application
 export type CreateApplicationRequest = {
@@ -12,11 +13,18 @@ export type CreateApplicationRequest = {
 export type CreateApplicationResponse = IBackendRes<Application>;
 
 // Update Application Status
-export type UpdateApplicationStatusRequest = {
-  applicationId: string;
-  status: string;
-  resumeUrl: string;
+export type AcceptApplicationStatusRequest = {
+  applicationIds: number[],
+  interviewDate: Date,
+  interviewType: InterviewType,
+  location: string,
+  note: string,
 };
+
+export type RejectApplicationStatusRequest = {
+  applicationIds: number[],
+  reason: string,
+}
 
 export type UpdateApplicationStatusResponse = IBackendRes<Application>;
 

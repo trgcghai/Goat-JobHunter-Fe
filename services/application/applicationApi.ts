@@ -1,6 +1,7 @@
 import { api } from "@/services/api";
 import { buildSpringQuery } from "@/utils/buildSpringQuery";
-import type {
+import {
+  AcceptApplicationStatusRequest,
   CreateApplicationRequest,
   CreateApplicationResponse,
   DeleteApplicationRequest,
@@ -11,9 +12,8 @@ import type {
   FetchApplicationsByApplicantResponse,
   FetchApplicationsByRecruiterResponse,
   FetchApplicationsRequest,
-  FetchApplicationsResponse,
-  UpdateApplicationStatusRequest,
-  UpdateApplicationStatusResponse,
+  FetchApplicationsResponse, RejectApplicationStatusRequest,
+  UpdateApplicationStatusResponse
 } from "./applicationType";
 
 export const applicationApi = api.injectEndpoints({
@@ -36,14 +36,26 @@ export const applicationApi = api.injectEndpoints({
       invalidatesTags: ["Application"],
     }),
 
-    updateApplicationStatus: builder.mutation<
+    acceptApplicationStatus: builder.mutation<
       UpdateApplicationStatusResponse,
-      UpdateApplicationStatusRequest
+      AcceptApplicationStatusRequest
     >({
-      query: ({ applicationId, status, resumeUrl }) => ({
-        url: "/applications",
+      query: (data) => ({
+        url: "/applications/accept",
         method: "PUT",
-        data: { applicationId, status, resumeUrl },
+        data,
+      }),
+      invalidatesTags: ["Application"],
+    }),
+
+    rejectApplicationStatus: builder.mutation<
+      UpdateApplicationStatusResponse,
+      RejectApplicationStatusRequest
+    >({
+      query: (data) => ({
+        url: "/applications/reject",
+        method: "PUT",
+        data,
       }),
       invalidatesTags: ["Application"],
     }),
@@ -144,7 +156,8 @@ export const applicationApi = api.injectEndpoints({
 
 export const {
   useCreateApplicationMutation,
-  useUpdateApplicationStatusMutation,
+  useAcceptApplicationStatusMutation,
+  useRejectApplicationStatusMutation,
   useDeleteApplicationMutation,
   useFetchApplicationByIdQuery,
   useFetchApplicationsQuery,

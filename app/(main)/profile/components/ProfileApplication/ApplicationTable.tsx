@@ -1,5 +1,5 @@
 import EmptyTable from "@/app/(main)/profile/components/ProfileApplication/EmptyTable";
-import ResumePreviewDialog from "@/app/(main)/profile/components/ProfileApplication/ResumePreivewDialog";
+import ResumePreviewDialog from "@/components/ResumePreivewDialog";
 import StatusBadge from "@/app/(main)/profile/components/ProfileApplication/StatusBadge";
 import CustomPagination from "@/components/CustomPagination";
 import ErrorMessage from "@/components/ErrorMessage";
