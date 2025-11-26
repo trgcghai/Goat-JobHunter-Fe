@@ -24,8 +24,6 @@ const ApplicationsManagement = () => {
   } = useApplicationManagement();
   const [selectedItems, setSelectedItems] = useState<Application[]>([]);
 
-  console.log(selectedItems);
-
   return (
     <div className="space-y-6">
       <Card>

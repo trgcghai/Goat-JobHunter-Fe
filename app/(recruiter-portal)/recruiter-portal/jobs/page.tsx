@@ -9,6 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import { Job } from "@/types/model";
+import JobActions from "@/app/(recruiter-portal)/recruiter-portal/jobs/components/JobActions";
 
 const RecruiterJobPage = () => {
   const {
@@ -23,6 +26,7 @@ const RecruiterJobPage = () => {
     handleFilterChange,
     resetFilters,
   } = useJobManagement();
+  const [selectedItems, setSelectedItems] = useState<Job[]>([]);
 
   return (
     <div className="space-y-6">
@@ -55,7 +59,12 @@ const RecruiterJobPage = () => {
             </div>
           ) : (
             <>
-              <JobsTable jobs={jobs} />
+              <JobActions
+                selectedCount={selectedItems.length}
+                selectedIds={selectedItems.map(j => j.jobId)}
+              />
+
+              <JobsTable jobs={jobs} onSelectionChange={setSelectedItems} />
 
               <DataTablePagination
                 currentPage={page}

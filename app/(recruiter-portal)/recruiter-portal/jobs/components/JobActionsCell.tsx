@@ -8,7 +8,7 @@ import { Ban, CheckCircle, Eye, Loader2, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-type ActionType = "delete" | "toggle" | null;
+type ActionType = "delete" | "activate" | "deactivate" | null;
 
 const JobActionsCell = ({ job }: { job: Job }) => {
   const {
@@ -23,10 +23,14 @@ const JobActionsCell = ({ job }: { job: Job }) => {
   // Xử lý logic confirm
   const handleConfirm = async () => {
     try {
-      if (actionType === "delete") {
-        await handleDeleteJob(job.jobId, job.title);
-      } else if (actionType === "toggle") {
+      if (actionType == "delete") {
+
+        await handleDeleteJob(job.jobId);
+
+      } else if (actionType == "activate" || actionType == "deactivate") {
+
         await handleToggleStatus(job.jobId, job.active);
+
       }
       setActionType(null);
     } catch (error) {
@@ -54,27 +58,37 @@ const JobActionsCell = ({ job }: { job: Job }) => {
       };
     }
 
-    if (actionType === "toggle") {
-      const isActive = job.active;
+    if (actionType === "activate") {
       return {
-        title: isActive ? "Ngừng tuyển dụng?" : "Đăng tuyển lại?",
+        title: "Đăng tuyển lại?",
         description: (
           <>
             Công việc{" "}
             <span className="font-bold text-foreground">
               &quot;{job.title}&quot;
             </span>{" "}
-            sẽ{" "}
-            {isActive
-              ? "bị ẩn khỏi trang tìm kiếm"
-              : "hiển thị công khai trở lại"}
-            .
+            sẽ hiển thị công khai trở lại.
           </>
         ),
-        confirmText: isActive ? "Ngừng tuyển" : "Đăng tuyển",
-        confirmBtnClass: isActive
-          ? "bg-orange-600 text-white hover:bg-orange-700"
-          : "bg-green-600 text-white hover:bg-green-700",
+        confirmText: "Đăng tuyển",
+        confirmBtnClass: "bg-green-600 text-white hover:bg-green-700",
+      };
+    }
+
+    if (actionType === "deactivate") {
+      return {
+        title: "Ngừng tuyển dụng?",
+        description: (
+          <>
+            Công việc{" "}
+            <span className="font-bold text-foreground">
+              &quot;{job.title}&quot;
+            </span>{" "}
+            sẽ bị ẩn khỏi trang tìm kiếm.
+          </>
+        ),
+        confirmText: "Ngừng tuyển",
+        confirmBtnClass: "bg-orange-600 text-white hover:bg-orange-700",
       };
     }
 
@@ -103,7 +117,7 @@ const JobActionsCell = ({ job }: { job: Job }) => {
             ? "text-orange-500 hover:text-orange-600 hover:bg-orange-50 border-orange-200"
             : "text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200"
         }`}
-        onClick={() => setActionType("toggle")}
+        onClick={() => setActionType(job.active ? "deactivate" : "activate")}
         title={job.active ? "Ngừng tuyển" : "Đăng tuyển lại"}
       >
         {job.active ? (

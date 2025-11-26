@@ -6,8 +6,9 @@ import { Job } from "@/types/model";
 
 interface JobsTableProps {
   jobs: Job[];
+  onSelectionChange: (selectedItems: Job[]) => void;
 }
 
-export default function JobsTable({ jobs }: JobsTableProps) {
-  return <DataTable columns={recruiterJobColumns} data={jobs} />;
+export default function JobsTable({ jobs, onSelectionChange }: JobsTableProps) {
+  return <DataTable columns={recruiterJobColumns} data={jobs} onSelectionChange={onSelectionChange} />;
 }

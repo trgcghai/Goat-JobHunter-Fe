@@ -9,46 +9,26 @@ import {
 import AcceptForm from "./AcceptForm";
 import RejectForm from "./RejectForm";
 import { AcceptFormData, RejectFormData } from "./schema";
-import useApplicationActions from "@/hooks/useApplicationActions";
 
 interface BulkEmailDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   mode: "accept" | "reject";
-  applicationIds: number[];
   selectedCount: number;
-  onActionComplete: () => void;
+  isLoading: boolean;
+  onAcceptSubmit: (data: AcceptFormData) => Promise<void>;
+  onRejectSubmit: (data: RejectFormData) => Promise<void>;
 }
 
 const BulkEmailDialog = ({
   open,
   onOpenChange,
   mode,
-  applicationIds,
   selectedCount,
-  onActionComplete,
+  isLoading,
+  onAcceptSubmit,
+  onRejectSubmit
 }: BulkEmailDialogProps) => {
-  const { isRejecting, isAccepting, handleRejectApplications, handleAcceptApplications } =
-    useApplicationActions();
-
-  const onAcceptSubmit = async (data: AcceptFormData) => {
-    await handleAcceptApplications({
-      applicationIds,
-      interviewDate: data.interviewDate,
-      interviewType: data.interviewType,
-      location: data.location,
-      note: data.notes || "",
-    });
-    onActionComplete();
-  };
-
-  const onRejectSubmit = async (data: RejectFormData) => {
-    await handleRejectApplications({
-      applicationIds,
-      reason: data.reason,
-    });
-    onActionComplete();
-  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -88,8 +68,7 @@ const BulkEmailDialog = ({
         <DialogFooter className="bg-gray-50 -mx-6 -mb-6 px-6 py-4 rounded-b-xl">
           <Button
             variant="outline"
-            onClick={onActionComplete}
-            disabled={isRejecting || isAccepting}
+            disabled={isLoading}
             type="button"
             className="rounded-xl"
           >
@@ -99,10 +78,10 @@ const BulkEmailDialog = ({
             type="submit"
             form={mode === "accept" ? "accept-form" : "reject-form"}
             variant={mode === "accept" ? "default" : "destructive"}
-            disabled={isRejecting || isAccepting}
+            disabled={isLoading}
             className="rounded-xl"
           >
-            {(isRejecting || isAccepting) ? "Đang gửi..." : `Xác nhận`}
+            {(isLoading) ? "Đang gửi..." : `Xác nhận`}
           </Button>
         </DialogFooter>
       </DialogContent>

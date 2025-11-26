@@ -4,6 +4,11 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, XCircle } from "lucide-react";
 import { useMemo, useState } from "react";
 import BulkEmailDialog from "@/app/(recruiter-portal)/recruiter-portal/applications/components/BulkEmailDialog";
+import useApplicationActions from "@/hooks/useApplicationActions";
+import {
+  AcceptFormData,
+  RejectFormData
+} from "@/app/(recruiter-portal)/recruiter-portal/applications/components/schema";
 
 interface ApplicationActionsProps {
   selectedCount: number;
@@ -14,16 +19,26 @@ export default function ApplicationActions({
   selectedCount,
   selectedIds,
 }: ApplicationActionsProps) {
-  const [dialogOpen, setDialogOpen] = useState(false);
   const [mode, setMode] = useState<"accept" | "reject" | null>(null);
+  const { isRejecting, isAccepting, handleRejectApplications, handleAcceptApplications } =
+    useApplicationActions();
 
-  const handleAction = (type: "accept" | "reject" | null) => {
-    setMode(type);
-    setDialogOpen(true);
+  const onAcceptSubmit = async (data: AcceptFormData) => {
+    await handleAcceptApplications({
+      applicationIds: selectedIds,
+      interviewDate: data.interviewDate,
+      interviewType: data.interviewType,
+      location: data.location,
+      note: data.notes || "",
+    });
+    setMode(null);
   };
 
-  const confirmAction = () => {
-    setDialogOpen(false);
+  const onRejectSubmit = async (data: RejectFormData) => {
+    await handleRejectApplications({
+      applicationIds: selectedIds,
+      reason: data.reason,
+    });
     setMode(null);
   };
 
@@ -45,7 +60,7 @@ export default function ApplicationActions({
           <Button
             variant="default"
             size="sm"
-            onClick={() => handleAction("accept")}
+            onClick={() => setMode("accept")}
             className="gap-2 rounded-xl"
           >
             <CheckCircle className="h-4 w-4" />
@@ -54,7 +69,7 @@ export default function ApplicationActions({
           <Button
             variant="destructive"
             size="sm"
-            onClick={() => handleAction("reject")}
+            onClick={() => setMode("reject")}
             className="gap-2 rounded-xl"
           >
             <XCircle className="h-4 w-4" />
@@ -64,12 +79,13 @@ export default function ApplicationActions({
       </div>
 
       <BulkEmailDialog
-        open={dialogOpen}
+        open={!!mode}
         onOpenChange={(open) => !open && setMode(null)}
         mode={dialogConfig.mode}
         selectedCount={selectedCount}
-        applicationIds={selectedIds}
-        onActionComplete={confirmAction}
+        isLoading={isRejecting || isAccepting}
+        onAcceptSubmit={onAcceptSubmit}
+        onRejectSubmit={onRejectSubmit}
       />
     </>
   );

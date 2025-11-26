@@ -132,14 +132,12 @@ const useJobActions = () => {
 
   // Delete job
   const handleDeleteJob = useCallback(
-    async (jobId: number, jobTitle?: string) => {
+    async (jobId: number) => {
       try {
         const response = await deleteJob(jobId.toString()).unwrap();
 
         if (response.data) {
-          toast.success("Xóa công việc thành công!", {
-            description: jobTitle ? `Đã xóa: ${jobTitle}` : undefined,
-          });
+          toast.success("Xóa công việc thành công!");
           return response.data;
         }
       } catch (error) {
@@ -191,7 +189,7 @@ const useJobActions = () => {
     [updateJob, user],
   );
 
-  const handleToggleStatus = async (jobId: number, isActive: boolean) => {
+  const handleToggleStatus = useCallback(async (jobId: number, isActive: boolean) => {
     try {
       if (isActive) {
         await deactivateJob({ jobIds: [jobId] }).unwrap();
@@ -205,7 +203,31 @@ const useJobActions = () => {
       );
       throw error;
     }
-  };
+  }, [activateJob, deactivateJob]);
+
+  const handleActivateJobs = useCallback(async (jobIds: number[]) => {
+      try {
+        await activateJob({ jobIds }).unwrap();
+      } catch (error) {
+        console.error("Failed to toggle job status:", error);
+        toast.error(
+          "Không thể thay đổi trạng thái công việc. Vui lòng thử lại sau.",
+        );
+        throw error;
+      }
+  }, [activateJob]);
+
+  const handleDeactivateJobs = useCallback(async (jobIds: number[]) => {
+    try {
+      await deactivateJob({ jobIds }).unwrap();
+    } catch (error) {
+      console.error("Failed to toggle job status:", error);
+      toast.error(
+        "Không thể thay đổi trạng thái công việc. Vui lòng thử lại sau.",
+      );
+      throw error;
+    }
+  }, [deactivateJob]);
 
   return {
     isCreating,
@@ -220,6 +242,8 @@ const useJobActions = () => {
     handleUpdateJob,
     handleDeleteJob,
     handleToggleStatus,
+    handleActivateJobs,
+    handleDeactivateJobs,
   };
 };
 
