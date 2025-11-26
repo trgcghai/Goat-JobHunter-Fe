@@ -59,11 +59,11 @@ export type FetchApplicantByIdResponse = IBackendRes<{
   fullName: string,
   avatar: string,
   gender: Gender,
-  dob: Date,
+  dob: string,
   enabled: boolean,
   role: { roleId: number, name: string }
-  createdAt: Date,
-  updatedAt: Date,
+  createdAt: string,
+  updatedAt: string,
   availableStatus: boolean,
   education: Education,
   level: Level

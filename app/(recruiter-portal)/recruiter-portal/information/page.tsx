@@ -1,23 +1,37 @@
 "use client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Edit2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { capitalize } from "lodash";
-import getRevertGenderKeyValue from "@/utils/getRevertGenderKeyValue";
+import { getRevertGenderKeyValue } from "@/utils/getRevertEnumKeyValue";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { useUser } from "@/hooks/useUser";
 import { useGetMyAccountQuery } from "@/services/auth/authApi";
-import { Recruiter } from "@/types/model";
 import ProfileHeader from "@/components/ProfileHeader";
 import RecruiterForm from "@/app/(recruiter-portal)/recruiter-portal/information/components/RecruiterForm";
+import { useFetchCurrentRecruiterQuery } from "@/services/recruiter/recruiterApi";
+import { formatDate } from "@/utils/formatDate";
+import LoaderSpin from "@/components/LoaderSpin";
+import ErrorMessage from "@/components/ErrorMessage";
 
 const RecruiterInformation = () => {
   useGetMyAccountQuery();
   const [open, setOpen] = useState(false);
-  const { user } = useUser();
+
+  const { data, isLoading, isError } = useFetchCurrentRecruiterQuery();
+
+  const user = useMemo(() => data?.data, [data?.data]);
+
+  if (isLoading) {
+    return <LoaderSpin />;
+  }
+
+  if (isError || !user) {
+    return <ErrorMessage message={"Có lỗi xảy ra khi tải thông tin người dùng. Vui lòng thử lại sau"} />
+  }
+
   return (
     <div className="space-y-6">
       <Card>
@@ -49,7 +63,7 @@ const RecruiterInformation = () => {
               </Label>
               <Input
                 id="fullName"
-                value={user?.fullName || "Chưa cập nhật"}
+                value={user.fullName || "Chưa cập nhật"}
                 disabled
                 className="rounded-xl text-gray-800" />
             </div>
@@ -59,7 +73,7 @@ const RecruiterInformation = () => {
               </Label>
               <Input
                 id="username"
-                value={user?.username || "Chưa cập nhật"}
+                value={user.username || "Chưa cập nhật"}
                 disabled
                 className="rounded-xl text-gray-800" />
             </div>
@@ -73,7 +87,7 @@ const RecruiterInformation = () => {
               <Input
                 id="email"
                 type="email"
-                value={user?.contact.email || "Chưa cập nhật"}
+                value={user.contact.email || "Chưa cập nhật"}
                 disabled
                 className="rounded-xl text-gray-800" />
             </div>
@@ -83,7 +97,7 @@ const RecruiterInformation = () => {
               </Label>
               <Input
                 id="phone"
-                value={user?.contact?.phone || "Chưa cập nhật"}
+                value={user.contact?.phone || "Chưa cập nhật"}
                 disabled
                 className="rounded-xl text-gray-800" />
             </div>
@@ -97,7 +111,7 @@ const RecruiterInformation = () => {
               <Input
                 id="gender"
                 type="text"
-                value={user?.gender
+                value={user.gender
                   ? capitalize(getRevertGenderKeyValue(user.gender))
                   : "Chưa cập nhật"}
                 disabled
@@ -109,7 +123,7 @@ const RecruiterInformation = () => {
               </Label>
               <Input
                 id="dob"
-                value={capitalize(user?.dob) || "Chưa cập nhật"}
+                value={user.dob ? capitalize(user.dob.toISOString()) : "Chưa cập nhật"}
                 disabled
                 className="rounded-xl text-gray-800" />
             </div>
@@ -121,7 +135,18 @@ const RecruiterInformation = () => {
             </Label>
             <Input
               id="address"
-              value={user?.address || "Chưa cập nhật"}
+              value={user.address || "Chưa cập nhật"}
+              disabled
+              className="rounded-xl text-gray-800" />
+          </div>
+
+          <div className="space-y-2">
+            <Label className="capitalize" htmlFor="address">
+              Website
+            </Label>
+            <Input
+              id="address"
+              value={user.website || "Chưa cập nhật"}
               disabled
               className="rounded-xl text-gray-800" />
           </div>
@@ -132,9 +157,20 @@ const RecruiterInformation = () => {
             </Label>
             <Textarea
               id="description"
-              value={(user as Recruiter).description || "Chưa cập nhật"}
+              value={user.description || "Chưa cập nhật"}
               disabled
               className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm min-h-[100px] resize-none" />
+          </div>
+
+          <div className="space-y-2">
+            <Label className="capitalize" htmlFor="address">
+              Ngày tham gia
+            </Label>
+            <Input
+              id="address"
+              value={user.createdAt ? formatDate(new Date(user.createdAt).toISOString()) : "Chưa cập nhật"}
+              disabled
+              className="rounded-xl text-gray-800" />
           </div>
         </CardContent>
       </Card>

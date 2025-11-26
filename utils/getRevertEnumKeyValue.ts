@@ -13,4 +13,4 @@ const getRevertGenderKeyValue = (gender: Gender) => {
   }
 };
 
-export default getRevertGenderKeyValue;
+export { getRevertGenderKeyValue };

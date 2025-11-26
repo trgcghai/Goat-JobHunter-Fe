@@ -47,8 +47,6 @@ function RecruiterForm({ open, onOpenChange }: RecruiterFormProps) {
       phone: profile?.contact?.phone || "",
       address: profile?.address || "",
       description: (profile as Recruiter)?.description || "",
-      dob: profile?.dob ? new Date(profile?.dob) : undefined,
-      gender: profile?.gender || Gender.NAM,
       website: (profile as Recruiter)?.website || ""
     }
   });
@@ -56,22 +54,22 @@ function RecruiterForm({ open, onOpenChange }: RecruiterFormProps) {
   const onSubmit = async (data: RecruiterFormData) => {
     if (!profile?.userId) {
       toast.error(
-        "Không thể cập nhật thông tin nhà tuyê dụng. Vui lòng thử lại sau."
+        "Không thể cập nhật thông tin nhà tuyển dụng. Vui lòng thử lại sau."
       );
       return;
     }
     await handleUpdateRecruiter(profile.userId, {
       fullName: data.fullName,
       username: data.username,
-      dob: data.dob?.toISOString(),
-      gender: data.gender,
       contact: {
         email: data.email,
         phone: data.phone
       },
       description: data.description,
       address: data.address,
-      website: data.website
+      website: data.website,
+      gender: data.gender,
+      dob: data.dob?.toISOString()
     });
 
     onOpenChange(false);
