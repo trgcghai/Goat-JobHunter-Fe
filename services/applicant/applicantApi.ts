@@ -40,7 +40,7 @@ export const applicantApi = api.injectEndpoints({
         method: 'PUT',
         data,
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: 'Applicant', id }, "Account"],
+      invalidatesTags: (result, error, { userId }) => [{ type: 'Applicant', id: userId }, "Account"],
     }),
 
     deleteApplicant: builder.mutation<

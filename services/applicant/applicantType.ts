@@ -33,7 +33,6 @@ export type UpdateApplicantRequest = {
   gender: Gender;
   education: Education;
   level: Level;
-  resumeUrl: string;
   avatar: string;
 }
 

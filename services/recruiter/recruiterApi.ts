@@ -36,7 +36,7 @@ export const recruiterApi = api.injectEndpoints({
         method: "PUT",
         data,
       }),
-      invalidatesTags: ["Recruiter"],
+      invalidatesTags: (result, error, { userId }) => [{ type: 'Recruiter', id: userId }, "Account"],
     }),
 
     deleteRecruiter: builder.mutation<
@@ -48,6 +48,7 @@ export const recruiterApi = api.injectEndpoints({
         method: "DELETE",
       }),
       invalidatesTags: ["Recruiter"],
+
     }),
 
     // For Admin - Fetch all recruiters (enabled & disabled)

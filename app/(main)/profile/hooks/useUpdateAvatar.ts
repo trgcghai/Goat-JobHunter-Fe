@@ -82,7 +82,7 @@ const useUpdateAvatar = (type: "applicant" | "recruiter") => {
       }
 
       // Step 2: Update user avatar
-      const updateToast = toast.loading("Đang cập nhật ảnh đại diện...");
+      toast.loading("Đang cập nhật ảnh đại diện...");
 
       try {
         if (!user?.userId) {
@@ -91,12 +91,10 @@ const useUpdateAvatar = (type: "applicant" | "recruiter") => {
 
         if (type == "applicant") {
           await handleUpdateApplicant(user?.userId, {
-            ...user,
             avatar: avatarUrl
           });
         } else {
           await handleUpdateRecruiter(user?.userId, {
-            ...user,
             avatar: avatarUrl
           });
         }
@@ -106,9 +104,7 @@ const useUpdateAvatar = (type: "applicant" | "recruiter") => {
         handleRemoveImage();
       } catch (updateError) {
         console.error("Error updating avatar:", updateError);
-        toast.error("Không thể cập nhật ảnh đại diện. Vui lòng thử lại sau", {
-          id: updateToast
-        });
+        toast.error("Không thể cập nhật ảnh đại diện. Vui lòng thử lại sau");
       }
     } catch (error) {
       console.error("Unexpected error:", error);
