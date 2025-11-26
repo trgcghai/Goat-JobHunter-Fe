@@ -173,7 +173,7 @@ export default function ProfileInfo() {
           </div>
         </div>
       </Card>
-      <ApplicantForm open={showModal} onOpenChange={setShowModal} />;
+      <ApplicantForm open={showModal} onOpenChange={setShowModal} profile={user} />;
     </>
   );
 }

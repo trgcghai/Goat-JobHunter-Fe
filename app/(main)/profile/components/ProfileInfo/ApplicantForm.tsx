@@ -13,34 +13,50 @@ import { capitalize } from "lodash";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Applicant } from "@/types/model";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FetchCurrentApplicantDto } from "@/types/dto";
+import { useEffect } from "react";
 
 interface ApplicantFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  profile: FetchCurrentApplicantDto
 }
 
-const ApplicantForm = ({ open, onOpenChange }: ApplicantFormProps) => {
+const ApplicantForm = ({ open, onOpenChange, profile }: ApplicantFormProps) => {
   const {
-    user: profile,
     handleUpdateApplicant,
     isUpdatingApplicant
   } = useUser();
+
   const form = useForm<ApplicantFormData>({
     resolver: zodResolver(applicantSchema),
     defaultValues: {
-      fullName: profile?.fullName || "",
-      username: profile?.username || "",
-      dob: profile?.dob ? new Date(profile?.dob) : undefined,
-      gender: profile?.gender || Gender.NAM,
-      email: profile?.contact.email || "",
-      phone: profile?.contact.phone || "",
-      level: (profile as Applicant)?.level || Level.INTERN,
-      address: profile?.address || "",
-      education: (profile as Applicant)?.education || Education.SCHOOL
+      fullName: "",
+      username: "",
+      dob: new Date(),
+      gender: Gender.NAM,
+      email: "",
+      phone: "",
+      level: Level.INTERN,
+      address: "",
+      education: Education.SCHOOL
     }
   });
+
+  useEffect(() => {
+    form.reset({
+      fullName: profile?.fullName || "",
+      username: profile?.username || "",
+      email: profile?.contact.email || "",
+      phone: profile?.contact?.phone || "",
+      address: profile?.address || "",
+      dob: profile?.dob ? new Date(profile.dob) : new Date(),
+      gender: profile?.gender || Gender.NAM,
+      education: profile?.education || Education.SCHOOL,
+      level: profile?.level || Level.INTERN
+    });
+  }, [profile, form]);
 
   const onSubmit = async (data: ApplicantFormData) => {
     if (!profile?.userId) {

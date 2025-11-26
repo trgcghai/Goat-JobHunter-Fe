@@ -14,6 +14,7 @@ import {
 } from "./recruiterType";
 
 export const recruiterApi = api.injectEndpoints({
+  overrideExisting: true,
   endpoints: (builder) => ({
     createRecruiter: builder.mutation<
       CreateRecruiterResponse,
@@ -36,7 +37,7 @@ export const recruiterApi = api.injectEndpoints({
         method: "PUT",
         data
       }),
-      invalidatesTags: (result, error, { userId }) => [{ type: "Recruiter", id: userId }, "Account"]
+      invalidatesTags: ["Recruiter", "Account"]
     }),
 
     deleteRecruiter: builder.mutation<
