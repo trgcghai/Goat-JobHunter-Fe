@@ -10,7 +10,7 @@ import type {
   FetchRecruitersRequest,
   FetchRecruitersResponse,
   UpdateRecruiterRequest,
-  UpdateRecruiterResponse,
+  UpdateRecruiterResponse
 } from "./recruiterType";
 
 export const recruiterApi = api.injectEndpoints({
@@ -22,9 +22,9 @@ export const recruiterApi = api.injectEndpoints({
       query: (data) => ({
         url: "/recruiters",
         method: "POST",
-        data: { ...data, type: "recruiter" },
+        data: { ...data, type: "recruiter" }
       }),
-      invalidatesTags: ["Recruiter"],
+      invalidatesTags: ["Recruiter"]
     }),
 
     updateRecruiter: builder.mutation<
@@ -34,9 +34,9 @@ export const recruiterApi = api.injectEndpoints({
       query: (data) => ({
         url: `/recruiters`,
         method: "PUT",
-        data,
+        data
       }),
-      invalidatesTags: (result, error, { userId }) => [{ type: 'Recruiter', id: userId }, "Account"],
+      invalidatesTags: (result, error, { userId }) => [{ type: "Recruiter", id: userId }, "Account"]
     }),
 
     deleteRecruiter: builder.mutation<
@@ -45,9 +45,9 @@ export const recruiterApi = api.injectEndpoints({
     >({
       query: (recruiterId) => ({
         url: `/recruiters/${recruiterId}`,
-        method: "DELETE",
+        method: "DELETE"
       }),
-      invalidatesTags: ["Recruiter"],
+      invalidatesTags: ["Recruiter"]
 
     }),
 
@@ -62,16 +62,16 @@ export const recruiterApi = api.injectEndpoints({
           filterFields: ["fullName", "address", "enabled"],
           textSearchFields: ["fullName", "address"], // Dùng LIKE search
           defaultSort: "createdAt,desc",
-          sortableFields: ["fullName", "createdAt", "updatedAt"],
+          sortableFields: ["fullName", "createdAt", "updatedAt"]
         });
 
         return {
           url: "/recruiters",
           method: "GET",
-          params: queryParams,
+          params: queryParams
         };
       },
-      providesTags: ["Recruiter"],
+      providesTags: ["Recruiter"]
     }),
 
     // For Client - Fetch only enabled recruiters
@@ -83,21 +83,21 @@ export const recruiterApi = api.injectEndpoints({
         const { params: queryParams } = buildSpringQuery({
           params: {
             ...params,
-            enabled: true, // Force enabled = true
+            enabled: true // Force enabled = true
           },
           filterFields: ["fullName", "address", "enabled"],
           textSearchFields: ["fullName", "address"],
           defaultSort: "createdAt,desc",
-          sortableFields: ["fullName", "createdAt", "updatedAt"],
+          sortableFields: ["fullName", "createdAt", "updatedAt"]
         });
 
         return {
           url: "/recruiters",
           method: "GET",
-          params: queryParams,
+          params: queryParams
         };
       },
-      providesTags: ["Recruiter"],
+      providesTags: ["Recruiter"]
     }),
 
     fetchRecruiterById: builder.query<
@@ -106,11 +106,19 @@ export const recruiterApi = api.injectEndpoints({
     >({
       query: (recruiterId) => ({
         url: `/recruiters/${recruiterId}`,
-        method: "GET",
+        method: "GET"
       }),
-      providesTags: ["Recruiter"],
+      providesTags: ["Recruiter"]
     }),
-  }),
+
+    fetchCurrentRecruiter: builder.query<FetchRecruiterByIdResponse, void>({
+      query: () => ({
+        url: `/recruiters/me`,
+        method: "GET"
+      }),
+      providesTags: ["Recruiter"]
+    })
+  })
 });
 
 export const {
@@ -120,4 +128,5 @@ export const {
   useFetchRecruitersQuery,
   useFetchAvailableRecruitersQuery,
   useFetchRecruiterByIdQuery,
+  useFetchCurrentRecruiterQuery
 } = recruiterApi;

@@ -51,4 +51,20 @@ export type FetchApplicantsResponse = IBackendRes<IModelPaginate<Applicant>>;
 // Fetch Applicant By Id
 export type FetchApplicantByIdRequest = string; // applicantId
 
-export type FetchApplicantByIdResponse = IBackendRes<Applicant>;
+export type FetchApplicantByIdResponse = IBackendRes<{
+  userId: number,
+  address: string,
+  contact: Contact,
+  username: string,
+  fullName: string,
+  avatar: string,
+  gender: Gender,
+  dob: Date,
+  enabled: boolean,
+  role: { roleId: number, name: string }
+  createdAt: Date,
+  updatedAt: Date,
+  availableStatus: boolean,
+  education: Education,
+  level: Level
+}>;

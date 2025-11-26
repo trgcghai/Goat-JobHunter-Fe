@@ -10,7 +10,7 @@ import type {
   FetchApplicantsRequest,
   FetchApplicantsResponse,
   UpdateApplicantRequest,
-  UpdateApplicantResponse,
+  UpdateApplicantResponse
 } from "./applicantType";
 
 export const applicantApi = api.injectEndpoints({
@@ -25,10 +25,10 @@ export const applicantApi = api.injectEndpoints({
         data: {
           ...data,
           dob: data.dob ? dayjs(data.dob).format("YYYY-MM-DD") : undefined,
-          type: "applicant",
-        },
+          type: "applicant"
+        }
       }),
-      invalidatesTags: ["Applicant"],
+      invalidatesTags: ["Applicant"]
     }),
 
     updateApplicant: builder.mutation<
@@ -37,10 +37,10 @@ export const applicantApi = api.injectEndpoints({
     >({
       query: (data) => ({
         url: `/applicants`,
-        method: 'PUT',
-        data,
+        method: "PUT",
+        data
       }),
-      invalidatesTags: (result, error, { userId }) => [{ type: 'Applicant', id: userId }, "Account"],
+      invalidatesTags: (result, error, { userId }) => [{ type: "Applicant", id: userId }, "Account"]
     }),
 
     deleteApplicant: builder.mutation<
@@ -49,9 +49,9 @@ export const applicantApi = api.injectEndpoints({
     >({
       query: (applicantId) => ({
         url: `/applicants/${applicantId}`,
-        method: "DELETE",
+        method: "DELETE"
       }),
-      invalidatesTags: ["Applicant"],
+      invalidatesTags: ["Applicant"]
     }),
 
     fetchApplicant: builder.query<
@@ -59,7 +59,7 @@ export const applicantApi = api.injectEndpoints({
       FetchApplicantsRequest
     >({
       query: (params) => ({ url: `/applicants`, method: "GET", params }),
-      providesTags: ["Applicant"],
+      providesTags: ["Applicant"]
     }),
 
     fetchApplicantById: builder.query<
@@ -68,11 +68,19 @@ export const applicantApi = api.injectEndpoints({
     >({
       query: (applicantId) => ({
         url: `/applicants/${applicantId}`,
-        method: "GET",
+        method: "GET"
       }),
-      providesTags: ["Applicant"],
+      providesTags: ["Applicant"]
     }),
-  }),
+
+    fetchCurrentApplicant: builder.query<FetchApplicantByIdResponse, void>({
+      query: () => ({
+        url: `/applicants/me`,
+        method: "GET"
+      }),
+      providesTags: ["Applicant"]
+    })
+  })
 });
 
 export const {
@@ -81,4 +89,5 @@ export const {
   useDeleteApplicantMutation,
   useFetchApplicantQuery,
   useFetchApplicantByIdQuery,
+  useFetchCurrentApplicantQuery
 } = applicantApi;
