@@ -282,7 +282,7 @@ export function useUser() {
         // Chỉ thêm các field không undefined/null
         for (const key in data) {
           const value = data[key as keyof Applicant];
-          if (value !== undefined && value !== null) {
+          if (value) {
             updatedData[key] = value;
           }
         }
@@ -328,7 +328,7 @@ export function useUser() {
         // Chỉ thêm các field không undefined/null
         for (const key in data) {
           const value = data[key as keyof Recruiter];
-          if (value !== undefined && value !== null) {
+          if (value) {
             updatedData[key] = value;
           }
         }
@@ -337,6 +337,11 @@ export function useUser() {
         if (Object.keys(updatedData).length === 0) {
           return;
         }
+
+        console.log("check updatedData:", {
+          userId,
+          ...updatedData,
+        });
 
         // @ts-expect-error Không cần check kỹ lưỡng kiểu dữ liệu ở đây
         const response = await updateRecruiter({

@@ -14,8 +14,6 @@ const recruiterSchema = z.object({
     .min(10, "Mô tả phải có ít nhất 10 ký tự")
     .optional()
     .or(z.literal("")),
-  dob: z.instanceof(Date, { message: "Ngày sinh không hợp lệ" }).optional(),
-  gender: z.enum(Gender).optional(),
   website: z.string().url("URL không hợp lệ").optional().or(z.literal(""))
 });
 

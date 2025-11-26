@@ -1,6 +1,7 @@
 import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type { Contact, Recruiter } from "@/types/model";
 import { Gender } from "@/types/enum";
+import { FetchCurrentRecruiterDto } from "@/types/dto";
 
 // Create Recruiter
 export type CreateRecruiterRequest = {
@@ -56,19 +57,4 @@ export type FetchRecruiterByIdRequest = string; // recruiterId
 
 export type FetchRecruiterByIdResponse = IBackendRes<Recruiter>;
 
-export type FetchCurrentRecruiterResponse = IBackendRes<{
-  userId: number,
-  address: string,
-  contact: Contact,
-  username: string,
-  fullName: string,
-  avatar: string,
-  gender: Gender,
-  dob: Date,
-  enabled: boolean,
-  role: { roleId: number, name: string }
-  createdAt: Date,
-  updatedAt: Date,
-  description: string,
-  website: string
-}>;
+export type FetchCurrentRecruiterResponse = IBackendRes<FetchCurrentRecruiterDto>;

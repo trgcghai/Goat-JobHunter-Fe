@@ -16,7 +16,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useUser } from "@/hooks/useUser";
-import { Recruiter } from "@/types/model";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -24,32 +23,43 @@ import {
   RecruiterFormData,
   recruiterSchema
 } from "@/app/(recruiter-portal)/recruiter-portal/information/components/schema";
-import { Gender } from "@/types/enum";
-import { DatePicker } from "@/components/ui/example-date-picker";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { capitalize } from "lodash";
 import { toast } from "sonner";
+import { FetchCurrentRecruiterDto } from "@/types/dto";
+import { useEffect } from "react";
 
 interface RecruiterFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  profile: FetchCurrentRecruiterDto;
 }
 
-function RecruiterForm({ open, onOpenChange }: RecruiterFormProps) {
-  const { user: profile, handleUpdateRecruiter, isUpdatingRecruiter } = useUser();
+function RecruiterForm({ open, onOpenChange, profile }: RecruiterFormProps) {
+  const { handleUpdateRecruiter, isUpdatingRecruiter } = useUser();
+
   const form = useForm<RecruiterFormData>({
     resolver: zodResolver(recruiterSchema),
     defaultValues: {
+      fullName: "",
+      username: "",
+      email: "",
+      phone: "",
+      address: "",
+      description: "",
+      website: ""
+    }
+  });
+
+  useEffect(() => {
+    form.reset({
       fullName: profile?.fullName || "",
       username: profile?.username || "",
       email: profile?.contact.email || "",
       phone: profile?.contact?.phone || "",
       address: profile?.address || "",
-      description: (profile as Recruiter)?.description || "",
-      website: (profile as Recruiter)?.website || ""
-    }
-  });
+      description: profile?.description || "",
+      website: profile?.website || ""
+    });
+  }, [profile, form]);
 
   const onSubmit = async (data: RecruiterFormData) => {
     if (!profile?.userId) {
@@ -67,9 +77,7 @@ function RecruiterForm({ open, onOpenChange }: RecruiterFormProps) {
       },
       description: data.description,
       address: data.address,
-      website: data.website,
-      gender: data.gender,
-      dob: data.dob?.toISOString()
+      website: data.website
     });
 
     onOpenChange(false);
@@ -131,7 +139,7 @@ function RecruiterForm({ open, onOpenChange }: RecruiterFormProps) {
                       <FormItem>
                         <FormLabel required>Email</FormLabel>
                         <FormControl>
-                          <Input {...field} disabled={isUpdatingRecruiter} type="email" className="rounded-xl" />
+                          <Input {...field} disabled={true} type="email" className="rounded-xl" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -153,57 +161,6 @@ function RecruiterForm({ open, onOpenChange }: RecruiterFormProps) {
                     )}
                   />
                 </div>
-
-                <FormField
-                  control={form.control}
-                  name="dob"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Ngày sinh</FormLabel>
-                      <FormControl>
-                        <DatePicker
-                          {...field}
-                          placeholder="Ngày sinh"
-                          value={field.value}
-                          onChange={field.onChange}
-                          className="rounded-xl w-full border border-gray-300"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="gender"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Giới tính</FormLabel>
-                      <FormControl>
-                        <RadioGroup
-                          {...field}
-                          value={field.value}
-                          onValueChange={field.onChange}
-                          defaultValue="comfortable"
-                          className="space-y-2"
-                          disabled={isUpdatingRecruiter}
-                        >
-                          {Object.entries(Gender).map(([key, value]) => {
-                            return (
-                              <div key={key} className="flex items-center gap-3">
-                                <RadioGroupItem value={value} id={`r-${key}`} />
-                                <Label htmlFor={`r-${key}`}>
-                                  {capitalize(key)}
-                                </Label>
-                              </div>
-                            );
-                          })}
-                        </RadioGroup>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
 
                 <FormField
                   control={form.control}

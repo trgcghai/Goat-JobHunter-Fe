@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Edit2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { capitalize } from "lodash";
-import { getRevertGenderKeyValue } from "@/utils/getRevertEnumKeyValue";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useGetMyAccountQuery } from "@/services/auth/authApi";
@@ -103,32 +101,6 @@ const RecruiterInformation = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="capitalize" htmlFor="gender">
-                Giới tính
-              </Label>
-              <Input
-                id="gender"
-                type="text"
-                value={user.gender
-                  ? capitalize(getRevertGenderKeyValue(user.gender))
-                  : "Chưa cập nhật"}
-                disabled
-                className="rounded-xl text-gray-800" />
-            </div>
-            <div className="space-y-2">
-              <Label className="capitalize" htmlFor="dob">
-                Ngày sinh
-              </Label>
-              <Input
-                id="dob"
-                value={user.dob ? capitalize(user.dob.toISOString()) : "Chưa cập nhật"}
-                disabled
-                className="rounded-xl text-gray-800" />
-            </div>
-          </div>
-
           <div className="space-y-2">
             <Label className="capitalize" htmlFor="address">
               Địa Chỉ
@@ -174,7 +146,7 @@ const RecruiterInformation = () => {
           </div>
         </CardContent>
       </Card>
-      <RecruiterForm open={open} onOpenChange={setOpen} />
+      <RecruiterForm open={open} onOpenChange={setOpen} profile={user} />
     </div>
   );
 };
