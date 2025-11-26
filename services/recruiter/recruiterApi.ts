@@ -1,10 +1,10 @@
 import { api } from "@/services/api";
 import { buildSpringQuery } from "@/utils/buildSpringQuery";
-import type {
+import {
   CreateRecruiterRequest,
   CreateRecruiterResponse,
   DeleteRecruiterRequest,
-  DeleteRecruiterResponse,
+  DeleteRecruiterResponse, FetchCurrentRecruiterResponse,
   FetchRecruiterByIdRequest,
   FetchRecruiterByIdResponse,
   FetchRecruitersRequest,
@@ -111,7 +111,7 @@ export const recruiterApi = api.injectEndpoints({
       providesTags: ["Recruiter"]
     }),
 
-    fetchCurrentRecruiter: builder.query<FetchRecruiterByIdResponse, void>({
+    fetchCurrentRecruiter: builder.query<FetchCurrentRecruiterResponse, void>({
       query: () => ({
         url: `/recruiters/me`,
         method: "GET"

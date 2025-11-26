@@ -54,7 +54,9 @@ export type FetchRecruitersResponse = IBackendRes<IModelPaginate<Recruiter>>;
 // Fetch Recruiter By Id
 export type FetchRecruiterByIdRequest = string; // recruiterId
 
-export type FetchRecruiterByIdResponse = IBackendRes<{
+export type FetchRecruiterByIdResponse = IBackendRes<Recruiter>;
+
+export type FetchCurrentRecruiterResponse = IBackendRes<{
   userId: number,
   address: string,
   contact: Contact,
