@@ -1,4 +1,3 @@
-// app/(recruiter-portal)/recruiter-portal/applications/components/EmailDialog.tsx
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
