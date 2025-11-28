@@ -12,12 +12,14 @@ import Link from "next/link";
 import { useState } from "react";
 import { Job } from "@/types/model";
 import JobActions from "@/app/(recruiter-portal)/recruiter-portal/jobs/components/JobActions";
+import ErrorMessage from "@/components/ErrorMessage";
 
 const RecruiterJobPage = () => {
   const {
     jobs,
     meta,
     isLoading,
+    isError,
     page,
     size,
     filters,
@@ -52,6 +54,8 @@ const RecruiterJobPage = () => {
             onFilterChange={handleFilterChange}
             onResetFilters={resetFilters}
           />
+
+          {isError && <ErrorMessage message={"Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại sau."} />}
 
           {isLoading ? (
             <div className="flex justify-center py-8">

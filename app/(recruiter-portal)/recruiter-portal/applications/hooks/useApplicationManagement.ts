@@ -29,7 +29,7 @@ export const useApplicationManagement = () => {
   }, [page, size, filters]);
 
   // Fetch API
-  const { data, isLoading, isFetching } =
+  const { data, isLoading, isFetching, isError, error } =
     useFetchApplicationsByRecruiterQuery(queryParams);
 
   const applications = data?.data?.result || [];
@@ -67,6 +67,8 @@ export const useApplicationManagement = () => {
     applications,
     meta,
     isLoading: isLoading || isFetching,
+    isError,
+    error,
     page,
     size,
     filters,

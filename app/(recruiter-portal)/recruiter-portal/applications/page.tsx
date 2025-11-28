@@ -8,12 +8,14 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import ApplicationActions from "@/app/(recruiter-portal)/recruiter-portal/applications/components/ApplicationActions";
 import { useState } from "react";
 import { Application } from "@/types/model";
+import ErrorMessage from "@/components/ErrorMessage";
 
 const ApplicationsManagement = () => {
   const {
     applications,
     meta,
     isLoading,
+    isError,
     page,
     size,
     filters,
@@ -41,6 +43,8 @@ const ApplicationsManagement = () => {
             onFilterChange={handleFilterChange}
             onResetFilters={resetFilters}
           />
+
+          {isError && <ErrorMessage message={"Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại sau."} />}
 
           {isLoading ? (
             <div className="flex justify-center py-8">

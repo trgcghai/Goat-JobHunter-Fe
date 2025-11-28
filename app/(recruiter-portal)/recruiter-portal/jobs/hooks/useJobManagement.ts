@@ -35,7 +35,7 @@ export const useJobManagement = () => {
   }, [page, size, filters]);
 
   // Fetch API
-  const { data, isLoading, isFetching } =
+  const { data, isLoading, isFetching, isError, error } =
     useFetchJobsByCurrentRecruiterQuery(queryParams);
 
   const jobs = data?.data?.result || [];
@@ -75,6 +75,8 @@ export const useJobManagement = () => {
     jobs,
     meta,
     isLoading: isLoading || isFetching,
+    isError,
+    error,
     page,
     size,
     filters,
