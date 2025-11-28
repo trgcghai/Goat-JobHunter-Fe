@@ -1,5 +1,5 @@
 import { useFetchJobsByCurrentRecruiterQuery } from "@/services/job/jobApi";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export interface RecruiterJobFilters {
   title?: string;
@@ -8,21 +8,32 @@ export interface RecruiterJobFilters {
   active?: boolean | null; // null = all, true = active, false = inactive
 }
 
-export const useJobManagement = () => {
+interface UseJobManagementProps {
+  initialPage?: number;
+  initialSize?: number;
+}
+
+export const useJobManagement = ({ initialPage = 1, initialSize = 10 }: UseJobManagementProps) => {
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
   const [filters, setFilters] = useState<RecruiterJobFilters>({
     title: "",
     level: [],
     workingType: [],
-    active: null,
+    active: null
   });
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setPage(initialPage);
+    setSize(initialSize);
+  }, [initialPage, initialSize]);
 
   // Build query params
   const queryParams = useMemo(() => {
     const params: Record<string, string | number | string[] | boolean> = {
       page,
-      size,
+      size
     };
 
     if (filters.title) params.title = filters.title;
@@ -43,7 +54,7 @@ export const useJobManagement = () => {
     current: 1,
     pageSize: 10,
     pages: 0,
-    total: 0,
+    total: 0
   };
 
   // Handlers
@@ -66,7 +77,7 @@ export const useJobManagement = () => {
       title: "",
       level: [],
       workingType: [],
-      active: null,
+      active: null
     });
     setPage(1);
   };
@@ -83,6 +94,6 @@ export const useJobManagement = () => {
     handlePageChange,
     handleSizeChange,
     handleFilterChange,
-    resetFilters,
+    resetFilters
   };
 };

@@ -29,7 +29,7 @@ const SuitableApplicantFilter = ({
                                  }: SuitableApplicantFilterProps) => {
   const [fullName, setFullName] = useState(filters.fullName || "");
 
-  const { jobs } = useJobManagement();
+  const { jobs } = useJobManagement({ initialSize: 200 });
 
   // Debounce search for applicant full name
   // eslint-disable-next-line react-hooks/exhaustive-deps

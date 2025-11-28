@@ -27,7 +27,7 @@ const RecruiterJobPage = () => {
     handleSizeChange,
     handleFilterChange,
     resetFilters,
-  } = useJobManagement();
+  } = useJobManagement({});
   const [selectedItems, setSelectedItems] = useState<Job[]>([]);
 
   return (
