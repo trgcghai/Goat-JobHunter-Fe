@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Mail } from "lucide-react";
 import EmailDialog, {
   EmailDialogMode
-} from "@/app/(recruiter-portal)/recruiter-portal/applications/components/EmailDialog";
+} from "@/components/EmailDialog";
 import { useState } from "react";
 import useSendMailToApplicants
   from "@/app/(recruiter-portal)/recruiter-portal/applicants/hooks/useSendMailToApplicants";

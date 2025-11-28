@@ -7,7 +7,7 @@ import { AcceptFormData, RejectFormData } from "./schema";
 import ResumePreviewDialog from "@/components/ResumePreivewDialog";
 import EmailDialog, {
   EmailDialogMode
-} from "@/app/(recruiter-portal)/recruiter-portal/applications/components/EmailDialog";
+} from "@/components/EmailDialog";
 
 interface ApplicationActionsCellProps {
   application: Application;

@@ -9,9 +9,9 @@ import {
   DialogFooter
 } from "@/components/ui/dialog";
 import { Applicant, Application } from "@/types/model";
-import AcceptForm from "./AcceptForm";
-import RejectForm from "./RejectForm";
-import { AcceptFormData, RejectFormData } from "./schema";
+import AcceptForm from "../app/(recruiter-portal)/recruiter-portal/applications/components/AcceptForm";
+import RejectForm from "../app/(recruiter-portal)/recruiter-portal/applications/components/RejectForm";
+import { AcceptFormData, RejectFormData } from "@/app/(recruiter-portal)/recruiter-portal/applications/components/schema";
 import { useMemo } from "react";
 
 export type EmailDialogMode = "accept" | "reject" | "invite";

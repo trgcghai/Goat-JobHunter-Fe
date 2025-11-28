@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { CheckCircle, XCircle } from "lucide-react";
 import { useState } from "react";
-import EmailDialog, { EmailDialogMode } from "./EmailDialog";
+import EmailDialog, { EmailDialogMode } from "@/components/EmailDialog";
 import useApplicationActions from "@/hooks/useApplicationActions";
 import { AcceptFormData, RejectFormData } from "./schema";
 
