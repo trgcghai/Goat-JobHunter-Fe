@@ -7,6 +7,7 @@ import { Application } from "@/types/model";
 import { formatDate } from "@/utils/formatDate";
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
+import { capitalize } from "lodash";
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -18,19 +19,6 @@ const getStatusColor = (status: string) => {
       return "bg-red-500 hover:bg-red-600";
     default:
       return "bg-gray-500";
-  }
-};
-
-const getStatusLabel = (status: string) => {
-  switch (status) {
-    case "PENDING":
-      return "Đang chờ";
-    case "ACCEPTED":
-      return "Đã chấp nhận";
-    case "REJECTED":
-      return "Đã từ chối";
-    default:
-      return status;
   }
 };
 
@@ -119,7 +107,7 @@ export const applicationColumns: ColumnDef<Application>[] = [
         <Badge
           className={`${getStatusColor(status)} text-white border-none py-1`}
         >
-          {getStatusLabel(status)}
+          {capitalize(status)}
         </Badge>
       );
     },

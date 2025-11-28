@@ -1,5 +1,5 @@
 interface EmptyTableProps {
-  type?: "jobs" | "applications" | "recruiters";
+  type?: "jobs" | "applications" | "recruiters" | "applicants";
 }
 
 const EmptyTable = ({ type = "jobs" }: EmptyTableProps) => {

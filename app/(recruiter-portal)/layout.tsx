@@ -2,7 +2,7 @@
 import Sidebar, { SidebarTab } from "@/components/Sidebar";
 import { useUser } from "@/hooks/useUser";
 import { useGetMyAccountQuery } from "@/services/auth/authApi";
-import { Briefcase, FileText, Users } from "lucide-react";
+import { BookOpen, Briefcase, FileText, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -20,10 +20,16 @@ const RecruiterTabs: SidebarTab[] = [
     icon: <FileText className="w-4 h-4" />,
   },
   {
-    id: "candidates",
-    label: "Ứng viên",
-    url: "/recruiter-portal/candidates",
+    id: "applicants",
+    label: "Khám phá ứng viên",
+    url: "/recruiter-portal/applicants",
     icon: <Users className="w-4 h-4" />,
+  },
+  {
+    id: "blogs",
+    label: "Bài đăng",
+    url: "/recruiter-portal/blogs",
+    icon: <BookOpen className="w-4 h-4" />,
   },
   {
     id: "information",

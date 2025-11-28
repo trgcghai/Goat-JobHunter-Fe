@@ -1,6 +1,6 @@
 import { api } from "@/services/api";
 import { buildSpringQuery } from "@/utils/buildSpringQuery";
-import type {
+import {
   CreateJobRequest,
   CreateJobResponse,
   DeleteJobRequest,
@@ -10,40 +10,41 @@ import type {
   FetchJobByIdResponse,
   FetchJobByRecruiterRequest,
   FetchJobsRequest,
-  FetchJobsResponse,
+  FetchJobsResponse, FetchSuitableApplicantsRequest, FetchSuitableApplicantsResponse,
   JobApplicationCountResponse,
   JobIdsRequest,
   ToggleJobActiveResponse,
   UpdateJobRequest,
-  UpdateJobResponse,
+  UpdateJobResponse
 } from "./jobType";
 
 export const jobApi = api.injectEndpoints({
+  overrideExisting: true,
   endpoints: (builder) => ({
     createJob: builder.mutation<CreateJobResponse, CreateJobRequest>({
       query: (job) => ({
         url: "/jobs",
         method: "POST",
-        data: job,
+        data: job
       }),
-      invalidatesTags: ["Job"],
+      invalidatesTags: ["Job"]
     }),
 
     updateJob: builder.mutation<UpdateJobResponse, UpdateJobRequest>({
       query: ({ jobId, ...job }) => ({
         url: "/jobs",
         method: "PUT",
-        data: { ...job, jobId },
+        data: { ...job, jobId }
       }),
-      invalidatesTags: ["Job"],
+      invalidatesTags: ["Job"]
     }),
 
     deleteJob: builder.mutation<DeleteJobResponse, DeleteJobRequest>({
       query: (jobId) => ({
         url: `/jobs/${jobId}`,
-        method: "DELETE",
+        method: "DELETE"
       }),
-      invalidatesTags: ["Job"],
+      invalidatesTags: ["Job"]
     }),
 
     // Fetch jobs with advanced filtering, sorting, and pagination for administrators
@@ -57,31 +58,31 @@ export const jobApi = api.injectEndpoints({
             "salary",
             "active",
             "level",
-            "workingType",
+            "workingType"
           ],
           textSearchFields: ["title", "location"], // Dùng LIKE search
           nestedArrayFields: {
-            skills: "skills.name", // Map skills -> skills.name
+            skills: "skills.name" // Map skills -> skills.name
           },
           defaultSort: "updatedAt,desc",
-          sortableFields: ["title", "salary", "createdAt", "updatedAt"],
+          sortableFields: ["title", "salary", "createdAt", "updatedAt"]
         });
 
         return {
           url: "/jobs",
           method: "GET",
-          params: queryParams,
+          params: queryParams
         };
       },
-      providesTags: ["Job"],
+      providesTags: ["Job"]
     }),
 
     fetchJobById: builder.query<FetchJobByIdResponse, FetchJobByIdRequest>({
       query: (jobId) => ({
         url: `/jobs/${jobId}`,
-        method: "GET",
+        method: "GET"
       }),
-      providesTags: ["Job"],
+      providesTags: ["Job"]
     }),
 
     // Fetch available jobs (active = true) for applicants
@@ -93,7 +94,7 @@ export const jobApi = api.injectEndpoints({
         const { params: queryParams } = buildSpringQuery({
           params: {
             ...params,
-            active: true, // Force active = true
+            active: true // Force active = true
           },
           filterFields: [
             "title",
@@ -101,23 +102,23 @@ export const jobApi = api.injectEndpoints({
             "salary",
             "active",
             "level",
-            "workingType",
+            "workingType"
           ],
           textSearchFields: ["title", "location"],
           nestedArrayFields: {
-            skills: "skills.name",
+            skills: "skills.name"
           },
           defaultSort: "updatedAt,desc",
-          sortableFields: ["title", "salary", "createdAt", "updatedAt"],
+          sortableFields: ["title", "salary", "createdAt", "updatedAt"]
         });
 
         return {
           url: "/jobs",
           method: "GET",
-          params: queryParams,
+          params: queryParams
         };
       },
-      providesTags: ["Job"],
+      providesTags: ["Job"]
     }),
 
     // Fetch related jobs based on skills (active = true) for job detail page
@@ -135,23 +136,23 @@ export const jobApi = api.injectEndpoints({
             skills,
             active: true, // Only active jobs
             page,
-            size,
+            size
           },
           filterFields: ["active"],
           nestedArrayFields: {
-            skills: "skills.name",
+            skills: "skills.name"
           },
           defaultSort: "updatedAt,desc",
-          sortableFields: ["updatedAt", "createdAt"],
+          sortableFields: ["updatedAt", "createdAt"]
         });
 
         return {
           url: "/jobs",
           method: "GET",
-          params: queryParams,
+          params: queryParams
         };
       },
-      providesTags: ["Job"],
+      providesTags: ["Job"]
     }),
 
     // fetch jobs by recruiter id
@@ -168,22 +169,22 @@ export const jobApi = api.injectEndpoints({
             "salary",
             "level",
             "workingType",
-            "active",
+            "active"
           ],
           textSearchFields: ["title", "location"], // Dùng LIKE search
           nestedArrayFields: {
-            skills: "skills.name", // Map skills -> skills.name
+            skills: "skills.name" // Map skills -> skills.name
           },
           defaultSort: "updatedAt,desc",
-          sortableFields: ["title", "salary", "createdAt", "updatedAt"],
+          sortableFields: ["title", "salary", "createdAt", "updatedAt"]
         });
         return {
           url: `/recruiters/${recruiterId}/jobs`,
           method: "GET",
-          params: queryParams,
+          params: queryParams
         };
       },
-      providesTags: ["Job"],
+      providesTags: ["Job"]
     }),
 
     // fetch jobs by current login recruiter
@@ -200,23 +201,23 @@ export const jobApi = api.injectEndpoints({
             "salary",
             "level",
             "workingType",
-            "active",
+            "active"
           ],
           textSearchFields: ["title", "location"], // Dùng LIKE search
           nestedArrayFields: {
-            skills: "skills.name", // Map skills -> skills.name
+            skills: "skills.name" // Map skills -> skills.name
           },
           defaultSort: "updatedAt,desc",
-          sortableFields: ["title", "salary", "createdAt", "updatedAt"],
+          sortableFields: ["title", "salary", "createdAt", "updatedAt"]
         });
 
         return {
           url: `/recruiters/me/jobs`,
           method: "GET",
-          params: queryParams,
+          params: queryParams
         };
       },
-      providesTags: ["Job"],
+      providesTags: ["Job"]
     }),
 
     // activate jobs
@@ -224,9 +225,9 @@ export const jobApi = api.injectEndpoints({
       query: (data) => ({
         url: "/jobs/activate",
         method: "PUT",
-        data,
+        data
       }),
-      invalidatesTags: ["Job"],
+      invalidatesTags: ["Job"]
     }),
 
     // deactivate jobs
@@ -234,9 +235,9 @@ export const jobApi = api.injectEndpoints({
       query: (data) => ({
         url: "/jobs/deactivate",
         method: "PUT",
-        data,
+        data
       }),
-      invalidatesTags: ["Job"],
+      invalidatesTags: ["Job"]
     }),
 
     // count applications for jobs
@@ -249,12 +250,30 @@ export const jobApi = api.injectEndpoints({
           url: "/jobs/count-applications",
           method: "GET",
           params: {
-            jobIds: jobIds.join(","),
-          },
+            jobIds: jobIds.join(",")
+          }
         };
       },
+      providesTags: ["Job"]
     }),
-  }),
+
+    fetchApplicantsSuitableForJob: builder.query<FetchSuitableApplicantsResponse, FetchSuitableApplicantsRequest>({
+      query: ({ jobId, ...params }) => {
+        const { params: queryParams } = buildSpringQuery({
+          params,
+          filterFields: ["fullName"],
+          textSearchFields: ["fullName"] // Dùng LIKE search
+        });
+
+        return {
+          url: `/jobs/${jobId}/applicants`,
+          method: "GET",
+          params: queryParams
+        };
+      },
+      providesTags: ["Job", "Applicant"]
+    })
+  })
 });
 
 export const {
@@ -270,4 +289,5 @@ export const {
   useActivateJobsMutation,
   useDeactivateJobsMutation,
   useCountApplicationsQuery,
+  useFetchApplicantsSuitableForJobQuery
 } = jobApi;

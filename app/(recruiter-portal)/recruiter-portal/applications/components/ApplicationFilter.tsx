@@ -7,6 +7,7 @@ import { debounce } from "lodash";
 import { Search, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { ApplicationFilters } from "../hooks/useApplicationManagement";
+import { ApplicationStatus } from "@/types/enum";
 
 interface ApplicationFilterProps {
   filters: ApplicationFilters;
@@ -14,11 +15,10 @@ interface ApplicationFilterProps {
   onResetFilters: () => void;
 }
 
-const STATUS_OPTIONS: Option[] = [
-  { label: "Đang chờ", value: "PENDING" },
-  { label: "Đã chấp nhận", value: "ACCEPTED" },
-  { label: "Đã từ chối", value: "REJECTED" },
-];
+const STATUS_OPTIONS: Option[] = Object.entries(ApplicationStatus).map(([key, value]) => ({
+  label: key.charAt(0) + key.slice(1).toLowerCase().replace(/_/g, " "),
+  value: value,
+}))
 
 export default function ApplicationFilter({
   filters,

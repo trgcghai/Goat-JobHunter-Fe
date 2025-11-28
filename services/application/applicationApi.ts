@@ -17,6 +17,7 @@ import {
 } from "./applicationType";
 
 export const applicationApi = api.injectEndpoints({
+  overrideExisting: true,
   endpoints: (builder) => ({
     createApplication: builder.mutation<
       CreateApplicationResponse,
@@ -41,7 +42,7 @@ export const applicationApi = api.injectEndpoints({
       AcceptApplicationStatusRequest
     >({
       query: (data) => ({
-        url: "/applications/accept",
+        url: "/applications/accepted",
         method: "PUT",
         data,
       }),
@@ -53,7 +54,7 @@ export const applicationApi = api.injectEndpoints({
       RejectApplicationStatusRequest
     >({
       query: (data) => ({
-        url: "/applications/reject",
+        url: "/applications/rejected",
         method: "PUT",
         data,
       }),

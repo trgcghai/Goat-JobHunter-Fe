@@ -1,5 +1,5 @@
 import type { IBackendRes, IModelPaginate } from "@/types/api";
-import type { Job } from "@/types/model";
+import type { Applicant, Job } from "@/types/model";
 
 // Create Job
 export type CreateJobRequest = {
@@ -80,3 +80,13 @@ export type JobApplicationCountResponse = IBackendRes<
     applications: number;
   }[]
 >;
+
+// fetch suitable applicant for a job
+export type FetchSuitableApplicantsRequest = {
+  jobId?: number;
+  page?: number;
+  size?: number;
+  fullName?: string;
+}
+
+export type FetchSuitableApplicantsResponse = IBackendRes<IModelPaginate<Applicant>>;

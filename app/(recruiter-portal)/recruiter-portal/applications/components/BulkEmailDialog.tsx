@@ -67,14 +67,6 @@ const BulkEmailDialog = ({
 
         <DialogFooter className="bg-gray-50 -mx-6 -mb-6 px-6 py-4 rounded-b-xl">
           <Button
-            variant="outline"
-            disabled={isLoading}
-            type="button"
-            className="rounded-xl"
-          >
-            Huỷ
-          </Button>
-          <Button
             type="submit"
             form={mode === "accept" ? "accept-form" : "reject-form"}
             variant={mode === "accept" ? "default" : "destructive"}

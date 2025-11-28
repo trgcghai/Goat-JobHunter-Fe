@@ -29,9 +29,9 @@ const ApplicationsManagement = () => {
       <Card>
         <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-xl font-semibold">Danh sách ứng viên</h1>
+            <h1 className="text-xl font-semibold">Danh sách các đơn ứng tuyển</h1>
             <p className="text-sm text-muted-foreground">
-              Quản lý các ứng viên đã nộp đơn
+              Quản lý các đơn ứng tuyển từ ứng viên cho các vị trí tuyển dụng
             </p>
           </div>
         </CardHeader>
