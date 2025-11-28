@@ -1,5 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useFetchApplicantsSuitableForJobQuery } from "@/services/job/jobApi";
+import { useAppDispatch } from "@/lib/hooks";
+import { clearJobId, setJobId } from "@/lib/features/sendMailSlice";
 
 export interface SuitableApplicantsFilters {
   jobId: number;
@@ -13,6 +15,17 @@ const useExploreSuitableApplicants = () => {
     jobId: 0,
     fullName: ""
   });
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (filters.jobId) {
+      dispatch(setJobId(filters.jobId));
+    }
+
+    return () => {
+      dispatch(clearJobId())
+    }
+  }, [filters.jobId, dispatch])
 
   const queryParams = useMemo(() => {
     const params: Record<string, string | number | string[] | boolean> = {

@@ -5,14 +5,16 @@ import { useMemo, useState } from "react";
 import useApplicationActions from "@/hooks/useApplicationActions";
 import { AcceptFormData, RejectFormData } from "./schema";
 import ResumePreviewDialog from "@/components/ResumePreivewDialog";
-import EmailDialog from "@/app/(recruiter-portal)/recruiter-portal/applications/components/EmailDialog";
+import EmailDialog, {
+  EmailDialogMode
+} from "@/app/(recruiter-portal)/recruiter-portal/applications/components/EmailDialog";
 
 interface ApplicationActionsCellProps {
   application: Application;
 }
 
 const ApplicationActionsCell = ({ application }: ApplicationActionsCellProps) => {
-  const [mode, setMode] = useState<"accept" | "reject" | null>(null);
+  const [mode, setMode] = useState<EmailDialogMode | null>(null);
   const [openPreview, setOpenPreview] = useState(false);
   const { isRejecting, isAccepting, handleRejectApplications, handleAcceptApplications } = useApplicationActions();
 
@@ -84,6 +86,7 @@ const ApplicationActionsCell = ({ application }: ApplicationActionsCellProps) =>
         isLoading={isRejecting || isAccepting}
         onAcceptSubmit={onAcceptSubmit}
         onRejectSubmit={onRejectSubmit}
+        onInvite={() => {}}
       />
 
       <ResumePreviewDialog

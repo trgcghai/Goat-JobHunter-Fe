@@ -6,82 +6,131 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
+  DialogFooter
 } from "@/components/ui/dialog";
-import { Application } from "@/types/model";
+import { Applicant, Application } from "@/types/model";
 import AcceptForm from "./AcceptForm";
 import RejectForm from "./RejectForm";
 import { AcceptFormData, RejectFormData } from "./schema";
+import { useMemo } from "react";
+
+export type EmailDialogMode = "accept" | "reject" | "invite";
+
+interface TitleProps {
+  mode: EmailDialogMode;
+  isBulk: boolean;
+  count: number;
+}
+
+const Title = ({ mode, isBulk, count }: TitleProps) => {
+  switch (mode) {
+    case "accept":
+      return isBulk ? `Gửi email mời phỏng vấn cho ${count} ứng viên` : "Gửi email mời phỏng vấn";
+    case "reject":
+      return isBulk ? `Gửi email từ chối cho ${count} ứng viên` : "Gửi email từ chối";
+    case "invite":
+      return isBulk ? `Gửi email mời tham gia ứng tuyển cho ${count} ứng viên` : "Gửi email mời tham gia ứng tuyển";
+    default:
+      return "";
+  }
+};
+
+interface DescriptionProps {
+  isBulk: boolean;
+  applicant?: Applicant;
+  application?: Application;
+}
+
+const Description = ({ isBulk, application, applicant }: DescriptionProps) => {
+  if (isBulk) {
+    return (
+      <p className="text-sm text-gray-500">
+        Hành động này sẽ áp dụng cho tất cả các ứng viên đã chọn.
+      </p>
+    );
+  }
+
+  if (application) {
+    return (
+      <p className="text-sm text-gray-500">
+        Email: {application.email}
+      </p>
+    );
+  }
+
+  if (applicant) {
+    return (
+      <p className="text-sm text-gray-500">
+        Email: {applicant.contact.email}
+      </p>
+    );
+  }
+
+  return null;
+};
 
 interface EmailDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  mode: "accept" | "reject";
+  mode: EmailDialogMode;
   isLoading: boolean;
   onAcceptSubmit: (data: AcceptFormData) => Promise<void>;
   onRejectSubmit: (data: RejectFormData) => Promise<void>;
+  onInvite: () => void;
   application?: Application;
+  applicant?: Applicant;
   selectedCount?: number;
 }
 
 const EmailDialog = ({
-                              open,
-                              onOpenChange,
-                              mode,
-                              isLoading,
-                              onAcceptSubmit,
-                              onRejectSubmit,
-                              application,
-                              selectedCount = 0,
-                            }: EmailDialogProps) => {
-  const isBulk = selectedCount > 0;
-  const count = isBulk ? selectedCount : 1;
+                       open,
+                       onOpenChange,
+                       mode,
+                       isLoading,
+                       onAcceptSubmit,
+                       onRejectSubmit,
+                       onInvite,
+                       application,
+                       applicant,
+                       selectedCount = 0
+                     }: EmailDialogProps) => {
+
+  const isBulk = useMemo(() => selectedCount > 0, [selectedCount]);
+  const count = useMemo(() => isBulk ? selectedCount : 1, [isBulk, selectedCount]);
+
+  const btnVariant = useMemo(() => {
+    if (mode === "accept") return "default";
+    if (mode === "reject") return "destructive";
+    return "default";
+  }, [mode]);
+
+  const btnForm = useMemo(() => {
+    if (mode === "accept") return "accept-form";
+    if (mode === "reject") return "reject-form";
+    return "";
+  }, [mode]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl rounded-xl">
         <DialogHeader
-          className={`rounded-t-xl px-6 py-4 -mx-6 -mt-6 ${
-            mode === "accept"
-              ? "bg-green-50 border-b border-green-200"
-              : "bg-red-50 border-b border-red-200"
-          }`}
+          className="rounded-t-xl px-6 pt-4 -mx-6 -mt-6"
         >
           <DialogTitle
-            className={`text-xl font-semibold ${
-              mode === "accept" ? "text-green-900" : "text-red-900"
-            }`}
+            className="text-xl font-semibold"
           >
-            {mode === "accept"
-              ? isBulk
-                ? `Gửi email mời phỏng vấn cho ${count} ứng viên`
-                : "Gửi email mời phỏng vấn"
-              : isBulk
-                ? `Gửi email từ chối cho ${count} ứng viên`
-                : "Gửi email từ chối"}
+            <Title mode={mode} isBulk={isBulk} count={count} />
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-5 py-4">
-          <div className="flex items-center gap-3 p-4 rounded-xl border border-gray-200 bg-gray-50">
-            {isBulk ? (
-              <p className="text-sm font-medium text-gray-900">
-                Hành động này sẽ áp dụng cho {count} ứng viên đã chọn
-              </p>
-            ) : (
-              application && (
-                <p className="text-sm font-medium text-gray-900">
-                  Email: {application.email}
-                </p>
-              )
-            )}
+          <div className={"p-2 border-border border rounded-xl"}>
+            <Description isBulk={isBulk} application={application} applicant={applicant} />
           </div>
 
-          {mode === "accept" ? (
-            <AcceptForm onSubmit={onAcceptSubmit} open={open} />
-          ) : (
-            <RejectForm onSubmit={onRejectSubmit} open={open} />
-          )}
+          {mode === "accept" && <AcceptForm onSubmit={onAcceptSubmit} open={open} />}
+
+          {mode == "reject" && <RejectForm onSubmit={onRejectSubmit} open={open} />}
         </div>
 
         <DialogFooter className="bg-gray-50 -mx-6 -mb-6 px-6 py-4 rounded-b-xl">
@@ -94,15 +143,28 @@ const EmailDialog = ({
           >
             Huỷ
           </Button>
-          <Button
-            type="submit"
-            form={mode === "accept" ? "accept-form" : "reject-form"}
-            variant={mode === "accept" ? "default" : "destructive"}
-            disabled={isLoading}
-            className="rounded-xl"
-          >
-            {isLoading ? "Đang gửi..." : "Xác nhận"}
-          </Button>
+          {["accept", "reject"].includes(mode) &&
+            <Button
+              type="submit"
+              form={btnForm}
+              variant={btnVariant}
+              disabled={isLoading}
+              className="rounded-xl"
+            >
+              {isLoading ? "Đang gửi..." : "Xác nhận"}
+            </Button>
+          }
+          {mode === "invite" &&
+            <Button
+              type="button"
+              variant={btnVariant}
+              disabled={isLoading}
+              onClick={onInvite}
+              className="rounded-xl"
+            >
+              {isLoading ? "Đang gửi..." : "Gửi email"}
+            </Button>
+            }
         </DialogFooter>
       </DialogContent>
     </Dialog>

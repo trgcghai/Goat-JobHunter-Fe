@@ -1,5 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Mail } from "lucide-react";
+import EmailDialog, {
+  EmailDialogMode
+} from "@/app/(recruiter-portal)/recruiter-portal/applications/components/EmailDialog";
+import { useState } from "react";
+import useSendMailToApplicants
+  from "@/app/(recruiter-portal)/recruiter-portal/applicants/hooks/useSendMailToApplicants";
+import { toast } from "sonner";
+import { useSendMailSlice } from "@/lib/features/sendMailSlice";
 
 interface SuitableApplicantActionsProps {
   selectedCount: number;
@@ -7,6 +15,23 @@ interface SuitableApplicantActionsProps {
 }
 
 const SuitableApplicantActions = ({ selectedCount, selectedIds }: SuitableApplicantActionsProps) => {
+  const [mode, setMode] = useState<EmailDialogMode | null>(null);
+  const { handleSendMailToApplicants, isLoading } = useSendMailToApplicants();
+  const { jobId } = useSendMailSlice();
+
+  const onInvite = async () => {
+
+    console.log({ applicantIds: selectedIds, jobId });
+
+    if (!jobId || !selectedIds) {
+      toast.error("Có lỗi xảy ra khi gửi mail. Vui lòng thử lại sau.");
+      return;
+    }
+
+    await handleSendMailToApplicants(selectedIds, jobId);
+    setMode(null);
+  };
+
   if (selectedCount === 0) return null;
 
   return (
@@ -19,6 +44,7 @@ const SuitableApplicantActions = ({ selectedCount, selectedIds }: SuitableApplic
           <Button
             variant="default"
             size="sm"
+            onClick={() => setMode("invite")}
             className="gap-2 rounded-xl"
           >
             <Mail className="h-4 w-4" />
@@ -26,6 +52,19 @@ const SuitableApplicantActions = ({ selectedCount, selectedIds }: SuitableApplic
           </Button>
         </div>
       </div>
+
+      <EmailDialog
+        open={!!mode}
+        onOpenChange={(open) => !open && setMode(null)}
+        mode={mode as "accept" | "reject"}
+        selectedCount={selectedCount}
+        isLoading={isLoading}
+        onAcceptSubmit={async () => {
+        }}
+        onRejectSubmit={async () => {
+        }}
+        onInvite={onInvite}
+      />
     </>
   );
 };

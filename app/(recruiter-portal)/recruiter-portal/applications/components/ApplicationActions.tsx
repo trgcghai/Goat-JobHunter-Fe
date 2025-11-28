@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { CheckCircle, XCircle } from "lucide-react";
 import { useState } from "react";
-import EmailDialog from "./EmailDialog";
+import EmailDialog, { EmailDialogMode } from "./EmailDialog";
 import useApplicationActions from "@/hooks/useApplicationActions";
 import { AcceptFormData, RejectFormData } from "./schema";
 
@@ -14,9 +14,9 @@ interface ApplicationActionsProps {
 
 export default function ApplicationActions({
                                              selectedCount,
-                                             selectedIds,
+                                             selectedIds
                                            }: ApplicationActionsProps) {
-  const [mode, setMode] = useState<"accept" | "reject" | null>(null);
+  const [mode, setMode] = useState<EmailDialogMode | null>(null);
   const { isRejecting, isAccepting, handleRejectApplications, handleAcceptApplications } =
     useApplicationActions();
 
@@ -26,7 +26,7 @@ export default function ApplicationActions({
       interviewDate: data.interviewDate,
       interviewType: data.interviewType,
       location: data.location,
-      note: data.notes || "",
+      note: data.notes || ""
     });
     setMode(null);
   };
@@ -34,7 +34,7 @@ export default function ApplicationActions({
   const onRejectSubmit = async (data: RejectFormData) => {
     await handleRejectApplications({
       applicationIds: selectedIds,
-      reason: data.reason,
+      reason: data.reason
     });
     setMode(null);
   };
@@ -77,6 +77,8 @@ export default function ApplicationActions({
         isLoading={isRejecting || isAccepting}
         onAcceptSubmit={onAcceptSubmit}
         onRejectSubmit={onRejectSubmit}
+        onInvite={() => {
+        }}
       />
     </>
   );

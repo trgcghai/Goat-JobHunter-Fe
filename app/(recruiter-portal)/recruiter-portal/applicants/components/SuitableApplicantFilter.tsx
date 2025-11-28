@@ -67,7 +67,10 @@ const SuitableApplicantFilter = ({
 
         <Select
           value={filters.jobId ? filters.jobId.toString() : ""}
-          onValueChange={(value) => onFilterChange({ jobId: Number(value) })}
+          onValueChange={(value) => {
+            const jobId = value ? Number(value) : 0;
+            onFilterChange({ jobId });
+          }}
         >
           <SelectTrigger className="rounded-xl w-full">
             <SelectValue placeholder="Chọn việc làm" />
