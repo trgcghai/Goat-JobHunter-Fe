@@ -2,13 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { CheckCircle, XCircle } from "lucide-react";
-import { useMemo, useState } from "react";
-import BulkEmailDialog from "@/app/(recruiter-portal)/recruiter-portal/applications/components/BulkEmailDialog";
+import { useState } from "react";
+import EmailDialog from "./EmailDialog";
 import useApplicationActions from "@/hooks/useApplicationActions";
-import {
-  AcceptFormData,
-  RejectFormData
-} from "@/app/(recruiter-portal)/recruiter-portal/applications/components/schema";
+import { AcceptFormData, RejectFormData } from "./schema";
 
 interface ApplicationActionsProps {
   selectedCount: number;
@@ -16,9 +13,9 @@ interface ApplicationActionsProps {
 }
 
 export default function ApplicationActions({
-  selectedCount,
-  selectedIds,
-}: ApplicationActionsProps) {
+                                             selectedCount,
+                                             selectedIds,
+                                           }: ApplicationActionsProps) {
   const [mode, setMode] = useState<"accept" | "reject" | null>(null);
   const { isRejecting, isAccepting, handleRejectApplications, handleAcceptApplications } =
     useApplicationActions();
@@ -41,12 +38,6 @@ export default function ApplicationActions({
     });
     setMode(null);
   };
-
-  const dialogConfig = useMemo(() => {
-    return {
-      mode: mode as "accept" | "reject"
-    };
-  }, [mode]);
 
   if (selectedCount === 0) return null;
 
@@ -78,10 +69,10 @@ export default function ApplicationActions({
         </div>
       </div>
 
-      <BulkEmailDialog
+      <EmailDialog
         open={!!mode}
         onOpenChange={(open) => !open && setMode(null)}
-        mode={dialogConfig.mode}
+        mode={mode as "accept" | "reject"}
         selectedCount={selectedCount}
         isLoading={isRejecting || isAccepting}
         onAcceptSubmit={onAcceptSubmit}

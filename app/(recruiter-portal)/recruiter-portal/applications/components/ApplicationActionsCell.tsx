@@ -2,11 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Application } from "@/types/model";
 import { Check, FileText, X } from "lucide-react";
 import { useMemo, useState } from "react";
-import EmailDialog from "@/app/(recruiter-portal)/recruiter-portal/applications/components/EmailDialog";
 import useApplicationActions from "@/hooks/useApplicationActions";
-import { toast } from "sonner";
-import { InterviewType } from "@/types/enum";
+import { AcceptFormData, RejectFormData } from "./schema";
 import ResumePreviewDialog from "@/components/ResumePreivewDialog";
+import EmailDialog from "@/app/(recruiter-portal)/recruiter-portal/applications/components/EmailDialog";
 
 interface ApplicationActionsCellProps {
   application: Application;
@@ -17,34 +16,25 @@ const ApplicationActionsCell = ({ application }: ApplicationActionsCellProps) =>
   const [openPreview, setOpenPreview] = useState(false);
   const { isRejecting, isAccepting, handleRejectApplications, handleAcceptApplications } = useApplicationActions();
 
-  const handleSubmit = async (payload: Record<string, string | number | Date | InterviewType>) => {
-    if (mode === "accept") {
-        await handleAcceptApplications({
-          applicationIds: [application.applicationId],
-          interviewDate: payload.interviewDate as Date,
-          interviewType: payload.interviewType as InterviewType,
-          location: payload.location as string,
-          note: payload.note as string
-        })
-    } else if (mode === "reject") {
-        await handleRejectApplications({
-          applicationIds: [application.applicationId],
-          reason: payload.reason as string
-        })
-    } else {
-      toast.info("Không thể xử lý yêu cầu hiện tại. Vui lòng thử lại sau.");
-    }
+  const onAcceptSubmit = async (data: AcceptFormData) => {
+    await handleAcceptApplications({
+      applicationIds: [application.applicationId],
+      interviewDate: data.interviewDate,
+      interviewType: data.interviewType,
+      location: data.location,
+      note: data.notes || "",
+    });
+    setMode(null);
   };
 
-  const dialogOpen = !!mode;
+  const onRejectSubmit = async (data: RejectFormData) => {
+    await handleRejectApplications({
+      applicationIds: [application.applicationId],
+      reason: data.reason,
+    });
+    setMode(null);
+  };
 
-  const dialogConfig = useMemo(() => {
-    return {
-      mode: mode as "accept" | "reject"
-    };
-  }, [mode]);
-
-  // Disable actions if application is already rejected or accepted
   const isProcessed = useMemo(
     () =>
       application.status === "ACCEPTED" || application.status === "REJECTED",
@@ -81,18 +71,19 @@ const ApplicationActionsCell = ({ application }: ApplicationActionsCellProps) =>
         className="rounded-xl text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/20"
         title="Từ chối"
         onClick={() => setMode("reject")}
-        disabled={isProcessed ||  isRejecting || isAccepting}
+        disabled={isProcessed || isRejecting || isAccepting}
       >
         <X className="w-4 h-4" />
       </Button>
 
       <EmailDialog
-        open={dialogOpen}
+        open={!!mode}
         onOpenChange={(open) => !open && setMode(null)}
-        mode={dialogConfig.mode}
+        mode={mode as "accept" | "reject"}
         application={application}
-        isLoading={ isRejecting || isAccepting}
-        onSend={handleSubmit}
+        isLoading={isRejecting || isAccepting}
+        onAcceptSubmit={onAcceptSubmit}
+        onRejectSubmit={onRejectSubmit}
       />
 
       <ResumePreviewDialog

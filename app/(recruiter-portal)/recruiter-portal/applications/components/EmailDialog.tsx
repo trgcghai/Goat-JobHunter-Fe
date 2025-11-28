@@ -1,54 +1,41 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Application } from "@/types/model";
 import AcceptForm from "./AcceptForm";
 import RejectForm from "./RejectForm";
 import { AcceptFormData, RejectFormData } from "./schema";
-import { InterviewType } from "@/types/enum";
 
 interface EmailDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   mode: "accept" | "reject";
-  application: Application;
-  isLoading?: boolean;
-  onSend: (payload: Record<string, string | number | Date | InterviewType>) => Promise<void>;
+  isLoading: boolean;
+  onAcceptSubmit: (data: AcceptFormData) => Promise<void>;
+  onRejectSubmit: (data: RejectFormData) => Promise<void>;
+  application?: Application;
+  selectedCount?: number;
 }
 
 const EmailDialog = ({
-                       open,
-                       onOpenChange,
-                       mode,
-                       application,
-                       isLoading = false,
-                       onSend
-                     }: EmailDialogProps) => {
-  const onAcceptSubmit = async (data: AcceptFormData) => {
-    await onSend({
-      mode: "accept",
-      applicationId: application.applicationId,
-      interviewDate: data.interviewDate,
-      interviewType: data.interviewType,
-      location: data.location,
-      notes: data.notes || ""
-    });
-    onOpenChange(false);
-  };
-
-  const onRejectSubmit = async (data: RejectFormData) => {
-    await onSend({
-      mode: "reject",
-      applicationId: application.applicationId,
-      reason: data.reason
-    });
-    onOpenChange(false);
-  };
+                              open,
+                              onOpenChange,
+                              mode,
+                              isLoading,
+                              onAcceptSubmit,
+                              onRejectSubmit,
+                              application,
+                              selectedCount = 0,
+                            }: EmailDialogProps) => {
+  const isBulk = selectedCount > 0;
+  const count = isBulk ? selectedCount : 1;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -66,18 +53,28 @@ const EmailDialog = ({
             }`}
           >
             {mode === "accept"
-              ? "Gửi email mời phỏng vấn"
-              : "Gửi email từ chối"}
+              ? isBulk
+                ? `Gửi email mời phỏng vấn cho ${count} ứng viên`
+                : "Gửi email mời phỏng vấn"
+              : isBulk
+                ? `Gửi email từ chối cho ${count} ứng viên`
+                : "Gửi email từ chối"}
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-5 py-4">
           <div className="flex items-center gap-3 p-4 rounded-xl border border-gray-200 bg-gray-50">
-            <div>
+            {isBulk ? (
               <p className="text-sm font-medium text-gray-900">
-                Email: {application.email}
+                Hành động này sẽ áp dụng cho {count} ứng viên đã chọn
               </p>
-            </div>
+            ) : (
+              application && (
+                <p className="text-sm font-medium text-gray-900">
+                  Email: {application.email}
+                </p>
+              )
+            )}
           </div>
 
           {mode === "accept" ? (
@@ -104,7 +101,7 @@ const EmailDialog = ({
             disabled={isLoading}
             className="rounded-xl"
           >
-            {isLoading ? "Đang gửi..." : "Xác nhận gửi"}
+            {isLoading ? "Đang gửi..." : "Xác nhận"}
           </Button>
         </DialogFooter>
       </DialogContent>
