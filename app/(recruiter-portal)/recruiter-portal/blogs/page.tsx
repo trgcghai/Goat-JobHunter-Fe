@@ -43,7 +43,7 @@ const BlogManagementPage = () => {
 
           <Link href="/recruiter-portal/blogs/form">
             <Button className="rounded-xl">
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="h-4 w-4" />
               Thêm bài viết mới
             </Button>
           </Link>

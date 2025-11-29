@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Trash2, FileText } from "lucide-react";
+import { Trash2, EyeOff, Eye } from "lucide-react";
 import { useMemo, useState } from "react";
 import ConfirmDialog from "@/components/ConfirmDialog";
 
@@ -63,13 +63,20 @@ export default function BlogActions({
         </span>
         <div className="flex gap-4 ml-auto">
           <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setActionType("publish")}
-            className="text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200 rounded-xl"
+            className={"rounded-xl text-orange-500 hover:text-orange-600 hover:bg-orange-50 border-orange-200"}
+            variant={"outline"}
+            title="Ẩn bài viết"
           >
-            <FileText className="h-4 w-4" />
-            Xuất bản
+            <EyeOff className={"h-4 w-4"} />
+            Ẩn bài viết
+          </Button>
+          <Button
+            className={"rounded-xl text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200"}
+            variant={"outline"}
+            title="Hiển thị bài viết"
+          >
+            <Eye className={"h-4 w-4"} />
+            Hiển thị bài viết
           </Button>
           <Button
             variant="destructive"
@@ -78,7 +85,7 @@ export default function BlogActions({
             className="gap-2 rounded-xl"
           >
             <Trash2 className="h-4 w-4" />
-            Xóa
+            Xóa bài viết
           </Button>
         </div>
       </div>

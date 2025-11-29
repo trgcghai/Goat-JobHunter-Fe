@@ -113,7 +113,7 @@ export default function JobFormPage() {
       .filter((skill) => !selectedSkillIds.includes(skill.skillId))
       .map((skill) => ({
         label: skill.name,
-        value: skill.skillId,
+        value: skill.skillId.toString(),
       }));
   }, [skillsData, debouncedInputValue, form]);
 

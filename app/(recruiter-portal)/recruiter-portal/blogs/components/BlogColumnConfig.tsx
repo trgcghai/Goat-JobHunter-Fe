@@ -4,10 +4,9 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Blog } from "@/types/model";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/dataTable/DataTableColumnHeader";
 import { formatDate } from "@/utils/formatDate";
-import { Edit, Eye, Trash2 } from "lucide-react";
+import BlogActionsCell from "@/app/(recruiter-portal)/recruiter-portal/blogs/components/BlogActionsCell";
 
 export const recruiterBlogColumns: ColumnDef<Blog>[] = [
   {
@@ -46,8 +45,8 @@ export const recruiterBlogColumns: ColumnDef<Blog>[] = [
       const tags = row.original.tags;
       return (
         <div className="flex flex-wrap gap-2 max-w-[300px]">
-          {tags.map((tag) => (
-            <Badge key={tag} variant="outline" className="capitalize">
+          {tags.map((tag, idx) => (
+            <Badge key={tag + idx} variant="outline" className="capitalize">
               {tag}
             </Badge>
           ))}
@@ -56,16 +55,31 @@ export const recruiterBlogColumns: ColumnDef<Blog>[] = [
     }
   },
   {
-    accessorKey: "status",
+    accessorKey: "draft",
     enableSorting: false,
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Trạng thái" />
+      <DataTableColumnHeader column={column} title="Loại" />
     ),
     cell: ({ row }) => {
       const isDraft = row.original.draft;
       return (
         <Badge variant={!isDraft ? "default" : "secondary"}>
           {!isDraft ? "Đã xuất bản" : "Bản nháp"}
+        </Badge>
+      );
+    }
+  },
+  {
+    accessorKey: "enabled",
+    enableSorting: false,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Trạng thái" />
+    ),
+    cell: ({ row }) => {
+      const enabled = row.original.enabled;
+      return (
+        <Badge variant={enabled ? "default" : "destructive"}>
+          {enabled ? "Đang hiển thị" : "Đang ẩn"}
         </Badge>
       );
     }
@@ -86,39 +100,6 @@ export const recruiterBlogColumns: ColumnDef<Blog>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Ngày tạo" />
     ),
-    cell: ({ row }) => {
-      const blog = row.original;
-      return (
-        <div className="flex items-center gap-4">
-          <Button
-            size={"icon"}
-            className={"rounded-xl"}
-            variant={"outline"}
-            title="Xem chi tiết"
-            onClick={() => console.log(blog)}
-          >
-            <Eye className={"h-4 w-4"} />
-          </Button>
-          <Button
-            size={"icon"}
-            className={"rounded-xl"}
-            variant={"outline"}
-            title="Chỉnh sửa"
-            onClick={() => console.log(blog)}
-          >
-            <Edit className={"h-4 w-4"} />
-          </Button>
-          <Button
-            size={"icon"}
-            className="rounded-xl text-destructive hover:text-destructive hover:bg-destructive/10"
-            variant={"outline"}
-            title="Xóa"
-            onClick={() => console.log(blog)}
-          >
-            <Trash2 className={"h-4 w-4"} />
-          </Button>
-        </div>
-      );
-    }
+    cell: ({ row }) => <BlogActionsCell blog={row.original} />
   }
 ];
