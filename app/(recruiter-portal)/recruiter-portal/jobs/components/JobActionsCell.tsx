@@ -4,11 +4,9 @@ import ConfirmDialog from "@/components/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 import useJobActions from "@/hooks/useJobActions";
 import { Job } from "@/types/model";
-import { Ban, CheckCircle, Eye, Loader2, Pencil, Trash2 } from "lucide-react";
+import { Ban, CheckCircle, Edit, FileText, Loader2, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
-
-type ActionType = "delete" | "activate" | "deactivate" | null;
+import { useJobConfirmDialog } from "@/app/(recruiter-portal)/recruiter-portal/jobs/hooks/useJobConfirmDialog";
 
 const JobActionsCell = ({ job }: { job: Job }) => {
   const {
@@ -18,82 +16,20 @@ const JobActionsCell = ({ job }: { job: Job }) => {
     isDeactivating,
     isDeleting,
   } = useJobActions();
-  const [actionType, setActionType] = useState<ActionType>(null);
 
-  // Xử lý logic confirm
-  const handleConfirm = async () => {
-    try {
-      if (actionType == "delete") {
-
-        await handleDeleteJob(job.jobId);
-
-      } else if (actionType == "activate" || actionType == "deactivate") {
-
-        await handleToggleStatus(job.jobId, job.active);
-
-      }
-      setActionType(null);
-    } catch (error) {
-      console.error("Action failed", error);
-    }
-  };
-
-  // Config hiển thị cho Dialog
-  const dialogConfig = useMemo(() => {
-    if (actionType === "delete") {
-      return {
-        title: "Xóa công việc?",
-        description: (
-          <>
-            Hành động này không thể hoàn tác. Công việc{" "}
-            <span className="font-bold text-foreground">
-              &quot;{job.title}&quot;
-            </span>{" "}
-            sẽ bị xóa vĩnh viễn.
-          </>
-        ),
-        confirmText: "Xóa công việc",
-        confirmBtnClass:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90 text-white",
-      };
-    }
-
-    if (actionType === "activate") {
-      return {
-        title: "Đăng tuyển lại?",
-        description: (
-          <>
-            Công việc{" "}
-            <span className="font-bold text-foreground">
-              &quot;{job.title}&quot;
-            </span>{" "}
-            sẽ hiển thị công khai trở lại.
-          </>
-        ),
-        confirmText: "Đăng tuyển",
-        confirmBtnClass: "bg-green-600 text-white hover:bg-green-700",
-      };
-    }
-
-    if (actionType === "deactivate") {
-      return {
-        title: "Ngừng tuyển dụng?",
-        description: (
-          <>
-            Công việc{" "}
-            <span className="font-bold text-foreground">
-              &quot;{job.title}&quot;
-            </span>{" "}
-            sẽ bị ẩn khỏi trang tìm kiếm.
-          </>
-        ),
-        confirmText: "Ngừng tuyển",
-        confirmBtnClass: "bg-orange-600 text-white hover:bg-orange-700",
-      };
-    }
-
-    return { title: "", description: null };
-  }, [actionType, job]);
+  const { actionType, dialogConfig, openDialog, closeDialog, handleConfirm, isLoading } =
+    useJobConfirmDialog({
+      onConfirm: async (type, ids) => {
+        if (type === "delete") {
+          await handleDeleteJob(ids[0]);
+        } else if (type === "activate" || type === "deactivate") {
+          await handleToggleStatus(ids[0], job.active);
+        }
+      },
+      isActivating,
+      isDeactivating,
+      isDeleting,
+    });
 
   return (
     <div className="flex items-center gap-2">
@@ -104,7 +40,7 @@ const JobActionsCell = ({ job }: { job: Job }) => {
           className="rounded-xl"
           title="Xem chi tiết"
         >
-          <Eye className="w-4 h-4" />
+          <FileText className="w-4 h-4" />
         </Button>
       </Link>
 
@@ -117,7 +53,13 @@ const JobActionsCell = ({ job }: { job: Job }) => {
             ? "text-orange-500 hover:text-orange-600 hover:bg-orange-50 border-orange-200"
             : "text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200"
         }`}
-        onClick={() => setActionType(job.active ? "deactivate" : "activate")}
+        onClick={() =>
+          openDialog(
+            job.active ? "deactivate" : "activate",
+            [job.jobId],
+            job.title
+          )
+        }
         title={job.active ? "Ngừng tuyển" : "Đăng tuyển lại"}
       >
         {job.active ? (
@@ -134,7 +76,7 @@ const JobActionsCell = ({ job }: { job: Job }) => {
           className="rounded-xl"
           title="Chỉnh sửa"
         >
-          <Pencil className="w-4 h-4" />
+          <Edit className="w-4 h-4" />
         </Button>
       </Link>
 
@@ -144,7 +86,7 @@ const JobActionsCell = ({ job }: { job: Job }) => {
         className="rounded-xl text-destructive hover:text-destructive hover:bg-destructive/10"
         title="Xóa"
         disabled={isDeleting}
-        onClick={() => setActionType("delete")}
+        onClick={() => openDialog("delete", [job.jobId], job.title)}
       >
         {isDeleting && actionType === "delete" ? (
           <Loader2 className="w-4 h-4 animate-spin" />
@@ -155,14 +97,14 @@ const JobActionsCell = ({ job }: { job: Job }) => {
 
       <ConfirmDialog
         open={!!actionType}
-        onOpenChange={(open) => !open && setActionType(null)}
+        onOpenChange={(open) => !open && closeDialog()}
         title={dialogConfig.title}
         description={dialogConfig.description}
         confirmText={dialogConfig.confirmText}
         confirmBtnClass={dialogConfig.confirmBtnClass}
         onConfirm={handleConfirm}
-        isLoading={isActivating || isDeactivating || isDeleting}
-        disableCancel={isActivating || isDeactivating || isDeleting}
+        isLoading={isLoading}
+        disableCancel={isLoading}
       />
     </div>
   );

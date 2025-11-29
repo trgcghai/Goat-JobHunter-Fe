@@ -2,22 +2,19 @@
 
 import { Button } from "@/components/ui/button";
 import { Trash2, Ban, CheckCircle } from "lucide-react";
-import { useMemo, useState } from "react";
 import useJobActions from "@/hooks/useJobActions";
 import ConfirmDialog from "@/components/ConfirmDialog";
+import { useJobConfirmDialog } from "@/app/(recruiter-portal)/recruiter-portal/jobs/hooks/useJobConfirmDialog";
 
 interface JobActionsProps {
   selectedCount: number;
   selectedIds: number[];
 }
 
-type ActionType = "activate" | "deactivate" | "delete" | null;
-
 export default function JobActions({
   selectedCount,
   selectedIds,
 }: JobActionsProps) {
-  const [actionType, setActionType] = useState<ActionType>(null);
   const {
     handleDeactivateJobs,
     handleActivateJobs,
@@ -27,71 +24,21 @@ export default function JobActions({
     isDeleting,
   } = useJobActions();
 
-  const handleConfirm = async () => {
-    try {
-      if (actionType == "delete") {
-
-        await Promise.all(selectedIds.map(id => handleDeleteJob(id)));
-
-      } else if (actionType == "activate") {
-
-        await handleActivateJobs(selectedIds)
-
-      } else if (actionType == "deactivate") {
-
-        await handleDeactivateJobs(selectedIds)
-
-      }
-
-      setActionType(null);
-    } catch (error) {
-      console.error("Action failed", error);
-    }
-  };
-
-  const dialogConfig = useMemo(() => {
-    if (actionType === "delete") {
-      return {
-        title: "Xóa công việc?",
-        description: (
-          <>
-            Hành động này không thể hoàn tác. {selectedCount} công việc sẽ bị xóa vĩnh viễn.
-          </>
-        ),
-        confirmText: "Xóa công việc",
-        confirmBtnClass:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90 text-white",
-      };
-    }
-
-    if (actionType === "activate") {
-      return {
-        title: "Đăng tuyển lại?",
-        description: (
-          <>
-            {selectedCount} công việc sẽ hiển thị công khai trở lại.
-          </>
-        ),
-        confirmText: "Đăng tuyển",
-        confirmBtnClass: "bg-green-600 text-white hover:bg-green-700",
-      };
-    }
-
-    if (actionType === "deactivate") {
-      return {
-        title: "Ngừng tuyển dụng?",
-        description: (
-          <>
-            {selectedCount} công việc sẽ bị ẩn khỏi trang tìm kiếm.
-          </>
-        ),
-        confirmText: "Ngừng tuyển",
-        confirmBtnClass: "bg-orange-600 text-white hover:bg-orange-700",
-      };
-    }
-
-    return { title: "", description: null };
-  }, [actionType, selectedCount]);
+  const { actionType, dialogConfig, openDialog, closeDialog, handleConfirm, isLoading } =
+    useJobConfirmDialog({
+      onConfirm: async (type, ids) => {
+        if (type === "delete") {
+          await Promise.all(ids.map(id => handleDeleteJob(id)));
+        } else if (type === "activate") {
+          await handleActivateJobs(ids);
+        } else if (type === "deactivate") {
+          await handleDeactivateJobs(ids);
+        }
+      },
+      isActivating,
+      isDeactivating,
+      isDeleting,
+    });
 
   if (selectedCount === 0) return null;
 
@@ -105,7 +52,7 @@ export default function JobActions({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setActionType("activate")}
+            onClick={() => openDialog("activate", selectedIds)}
             className="text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200 rounded-xl"
           >
             <CheckCircle className="h-4 w-4" />
@@ -114,7 +61,7 @@ export default function JobActions({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setActionType("deactivate")}
+            onClick={() => openDialog("deactivate", selectedIds)}
             className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 border-orange-200 rounded-xl"
           >
             <Ban className="h-4 w-4" />
@@ -123,7 +70,7 @@ export default function JobActions({
           <Button
             variant="destructive"
             size="sm"
-            onClick={() => setActionType("delete")}
+            onClick={() => openDialog("delete", selectedIds)}
             className="gap-2 rounded-xl"
           >
             <Trash2 className="h-4 w-4" />
@@ -134,14 +81,14 @@ export default function JobActions({
 
       <ConfirmDialog
         open={!!actionType}
-        onOpenChange={(open) => !open && setActionType(null)}
+        onOpenChange={(open) => !open && closeDialog()}
         title={dialogConfig.title}
         description={dialogConfig.description}
         confirmText={dialogConfig.confirmText}
         confirmBtnClass={dialogConfig.confirmBtnClass}
         onConfirm={handleConfirm}
-        isLoading={isActivating || isDeactivating || isDeleting}
-        disableCancel={isActivating || isDeactivating || isDeleting}
+        isLoading={isLoading}
+        disableCancel={isLoading}
       />
     </>
   );
