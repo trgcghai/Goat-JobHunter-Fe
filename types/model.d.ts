@@ -151,7 +151,7 @@ export type Blog = {
   title: string;
   banner: string;
   description: string;
-  content: string[];
+  content: string;
   tags: string[];
   draft: boolean;
   enabled: boolean;

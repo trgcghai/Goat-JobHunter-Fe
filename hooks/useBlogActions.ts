@@ -1,16 +1,20 @@
 import {
   useDeleteBlogMutation,
   useEnableBlogsMutation,
-  useDisableBlogsMutation
+  useDisableBlogsMutation, useCreateBlogMutation, useUpdateBlogMutation
 } from "@/services/blog/blogApi";
 import { useCallback } from "react";
 import { toast } from "sonner";
 import { BlogActionType } from "@/types/enum";
+import { BlogFormData } from "@/app/(recruiter-portal)/recruiter-portal/blogs/form/components/schema";
 
 const useBlogActions = () => {
   const [deleteBlog, { isLoading: isDeleting }] = useDeleteBlogMutation();
   const [enableBlogs, { isLoading: isEnabling }] = useEnableBlogsMutation();
   const [disableBlogs, { isLoading: isDisabling }] = useDisableBlogsMutation();
+  const [createBlog, { isLoading: isCreating }] = useCreateBlogMutation();
+  const [updateBlog, { isLoading: isUpdating }] = useUpdateBlogMutation();
+
 
   // Delete multiple blogs
   const handleDeleteBlogs = useCallback(
@@ -18,12 +22,12 @@ const useBlogActions = () => {
       try {
         await deleteBlog({
           blogIds,
-          mode: BlogActionType.DELETE,
-        }).unwrap()
+          mode: BlogActionType.DELETE
+        }).unwrap();
 
-          toast.success("Xóa bài viết thành công!", {
-            description: `Đã xóa ${blogIds.length} bài viết`
-          });
+        toast.success("Xóa bài viết thành công!", {
+          description: `Đã xóa ${blogIds.length} bài viết`
+        });
       } catch (error) {
         console.error("Failed to delete blogs:", error);
         toast.error("Không thể xóa bài viết. Vui lòng thử lại sau.");
@@ -39,7 +43,7 @@ const useBlogActions = () => {
       try {
         await enableBlogs({
           blogIds,
-          mode: BlogActionType.ACCEPT,
+          mode: BlogActionType.ACCEPT
         }).unwrap();
 
         toast.success("Hiển thị bài viết thành công!");
@@ -102,16 +106,65 @@ const useBlogActions = () => {
     [enableBlogs, disableBlogs]
   );
 
+  // Create blog
+  const handleCreateBlog = useCallback(
+    async (data: BlogFormData) => {
+      try {
+        const response = await createBlog({
+          ...data,
+          banner: "" // Add banner upload logic later
+        }).unwrap();
+
+        if (response.data) {
+          toast.success("Tạo bài viết thành công!");
+          return response.data;
+        }
+      } catch (error) {
+        console.error("Failed to create blog:", error);
+        toast.error("Không thể tạo bài viết. Vui lòng thử lại sau.");
+        throw error;
+      }
+    },
+    [createBlog]
+  );
+
+  // Update blog
+  const handleUpdateBlog = useCallback(
+    async (blogId: number, data: BlogFormData) => {
+      try {
+        const response = await updateBlog({
+          ...data,
+          blogId: blogId.toString(),
+          banner: "" // Add banner upload logic later
+        }).unwrap();
+
+        if (response.data) {
+          toast.success("Cập nhật bài viết thành công!");
+          return response.data;
+        }
+      } catch (error) {
+        console.error("Failed to update blog:", error);
+        toast.error("Không thể cập nhật bài viết. Vui lòng thử lại sau.");
+        throw error;
+      }
+    },
+    [updateBlog]
+  );
+
   return {
     isDeleting,
     isEnabling,
     isDisabling,
-    isLoading: isDeleting || isEnabling || isDisabling,
+    isCreating,
+    isUpdating,
+    isLoading: isDeleting || isEnabling || isDisabling || isCreating || isUpdating,
 
     handleDeleteBlogs,
     handleEnableBlogs,
     handleDisableBlogs,
     handleToggleBlogStatus,
+    handleCreateBlog,
+    handleUpdateBlog
   };
 };
 

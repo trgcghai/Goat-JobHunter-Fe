@@ -3,14 +3,26 @@ import type { Blog } from "@/types/model";
 import { BlogActionType } from "@/types/enum";
 
 // Create Blog
-export type CreateBlogRequest = Blog;
+export type CreateBlogRequest = {
+  title: string;
+  banner: string;
+  description: string;
+  content: string;
+  tags: string[];
+  draft: boolean;
+};
 
 export type CreateBlogResponse = IBackendRes<Blog>;
 
 // Update Blog
 export type UpdateBlogRequest = {
   blogId: string;
-  blog: Blog;
+  title: string;
+  banner: string;
+  description: string;
+  content: string;
+  tags: string[];
+  draft: boolean;
 };
 
 export type UpdateBlogResponse = IBackendRes<Blog>;
