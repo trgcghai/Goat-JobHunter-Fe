@@ -1,0 +1,99 @@
+"use client";
+
+import { RecruiterBlogFilters } from "@/app/(recruiter-portal)/recruiter-portal/blogs/hooks/useBlogManagement";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { debounce } from "lodash";
+import { Search, X } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+
+interface RecruiterBlogFilterProps {
+  filters: RecruiterBlogFilters;
+  onFilterChange: (filters: Partial<RecruiterBlogFilters>) => void;
+  onResetFilters: () => void;
+}
+
+export default function RecruiterBlogFilter({
+  filters,
+  onFilterChange,
+  onResetFilters,
+}: RecruiterBlogFilterProps) {
+  const [searchTerm, setSearchTerm] = useState(filters.title || "");
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSearch = useCallback(
+    debounce((value: string) => {
+      onFilterChange({ title: value });
+    }, 700),
+    [],
+  );
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    debouncedSearch(value);
+  };
+
+  useEffect(() => {
+    if (filters.title !== searchTerm) {
+      setSearchTerm(filters.title || "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters.title]);
+
+  return (
+    <div className="space-y-4 mb-6">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="relative">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Tìm theo tiêu đề..."
+            className="pl-9 rounded-xl"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+        </div>
+
+        <div className="">
+          <Select
+            value={filters.draft ? (filters.draft ? "draft" : "published") : "all"}
+            onValueChange={(value) => {
+              const draft = value === "draft" ? true : value === "published" ? false : null;
+              onFilterChange({ draft });
+            }}
+          >
+            <SelectTrigger className="rounded-xl w-full">
+              <SelectValue placeholder="Trạng thái" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tất cả trạng thái</SelectItem>
+              <SelectItem value="published">Đã xuất bản</SelectItem>
+              <SelectItem value="draft">Bản nháp</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="flex justify-end">
+        <Button
+          variant={"destructive"}
+          className="rounded-xl"
+          onClick={() => {
+            setSearchTerm("");
+            onResetFilters();
+          }}
+        >
+          <X className="h-4 w-4 mr-2" />
+          Xóa bộ lọc
+        </Button>
+      </div>
+    </div>
+  );
+}

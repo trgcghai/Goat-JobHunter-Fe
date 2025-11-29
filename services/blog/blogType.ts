@@ -25,7 +25,8 @@ export type FetchBlogsRequest = {
   size?: number;
   sortBy?: string;
   tags?: string[];
-  keyword?: string;
+  title?: string;
+  draft?: boolean;
 };
 
 export type FetchBlogsResponse = IBackendRes<IModelPaginate<Blog>>;

@@ -147,25 +147,28 @@ export type Subscriber = {
 };
 
 export type Blog = {
-  blogId?: string;
+  blogId: number;
   title: string;
   banner: string;
   description: string;
   content: string[];
   tags: string[];
   draft: boolean;
+  enabled: boolean;
   activity?: {
-    totalLikes: number | undefined;
-    totalComments: number | undefined;
-    totalReads: number | undefined;
-    totalParentComments: number | undefined;
+    totalLikes: number;
+    totalComments: number;
+    totalReads: number;
+    totalParentComments: number;
   };
-  author?: User;
-
-  createdBy?: string;
-  updatedBy?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  author: {
+    userId: number;
+    fullName: string;
+  };
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
 };
 
 export type Comment = {

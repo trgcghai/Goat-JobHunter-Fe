@@ -88,7 +88,6 @@ export const jobColumns: ColumnDef<Job>[] = [
       return (
         <Badge
           variant={isActive ? "default" : "destructive"}
-          // className={isActive ? "bg-green-600" : "bg-gray-500"}
         >
           {isActive ? "Đang tuyển" : "Đã đóng"}
         </Badge>
