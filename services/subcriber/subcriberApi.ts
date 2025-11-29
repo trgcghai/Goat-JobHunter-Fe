@@ -19,10 +19,10 @@ export const subscriberApi = api.injectEndpoints({
       CreateSubscriberResponse,
       CreateSubscriberRequest
     >({
-      query: (subs) => ({
+      query: (data) => ({
         url: "/subscribers",
         method: "POST",
-        data: subs,
+        data,
       }),
       invalidatesTags: ["Subscriber"],
     }),
@@ -31,10 +31,10 @@ export const subscriberApi = api.injectEndpoints({
       UpdateSubscriberResponse,
       UpdateSubscriberRequest
     >({
-      query: (subs) => ({
+      query: (data) => ({
         url: "/subscribers",
         method: "PUT",
-        data: subs,
+        data,
       }),
       invalidatesTags: ["Subscriber"],
     }),

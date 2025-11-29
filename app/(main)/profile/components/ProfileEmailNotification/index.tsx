@@ -1,13 +1,13 @@
 "use client";
 
 import RecruiterTable from "@/app/(main)/profile/components/ProfileEmailNotification/RecruiterTable";
-import SkillSubcription from "@/app/(main)/profile/components/ProfileEmailNotification/SkillSubcription";
+import SkillSubscription from "@/app/(main)/profile/components/ProfileEmailNotification/SkillSubscription";
 import { Card } from "@/components/ui/card";
 
 export default function ProfileEmailNotification() {
   return (
     <div className="space-y-6">
-      <SkillSubcription />
+      <SkillSubscription />
 
       <Card className="p-6">
         <h2 className="text-xl font-bold text-foreground mb-2">

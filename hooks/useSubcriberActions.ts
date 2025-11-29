@@ -1,107 +1,86 @@
 import {
   useCreateSubscriberMutation,
-  useDeleteSubscriberMutation,
-  useUpdateSubscriberMutation,
+  useUpdateSubscriberMutation
 } from "@/services/subcriber/subcriberApi";
-import { Skill, Subscriber } from "@/types/model";
+import { Skill } from "@/types/model";
 import { useCallback } from "react";
 import { toast } from "sonner";
 
-const useSubscriberActions = () => {
+interface UseSubscriberActionsProps {
+  subscriberId: number;
+  email: string;
+  name: string;
+  skills: Skill[];
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
+}
+
+const useSubscriberActions = (data?: UseSubscriberActionsProps) => {
   const [createSubscriber, { isLoading: isCreating }] =
     useCreateSubscriberMutation();
   const [updateSubscriber, { isLoading: isUpdating }] =
     useUpdateSubscriberMutation();
-  const [deleteSubscriber, { isLoading: isDeleting }] =
-    useDeleteSubscriberMutation();
 
-  // Create new subscriber
-  const handleCreateSubscriber = useCallback(
-    async (data: { name: string; email: string; skills: Skill[] }) => {
-      try {
-        const subscriberData: Subscriber = {
-          subscriberId: 0,
-          name: data.name,
-          email: data.email,
-          skills: data.skills,
-        };
-
-        const response = await createSubscriber(subscriberData).unwrap();
-
-        if (response.data) {
-          toast.success("Tạo đăng ký thành công!");
-          return response.data;
-        }
-      } catch (error) {
-        console.error("Failed to create subscriber:", error);
-        toast.error("Không thể đăng ký. Vui lòng thử lại sau");
-        throw error;
-      }
-    },
-    [createSubscriber],
-  );
-
-  // Update existing subscriber
-  const handleUpdateSubscriber = useCallback(
-    async (data: Subscriber) => {
-      try {
-        const response = await updateSubscriber(data).unwrap();
-
-        if (response.data) {
-          toast.success("Cập nhật đăng ký thành công!");
-          return response.data;
-        }
-      } catch (error) {
-        console.error("Failed to update subscriber:", error);
-        toast.error("Không thể cập nhật đăng ký. Vui lòng thử lại sau");
-        throw error;
-      }
-    },
-    [updateSubscriber],
-  );
-
-  // Add skills to existing subscriber
+  // create new subscriber for user if they don't have any skill subscriptions, otherwise update that subscriber by adding new skills
   const handleAddSkills = useCallback(
-    async (subscriberData: Subscriber, newSkills: Skill[]) => {
+    async (email: string, name: string, skillIds: number[]) => {
       try {
-        const uniqueSkills = [
-          ...new Set([...subscriberData.skills, ...newSkills]),
-        ].slice(0, 5);
 
-        const updatedSubscriber: Subscriber = {
-          ...subscriberData,
-          skills: uniqueSkills,
-        };
-
-        const response = await updateSubscriber(updatedSubscriber).unwrap();
-
-        if (response.data) {
-          toast.success("Thêm kỹ năng thành công!");
-          return response.data;
+        if (!email || !name) {
+          toast.error("Có lỗi xảy ra. Vui lòng đăng nhập lại.");
+          return;
         }
+
+        // user already has a subscriber, so we just need to update it
+        if (data && data.subscriberId && data.skills.length == 0) {
+          await updateSubscriber({
+            subscriberId: data.subscriberId,
+            name,
+            email,
+            skillIds,
+          }).unwrap();
+
+          toast.success("Đăng ký thành công")
+          return;
+        }
+
+        // user does not have a subscriber, so we need to create one
+        await createSubscriber({
+          name,
+          email,
+          skillIds,
+        })
+        toast.success("Đăng ký thành công")
+
       } catch (error) {
         console.error("Failed to add skills:", error);
         toast.error("Không thể đăng ký thêm kỹ năng. Vui lòng thử lại sau");
         throw error;
       }
     },
-    [updateSubscriber],
+    [createSubscriber, updateSubscriber, data]
   );
 
   // Remove skill from subscriber
   const handleRemoveSkill = useCallback(
-    async (subscriberData: Subscriber, skillToRemove: Skill) => {
+    async (skillId: number) => {
       try {
-        const updatedSkills = subscriberData.skills.filter(
-          (skill) => skill.skillId !== skillToRemove.skillId,
-        );
 
-        const updatedSubscriber: Subscriber = {
-          ...subscriberData,
-          skills: updatedSkills,
-        };
+        if (!data) {
+          toast.error("Không tìm thấy thông tin đăng ký");
+          return;
+        }
 
-        const response = await updateSubscriber(updatedSubscriber).unwrap();
+        const response = await updateSubscriber({
+          subscriberId: data.subscriberId,
+          email: data.email,
+          name: data.name,
+          skillIds: data.skills
+            .filter((skill) => skill.skillId !== skillId)
+            .map((skill) => skill.skillId),
+        }).unwrap();
 
         if (response.data) {
           toast.success("Xóa kỹ năng thành công!");
@@ -113,73 +92,18 @@ const useSubscriberActions = () => {
         throw error;
       }
     },
-    [updateSubscriber],
-  );
-
-  // Delete subscriber completely
-  const handleDeleteSubscriber = useCallback(
-    async (subscriberId: string) => {
-      try {
-        const response = await deleteSubscriber(subscriberId).unwrap();
-
-        if (response.data) {
-          toast.success("Xóa đăng ký thành công!");
-          return response.data;
-        }
-      } catch (error) {
-        console.error("Failed to delete subscriber:", error);
-        toast.error("Không thể xóa đăng ký kỹ năng. Vui lòng thử lại sau");
-        throw error;
-      }
-    },
-    [deleteSubscriber],
-  );
-
-  // Replace all skills (overwrite)
-  const handleReplaceSkills = useCallback(
-    async (subscriberData: Subscriber, newSkills: Skill[]) => {
-      try {
-        if (newSkills.length > 5) {
-          toast.error("Vượt quá giới hạn", {
-            description: "Chỉ được đăng ký tối đa 5 kỹ năng",
-          });
-          return;
-        }
-
-        const updatedSubscriber: Subscriber = {
-          ...subscriberData,
-          skills: newSkills,
-        };
-
-        const response = await updateSubscriber(updatedSubscriber).unwrap();
-
-        if (response.data) {
-          toast.success("Cập nhật kỹ năng thành công!");
-          return response.data;
-        }
-      } catch (error) {
-        console.error("Failed to replace skills:", error);
-        toast.error("Không thể cập nhật đăng ký kỹ năng. Vui lòng thử lại sau");
-        throw error;
-      }
-    },
-    [updateSubscriber],
+    [data, updateSubscriber]
   );
 
   return {
     // Mutation states
     isCreating,
     isUpdating,
-    isDeleting,
-    isLoading: isCreating || isUpdating || isDeleting,
+    isLoading: isCreating || isUpdating,
 
     // Actions
-    handleCreateSubscriber,
-    handleUpdateSubscriber,
     handleAddSkills,
     handleRemoveSkill,
-    handleDeleteSubscriber,
-    handleReplaceSkills,
   };
 };
 

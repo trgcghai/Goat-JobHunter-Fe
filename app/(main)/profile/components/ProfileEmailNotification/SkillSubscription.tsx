@@ -1,5 +1,5 @@
 import BadgeItem from "@/app/(main)/profile/components/ProfileEmailNotification/BadgeItem";
-import useSkillSubcription from "@/app/(main)/profile/components/ProfileEmailNotification/useSkillSubcription";
+import useSkillSubscription from "@/app/(main)/profile/components/ProfileEmailNotification/useSkillSubcription";
 import ErrorMessage from "@/components/ErrorMessage";
 import LoaderSpin from "@/components/LoaderSpin";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import MultipleSelector from "@/components/ui/MultipleSelector";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-const SkillSubcription = () => {
+const SkillSubscription = () => {
   const {
     selectedSkills,
     inputValue,
@@ -24,7 +24,7 @@ const SkillSubcription = () => {
     handleSkillChange,
     handleCreateSubscription,
     handleDeleteSubscription,
-  } = useSkillSubcription();
+  } = useSkillSubscription();
 
   if (isLoadingSubscriber) {
     return <LoaderSpin />;
@@ -142,4 +142,4 @@ const SkillSubcription = () => {
   );
 };
 
-export default SkillSubcription;
+export default SkillSubscription;

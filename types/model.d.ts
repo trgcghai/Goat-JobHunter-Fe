@@ -39,7 +39,7 @@ export type Applicant = User & {
 export type FullUser = Applicant & Recruiter;
 
 export type Skill = {
-  skillId: string;
+  skillId: number;
   name: string;
 
   createdAt?: string;

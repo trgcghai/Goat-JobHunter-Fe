@@ -2,12 +2,21 @@ import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type { Skill, Subscriber } from "@/types/model";
 
 // Create Subscriber
-export type CreateSubscriberRequest = Subscriber;
+export type CreateSubscriberRequest = {
+  name: string;
+  email: string;
+  skillIds: number[];
+};
 
 export type CreateSubscriberResponse = IBackendRes<Subscriber>;
 
 // Update Subscriber
-export type UpdateSubscriberRequest = Subscriber;
+export type UpdateSubscriberRequest = {
+  subscriberId: number;
+  name?: string;
+  email?: string;
+  skillIds?: number[];
+};
 
 export type UpdateSubscriberResponse = IBackendRes<Subscriber>;
 
