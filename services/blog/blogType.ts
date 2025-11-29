@@ -1,5 +1,6 @@
 import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type { Blog } from "@/types/model";
+import { BlogActionType } from "@/types/enum";
 
 // Create Blog
 export type CreateBlogRequest = Blog;
@@ -13,9 +14,6 @@ export type UpdateBlogRequest = {
 };
 
 export type UpdateBlogResponse = IBackendRes<Blog>;
-
-// Delete Blog
-export type DeleteBlogRequest = string; // blogId
 
 export type DeleteBlogResponse = IBackendRes<Blog>;
 
@@ -50,3 +48,15 @@ export type FetchTagsRequest = {
 };
 
 export type FetchTagsResponse = IBackendRes<[[string, number]]>;
+
+// accept and reject blogs
+export type BlogIdsRequest = {
+  blogIds: number[];
+  reason?: string;
+  mode: BlogActionType;
+}
+
+export type BlogStatusResponse = IBackendRes<{
+  blogId: number;
+  enabled: boolean;
+}[]>;

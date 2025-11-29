@@ -4,10 +4,16 @@ export type BlogActionType = "enable" | "disable" | "delete" | null;
 
 interface UseBlogConfirmDialogProps {
   onConfirm: (actionType: BlogActionType, ids: number[]) => Promise<void>;
+  isDeleting?: boolean;
+  isEnabling?: boolean;
+  isDisabling?: boolean;
 }
 
 export const useBlogConfirmDialog = ({
   onConfirm,
+  isDeleting = false,
+  isEnabling = false,
+  isDisabling = false,
 }: UseBlogConfirmDialogProps) => {
   const [actionType, setActionType] = useState<BlogActionType>(null);
   const [targetIds, setTargetIds] = useState<number[]>([]);
@@ -31,9 +37,6 @@ export const useBlogConfirmDialog = ({
 
   const handleConfirm = async () => {
     try {
-      console.log("Action type:", actionType);
-      console.log("Target IDs:", targetIds);
-
       await onConfirm(actionType, targetIds);
       closeDialog();
     } catch (error) {
@@ -114,5 +117,6 @@ export const useBlogConfirmDialog = ({
     openDialog,
     closeDialog,
     handleConfirm,
+    isLoading: isDeleting || isEnabling || isDisabling,
   };
 };

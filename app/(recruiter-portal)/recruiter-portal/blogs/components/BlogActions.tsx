@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Trash2, EyeOff, Eye } from "lucide-react";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { useBlogConfirmDialog } from "@/app/(recruiter-portal)/recruiter-portal/blogs/hooks/useBlogConfirmDialog";
+import useBlogActions from "@/hooks/useBlogActions";
 
 interface BlogActionsProps {
   selectedCount: number;
@@ -14,17 +15,29 @@ export default function BlogActions({
   selectedCount,
   selectedIds,
 }: BlogActionsProps) {
-  const { actionType, dialogConfig, openDialog, closeDialog, handleConfirm } =
+  const {
+    handleDeleteBlogs,
+    handleEnableBlogs,
+    handleDisableBlogs,
+    isDeleting,
+    isEnabling,
+    isDisabling,
+  } = useBlogActions();
+
+  const { actionType, dialogConfig, openDialog, closeDialog, handleConfirm, isLoading } =
     useBlogConfirmDialog({
       onConfirm: async (type, ids) => {
         if (type === "delete") {
-          // Add delete logic
+          await handleDeleteBlogs(ids);
         } else if (type === "enable") {
-          // Add enable logic
+          await handleEnableBlogs(ids);
         } else if (type === "disable") {
-          // Add disable logic
+          await handleDisableBlogs(ids);
         }
       },
+      isDeleting,
+      isEnabling,
+      isDisabling,
     });
 
   if (selectedCount === 0) return null;
@@ -74,6 +87,8 @@ export default function BlogActions({
         confirmText={dialogConfig.confirmText}
         confirmBtnClass={dialogConfig.confirmBtnClass}
         onConfirm={handleConfirm}
+        isLoading={isLoading}
+        disableCancel={isLoading}
       />
     </>
   );

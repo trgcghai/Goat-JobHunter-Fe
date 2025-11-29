@@ -42,3 +42,9 @@ export enum InterviewType {
   PANEL_INTERVIEW = "Phỏng vấn hội đồng",
   ASSESSMENT_CENTER = "Trung tâm đánh giá",
 }
+
+export enum BlogActionType {
+  DELETE = "DELETE",
+  REJECT = "REJECT",
+  ACCEPT = "ACCEPT"
+}

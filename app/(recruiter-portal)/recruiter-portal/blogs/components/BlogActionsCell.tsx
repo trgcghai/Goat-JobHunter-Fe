@@ -2,27 +2,37 @@
 
 import { Blog } from "@/types/model";
 import { Button } from "@/components/ui/button";
-import { Edit, Eye, EyeOff, FileText, Trash2 } from "lucide-react";
+import { Edit, Eye, EyeOff, FileText, Loader2, Trash2 } from "lucide-react";
 import Link from "next/link";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { useBlogConfirmDialog } from "@/app/(recruiter-portal)/recruiter-portal/blogs/hooks/useBlogConfirmDialog";
+import useBlogActions from "@/hooks/useBlogActions";
 
 interface BlogActionsCellProps {
   blog: Blog;
 }
 
 const BlogActionsCell = ({ blog }: BlogActionsCellProps) => {
-  const { actionType, dialogConfig, openDialog, closeDialog, handleConfirm } =
+  const {
+    handleDeleteBlogs,
+    handleToggleBlogStatus,
+    isDeleting,
+    isEnabling,
+    isDisabling,
+  } = useBlogActions();
+
+  const { actionType, dialogConfig, openDialog, closeDialog, handleConfirm, isLoading } =
     useBlogConfirmDialog({
       onConfirm: async (type, ids) => {
         if (type === "delete") {
-          // Add delete logic
-        } else if (type === "enable") {
-          // Add enable logic
-        } else if (type === "disable") {
-          // Add disable logic
+          await handleDeleteBlogs([ids[0]]);
+        } else if (type === "enable" || type === "disable") {
+          await handleToggleBlogStatus(ids[0], blog.enabled);
         }
       },
+      isDeleting,
+      isEnabling,
+      isDisabling,
     });
 
   return (
@@ -42,6 +52,7 @@ const BlogActionsCell = ({ blog }: BlogActionsCellProps) => {
         <Button
           size={"icon"}
           variant={"outline"}
+          disabled={isLoading}
           className={`rounded-xl ${
             blog.enabled
               ? "text-orange-500 hover:text-orange-600 hover:bg-orange-50 border-orange-200"
@@ -79,9 +90,14 @@ const BlogActionsCell = ({ blog }: BlogActionsCellProps) => {
           className="rounded-xl text-destructive hover:text-destructive hover:bg-destructive/10"
           variant={"outline"}
           title="Xóa"
+          disabled={isLoading}
           onClick={() => openDialog("delete", [blog.blogId], blog.title)}
         >
-          <Trash2 className={"h-4 w-4"} />
+          {isLoading && actionType === "delete" ? (
+            <Loader2 className={"h-4 w-4 animate-spin"} />
+          ) : (
+            <Trash2 className={"h-4 w-4"} />
+          )}
         </Button>
       </div>
 
@@ -93,6 +109,8 @@ const BlogActionsCell = ({ blog }: BlogActionsCellProps) => {
         confirmText={dialogConfig.confirmText}
         confirmBtnClass={dialogConfig.confirmBtnClass}
         onConfirm={handleConfirm}
+        isLoading={isLoading}
+        disableCancel={isLoading}
       />
     </>
   );

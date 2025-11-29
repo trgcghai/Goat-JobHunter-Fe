@@ -1,9 +1,9 @@
 import { api } from "@/services/api";
 import { buildSpringQuery } from "@/utils/buildSpringQuery";
 import type {
+  BlogIdsRequest, BlogStatusResponse,
   CreateBlogRequest,
   CreateBlogResponse,
-  DeleteBlogRequest,
   DeleteBlogResponse,
   FetchBlogByIdRequest,
   FetchBlogByIdResponse,
@@ -38,10 +38,11 @@ export const blogApi = api.injectEndpoints({
       invalidatesTags: ["Blog"]
     }),
 
-    deleteBlog: builder.mutation<DeleteBlogResponse, DeleteBlogRequest>({
-      query: (blogId) => ({
-        url: `/blogs/${blogId}`,
-        method: "DELETE"
+    deleteBlog: builder.mutation<DeleteBlogResponse, BlogIdsRequest>({
+      query: (data) => ({
+        url: `/blogs`,
+        method: "DELETE",
+        data
       }),
       invalidatesTags: ["Blog"]
     }),
@@ -147,7 +148,25 @@ export const blogApi = api.injectEndpoints({
         };
       },
       providesTags: ["Blog"]
-    })
+    }),
+
+    enableBlogs: builder.mutation<BlogStatusResponse, BlogIdsRequest>({
+      query: (blogIds) => ({
+        url: '/blogs/enabled',
+        method: 'PUT',
+        data: blogIds,
+      }),
+      invalidatesTags: ['Blog'],
+    }),
+
+    disableBlogs: builder.mutation<BlogStatusResponse, BlogIdsRequest>({
+      query: (blogIds) => ({
+        url: '/blogs/disabled',
+        method: 'PUT',
+        data: blogIds,
+      }),
+      invalidatesTags: ['Blog'],
+    }),
   })
 });
 
@@ -160,5 +179,7 @@ export const {
   useFetchBlogByIdQuery,
   useLikeBlogMutation,
   useFetchTagsQuery,
-  useFetchBlogsByCurrentRecruiterQuery
+  useFetchBlogsByCurrentRecruiterQuery,
+  useEnableBlogsMutation,
+  useDisableBlogsMutation
 } = blogApi;
