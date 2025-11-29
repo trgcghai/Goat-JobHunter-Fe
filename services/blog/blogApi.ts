@@ -30,10 +30,10 @@ export const blogApi = api.injectEndpoints({
     }),
 
     updateBlog: builder.mutation<UpdateBlogResponse, UpdateBlogRequest>({
-      query: ({ blogId, blog }) => ({
+      query: (data) => ({
         url: "/blogs",
         method: "PUT",
-        data: { ...blog, blogId }
+        data
       }),
       invalidatesTags: ["Blog"]
     }),
@@ -138,7 +138,7 @@ export const blogApi = api.injectEndpoints({
             'draft'
           ],
           textSearchFields: ["title"], // Dùng LIKE search
-          defaultSort: "updatedAt,desc",
+          defaultSort: "createdAt,updatedAt,desc",
         });
 
         return {

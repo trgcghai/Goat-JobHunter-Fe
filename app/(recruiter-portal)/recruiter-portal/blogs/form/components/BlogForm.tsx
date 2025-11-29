@@ -1,6 +1,7 @@
 "use client";
 
 import { BlogFormData } from "@/app/(recruiter-portal)/recruiter-portal/blogs/form/components/schema";
+import BannerUpload from "@/app/(recruiter-portal)/recruiter-portal/blogs/form/components/BannerUpload";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -28,18 +29,44 @@ interface BlogFormProps {
   isCreating: boolean;
   isUpdating: boolean;
   isEditMode: boolean;
+  bannerUrl: string;
+  onBannerChange: (url: string) => void;
+  onFileSelect: (file: File | null) => void;
+  isUploading: boolean;
 }
 
 const BlogForm = ({
-                    form,
-                    onSubmit,
-                    isCreating,
-                    isUpdating,
-                    isEditMode
-                  }: BlogFormProps) => {
+  form,
+  onSubmit,
+  isCreating,
+  isUpdating,
+  isEditMode,
+  bannerUrl,
+  onBannerChange,
+  onFileSelect,
+  isUploading,
+}: BlogFormProps) => {
+  const isSubmitting = isCreating || isUpdating || isUploading;
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Banner bài viết</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <BannerUpload
+              value={bannerUrl}
+              onChange={onBannerChange}
+              onFileSelect={onFileSelect}
+            />
+            <p className="text-xs text-muted-foreground mt-2">
+              Banner là không bắt buộc
+            </p>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle>Thông tin cơ bản</CardTitle>
@@ -179,7 +206,7 @@ const BlogForm = ({
             type="button"
             variant="outline"
             className="rounded-xl"
-            disabled={isCreating || isUpdating}
+            disabled={isSubmitting}
             onClick={() => {
               form.reset();
               form.clearErrors();
@@ -190,9 +217,9 @@ const BlogForm = ({
           <Button
             type="submit"
             className="rounded-xl"
-            disabled={isCreating || isUpdating}
+            disabled={isSubmitting}
           >
-            {isCreating || isUpdating ? (
+            {isSubmitting ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
                 {isEditMode ? "Đang cập nhật..." : "Đang tạo..."}

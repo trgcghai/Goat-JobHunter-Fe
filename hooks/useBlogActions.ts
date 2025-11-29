@@ -108,12 +108,9 @@ const useBlogActions = () => {
 
   // Create blog
   const handleCreateBlog = useCallback(
-    async (data: BlogFormData) => {
+    async (data: BlogFormData & { banner: string }) => {
       try {
-        const response = await createBlog({
-          ...data,
-          banner: "" // Add banner upload logic later
-        }).unwrap();
+        const response = await createBlog(data).unwrap();
 
         if (response.data) {
           toast.success("Tạo bài viết thành công!");
@@ -130,12 +127,14 @@ const useBlogActions = () => {
 
   // Update blog
   const handleUpdateBlog = useCallback(
-    async (blogId: number, data: BlogFormData) => {
+    async (blogId: number, data: BlogFormData & { banner: string }) => {
+
+      console.log({ blogId, data });
+
       try {
         const response = await updateBlog({
           ...data,
-          blogId: blogId.toString(),
-          banner: "" // Add banner upload logic later
+          blogId: blogId.toString()
         }).unwrap();
 
         if (response.data) {

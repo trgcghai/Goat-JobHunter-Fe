@@ -12,11 +12,12 @@ import useBlogActions from "@/hooks/useBlogActions";
 import {
   useFetchBlogByIdQuery,
 } from "@/services/blog/blogApi";
+import { useUploadSingleFileMutation } from "@/services/upload/uploadApi";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -25,10 +26,15 @@ export default function BlogFormPage() {
   const searchParams = useSearchParams();
   const blogId = searchParams.get("blogId");
 
+  const [bannerUrl, setBannerUrl] = useState<string>("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
   const { handleCreateBlog, handleUpdateBlog, isCreating, isUpdating } =
     useBlogActions();
 
-  // Fetch blog data if blogId exists (edit mode)
+  const [uploadFile, { isLoading: isUploading }] =
+    useUploadSingleFileMutation();
+
   const {
     data: blogData,
     isLoading: isLoadingBlog,
@@ -57,20 +63,61 @@ export default function BlogFormPage() {
       form.setValue("content", blog.content);
       form.setValue("tags", blog.tags);
       form.setValue("draft", blog.draft || false);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setBannerUrl(blog.banner || "");
     }
   }, [form, blog]);
 
-  const onSubmit = async (data: BlogFormData) => {
-    console.log("Submitted data: ", data);
+  const handleUploadBanner = async (): Promise<string> => {
+    if (!selectedFile) return bannerUrl;
 
-    if (blog) {
-      await handleUpdateBlog(Number(blogId), data);
-      toast.success("Cập nhật bài viết thành công");
-    } else {
-      await handleCreateBlog(data);
-      toast.success("Tạo bài viết thành công");
+    try {
+      const response = await uploadFile({
+        file: selectedFile,
+        folderType: "blogs",
+      }).unwrap();
+
+      if (response.data?.url) {
+        const uploadedUrl = response.data.url;
+        setBannerUrl(uploadedUrl);
+        setSelectedFile(null);
+        return uploadedUrl;
+      }
+
+      return bannerUrl;
+    } catch (error) {
+      console.error("Failed to upload banner:", error);
+      toast.error("Không thể tải ảnh lên. Vui lòng thử lại.");
+      throw error;
     }
-    router.push("/recruiter-portal/blogs");
+  };
+
+  const onSubmit = async (data: BlogFormData) => {
+    try {
+      let finalBannerUrl = bannerUrl;
+
+      // Upload banner if file is selected
+      if (selectedFile) {
+        finalBannerUrl = await handleUploadBanner();
+      }
+
+      const blogData = {
+        ...data,
+        banner: finalBannerUrl,
+      };
+
+      if (blog) {
+        await handleUpdateBlog(Number(blogId), blogData);
+        toast.success("Cập nhật bài viết thành công");
+      } else {
+        await handleCreateBlog(blogData);
+        toast.success("Tạo bài viết thành công");
+      }
+
+      router.push("/recruiter-portal/blogs");
+    } catch (error) {
+      console.error("Submit failed:", error);
+    }
   };
 
   if (isLoadingBlog) {
@@ -125,6 +172,10 @@ export default function BlogFormPage() {
         isCreating={isCreating}
         isUpdating={isUpdating}
         isEditMode={!!blog}
+        bannerUrl={bannerUrl}
+        onBannerChange={setBannerUrl}
+        onFileSelect={setSelectedFile}
+        isUploading={isUploading}
       />
     </div>
   );
