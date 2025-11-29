@@ -2,56 +2,30 @@
 
 import { Button } from "@/components/ui/button";
 import { Trash2, EyeOff, Eye } from "lucide-react";
-import { useMemo, useState } from "react";
 import ConfirmDialog from "@/components/ConfirmDialog";
+import { useBlogConfirmDialog } from "@/app/(recruiter-portal)/recruiter-portal/blogs/hooks/useBlogConfirmDialog";
 
 interface BlogActionsProps {
   selectedCount: number;
   selectedIds: number[];
 }
 
-type ActionType = "publish" | "delete" | null;
-
 export default function BlogActions({
   selectedCount,
   selectedIds,
 }: BlogActionsProps) {
-  const [actionType, setActionType] = useState<ActionType>(null);
-
-  const handleConfirm = async () => {
-    try {
-      if (actionType === "delete") {
-        // Add delete logic
-      } else if (actionType === "publish") {
-        // Add publish logic
-      }
-      setActionType(null);
-    } catch (error) {
-      console.error("Action failed", error);
-    }
-  };
-
-  const dialogConfig = useMemo(() => {
-    if (actionType === "delete") {
-      return {
-        title: "Xóa bài viết?",
-        description: `Hành động này không thể hoàn tác. ${selectedCount} bài viết sẽ bị xóa vĩnh viễn.`,
-        confirmText: "Xóa bài viết",
-        confirmBtnClass: "bg-destructive text-destructive-foreground hover:bg-destructive/90 text-white",
-      };
-    }
-
-    if (actionType === "publish") {
-      return {
-        title: "Xuất bản bài viết?",
-        description: `${selectedCount} bài viết sẽ được công khai.`,
-        confirmText: "Xuất bản",
-        confirmBtnClass: "bg-green-600 text-white hover:bg-green-700",
-      };
-    }
-
-    return { title: "", description: "" };
-  }, [actionType, selectedCount]);
+  const { actionType, dialogConfig, openDialog, closeDialog, handleConfirm } =
+    useBlogConfirmDialog({
+      onConfirm: async (type, ids) => {
+        if (type === "delete") {
+          // Add delete logic
+        } else if (type === "enable") {
+          // Add enable logic
+        } else if (type === "disable") {
+          // Add disable logic
+        }
+      },
+    });
 
   if (selectedCount === 0) return null;
 
@@ -63,36 +37,38 @@ export default function BlogActions({
         </span>
         <div className="flex gap-4 ml-auto">
           <Button
-            className={"rounded-xl text-orange-500 hover:text-orange-600 hover:bg-orange-50 border-orange-200"}
-            variant={"outline"}
-            title="Ẩn bài viết"
+            variant="outline"
+            size="sm"
+            onClick={() => openDialog("enable", selectedIds)}
+            className="text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200 rounded-xl"
           >
-            <EyeOff className={"h-4 w-4"} />
-            Ẩn bài viết
+            <Eye className="h-4 w-4" />
+            Hiển thị
           </Button>
           <Button
-            className={"rounded-xl text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200"}
-            variant={"outline"}
-            title="Hiển thị bài viết"
+            variant="outline"
+            size="sm"
+            onClick={() => openDialog("disable", selectedIds)}
+            className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 border-orange-200 rounded-xl"
           >
-            <Eye className={"h-4 w-4"} />
-            Hiển thị bài viết
+            <EyeOff className="h-4 w-4" />
+            Ẩn
           </Button>
           <Button
             variant="destructive"
             size="sm"
-            onClick={() => setActionType("delete")}
+            onClick={() => openDialog("delete", selectedIds)}
             className="gap-2 rounded-xl"
           >
             <Trash2 className="h-4 w-4" />
-            Xóa bài viết
+            Xóa
           </Button>
         </div>
       </div>
 
       <ConfirmDialog
         open={!!actionType}
-        onOpenChange={(open) => !open && setActionType(null)}
+        onOpenChange={(open) => !open && closeDialog()}
         title={dialogConfig.title}
         description={dialogConfig.description}
         confirmText={dialogConfig.confirmText}

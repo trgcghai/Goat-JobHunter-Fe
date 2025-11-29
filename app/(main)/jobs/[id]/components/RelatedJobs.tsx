@@ -3,6 +3,14 @@ import ErrorMessage from "@/components/ErrorMessage";
 import LoaderSpin from "@/components/LoaderSpin";
 import { Card } from "@/components/ui/card";
 import { Job } from "@/types/model";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle
+} from "@/components/ui/empty";
 
 interface RelatedJobsProps {
   jobs: Job[];
@@ -21,12 +29,22 @@ function RelatedJobs({ jobs, isLoading, isError }: RelatedJobsProps) {
         <ErrorMessage message="Không thể tải các công việc liên quan." />
       )}
 
+      {jobs.length === 0 &&
+        <Empty>
+          <EmptyHeader>
+            <EmptyTitle>Không tìm thấy việc làm nào</EmptyTitle>
+            <EmptyDescription>Vui lòng tìm kiếm các việc làm khác hoặc thử lại sau.</EmptyDescription>
+          </EmptyHeader>
+        </Empty>
+      }
+
       <div className="flex flex-col gap-2">
-        {jobs.map((relatedJob) => (
+        {jobs && jobs.map((relatedJob) => (
           <JobCard key={relatedJob.jobId} job={relatedJob} viewMode="list" />
         ))}
       </div>
     </Card>
   );
 }
+
 export default RelatedJobs;
