@@ -6,7 +6,7 @@ export  const emailApi = api.injectEndpoints({
   endpoints: (builder) => ({
     sendInvitationEmail: builder.mutation<void, SendInvitationEmailRequest>({
       query: (data) => ({
-        url: "/email/invitations",
+        url: "/email/jobs",
         method: "POST",
         data
       })
