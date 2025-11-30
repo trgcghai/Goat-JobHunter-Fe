@@ -50,7 +50,7 @@ export type FetchJobsRequest = {
 export type FetchJobsResponse = IBackendRes<IModelPaginate<Job>>;
 
 export type FetchJobByRecruiterRequest = {
-  recruiterId: string;
+  recruiterId: number;
 } & Omit<FetchJobsRequest, "active">;
 
 export type FetchJobByCurrentRecruiterRequest = FetchJobsRequest;

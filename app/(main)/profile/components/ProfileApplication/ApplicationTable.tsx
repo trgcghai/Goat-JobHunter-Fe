@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useFetchApplicationsByApplicantQuery } from "@/services/application/applicationApi";
+import { useFetchApplicationsByCurrentApplicantQuery } from "@/services/application/applicationApi";
 import { Application } from "@/types/model";
 import { formatDate } from "@/utils/formatDate";
 import { capitalize } from "lodash";
@@ -27,7 +27,7 @@ const ApplicationTable = () => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const { data, isLoading, isError, isSuccess, refetch } =
-    useFetchApplicationsByApplicantQuery({
+    useFetchApplicationsByCurrentApplicantQuery({
       page: currentPage,
     });
 

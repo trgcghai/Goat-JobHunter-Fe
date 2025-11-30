@@ -1,4 +1,3 @@
-// typescript
 import { useCallback } from "react";
 import {
   useActivateUsersMutation,
