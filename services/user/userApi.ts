@@ -42,7 +42,7 @@ export const userApi = api.injectEndpoints({
           },
           defaultSort: "createdAt,desc",
           sortableFields: ["createdAt", "updatedAt"]
-        })
+        });
 
         return {
           url: "/users",
@@ -242,6 +242,26 @@ export const userApi = api.injectEndpoints({
         body
       }),
       invalidatesTags: ["Notifications"]
+    }),
+
+    // activate users - set enabled to true
+    activateUsers: builder.mutation({
+      query: (userIds: number[]) => ({
+        url: "/users/activate",
+        method: "PUT",
+        data: { userIds }
+      }),
+      invalidatesTags: ["User", "Recruiter", "Applicant"]
+    }),
+
+    // deactivate users - set enabled to false
+    deactivateUsers: builder.mutation({
+      query: (userIds: number[]) => ({
+        url: "/users/deactivate",
+        method: "PUT",
+        data: { userIds }
+      }),
+      invalidatesTags: ["User", "Recruiter", "Applicant"]
     })
   })
 });
@@ -268,5 +288,8 @@ export const {
   // hooks for user's notifications endpoints
   useGetUsersNotificationsQuery,
   useGetLatestNotificationsQuery,
-  useMarkNotificationsAsSeenMutation
+  useMarkNotificationsAsSeenMutation,
+
+  useActivateUsersMutation,
+  useDeactivateUsersMutation
 } = userApi;
