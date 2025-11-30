@@ -45,7 +45,7 @@ export const WORKING_TYPE_OPTIONS = [
 
 export const ROLE_LIST = [
   { label: "Admin", value: "SUPER_ADMIN" },
-  { label: "HR", value: "HR" },
+  { label: "Nhà tuyển dụng", value: "HR" },
   { label: "Ứng viên", value: "APPLICANT" },
 ];
 

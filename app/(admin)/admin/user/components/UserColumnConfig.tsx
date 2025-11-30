@@ -5,6 +5,7 @@ import { UserActionsCell } from "./UserActionsCell";
 import { formatDate } from "@/utils/formatDate";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "@/components/dataTable/DataTableColumnHeader";
+import { ROLE_LIST } from "@/constants/constant";
 
 export const userColumns: ColumnDef<User>[] = [
   {
@@ -97,7 +98,7 @@ export const userColumns: ColumnDef<User>[] = [
       }
 
       return (
-        <Badge variant={roleVariant[role.name]}>{role.name}</Badge>
+        <Badge variant={roleVariant[role.name]}>{ROLE_LIST.find(r => r.value == role.name)?.label || "-"}</Badge>
       );
     }
   },

@@ -13,6 +13,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { UserFilterType } from "../hooks/useUsersManagement";
 import { debounce } from "lodash";
 import { Button } from "@/components/ui/button";
+import { ROLE_LIST } from "@/constants/constant";
 
 interface UserFilterProps {
   filters: UserFilterType;
@@ -99,9 +100,9 @@ export function UserFilter({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Tất cả vai trò</SelectItem>
-            <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
-            <SelectItem value="APPLICANT">Applicant</SelectItem>
-            <SelectItem value="HR">HR</SelectItem>
+            {ROLE_LIST.map(role => {
+              return <SelectItem key={role.value} value={role.value}>{role.label}</SelectItem>
+            })}
           </SelectContent>
         </Select>
 
