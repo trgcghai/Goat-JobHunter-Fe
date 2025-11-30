@@ -1,16 +1,85 @@
+"use client";
+
+import { Loader2 } from "lucide-react";
+import { UserFilter } from "./components/UserFilter";
+import { UserTable } from "./components/UserTable";
+import useUsersManagement from "./hooks/useUsersManagement";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import UserActions from "./components/UserActions";
+import { useState } from "react";
+import { User } from "@/types/model";
+import ErrorMessage from "@/components/ErrorMessage";
+import { DataTablePagination } from "@/components/dataTable/DataTablePagination";
+
 const AdminUserPage = () => {
+  const {
+    users,
+    meta,
+    page,
+    size,
+    filters,
+    isLoading,
+    isError,
+    handlePageChange,
+    handleSizeChange,
+    handleFilterChange,
+    resetFilters
+  } = useUsersManagement();
+  const [selectedItems, setSelectedItems] = useState<User[]>([]);
+
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-semibold text-foreground">
-            Quản lý người dùng
-          </h2>
-          <p className="text-muted-foreground text-sm mt-1">
-            Quản lý tất cả người dùng trong hệ thống
-          </p>
-        </div>
-      </div>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-xl font-semibold">Quản lý người dùng</h1>
+            <p className="text-sm text-muted-foreground">
+              Quản lý tất cả người dùng trong hệ thống
+            </p>
+          </div>
+          {isLoading && (
+            <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+          )}
+        </CardHeader>
+
+        <CardContent>
+          <UserFilter
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            onResetFilters={resetFilters}
+          />
+
+          {isError && (
+            <ErrorMessage
+              message="Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại sau."
+            />
+          )}
+
+          {!isError && (
+            <>
+              <UserActions
+                selectedCount={selectedItems.length}
+                selectedIds={selectedItems.map((item) => item.userId)}
+              />
+
+              <UserTable
+                users={users}
+                onSelectionChange={setSelectedItems}
+              />
+
+              <DataTablePagination
+                currentPage={page}
+                totalPages={meta.pages}
+                pageSize={size}
+                totalItems={meta.total}
+                currentItemsCount={users.length}
+                onPageChange={handlePageChange}
+                onSizeChange={handleSizeChange}
+              />
+            </>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };

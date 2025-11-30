@@ -11,9 +11,9 @@ import type {
 export type FetchUsersRequest = {
   page?: number;
   size?: number;
-  sortBy?: string;
-  keyword?: string;
-  type?: "recruiter" | "applicant";
+  email?: string;
+  phone?: string;
+  role?: string;
   enabled?: boolean;
 };
 

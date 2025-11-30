@@ -22,25 +22,42 @@ import type {
   SaveJobsRequest,
   SaveJobsResponse,
   UpdatePasswordRequest,
-  UpdatePasswordResponse,
+  UpdatePasswordResponse
 } from "./userType";
 
 export const userApi = api.injectEndpoints({
+  overrideExisting: true,
   endpoints: (builder) => ({
     fetchUsers: builder.query<FetchUsersResponse, FetchUsersRequest>({
-      query: (params) => ({
-        url: "/users",
-        method: "GET",
-        params,
-      }),
-      providesTags: ["User"],
+      query: (params) => {
+
+        const { params: queryParams } = buildSpringQuery({
+          params,
+          filterFields: ["email, phone, role, enabled"],
+          textSearchFields: ["email", "phone"], // Dùng LIKE search
+          nestedFields: {
+            role: "role.name",
+            email: "contact.email",
+            phone: "contact.phone"
+          },
+          defaultSort: "createdAt,desc",
+          sortableFields: ["createdAt", "updatedAt"]
+        })
+
+        return {
+          url: "/users",
+          method: "GET",
+          params: queryParams
+        };
+      },
+      providesTags: ["User"]
     }),
 
     fetchUserByEmail: builder.mutation<FetchUserByEmailResponse, void>({
       query: () => ({
         url: "/users",
-        method: "POST",
-      }),
+        method: "POST"
+      })
     }),
 
     updatePassword: builder.mutation<
@@ -50,8 +67,8 @@ export const userApi = api.injectEndpoints({
       query: (data) => ({
         url: "/users/update-password",
         method: "PUT",
-        data,
-      }),
+        data
+      })
     }),
 
     resetPassword: builder.mutation<
@@ -61,26 +78,26 @@ export const userApi = api.injectEndpoints({
       query: (data) => ({
         url: "/users/reset-password",
         method: "PUT",
-        data,
-      }),
+        data
+      })
     }),
 
     // Saved Jobs APIs
     getSavedJobs: builder.query<GetSavedJobsResponse, void>({
       query: () => ({
         url: "/users/me/saved-jobs",
-        method: "GET",
+        method: "GET"
       }),
       providesTags: (result) =>
         result?.data
           ? [
-              ...result.data.map((job) => ({
-                type: "SavedJob" as const,
-                id: job.jobId,
-              })),
-              { type: "SavedJob", id: "LIST" },
-            ]
-          : [{ type: "SavedJob", id: "LIST" }],
+            ...result.data.map((job) => ({
+              type: "SavedJob" as const,
+              id: job.jobId
+            })),
+            { type: "SavedJob", id: "LIST" }
+          ]
+          : [{ type: "SavedJob", id: "LIST" }]
     }),
 
     checkSavedJobs: builder.query<
@@ -90,45 +107,45 @@ export const userApi = api.injectEndpoints({
       query: (params) => ({
         url: "/users/me/saved-jobs/contains",
         method: "GET",
-        params: { jobIds: params.jobIds },
+        params: { jobIds: params.jobIds }
       }),
       providesTags: (_, __, arg) =>
         arg.jobIds
           ? arg.jobIds.map((jobId) => ({
-              type: "SavedJob" as const,
-              id: jobId,
-            }))
-          : [],
+            type: "SavedJob" as const,
+            id: jobId
+          }))
+          : []
     }),
 
     saveJobs: builder.mutation<SaveJobsResponse, SaveJobsRequest>({
       query: (data) => ({
         url: "/users/me/saved-jobs",
         method: "PUT",
-        data,
+        data
       }),
       invalidatesTags: (_, __, arg) => [
         { type: "SavedJob", id: "LIST" },
         ...arg.jobIds.map((jobId) => ({
           type: "SavedJob" as const,
-          id: jobId,
-        })),
-      ],
+          id: jobId
+        }))
+      ]
     }),
 
     unsaveJobs: builder.mutation<SaveJobsResponse, SaveJobsRequest>({
       query: (data) => ({
         url: "/users/me/saved-jobs",
         method: "DELETE",
-        data,
+        data
       }),
       invalidatesTags: (_, __, arg) => [
         { type: "SavedJob", id: "LIST" },
         ...arg.jobIds.map((jobId) => ({
           type: "SavedJob" as const,
-          id: jobId,
-        })),
-      ],
+          id: jobId
+        }))
+      ]
     }),
 
     // Follow Recruiters APIs for current user
@@ -136,9 +153,9 @@ export const userApi = api.injectEndpoints({
     getFollowedRecruiters: builder.query<GetFollowedRecruiters, void>({
       query: () => ({
         url: "/users/me/followed-recruiters",
-        method: "GET",
+        method: "GET"
       }),
-      providesTags: ["User"],
+      providesTags: ["User"]
     }),
 
     // Check if recruiters are followed. Pass recruiterIds: number[]
@@ -148,8 +165,8 @@ export const userApi = api.injectEndpoints({
     >({
       query: ({ recruiterIds }) => ({
         url: "/users/me/followed-recruiters/contains",
-        params: { recruiterIds }, // array -> repeated param
-      }),
+        params: { recruiterIds } // array -> repeated param
+      })
     }),
 
     // Follow recruiters (body: { recruiterIds: number[] }), returns UserResponse
@@ -160,9 +177,9 @@ export const userApi = api.injectEndpoints({
       query: (data) => ({
         url: "/users/me/followed-recruiters",
         method: "PUT",
-        data,
+        data
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["User"]
     }),
 
     // Unfollow recruiters (DELETE with body { recruiterIds })
@@ -173,9 +190,9 @@ export const userApi = api.injectEndpoints({
       query: (data) => ({
         url: "/users/me/followed-recruiters",
         method: "DELETE",
-        data,
+        data
       }),
-      invalidatesTags: ["User"],
+      invalidatesTags: ["User"]
     }),
 
     // Notification APIs: mark as read, get, get latest
@@ -190,16 +207,16 @@ export const userApi = api.injectEndpoints({
           filterFields: [], // Không filter
           textSearchFields: [], // Không dùng LIKE search
           nestedArrayFields: {}, // Không có nested array
-          defaultSort: "createdAt,desc",
+          defaultSort: "createdAt,desc"
         });
 
         return {
           url: "/users/me/notifications",
           method: "GET",
-          params: queryParams,
+          params: queryParams
         };
       },
-      providesTags: ["Notifications"],
+      providesTags: ["Notifications"]
     }),
 
     // GET /users/me/notifications/latest - Lấy 10 notifications mới nhất
@@ -209,9 +226,9 @@ export const userApi = api.injectEndpoints({
     >({
       query: () => ({
         url: "/users/me/notifications/latest",
-        method: "GET",
+        method: "GET"
       }),
-      providesTags: ["Notifications"],
+      providesTags: ["Notifications"]
     }),
 
     // PUT /users/me/notifications - Đánh dấu notifications đã xem
@@ -222,11 +239,11 @@ export const userApi = api.injectEndpoints({
       query: (body) => ({
         url: "/users/me/notifications",
         method: "PUT",
-        body,
+        body
       }),
-      invalidatesTags: ["Notifications"],
-    }),
-  }),
+      invalidatesTags: ["Notifications"]
+    })
+  })
 });
 
 export const {
@@ -251,5 +268,5 @@ export const {
   // hooks for user's notifications endpoints
   useGetUsersNotificationsQuery,
   useGetLatestNotificationsQuery,
-  useMarkNotificationsAsSeenMutation,
+  useMarkNotificationsAsSeenMutation
 } = userApi;
