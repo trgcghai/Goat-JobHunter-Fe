@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Message {
   id: string;
@@ -124,10 +125,10 @@ export function AIChatPopup() {
       )}
 
       {isOpen && (
-        <Card className="fixed bottom-6 right-6 w-96 h-[600px] shadow-2xl flex flex-col z-50 py-0 rounded-xl">
+        <Card className="fixed bottom-6 right-6 w-96 h-[600px] shadow-2xl flex flex-col z-50 py-0 rounded-xl gap-0">
           <div className="flex items-center justify-between p-4 border-b bg-primary text-white rounded-t-lg">
             <div className="flex items-center gap-2">
-              <h3 className="font-semibold text-base">Trợ lý AI</h3>
+              <h3 className="text-base">Trợ lý AI</h3>
               <Link
                 href="/chat"
                 title="Mở trong cửa sổ chat mới"
@@ -156,18 +157,18 @@ export function AIChatPopup() {
                 </p>
               </div>
             ) : (
-              <div className="space-y-4">
+              <ScrollArea className="space-y-4 h-full -mr-4">
                 {messages.map((message) => (
                   <div
                     key={message.id}
                     className={cn(
                       "flex",
-                      message.role === "user" ? "justify-end" : "justify-start"
+                      message.role === "user" ? "justify-end mr-4" : "justify-start"
                     )}
                   >
                     <div
                       className={cn(
-                        "max-w-[80%] rounded-lg px-4 py-2 text-sm prose prose-sm",
+                        "max-w-[80%] rounded-xl px-4 py-2 text-sm prose prose-sm",
                         message.role === "user"
                           ? "bg-primary text-white prose-invert"
                           : "bg-white border"
@@ -187,7 +188,7 @@ export function AIChatPopup() {
                   </div>
                 )}
                 <div ref={messagesEndRef} />
-              </div>
+              </ScrollArea>
             )}
           </div>
 

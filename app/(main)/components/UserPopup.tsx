@@ -17,7 +17,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 export default function UserPopup() {
-  const { user, signOut, isSigningOut } = useUser();
+  const { user, signOut, isSigningOut, isSignedIn } = useUser();
   const [imageError, setImageError] = useState(false);
 
   const handleLogout = async () => {
@@ -25,6 +25,10 @@ export default function UserPopup() {
   };
 
   const hasAvatar = user?.avatar && !imageError;
+
+  if (!user || !isSignedIn) {
+    return null;
+  }
 
   return (
     <DropdownMenu>
