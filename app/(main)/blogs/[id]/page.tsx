@@ -20,6 +20,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
+import MarkdownDisplay from "@/components/MarkdownDisplay";
 
 const DetailBlogPage = () => {
   const params = useParams<{ id: string }>();
@@ -142,12 +143,8 @@ const DetailBlogPage = () => {
         )}
 
         <div className="prose prose-lg max-w-none">
-          {blog.content && blog.content.length > 0 ? (
-            blog.content.map((paragraph, index) => (
-              <p key={index} className="mb-4 text-foreground leading-relaxed">
-                {paragraph}
-              </p>
-            ))
+          {blog.content ? (
+            <MarkdownDisplay content={blog.content} />
           ) : (
             <p className="text-foreground leading-relaxed">
               Bài viết này hiện chưa có nội dung.

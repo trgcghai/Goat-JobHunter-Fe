@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Trash2, EyeOff, Eye } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { useBlogConfirmDialog } from "@/app/(recruiter-portal)/recruiter-portal/blogs/hooks/useBlogConfirmDialog";
 import useBlogActions from "@/hooks/useBlogActions";
@@ -17,11 +17,7 @@ export default function BlogActions({
 }: BlogActionsProps) {
   const {
     handleDeleteBlogs,
-    handleEnableBlogs,
-    handleDisableBlogs,
-    isDeleting,
-    isEnabling,
-    isDisabling,
+    isDeleting
   } = useBlogActions();
 
   const { actionType, dialogConfig, openDialog, closeDialog, handleConfirm, isLoading } =
@@ -29,15 +25,9 @@ export default function BlogActions({
       onConfirm: async (type, ids) => {
         if (type === "delete") {
           await handleDeleteBlogs(ids);
-        } else if (type === "enable") {
-          await handleEnableBlogs(ids);
-        } else if (type === "disable") {
-          await handleDisableBlogs(ids);
         }
       },
       isDeleting,
-      isEnabling,
-      isDisabling,
     });
 
   if (selectedCount === 0) return null;
@@ -49,24 +39,24 @@ export default function BlogActions({
           Đã chọn {selectedCount} bài viết
         </span>
         <div className="flex gap-4 ml-auto">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => openDialog("enable", selectedIds)}
-            className="text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200 rounded-xl"
-          >
-            <Eye className="h-4 w-4" />
-            Hiển thị
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => openDialog("disable", selectedIds)}
-            className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 border-orange-200 rounded-xl"
-          >
-            <EyeOff className="h-4 w-4" />
-            Ẩn
-          </Button>
+          {/*<Button*/}
+          {/*  variant="outline"*/}
+          {/*  size="sm"*/}
+          {/*  onClick={() => openDialog("enable", selectedIds)}*/}
+          {/*  className="text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200 rounded-xl"*/}
+          {/*>*/}
+          {/*  <Eye className="h-4 w-4" />*/}
+          {/*  Hiển thị*/}
+          {/*</Button>*/}
+          {/*<Button*/}
+          {/*  variant="outline"*/}
+          {/*  size="sm"*/}
+          {/*  onClick={() => openDialog("disable", selectedIds)}*/}
+          {/*  className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 border-orange-200 rounded-xl"*/}
+          {/*>*/}
+          {/*  <EyeOff className="h-4 w-4" />*/}
+          {/*  Ẩn*/}
+          {/*</Button>*/}
           <Button
             variant="destructive"
             size="sm"

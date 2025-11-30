@@ -2,7 +2,7 @@
 
 import { Blog } from "@/types/model";
 import { Button } from "@/components/ui/button";
-import { Edit, Eye, EyeOff, FileText, Loader2, Trash2 } from "lucide-react";
+import { Edit, FileText, Loader2, Trash2 } from "lucide-react";
 import Link from "next/link";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { useBlogConfirmDialog } from "@/app/(recruiter-portal)/recruiter-portal/blogs/hooks/useBlogConfirmDialog";
@@ -15,10 +15,7 @@ interface BlogActionsCellProps {
 const BlogActionsCell = ({ blog }: BlogActionsCellProps) => {
   const {
     handleDeleteBlogs,
-    handleToggleBlogStatus,
-    isDeleting,
-    isEnabling,
-    isDisabling,
+    isDeleting
   } = useBlogActions();
 
   const { actionType, dialogConfig, openDialog, closeDialog, handleConfirm, isLoading } =
@@ -26,13 +23,9 @@ const BlogActionsCell = ({ blog }: BlogActionsCellProps) => {
       onConfirm: async (type, ids) => {
         if (type === "delete") {
           await handleDeleteBlogs([ids[0]]);
-        } else if (type === "enable" || type === "disable") {
-          await handleToggleBlogStatus(ids[0], blog.enabled);
         }
       },
-      isDeleting,
-      isEnabling,
-      isDisabling,
+      isDeleting
     });
 
   return (
@@ -49,30 +42,30 @@ const BlogActionsCell = ({ blog }: BlogActionsCellProps) => {
           </Button>
         </Link>
 
-        <Button
-          size={"icon"}
-          variant={"outline"}
-          disabled={isLoading}
-          className={`rounded-xl ${
-            blog.enabled
-              ? "text-orange-500 hover:text-orange-600 hover:bg-orange-50 border-orange-200"
-              : "text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200"
-          }`}
-          title={blog.enabled ? "Ẩn bài viết" : "Hiển thị bài viết"}
-          onClick={() =>
-            openDialog(
-              blog.enabled ? "disable" : "enable",
-              [blog.blogId],
-              blog.title
-            )
-          }
-        >
-          {blog.enabled ? (
-            <EyeOff className={"h-4 w-4"} />
-          ) : (
-            <Eye className={"h-4 w-4"} />
-          )}
-        </Button>
+        {/*<Button*/}
+        {/*  size={"icon"}*/}
+        {/*  variant={"outline"}*/}
+        {/*  disabled={isLoading}*/}
+        {/*  className={`rounded-xl ${*/}
+        {/*    blog.enabled*/}
+        {/*      ? "text-orange-500 hover:text-orange-600 hover:bg-orange-50 border-orange-200"*/}
+        {/*      : "text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200"*/}
+        {/*  }`}*/}
+        {/*  title={blog.enabled ? "Ẩn bài viết" : "Hiển thị bài viết"}*/}
+        {/*  onClick={() =>*/}
+        {/*    openDialog(*/}
+        {/*      blog.enabled ? "disable" : "enable",*/}
+        {/*      [blog.blogId],*/}
+        {/*      blog.title*/}
+        {/*    )*/}
+        {/*  }*/}
+        {/*>*/}
+        {/*  {blog.enabled ? (*/}
+        {/*    <EyeOff className={"h-4 w-4"} />*/}
+        {/*  ) : (*/}
+        {/*    <Eye className={"h-4 w-4"} />*/}
+        {/*  )}*/}
+        {/*</Button>*/}
 
         <Link href={`/recruiter-portal/blogs/form?blogId=${blog.blogId}`}>
           <Button
