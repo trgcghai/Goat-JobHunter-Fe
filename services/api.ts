@@ -5,8 +5,8 @@ import { AxiosError, AxiosRequestConfig } from "axios";
 const axiosBaseQuery =
   (
     { baseUrl }: { baseUrl: string } = {
-      baseUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080",
-    },
+      baseUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"
+    }
   ): BaseQueryFn<
     {
       url: string;
@@ -18,31 +18,31 @@ const axiosBaseQuery =
     unknown,
     unknown
   > =>
-  async ({ url, method, data, params, headers }) => {
-    try {
-      const result = await axiosInstance({
-        url: baseUrl + url,
-        method,
-        data,
-        params,
-        headers,
-      });
-      return { data: result.data };
-    } catch (axiosError) {
-      const err = axiosError as AxiosError;
-      return {
-        error: {
-          status: err.response?.status,
-          data: err.response?.data || err.message,
-        },
-      };
-    }
-  };
+    async ({ url, method, data, params, headers }) => {
+      try {
+        const result = await axiosInstance({
+          url: baseUrl + url,
+          method,
+          data,
+          params,
+          headers
+        });
+        return { data: result.data };
+      } catch (axiosError) {
+        const err = axiosError as AxiosError;
+        return {
+          error: {
+            status: err.response?.status,
+            data: err.response?.data || err.message
+          }
+        };
+      }
+    };
 
 export const api = createApi({
   reducerPath: "api",
   baseQuery: axiosBaseQuery({
-    baseUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1",
+    baseUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1"
   }),
   tagTypes: [
     "User",
@@ -59,23 +59,31 @@ export const api = createApi({
     "Role",
     "Subscriber",
     "Notifications",
-    "SavedJob",
+    "SavedJob"
   ],
   endpoints: (builder) => ({
     ping: builder.query<string, void>({
       query: () => ({
         url: "/ping",
-        method: "GET",
-      }),
+        method: "GET"
+      })
     }),
 
     clearCookies: builder.query<unknown, void>({
       query: () => ({
         url: "/clear-cookies",
-        method: "GET",
-      }),
+        method: "GET"
+      })
     }),
-  }),
+
+    aiChat: builder.mutation<string, string>({
+      query: (message: string) => ({
+        url: "/ai/chat",
+        method: "POST",
+        data: { message }
+      })
+    })
+  })
 });
 
-export const { usePingQuery, useClearCookiesQuery } = api;
+export const { usePingQuery, useClearCookiesQuery, useAiChatMutation } = api;

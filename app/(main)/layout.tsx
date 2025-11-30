@@ -1,5 +1,6 @@
 import { Footer, Header } from "@/app/(main)/components";
 import type { Metadata } from "next";
+import { AIChatPopup } from "@/components/AIChatPopup";
 
 export const metadata: Metadata = {
   title: "GOAT - Job Hunter",
@@ -16,6 +17,7 @@ export default function RootLayout({
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />
+      <AIChatPopup />
     </div>
   );
 }
