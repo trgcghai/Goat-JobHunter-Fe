@@ -1,5 +1,3 @@
-import PermissionsTable from "@/app/(admin)/admin/permission/PermissionsTable";
-
 const AdminPermissionPage = () => {
   return (
     <div className="space-y-4">
@@ -13,7 +11,6 @@ const AdminPermissionPage = () => {
           </p>
         </div>
       </div>
-      <PermissionsTable />
     </div>
   );
 };

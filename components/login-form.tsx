@@ -58,7 +58,19 @@ export function LoginForm({
       console.log(result.user);
 
       if (result.success) {
-        router.push(result.user?.type == "HR" ? "/recruiter-portal" : "/");
+
+        console.log(result.user);
+
+        switch (result.user?.role.name) {
+          case "SUPER_ADMIN":
+            router.push("/dashboard");
+            return;
+          case "HR":
+            router.push("/recruiter-portal");
+            return;
+          default:
+            router.push("/")
+        }
       } else {
         // xử lý lỗi cụ thể
         if (result.error === "Bad credentials") {

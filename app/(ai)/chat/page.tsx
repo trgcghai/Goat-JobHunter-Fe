@@ -68,7 +68,7 @@ export default function AIChatPage() {
 
             {isLoading && (
               <div className="flex justify-start">
-                <div className="max-w-[80%] rounded-2xl px-4 py-2 bg-muted flex items-center gap-2">
+                <div className="max-w-[80%] rounded-xl px-4 py-2 bg-muted flex items-center gap-2">
                   <Loader2 className="w-4 h-4 animate-spin" />
                   <span className="text-sm text-muted-foreground">
                     Đang suy nghĩ...

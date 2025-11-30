@@ -1,5 +1,3 @@
-import BlogsTable from "@/app/(admin)/admin/blog/BlogsTable";
-
 const AdminBlogPage = () => {
   return (
     <div className="space-y-4">
@@ -13,7 +11,6 @@ const AdminBlogPage = () => {
           </p>
         </div>
       </div>
-      <BlogsTable />
     </div>
   );
 };

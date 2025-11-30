@@ -1,5 +1,6 @@
 import Sidebar, { SidebarTab } from "@/components/Sidebar";
-import { Briefcase, FileText, Lock, Shield, Users } from "lucide-react";
+import { Briefcase, FileText, Lock, MessageCircleCode, Shield, Users } from "lucide-react";
+import { AIChatPopup } from "@/components/AIChatPopup";
 
 const AdminTabs: SidebarTab[] = [
   {
@@ -38,6 +39,13 @@ const AdminTabs: SidebarTab[] = [
     url: "/admin/permission",
     icon: <Lock className="w-4 h-4" />,
   },
+  {
+    id: "chat",
+    label: "Trợ lý AI",
+    url: "/chat",
+    type: "external",
+    icon: <MessageCircleCode className="w-4 h-4" />,
+  }
 ];
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
@@ -48,6 +56,8 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
       <main className="flex-1 ml-64 p-6">
         <div className="space-y-6">{children}</div>
       </main>
+
+      <AIChatPopup />
     </div>
   );
 };

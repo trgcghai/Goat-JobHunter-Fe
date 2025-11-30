@@ -1,5 +1,3 @@
-import UsersTable from "@/app/(admin)/admin/user/UsersTable";
-
 const AdminUserPage = () => {
   return (
     <div className="space-y-4">
@@ -13,7 +11,6 @@ const AdminUserPage = () => {
           </p>
         </div>
       </div>
-      <UsersTable />
     </div>
   );
 };

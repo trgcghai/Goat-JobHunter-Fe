@@ -1,5 +1,3 @@
-import JobsTable from "@/app/(recruiter-portal)/recruiter-portal/jobs/components/JobsTable";
-
 const AdminJobPage = () => {
   return (
     <div className="space-y-4">
@@ -13,7 +11,6 @@ const AdminJobPage = () => {
           </p>
         </div>
       </div>
-      <JobsTable jobs={[]} />
     </div>
   );
 };

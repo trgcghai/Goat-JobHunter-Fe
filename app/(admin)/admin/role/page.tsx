@@ -1,5 +1,3 @@
-import RolesTable from "@/app/(admin)/admin/role/RolesTable";
-
 const AdminRolePage = () => {
   return (
     <div className="space-y-4">
@@ -13,7 +11,6 @@ const AdminRolePage = () => {
           </p>
         </div>
       </div>
-      <RolesTable />
     </div>
   );
 };
