@@ -2,9 +2,10 @@
 import Sidebar, { SidebarTab } from "@/components/Sidebar";
 import { useUser } from "@/hooks/useUser";
 import { useGetMyAccountQuery } from "@/services/auth/authApi";
-import { BookOpen, Briefcase, FileText, Users } from "lucide-react";
+import { BookOpen, Briefcase, FileText, MessageCircleCode, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { AIChatPopup } from "@/components/AIChatPopup";
 
 const RecruiterTabs: SidebarTab[] = [
   {
@@ -37,6 +38,13 @@ const RecruiterTabs: SidebarTab[] = [
     url: "/recruiter-portal/information",
     icon: <Users className="w-4 h-4" />,
   },
+  {
+    id: "chat",
+    label: "Trợ lý AI",
+    url: "/chat",
+    type: "external",
+    icon: <MessageCircleCode className="w-4 h-4" />,
+  }
 ];
 
 const RecruiterLayout = ({ children }: { children: React.ReactNode }) => {
@@ -61,6 +69,8 @@ const RecruiterLayout = ({ children }: { children: React.ReactNode }) => {
       <main className="flex-1 ml-64 p-6">
         <div className="space-y-6">{children}</div>
       </main>
+
+      <AIChatPopup />
     </div>
   );
 };

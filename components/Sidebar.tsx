@@ -11,14 +11,15 @@ export interface SidebarTab {
   id: string;
   label: string;
   url: string;
+  type?: "internal" | "external";
   icon: React.ReactNode;
 }
 
-interface AdminSidebarProps {
+interface SidebarProps {
   tabs: SidebarTab[];
 }
 
-export default function Sidebar({ tabs }: AdminSidebarProps) {
+export default function Sidebar({ tabs }: SidebarProps) {
   const pathname = usePathname();
   const { signOut } = useUser();
 
@@ -39,7 +40,7 @@ export default function Sidebar({ tabs }: AdminSidebarProps) {
       <nav className="space-y-2">
         {tabs.map((tab) => {
           return (
-            <Link key={tab.id} href={tab.url} className="block">
+            <Link key={tab.id} href={tab.url} className="block" target={tab.type == "external" ? "_blank" : "_self"}>
               <Button
                 variant={pathname?.includes(tab.id) ? "default" : "ghost"}
                 className={cn(

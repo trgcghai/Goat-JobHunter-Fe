@@ -26,8 +26,8 @@ export default function AIChatPage() {
   };
 
   return (
-    <div className="h-full flex flex-col">
-      <ScrollArea className="flex-1 overflow-y-auto p-6">
+    <div className="h-full flex flex-col bg-gray-100">
+      <ScrollArea className="flex-1 overflow-y-auto px-6 py-0 pt-4">
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center">
             <div className="w-full max-w-3xl space-y-8">
@@ -43,7 +43,7 @@ export default function AIChatPage() {
             </div>
           </div>
         ) : (
-          <div className="max-w-4xl mx-auto space-y-6">
+          <div className="max-w-4xl mx-auto space-y-4">
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -82,7 +82,7 @@ export default function AIChatPage() {
         )}
       </ScrollArea>
 
-      <div className="border-t p-6 bg-background">
+      <div className="border-t py-4 bg-background">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 bg-card rounded-2xl border border-border shadow-lg p-2 transition-all hover:shadow-xl focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
             <Input

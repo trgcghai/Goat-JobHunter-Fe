@@ -54,7 +54,6 @@ export function useAIChat() {
     const handleClearChat = () => {
       localStorage.removeItem(STORAGE_KEY);
       setMessages([]);
-      toast.success("Đã tạo đoạn chat mới");
     };
 
     window.addEventListener("clearChat", handleClearChat);
