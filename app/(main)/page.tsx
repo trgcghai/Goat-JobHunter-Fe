@@ -5,7 +5,7 @@ import {
   HeroSection,
   LatestBlogs,
 } from "@/app/(main)/components";
-import { useFetchBlogsQuery } from "@/services/blog/blogApi";
+import { useFetchAvailableBlogsQuery } from "@/services/blog/blogApi";
 import { useFetchJobsAvailableQuery } from "@/services/job/jobApi";
 import { useFetchAvailableRecruitersQuery } from "@/services/recruiter/recruiterApi";
 
@@ -14,7 +14,7 @@ export default function Home() {
     data: blogs,
     isLoading: isLoadingBlogs,
     isError: isErrorBlogs,
-  } = useFetchBlogsQuery({
+  } = useFetchAvailableBlogsQuery({
     page: 1,
     size: 3,
   });

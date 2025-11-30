@@ -51,7 +51,7 @@ export const blogApi = api.injectEndpoints({
       query: (params) => {
         const { params: queryParams } = buildSpringQuery({
           params,
-          filterFields: ["title", "content", "status", "authorId"],
+          filterFields: ["title", "content", "draft", "enabled", "authorId"],
           textSearchFields: ["title", "content"], // LIKE search
           nestedArrayFields: {
             tags: "tags.name" // Map tags -> tags.name
@@ -69,6 +69,28 @@ export const blogApi = api.injectEndpoints({
       providesTags: ["Blog"]
     }),
 
+    fetchAvailableBlogs: builder.query<FetchBlogsResponse, FetchBlogsRequest>({
+      query: (params) => {
+        const { params: queryParams } = buildSpringQuery({
+          params,
+          filterFields: ["title", "content", "authorId"],
+          textSearchFields: ["title", "content"], // LIKE search
+          nestedArrayFields: {
+            tags: "tags.name" // Map tags -> tags.name
+          },
+          defaultSort: "createdAt,desc",
+          sortableFields: ["title", "createdAt", "updatedAt"]
+        });
+
+        return {
+          url: "/blogs/available",
+          method: "GET",
+          params: queryParams
+        };
+      },
+      providesTags: ["Blog"]
+    }),
+
     fetchPopularBlogs: builder.query<FetchBlogsResponse, FetchBlogsRequest>({
       query: (params) => {
         // Override sort to prioritize reads and likes
@@ -79,7 +101,7 @@ export const blogApi = api.injectEndpoints({
 
         const { params: queryParams } = buildSpringQuery({
           params: modifiedParams,
-          filterFields: ["title", "content", "status", "authorId"],
+          filterFields: ["title", "content", "authorId"],
           textSearchFields: ["title", "content"],
           nestedArrayFields: {
             tags: "tags.name"
@@ -175,6 +197,7 @@ export const {
   useUpdateBlogMutation,
   useDeleteBlogMutation,
   useFetchBlogsQuery,
+  useFetchAvailableBlogsQuery,
   useFetchPopularBlogsQuery,
   useFetchBlogByIdQuery,
   useLikeBlogMutation,

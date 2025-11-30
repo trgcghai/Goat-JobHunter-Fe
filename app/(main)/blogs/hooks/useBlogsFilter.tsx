@@ -1,4 +1,4 @@
-import { useFetchBlogsQuery } from "@/services/blog/blogApi";
+import { useFetchAvailableBlogsQuery } from "@/services/blog/blogApi";
 import { useMemo, useState } from "react";
 
 export interface BlogFilters {
@@ -58,7 +58,7 @@ export const useBlogsFilter = (options?: UseBlogsFilterOptions) => {
     isFetching,
     isError,
     error,
-  } = useFetchBlogsQuery(queryParams);
+  } = useFetchAvailableBlogsQuery(queryParams);
 
   // Extract data from response
   const blogs = blogsResponse?.data?.result || [];

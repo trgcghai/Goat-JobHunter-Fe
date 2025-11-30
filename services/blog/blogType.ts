@@ -37,6 +37,7 @@ export type FetchBlogsRequest = {
   tags?: string[];
   title?: string;
   draft?: boolean;
+  enabled?: boolean;
 };
 
 export type FetchBlogsResponse = IBackendRes<IModelPaginate<Blog>>;
