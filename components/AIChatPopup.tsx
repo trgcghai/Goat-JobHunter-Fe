@@ -1,114 +1,32 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
 import { X, MessageCircle, Send, ExternalLink, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
-import { useAiChatMutation } from "@/services/api";
-import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import DOMPurify from "dompurify";
-import { marked } from "marked";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
-interface Message {
-  id: string;
-  content: string;
-  role: "user" | "assistant";
-  timestamp: number;
-}
-
-marked.setOptions({
-  breaks: true,
-  gfm: true,
-});
-
-const STORAGE_KEY = "ai-chat-history";
+import { useState } from "react";
+import { useAIChat } from "@/hooks/useAIChat";
 
 export function AIChatPopup() {
   const [isOpen, setIsOpen] = useState(false);
-  const [inputMessage, setInputMessage] = useState("");
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [chat, { isLoading }] = useAiChatMutation();
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  // Load messages from localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setMessages(JSON.parse(saved));
-      } catch (e) {
-        console.error("Error loading chat history", e);
-      }
-    }
-  }, []);
-
-  // Save messages to localStorage
-  useEffect(() => {
-    if (messages.length > 0) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
-    }
-  }, [messages]);
-
-  // Scroll to bottom
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  const handleSendMessage = async () => {
-    if (!inputMessage.trim() || isLoading) return;
-
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      content: inputMessage,
-      role: "user",
-      timestamp: Date.now(),
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-    setInputMessage("");
-
-    try {
-      const response = await chat(inputMessage).unwrap();
-
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: response || "Xin lỗi, tôi không thể trả lời lúc này.",
-        role: "assistant",
-        timestamp: Date.now(),
-      };
-
-      setMessages((prev) => [...prev, aiMessage]);
-    } catch (e) {
-      console.error("Error khi gửi tin nhắn cho AI", e);
-
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: "Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại sau.",
-        role: "assistant",
-        timestamp: Date.now(),
-      };
-
-      setMessages((prev) => [...prev, errorMessage]);
-      toast.error("Có lỗi xảy ra khi gửi tin nhắn.");
-    }
-  };
+  const {
+    inputMessage,
+    setInputMessage,
+    messages,
+    isLoading,
+    messagesEndRef,
+    parseMarkdown,
+    sendMessage,
+  } = useAIChat();
 
   const handleKeyDown = async (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      await handleSendMessage();
+      await sendMessage();
     }
-  };
-
-  const parseMarkdown = (content: string) => {
-    const html = marked.parse(content);
-    // @ts-expect-error DOMPurify types issue
-    return DOMPurify.sanitize(html);
   };
 
   return (
@@ -149,21 +67,24 @@ export function AIChatPopup() {
             </Button>
           </div>
 
-          <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
+          <ScrollArea className="flex-1 p-4 overflow-y-auto bg-gray-50">
             {messages.length === 0 ? (
               <div className="text-center text-gray-500 text-sm">
                 <p>
-                  Chào bạn! Tôi là trợ lý AI thông minh của &#34;Goat Tìm Kiếm Việc Làm&#34;, rất vui được hỗ trợ bạn.
+                  Chào bạn! Tôi là trợ lý AI thông minh của &#34;Goat Tìm Kiếm
+                  Việc Làm&#34;, rất vui được hỗ trợ bạn.
                 </p>
               </div>
             ) : (
-              <ScrollArea className="space-y-4 h-full -mr-4">
+              <div className="space-y-4 h-full">
                 {messages.map((message) => (
                   <div
                     key={message.id}
                     className={cn(
                       "flex",
-                      message.role === "user" ? "justify-end mr-4" : "justify-start"
+                      message.role === "user"
+                        ? "justify-end"
+                        : "justify-start"
                     )}
                   >
                     <div
@@ -183,14 +104,16 @@ export function AIChatPopup() {
                   <div className="flex justify-start">
                     <div className="max-w-[80%] rounded-lg px-4 py-2 bg-white border flex items-center gap-2">
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      <span className="text-sm text-gray-500">Đang suy nghĩ...</span>
+                      <span className="text-sm text-gray-500">
+                        Đang suy nghĩ...
+                      </span>
                     </div>
                   </div>
                 )}
                 <div ref={messagesEndRef} />
-              </ScrollArea>
+              </div>
             )}
-          </div>
+          </ScrollArea>
 
           <div className="p-4 border-t bg-white rounded-b-lg">
             <div className="flex gap-2">
@@ -206,7 +129,7 @@ export function AIChatPopup() {
               <Button
                 size="icon"
                 className="rounded-xl"
-                onClick={handleSendMessage}
+                onClick={() => sendMessage()}
                 disabled={isLoading || !inputMessage.trim()}
               >
                 {isLoading ? (
