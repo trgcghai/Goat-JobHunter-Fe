@@ -27,23 +27,28 @@ export function UserActionsCell({ user }: UserActionsCellProps) {
   };
 
   return (
-    <Button
-      variant="ghost"
-      size="sm"
-      onClick={handleToggleStatus}
-      className="gap-2"
-    >
-      {user.enabled ? (
-        <>
-          <XCircle className="w-4 h-4" />
-          Vô hiệu hóa
-        </>
-      ) : (
-        <>
-          <CheckCircle className="w-4 h-4" />
-          Kích hoạt
-        </>
-      )}
-    </Button>
+    <div className={"flex gap-2 items-center"}>
+      {user.enabled ?
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleToggleStatus}
+          className="rounded-xl text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/20"
+          title={"Vô hiệu hóa người dùng"}
+        >
+          <XCircle className="h-4 w-4" />
+        </Button>
+        :
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleToggleStatus}
+          className="rounded-xl text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200"
+          title={"Kích hoạt người dùng"}
+        >
+          <CheckCircle className="h-4 w-4" />
+        </Button>
+      }
+    </div>
   );
 }

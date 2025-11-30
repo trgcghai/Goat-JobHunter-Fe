@@ -111,7 +111,7 @@ export function UserFilter({
           }
           onValueChange={(value) =>
             onFilterChange({
-              enabled: value === "all" ? undefined : value === "true"
+              enabled: value === "all" ? undefined : value == "true"
             })
           }
         >

@@ -33,7 +33,7 @@ export const userApi = api.injectEndpoints({
 
         const { params: queryParams } = buildSpringQuery({
           params,
-          filterFields: ["email, phone, role, enabled"],
+          filterFields: ["email", "phone", "role", "enabled"],
           textSearchFields: ["email", "phone"], // Dùng LIKE search
           nestedFields: {
             role: "role.name",

@@ -28,7 +28,7 @@ export default function useUsersManagement() {
     if (filters.email) params.email = filters.email;
     if (filters.phone) params.phone = filters.phone;
     if (filters.role) params.role = filters.role;
-    if (filters.enabled) params.enabled = filters.enabled;
+    if (filters.enabled != undefined) params.enabled = filters.enabled;
 
     return params;
   }, [page, size, filters]);

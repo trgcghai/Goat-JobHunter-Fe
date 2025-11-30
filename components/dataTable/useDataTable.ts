@@ -5,7 +5,6 @@ import {
   VisibilityState,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -14,14 +13,12 @@ import { useState } from "react";
 interface UseDataTableProps<TData> {
   data: TData[];
   columns: ColumnDef<TData>[];
-  pageSize?: number;
   enableRowSelection?: boolean;
 }
 
 export function useDataTable<TData>({
   data,
   columns,
-  pageSize = 10,
   enableRowSelection = true,
 }: UseDataTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -35,7 +32,6 @@ export function useDataTable<TData>({
     columns,
     enableRowSelection,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
@@ -47,11 +43,6 @@ export function useDataTable<TData>({
       columnFilters,
       columnVisibility,
       rowSelection,
-    },
-    initialState: {
-      pagination: {
-        pageSize,
-      },
     },
   });
 
