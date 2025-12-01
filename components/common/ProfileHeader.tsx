@@ -4,8 +4,7 @@ import UpdateAvatarDialog from "@/app/(main)/profile/components/UpdateAvatarDial
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/hooks/useUser";
-import { capitalize } from "lodash";
-import { Camera, Mail, Shield, User as UserIcon } from "lucide-react";
+import { Camera, Mail, User as UserIcon } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
