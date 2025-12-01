@@ -95,7 +95,7 @@ export default function RoleActionsCell({ role }: RoleActionsCellProps) {
         }
         description={actionType === "delete" ? "Hành động này không thể hoàn tác." : undefined}
         confirmText={actionType === "delete" ? "Xóa" : actionType === "activate" ? "Kích hoạt" : "Vô hiệu hóa"}
-        confirmBtnClass={actionType === "delete" ? "bg-destructive text-white" : "bg-primary text-white"}
+        confirmBtnClass={actionType === "delete" || actionType === "deactivate" ? "bg-destructive text-white" : "bg-primary text-white"}
         onConfirm={handleConfirm}
         isLoading={isDeleting || isActivating || isDeactivating}
         disableCancel={isDeleting || isActivating || isDeactivating}

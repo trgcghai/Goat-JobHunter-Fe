@@ -1,9 +1,9 @@
 "use client";
-import type { Permission, Role } from "@/types/model";
+import type { Role } from "@/types/model";
 import { useFetchPermissionsQuery } from "@/services/permission/permissionApi";
 import ErrorMessage from "@/components/common/ErrorMessage";
 import LoaderSpin from "@/components/common/LoaderSpin";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -22,7 +22,7 @@ import {
   AccordionContent
 } from "@/components/ui/accordion";
 import { capitalize } from "lodash";
-import useRoleAndPermissionActions from "@/hooks/useRoleAndPermissionActions";
+import useManagePermissions from "@/app/(admin)/admin/role/hooks/useManagementPermissions";
 
 interface ManagementPermissionDialogProps {
   role: Role;
@@ -31,101 +31,18 @@ interface ManagementPermissionDialogProps {
 }
 
 export default function ManagePermissionsDialog({ role, open, onOpenChange }: ManagementPermissionDialogProps) {
-  const { data, isLoading, isError } = useFetchPermissionsQuery({
-    size: 120
-  });
-  const { handleUpdateRole, isUpdating } = useRoleAndPermissionActions();
+  const { data, isLoading, isError } = useFetchPermissionsQuery({ size: 120 });
   const permissions = useMemo(() => data?.data?.result || [], [data]);
 
-  const modules = useMemo(() => {
-    const mods: Record<string, { permissions: Permission[], total: number, has: number }> = {};
-    permissions.forEach((per) => {
-      const moduleName = per.module || "Chung";
-      if (!mods[moduleName]) {
-        mods[moduleName] = {
-          permissions: [],
-          total: 0,
-          has: 0
-        };
-      }
-      mods[moduleName] = {
-        permissions: [...mods[moduleName].permissions, per],
-        total: mods[moduleName].total + 1,
-        has: mods[moduleName].has + (role.permissions?.some(rp => rp.permissionId === per.permissionId) ? 1 : 0)
-      };
-    });
-    return mods;
-  }, [permissions, role.permissions]);
-
-  // Lấy danh sách quyền gốc của role khi dialog mở
-  const initialPermissions = useMemo(() => role.permissions || [], [role.permissions]);
-  const [current, setCurrent] = useState<Permission[]>(initialPermissions);
-
-  // Reset lại khi dialog mở hoặc role thay đổi
-  useEffect(() => {
-    if (open) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setCurrent(initialPermissions);
-    }
-  }, [open, initialPermissions]);
-
-  const { added, removed } = useMemo(() => {
-    const addedSet = new Set<number>();
-    const removedSet = new Set<number>();
-
-    const initialIds = new Set(initialPermissions.map(p => p.permissionId));
-    const currentIds = new Set(current.map(p => p.permissionId));
-
-    // Những cái có trong current nhưng không có trong initial → cho vào added
-    current.forEach(p => {
-      if (!initialIds.has(p.permissionId)) {
-        addedSet.add(p.permissionId);
-      }
-    });
-
-    // Những cái có trong initial nhưng không còn trong current → cho vào removed
-    initialPermissions.forEach(p => {
-      if (!currentIds.has(p.permissionId)) {
-        removedSet.add(p.permissionId);
-      }
-    });
-
-    return {
-      added: current.filter(p => addedSet.has(p.permissionId)),
-      removed: initialPermissions.filter(p => removedSet.has(p.permissionId))
-    };
-  }, [current, initialPermissions]);
-
-  const hasPermission = (id: number) =>
-    current.some(p => p.permissionId === id);
-
-  const togglePermission = (per: Permission) => {
-    setCurrent(prev => {
-      const exists = prev.some(p => p.permissionId === per.permissionId);
-      if (exists) {
-        return prev.filter(p => p.permissionId !== per.permissionId);
-      } else {
-        return [...prev, per];
-      }
-    });
-  };
-
-  const handleSave = async () => {
-    if (!role) return;
-
-    const updatedRole: Role = {
-      ...role,
-      permissions: current
-    };
-
-    console.log(updatedRole);
-
-    try {
-      await handleUpdateRole(updatedRole);
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  const {
+    modules,
+    added,
+    removed,
+    hasPermission,
+    togglePermission,
+    handleSave,
+    isUpdating
+  } = useManagePermissions(role, permissions, open);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
