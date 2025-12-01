@@ -94,17 +94,16 @@ export type Application = {
 };
 
 export type Permission = {
-  permissionId?: string;
-  apiPath?: string;
-  method?: string;
-  module?: string;
-  name?: string;
+  permissionId: number;
+  apiPath: string;
+  method: string;
+  module: string;
+  name: string;
 
-  createdAt?: string;
-  createdBy?: string;
-  isDeleted?: boolean;
-  deletedAt?: boolean | null;
-  updatedAt?: string;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
 };
 
 export type Role = {

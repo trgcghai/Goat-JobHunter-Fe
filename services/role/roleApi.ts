@@ -6,9 +6,9 @@ import type {
   FetchRoleByIdResponse,
   FetchRolesRequest,
   FetchRolesResponse,
-  UpdateRoleRequest,
   UpdateRoleResponse,
 } from "./roleType";
+import type { Role } from "@/types/model";
 
 export const roleApi = api.injectEndpoints({
   overrideExisting: true,
@@ -22,11 +22,11 @@ export const roleApi = api.injectEndpoints({
       invalidatesTags: ["Role"],
     }),
 
-    updateRole: builder.mutation<UpdateRoleResponse, UpdateRoleRequest>({
-      query: ({ roleId, ...role }) => ({
+    updateRole: builder.mutation<UpdateRoleResponse, Role>({
+      query: (data) => ({
         url: "/roles",
         method: "PUT",
-        data: { roleId, ...role },
+        data,
       }),
       invalidatesTags: ["Role"],
     }),

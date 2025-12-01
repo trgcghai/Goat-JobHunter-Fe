@@ -9,12 +9,6 @@ export type CreateRoleRequest = {
 
 export type CreateRoleResponse = IBackendRes<Role>;
 
-// Update Role
-export type UpdateRoleRequest = {
-  roleId: number;
-  role: Role;
-};
-
 export type UpdateRoleResponse = IBackendRes<Role>;
 
 export type DeleteRoleResponse = IBackendRes<Role>;

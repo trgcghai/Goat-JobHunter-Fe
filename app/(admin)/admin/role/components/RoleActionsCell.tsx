@@ -101,7 +101,7 @@ export default function RoleActionsCell({ role }: RoleActionsCellProps) {
         disableCancel={isDeleting || isActivating || isDeactivating}
       />
 
-      <ManagePermissionsDialog roleId={role.roleId} open={isPermOpen} onOpenChange={setIsPermOpen} />
+      <ManagePermissionsDialog role={role} open={isPermOpen} onOpenChange={setIsPermOpen} />
     </>
   );
 }

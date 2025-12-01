@@ -23,7 +23,7 @@ export function RoleTable({ roles }: { roles: Role[] }) {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Mô tả" />
       ),
-      cell: ({ row }) => <div>{row.getValue("description")}</div>
+      cell: ({ row }) => <div>{row.getValue("description") || "Không có mô tả"}</div>
     },
     {
       accessorKey: "active",

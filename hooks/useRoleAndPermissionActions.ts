@@ -2,16 +2,18 @@ import {
   useActivateRoleMutation,
   useCreateRoleMutation,
   useDeactivateRoleMutation,
-  useDeleteRoleMutation
+  useDeleteRoleMutation, useUpdateRoleMutation
 } from "@/services/role/roleApi";
 import { RoleFormValues } from "@/app/(admin)/admin/role/components/CreateRoleDialog";
 import { toast } from "sonner";
+import { Role } from "@/types/model";
 
 const UseRoleAndPermissionActions = () => {
   const [createRole, { isLoading: isCreating }] = useCreateRoleMutation();
   const [deleteRole, { isLoading: isDeleting }] = useDeleteRoleMutation();
   const [activateRole, { isLoading: isActivating }] = useActivateRoleMutation();
   const [deactivateRole, { isLoading: isDeactivating }] = useDeactivateRoleMutation();
+  const [updateRole, { isLoading: isUpdating }] = useUpdateRoleMutation();
 
 
   const handleCreateRole = async (data: RoleFormValues) => {
@@ -54,17 +56,28 @@ const UseRoleAndPermissionActions = () => {
     }
   };
 
+  const handleUpdateRole = async (updatedRole: Role) => {
+    try {
+      await updateRole(updatedRole).unwrap();
+      toast.success("Cập nhật vai trò thành công.");
+    } catch (e) {
+      console.error(e);
+      toast.error("Đã có lỗi khi cập nhật vai trò. Vui lòng thử lại.");
+    }
+  }
 
   return {
     handleCreateRole,
     handleDeleteRole,
     handleActivateRole,
     handleDeactivateRole,
+    handleUpdateRole,
 
     isCreating,
     isDeleting,
     isActivating,
     isDeactivating,
+    isUpdating
   };
 };
 export default UseRoleAndPermissionActions;
