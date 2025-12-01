@@ -1,6 +1,13 @@
+"use client";
+
 import Sidebar, { SidebarTab } from "@/components/Sidebar";
 import { Briefcase, FileText, Lock, MessageCircleCode, Shield, Users } from "lucide-react";
 import { AIChatPopup } from "@/components/AIChatPopup";
+import { useGetMyAccountQuery } from "@/services/auth/authApi";
+import { useRouter } from "next/navigation";
+import { useUser } from "@/hooks/useUser";
+import { useEffect } from "react";
+import { ROLE } from "@/constants/constant";
 
 const AdminTabs: SidebarTab[] = [
   {
@@ -49,6 +56,20 @@ const AdminTabs: SidebarTab[] = [
 ];
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
+  useGetMyAccountQuery();
+  const router = useRouter();
+  const { user } = useUser();
+
+  useEffect(() => {
+    // Check if user has recruiter role
+    const hasAdmin = user?.role?.name === ROLE.SUPER_ADMIN;
+
+    if (!hasAdmin) {
+      // Not recruiter, redirect to home
+      router.replace("/");
+    }
+  }, [user, router]);
+
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar tabs={AdminTabs} />
