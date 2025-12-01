@@ -10,8 +10,8 @@ import { Edit2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import ApplicantForm from "@/app/(main)/profile/components/ProfileInfo/ApplicantForm";
 import { useFetchCurrentApplicantQuery } from "@/services/applicant/applicantApi";
-import LoaderSpin from "@/components/LoaderSpin";
-import ErrorMessage from "@/components/ErrorMessage";
+import LoaderSpin from "@/components/common/LoaderSpin";
+import ErrorMessage from "@/components/common/ErrorMessage";
 import { formatDate } from "@/utils/formatDate";
 
 export default function ProfileInfo() {

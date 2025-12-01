@@ -1,7 +1,7 @@
 import { useFetchJobsByRecruiterQuery } from "@/services/job/jobApi";
 import { useMemo, useState } from "react";
-import ErrorMessage from "@/components/ErrorMessage";
-import LoaderSpin from "@/components/LoaderSpin";
+import ErrorMessage from "@/components/common/ErrorMessage";
+import LoaderSpin from "@/components/common/LoaderSpin";
 import {
   Empty,
   EmptyDescription,
@@ -17,7 +17,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import CustomPagination from "@/components/CustomPagination";
+import CustomPagination from "@/components/common/CustomPagination";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { Badge } from "@/components/ui/badge";
 import { DollarSign, MapPin } from "lucide-react";

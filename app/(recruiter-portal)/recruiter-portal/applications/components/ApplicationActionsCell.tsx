@@ -4,10 +4,10 @@ import { Check, FileText, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import useApplicationActions from "@/hooks/useApplicationActions";
 import { AcceptFormData, RejectFormData } from "./schema";
-import ResumePreviewDialog from "@/components/ResumePreivewDialog";
+import ResumePreviewDialog from "@/components/common/ResumePreivewDialog";
 import EmailDialog, {
   EmailDialogMode
-} from "@/components/EmailDialog";
+} from "@/components/common/EmailDialog";
 
 interface ApplicationActionsCellProps {
   application: Application;

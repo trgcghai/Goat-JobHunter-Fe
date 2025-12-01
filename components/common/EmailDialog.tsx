@@ -9,8 +9,8 @@ import {
   DialogFooter
 } from "@/components/ui/dialog";
 import { Applicant, Application } from "@/types/model";
-import AcceptForm from "../app/(recruiter-portal)/recruiter-portal/applications/components/AcceptForm";
-import RejectForm from "../app/(recruiter-portal)/recruiter-portal/applications/components/RejectForm";
+import AcceptForm from "../../app/(recruiter-portal)/recruiter-portal/applications/components/AcceptForm";
+import RejectForm from "../../app/(recruiter-portal)/recruiter-portal/applications/components/RejectForm";
 import { AcceptFormData, RejectFormData } from "@/app/(recruiter-portal)/recruiter-portal/applications/components/schema";
 import { useMemo } from "react";
 

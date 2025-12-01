@@ -1,18 +1,19 @@
 "use client";
 
-import BlogsTable from "@/app/(recruiter-portal)/recruiter-portal/blogs/components/BlogsTable";
-import RecruiterBlogFilter from "@/app/(recruiter-portal)/recruiter-portal/blogs/components/RecruiterBlogFilter";
+import BlogsTable from "@/components/management/blogs/BlogsTable";
+import RecruiterBlogFilter from "@/components/management/blogs/recruiter/RecruiterBlogFilter";
 import { useBlogManagement } from "@/app/(recruiter-portal)/recruiter-portal/blogs/hooks/useBlogManagement";
 import { DataTablePagination } from "@/components/dataTable/DataTablePagination";
-import LoaderSpin from "@/components/LoaderSpin";
+import LoaderSpin from "@/components/common/LoaderSpin";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Blog } from "@/types/model";
-import BlogActions from "@/app/(recruiter-portal)/recruiter-portal/blogs/components/BlogActions";
-import ErrorMessage from "@/components/ErrorMessage";
+import BlogActions from "@/components/management/blogs/BlogActions";
+import ErrorMessage from "@/components/common/ErrorMessage";
+import { recruiterBlogColumns } from "@/components/management/blogs/BlogColumnConfig";
 
 const BlogManagementPage = () => {
   const {
@@ -68,7 +69,7 @@ const BlogManagementPage = () => {
                 selectedIds={selectedItems.map(b => b.blogId)}
               />
 
-              <BlogsTable blogs={blogs} onSelectionChange={setSelectedItems} />
+              <BlogsTable blogs={blogs} onSelectionChange={setSelectedItems} columns={recruiterBlogColumns}/>
 
               <DataTablePagination
                 currentPage={page}

@@ -1,6 +1,6 @@
 "use client";
 
-import MarkdownDisplay from "@/components/MarkdownDisplay";
+import MarkdownDisplay from "@/components/common/MarkdownDisplay";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Recruiter } from "@/types/model";

@@ -4,8 +4,8 @@ import {
   BlogActions,
   CommentSection
 } from "@/app/(main)/blogs/[id]/components";
-import ErrorMessage from "@/components/ErrorMessage";
-import LoaderSpin from "@/components/LoaderSpin";
+import ErrorMessage from "@/components/common/ErrorMessage";
+import LoaderSpin from "@/components/common/LoaderSpin";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Empty,
@@ -20,7 +20,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
-import MarkdownDisplay from "@/components/MarkdownDisplay";
+import MarkdownDisplay from "@/components/common/MarkdownDisplay";
 import { useFetchRecruiterByIdQuery } from "@/services/recruiter/recruiterApi";
 import { toast } from "sonner";
 

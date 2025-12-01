@@ -1,6 +1,6 @@
 "use client";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import LoaderSpin from "@/components/LoaderSpin";
+import LoaderSpin from "@/components/common/LoaderSpin";
 import useExploreSuitableApplicants
   from "@/app/(recruiter-portal)/recruiter-portal/applicants/hooks/useExploreSuitableApplicants";
 import SuitableApplicantFilter
@@ -14,7 +14,7 @@ import { Applicant } from "@/types/model";
 import SuitableApplicantActions
   from "@/app/(recruiter-portal)/recruiter-portal/applicants/components/SuitableApplicantActions";
 import ApplicantGrid from "@/app/(recruiter-portal)/recruiter-portal/applicants/components/ApplicantGrid";
-import ErrorMessage from "@/components/ErrorMessage";
+import ErrorMessage from "@/components/common/ErrorMessage";
 
 const ExploreApplicants = () => {
   const {

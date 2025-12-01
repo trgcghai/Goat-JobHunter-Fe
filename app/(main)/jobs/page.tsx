@@ -2,7 +2,7 @@
 
 import { JobFilter, JobList } from "@/app/(main)/jobs/components";
 import useJobsFilter from "@/app/(main)/jobs/hooks/useJobsFilter";
-import CustomPagination from "@/components/CustomPagination";
+import CustomPagination from "@/components/common/CustomPagination";
 import { Button } from "@/components/ui/button";
 import {
   Empty,

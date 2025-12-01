@@ -1,6 +1,6 @@
 "use client";
 
-import ConfirmDialog from "@/components/ConfirmDialog";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 import useJobActions from "@/hooks/useJobActions";
 import { Job } from "@/types/model";

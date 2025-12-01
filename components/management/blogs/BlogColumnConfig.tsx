@@ -6,9 +6,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { DataTableColumnHeader } from "@/components/dataTable/DataTableColumnHeader";
 import { formatDate } from "@/utils/formatDate";
-import BlogActionsCell from "@/app/(recruiter-portal)/recruiter-portal/blogs/components/BlogActionsCell";
+import BlogActionsCell from "@/components/management/blogs/BlogActionsCell";
 
-export const recruiterBlogColumns: ColumnDef<Blog>[] = [
+const baseColumnConfig: ColumnDef<Blog>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -102,4 +102,24 @@ export const recruiterBlogColumns: ColumnDef<Blog>[] = [
     ),
     cell: ({ row }) => <BlogActionsCell blog={row.original} />
   }
+];
+
+export const recruiterBlogColumns: ColumnDef<Blog>[] = baseColumnConfig;
+
+export const adminBlogColumns: ColumnDef<Blog>[] = [
+  ...baseColumnConfig.slice(0, 1),
+  {
+    accessorKey: "authorName",
+    enableSorting: false,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Tác giả" />
+    ),
+    cell: ({ row }) => {
+      return <div>
+        <div className="font-medium">{row.original.author.fullName || "Chưa cung cấp"}</div>
+        <div className="text-xs text-muted-foreground">UserID: {row.original.author.userId}</div>
+      </div>;
+    }
+  },
+    ...baseColumnConfig.slice(1)
 ];

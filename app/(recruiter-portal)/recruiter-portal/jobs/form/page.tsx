@@ -5,7 +5,7 @@ import {
   JobFormData,
   jobSchema,
 } from "@/app/(recruiter-portal)/recruiter-portal/jobs/form/components/schema";
-import LoaderSpin from "@/components/LoaderSpin";
+import LoaderSpin from "@/components/common/LoaderSpin";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Option } from "@/components/ui/MultipleSelector";

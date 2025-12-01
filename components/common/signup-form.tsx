@@ -1,8 +1,8 @@
 "use client";
 
 import { SignUpType } from "@/app/(auth)/components/schemas";
-import { ApplicantForm } from "@/components/applicant-form";
-import { RecruiterForm } from "@/components/recruiter-form";
+import { ApplicantForm } from "@/components/common/applicant-form";
+import { RecruiterForm } from "@/components/common/recruiter-form";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 

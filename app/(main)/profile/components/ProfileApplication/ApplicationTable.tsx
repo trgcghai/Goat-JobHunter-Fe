@@ -1,9 +1,9 @@
 import EmptyTable from "@/app/(main)/profile/components/ProfileApplication/EmptyTable";
-import ResumePreviewDialog from "@/components/ResumePreivewDialog";
+import ResumePreviewDialog from "@/components/common/ResumePreivewDialog";
 import StatusBadge from "@/app/(main)/profile/components/ProfileApplication/StatusBadge";
-import CustomPagination from "@/components/CustomPagination";
-import ErrorMessage from "@/components/ErrorMessage";
-import LoaderSpin from "@/components/LoaderSpin";
+import CustomPagination from "@/components/common/CustomPagination";
+import ErrorMessage from "@/components/common/ErrorMessage";
+import LoaderSpin from "@/components/common/LoaderSpin";
 import { Button } from "@/components/ui/button";
 import {
   Table,

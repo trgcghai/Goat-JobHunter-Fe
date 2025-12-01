@@ -4,7 +4,7 @@ import JobsTable from "@/app/(recruiter-portal)/recruiter-portal/jobs/components
 import RecruiterJobFilter from "@/app/(recruiter-portal)/recruiter-portal/jobs/components/RecruiterJobFilter";
 import { useJobManagement } from "@/app/(recruiter-portal)/recruiter-portal/jobs/hooks/useJobManagement";
 import { DataTablePagination } from "@/components/dataTable/DataTablePagination";
-import LoaderSpin from "@/components/LoaderSpin";
+import LoaderSpin from "@/components/common/LoaderSpin";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Plus } from "lucide-react";
@@ -12,7 +12,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Job } from "@/types/model";
 import JobActions from "@/app/(recruiter-portal)/recruiter-portal/jobs/components/JobActions";
-import ErrorMessage from "@/components/ErrorMessage";
+import ErrorMessage from "@/components/common/ErrorMessage";
 
 const RecruiterJobPage = () => {
   const {

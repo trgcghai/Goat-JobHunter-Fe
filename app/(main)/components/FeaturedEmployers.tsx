@@ -1,5 +1,5 @@
 import { RecruiterCard } from "@/app/(main)/recruiters/components";
-import LoaderSpin from "@/components/LoaderSpin";
+import LoaderSpin from "@/components/common/LoaderSpin";
 import { Button } from "@/components/ui/button";
 import {
   Empty,

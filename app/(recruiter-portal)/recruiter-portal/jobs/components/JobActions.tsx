@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Trash2, Ban, CheckCircle } from "lucide-react";
 import useJobActions from "@/hooks/useJobActions";
-import ConfirmDialog from "@/components/ConfirmDialog";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
 import { useJobConfirmDialog } from "@/app/(recruiter-portal)/recruiter-portal/jobs/hooks/useJobConfirmDialog";
 
 interface JobActionsProps {

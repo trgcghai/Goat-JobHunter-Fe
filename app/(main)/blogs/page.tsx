@@ -2,7 +2,7 @@
 
 import { BlogCard, BlogFilter } from "@/app/(main)/blogs/components";
 import useBlogsFilter from "@/app/(main)/blogs/hooks/useBlogsFilter";
-import CustomPagination from "@/components/CustomPagination";
+import CustomPagination from "@/components/common/CustomPagination";
 import { Button } from "@/components/ui/button";
 import {
   Empty,

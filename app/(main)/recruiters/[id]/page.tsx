@@ -5,9 +5,9 @@ import {
   RecruiterInfo,
   RecruiterJobs
 } from "@/app/(main)/recruiters/[id]/components";
-import ErrorMessage from "@/components/ErrorMessage";
-import LoaderSpin from "@/components/LoaderSpin";
-import MarkdownDisplay from "@/components/MarkdownDisplay";
+import ErrorMessage from "@/components/common/ErrorMessage";
+import LoaderSpin from "@/components/common/LoaderSpin";
+import MarkdownDisplay from "@/components/common/MarkdownDisplay";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Empty,

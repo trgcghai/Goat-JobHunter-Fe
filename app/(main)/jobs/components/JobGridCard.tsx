@@ -1,4 +1,4 @@
-import MarkdownDisplay from "@/components/MarkdownDisplay";
+import MarkdownDisplay from "@/components/common/MarkdownDisplay";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {

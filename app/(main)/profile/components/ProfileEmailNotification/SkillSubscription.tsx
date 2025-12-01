@@ -1,7 +1,7 @@
 import BadgeItem from "@/app/(main)/profile/components/ProfileEmailNotification/BadgeItem";
 import useSkillSubscription from "@/app/(main)/profile/components/ProfileEmailNotification/useSkillSubcription";
-import ErrorMessage from "@/components/ErrorMessage";
-import LoaderSpin from "@/components/LoaderSpin";
+import ErrorMessage from "@/components/common/ErrorMessage";
+import LoaderSpin from "@/components/common/LoaderSpin";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import MultipleSelector from "@/components/ui/MultipleSelector";

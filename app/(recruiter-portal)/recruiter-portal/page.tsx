@@ -1,6 +1,6 @@
 "use client";
 
-import LoaderSpin from "@/components/LoaderSpin";
+import LoaderSpin from "@/components/common/LoaderSpin";
 import { useUser } from "@/hooks/useUser";
 import { useGetMyAccountQuery } from "@/services/auth/authApi";
 import { useRouter } from "next/navigation";

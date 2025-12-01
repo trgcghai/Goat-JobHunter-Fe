@@ -4,15 +4,15 @@ import { useParams } from "next/navigation";
 import { useFetchBlogByIdQuery } from "@/services/blog/blogApi";
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 import { ChevronLeft } from "lucide-react";
-import LoaderSpin from "@/components/LoaderSpin";
-import ErrorMessage from "@/components/ErrorMessage";
+import LoaderSpin from "@/components/common/LoaderSpin";
+import ErrorMessage from "@/components/common/ErrorMessage";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDate } from "@/utils/formatDate";
 import { BlogActions } from "@/app/(main)/blogs/[id]/components";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import MarkdownDisplay from "@/components/MarkdownDisplay";
+import MarkdownDisplay from "@/components/common/MarkdownDisplay";
 
 const PreviewDetailBlogPage = () => {
   const params = useParams<{ id: string }>();

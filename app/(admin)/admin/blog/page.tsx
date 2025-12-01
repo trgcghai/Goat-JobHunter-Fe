@@ -2,13 +2,14 @@
 import { useState } from "react";
 import { Blog } from "@/types/model";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import ErrorMessage from "@/components/ErrorMessage";
-import LoaderSpin from "@/components/LoaderSpin";
-import BlogActions from "@/app/(recruiter-portal)/recruiter-portal/blogs/components/BlogActions";
-import BlogsTable from "@/app/(recruiter-portal)/recruiter-portal/blogs/components/BlogsTable";
+import ErrorMessage from "@/components/common/ErrorMessage";
+import LoaderSpin from "@/components/common/LoaderSpin";
+import BlogActions from "@/components/management/blogs/BlogActions";
+import BlogsTable from "@/components/management/blogs/BlogsTable";
 import { DataTablePagination } from "@/components/dataTable/DataTablePagination";
 import { useBlogAdminManagement } from "@/app/(admin)/admin/blog/hooks/useBlogAdminManagement";
-import AdminBlogFilter from "@/app/(admin)/admin/blog/components/AdminBlogFilter";
+import AdminBlogFilter from "@/components/management/blogs/admin/AdminBlogFilter";
+import { adminBlogColumns } from "@/components/management/blogs/BlogColumnConfig";
 
 const AdminBlogPage = () => {
   const {
@@ -57,7 +58,7 @@ const AdminBlogPage = () => {
                 selectedIds={selectedItems.map(b => b.blogId)}
               />
 
-              <BlogsTable blogs={blogs} onSelectionChange={setSelectedItems} />
+              <BlogsTable blogs={blogs} onSelectionChange={setSelectedItems} columns={adminBlogColumns} />
 
               <DataTablePagination
                 currentPage={page}

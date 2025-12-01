@@ -1,6 +1,6 @@
 import { Footer, Header } from "@/app/(main)/components";
 import type { Metadata } from "next";
-import { AIChatPopup } from "@/components/AIChatPopup";
+import { AIChatPopup } from "@/components/common/AIChatPopup";
 
 export const metadata: Metadata = {
   title: "GOAT - Job Hunter",

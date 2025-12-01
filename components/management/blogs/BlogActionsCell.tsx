@@ -4,12 +4,12 @@ import { Blog } from "@/types/model";
 import { Button } from "@/components/ui/button";
 import { Edit, Eye, EyeOff, FileText, Loader2, Trash2 } from "lucide-react";
 import Link from "next/link";
-import ConfirmDialog from "@/components/ConfirmDialog";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
 import { useBlogConfirmDialog } from "@/app/(recruiter-portal)/recruiter-portal/blogs/hooks/useBlogConfirmDialog";
 import useBlogActions from "@/hooks/useBlogActions";
 import { useUser } from "@/hooks/useUser";
 import { ROLE } from "@/constants/constant";
-import DisableBlogsDialog from "@/app/(admin)/admin/blog/components/DisableBlogsDialog";
+import DisableBlogsDialog from "@/components/management/blogs/DisableBlogsDialog";
 
 interface BlogActionsCellProps {
   blog: Blog;

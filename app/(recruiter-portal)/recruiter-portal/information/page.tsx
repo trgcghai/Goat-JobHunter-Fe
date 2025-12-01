@@ -7,12 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useGetMyAccountQuery } from "@/services/auth/authApi";
-import ProfileHeader from "@/components/ProfileHeader";
+import ProfileHeader from "@/components/common/ProfileHeader";
 import RecruiterForm from "@/app/(recruiter-portal)/recruiter-portal/information/components/RecruiterForm";
 import { useFetchCurrentRecruiterQuery } from "@/services/recruiter/recruiterApi";
 import { formatDate } from "@/utils/formatDate";
-import LoaderSpin from "@/components/LoaderSpin";
-import ErrorMessage from "@/components/ErrorMessage";
+import LoaderSpin from "@/components/common/LoaderSpin";
+import ErrorMessage from "@/components/common/ErrorMessage";
 
 const RecruiterInformation = () => {
   useGetMyAccountQuery();

@@ -8,8 +8,8 @@ import {
 } from "@/app/(main)/jobs/[id]/components";
 import ResumeDialog from "@/app/(main)/jobs/[id]/components/ResumeDialog";
 import useDetailJob from "@/app/(main)/jobs/[id]/hooks/useDetailJob";
-import LoaderSpin from "@/components/LoaderSpin";
-import MarkdownDisplay from "@/components/MarkdownDisplay";
+import LoaderSpin from "@/components/common/LoaderSpin";
+import MarkdownDisplay from "@/components/common/MarkdownDisplay";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";

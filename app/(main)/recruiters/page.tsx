@@ -5,7 +5,7 @@ import {
   RecruiterList,
 } from "@/app/(main)/recruiters/components";
 import useRecruitersFilter from "@/app/(main)/recruiters/hooks/useRecruitersFilter";
-import CustomPagination from "@/components/CustomPagination";
+import CustomPagination from "@/components/common/CustomPagination";
 import { Button } from "@/components/ui/button";
 import {
   Empty,

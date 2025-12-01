@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import type { User } from "@/types/model";
 import { CheckCircle, ClipboardList, XCircle } from "lucide-react";
 import useUserActions from "@/hooks/useUserActions";
-import ConfirmDialog from "@/components/ConfirmDialog";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
 import { useUserConfirmDialog } from "@/app/(admin)/admin/user/hooks/useUserConfirmDialog";
 import JobListDialog from "@/app/(admin)/admin/user/components/JobListDialog";
 import { useState } from "react";

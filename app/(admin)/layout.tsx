@@ -1,8 +1,8 @@
 "use client";
 
-import Sidebar, { SidebarTab } from "@/components/Sidebar";
+import Sidebar, { SidebarTab } from "@/components/common/Sidebar";
 import { Briefcase, FileText, Lock, MessageCircleCode, Shield, Users } from "lucide-react";
-import { AIChatPopup } from "@/components/AIChatPopup";
+import { AIChatPopup } from "@/components/common/AIChatPopup";
 import { useGetMyAccountQuery } from "@/services/auth/authApi";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/useUser";

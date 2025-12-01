@@ -6,7 +6,7 @@ import {
   SignUpTypeOptions,
   TApplicantSchema,
 } from "@/app/(auth)/components/schemas";
-import CheckPasswordStrength from "@/components/CheckPasswordStrength";
+import CheckPasswordStrength from "@/components/common/CheckPasswordStrength";
 import { Button } from "@/components/ui/button";
 import {
   Card,

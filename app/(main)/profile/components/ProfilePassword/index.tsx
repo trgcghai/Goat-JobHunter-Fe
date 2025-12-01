@@ -4,8 +4,8 @@ import {
   PasswordFormData,
   passwordSchema,
 } from "@/app/(main)/profile/components/ProfilePassword/schema";
-import CheckPasswordStrength from "@/components/CheckPasswordStrength";
-import LoaderSpin from "@/components/LoaderSpin";
+import CheckPasswordStrength from "@/components/common/CheckPasswordStrength";
+import LoaderSpin from "@/components/common/LoaderSpin";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {

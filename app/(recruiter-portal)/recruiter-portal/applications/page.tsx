@@ -3,12 +3,12 @@ import ApplicationFilter from "@/app/(recruiter-portal)/recruiter-portal/applica
 import ApplicationsTable from "@/app/(recruiter-portal)/recruiter-portal/applications/components/ApplicationsTable";
 import { useApplicationManagement } from "@/app/(recruiter-portal)/recruiter-portal/applications/hooks/useApplicationManagement";
 import { DataTablePagination } from "@/components/dataTable/DataTablePagination";
-import LoaderSpin from "@/components/LoaderSpin";
+import LoaderSpin from "@/components/common/LoaderSpin";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import ApplicationActions from "@/app/(recruiter-portal)/recruiter-portal/applications/components/ApplicationActions";
 import { useState } from "react";
 import { Application } from "@/types/model";
-import ErrorMessage from "@/components/ErrorMessage";
+import ErrorMessage from "@/components/common/ErrorMessage";
 
 const ApplicationsManagement = () => {
   const {

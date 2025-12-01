@@ -1,14 +1,12 @@
 import { JobCard } from "@/app/(main)/jobs/components";
-import ErrorMessage from "@/components/ErrorMessage";
-import LoaderSpin from "@/components/LoaderSpin";
+import ErrorMessage from "@/components/common/ErrorMessage";
+import LoaderSpin from "@/components/common/LoaderSpin";
 import { Card } from "@/components/ui/card";
 import { Job } from "@/types/model";
 import {
   Empty,
-  EmptyContent,
   EmptyDescription,
   EmptyHeader,
-  EmptyMedia,
   EmptyTitle
 } from "@/components/ui/empty";
 

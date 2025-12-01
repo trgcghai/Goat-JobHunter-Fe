@@ -1,9 +1,9 @@
 "use client";
 
 import NotificationCard from "@/app/(main)/components/NotificationCard";
-import CustomPagination from "@/components/CustomPagination";
-import ErrorMessage from "@/components/ErrorMessage";
-import LoaderSpin from "@/components/LoaderSpin";
+import CustomPagination from "@/components/common/CustomPagination";
+import ErrorMessage from "@/components/common/ErrorMessage";
+import LoaderSpin from "@/components/common/LoaderSpin";
 import {
   Empty,
   EmptyDescription,

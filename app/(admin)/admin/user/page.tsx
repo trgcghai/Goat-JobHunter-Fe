@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import UserActions from "./components/UserActions";
 import { useState } from "react";
 import { User } from "@/types/model";
-import ErrorMessage from "@/components/ErrorMessage";
+import ErrorMessage from "@/components/common/ErrorMessage";
 import { DataTablePagination } from "@/components/dataTable/DataTablePagination";
 
 const AdminUserPage = () => {

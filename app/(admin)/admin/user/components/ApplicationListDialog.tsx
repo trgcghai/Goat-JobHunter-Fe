@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
-import ErrorMessage from "@/components/ErrorMessage";
-import LoaderSpin from "@/components/LoaderSpin";
+import ErrorMessage from "@/components/common/ErrorMessage";
+import LoaderSpin from "@/components/common/LoaderSpin";
 import {
   Empty,
   EmptyDescription,
@@ -16,7 +16,7 @@ import {
   DialogDescription
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import CustomPagination from "@/components/CustomPagination";
+import CustomPagination from "@/components/common/CustomPagination";
 import {
   Calendar,
   CheckCircle,

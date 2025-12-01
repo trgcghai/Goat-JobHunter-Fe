@@ -1,5 +1,5 @@
 import { JobCard } from "@/app/(main)/jobs/components";
-import LoaderSpin from "@/components/LoaderSpin";
+import LoaderSpin from "@/components/common/LoaderSpin";
 import { Button } from "@/components/ui/button";
 import {
   Empty,

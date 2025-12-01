@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/empty";
 import { useUser } from "@/hooks/useUser";
 import { useGetMyAccountQuery } from "@/services/auth/authApi";
-import ProfileHeader from "@/components/ProfileHeader";
+import ProfileHeader from "@/components/common/ProfileHeader";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 

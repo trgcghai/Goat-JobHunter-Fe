@@ -5,7 +5,7 @@ import {
   BlogFormData,
   blogSchema
 } from "@/app/(recruiter-portal)/recruiter-portal/blogs/form/components/schema";
-import LoaderSpin from "@/components/LoaderSpin";
+import LoaderSpin from "@/components/common/LoaderSpin";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import useBlogActions from "@/hooks/useBlogActions";

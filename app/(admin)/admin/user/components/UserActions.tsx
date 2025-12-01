@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, XCircle } from "lucide-react";
 import useUserActions from "@/hooks/useUserActions";
 import { useUserConfirmDialog } from "@/app/(admin)/admin/user/hooks/useUserConfirmDialog";
-import ConfirmDialog from "@/components/ConfirmDialog";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
 
 interface UserActionsProps {
   selectedCount: number;
