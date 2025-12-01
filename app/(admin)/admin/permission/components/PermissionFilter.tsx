@@ -6,14 +6,13 @@ import { PermissionFilters } from "@/app/(admin)/admin/permission/hooks/usePermi
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { debounce } from "lodash";
+import { METHOD_OPTIONS } from "@/constants/constant";
 
 interface PermissionFilterProps {
   filters: PermissionFilters;
   onFilterChange: (filters: Partial<PermissionFilters>) => void;
   onResetFilters: () => void;
 }
-
-const METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE"];
 
 export default function PermissionFilter({ filters, onFilterChange, onResetFilters }: PermissionFilterProps) {
   const [moduleInput, setModuleInput] = useState(filters.module || "");
@@ -99,7 +98,7 @@ export default function PermissionFilter({ filters, onFilterChange, onResetFilte
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Tất cả methods</SelectItem>
-              {METHODS.map((m) => (
+              {METHOD_OPTIONS.map((m) => (
                 <SelectItem key={m} value={m}>
                   {m}
                 </SelectItem>

@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useFetchPermissionsQuery } from "@/services/permission/permissionApi";
+import { METHOD_OPTIONS } from "@/constants/constant";
 
 export interface PermissionFilters {
   module?: string;
-  method?: string; // e.g. GET, POST, ...
+  method?: typeof METHOD_OPTIONS[number];
   name?: string;
 }
 
@@ -28,16 +29,25 @@ export const usePermissionManagement = ({ initialPage = 1, initialSize = 10 } = 
 
   const { data, isLoading, isFetching, isError, error } = useFetchPermissionsQuery(queryParams);
 
-  const permissions = data?.data?.result || [];
-  const meta = data?.data?.meta || { current: 1, pageSize: size, pages: 0, total: 0 };
+  const permissions = useMemo(() => data?.data?.result || [], [data]);
+  const meta = useMemo(() => data?.data?.meta || { current: 1, pageSize: 10, pages: 0, total: 0 }, [data]);
 
   const handlePageChange = (newPage: number) => setPage(newPage);
 
-  const handleSizeChange = (newSize: number) => { setSize(newSize); setPage(1); };
+  const handleSizeChange = (newSize: number) => {
+    setSize(newSize);
+    setPage(1);
+  };
 
-  const handleFilterChange = (newFilters: Partial<PermissionFilters>) => { setFilters(prev => ({ ...prev, ...newFilters })); setPage(1); };
+  const handleFilterChange = (newFilters: Partial<PermissionFilters>) => {
+    setFilters(prev => ({ ...prev, ...newFilters }));
+    setPage(1);
+  };
 
-  const resetFilters = () => { setFilters({ module: "", method: "", name: "" }); setPage(1); };
+  const resetFilters = () => {
+    setFilters({ module: "", method: "", name: "" });
+    setPage(1);
+  };
 
   return {
     permissions,

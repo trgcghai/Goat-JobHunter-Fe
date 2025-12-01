@@ -31,9 +31,9 @@ export const EMPLOYER_OPTIONS: Option[] = [
 export const LEVEL_OPTIONS = [
   { value: Level.INTERN, label: "Intern" },
   { value: Level.FRESHER, label: "Fresher" },
-  { value: Level.JUNIOR, label: "Junior" }, // Value phải là "JUNIOR", không phải "Junior"
+  { value: Level.JUNIOR, label: "Junior" },
   { value: Level.MIDDLE, label: "Middle" },
-  { value: Level.SENIOR, label: "Senior" }, // Thêm nếu backend có
+  { value: Level.SENIOR, label: "Senior" },
 ];
 
 export const WORKING_TYPE_OPTIONS = [
@@ -86,13 +86,6 @@ export const LOCATION_OPTIONS: Option[] = [
   { label: "An Giang", value: "An Giang" },
 ];
 
-export const EDUCATION_LIST = [
-  { label: "Cao đẳng", value: "COLLEGE" },
-  { label: "Đại học", value: "UNIVERSITY" },
-  { label: "THPT", value: "SCHOOL" },
-  { label: "Kỹ sư", value: "ENGINEER" },
-];
-
 export const JOBFILTER_CONFIG = {
   skill: {
     option: SKILL_OPTIONS,
@@ -130,6 +123,8 @@ export const RECRUITERFILTER_CONFIG = {
 };
 
 export const PAGINATION_PAGESIZE = [10, 20, 30, 40, 50];
+
+export const METHOD_OPTIONS = ["GET", "POST", "PUT", "PATCH", "DELETE"]
 
 export enum ROLE {
   SUPER_ADMIN = "SUPER_ADMIN",
