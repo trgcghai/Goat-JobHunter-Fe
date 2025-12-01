@@ -8,7 +8,7 @@ import { useCallback } from "react";
 
 interface NotificationCardProps {
   notification: NotificationType;
-  markAsRead: (id: string) => void;
+  markAsRead: (id: number) => void;
   variant?: "default" | "compact";
 }
 

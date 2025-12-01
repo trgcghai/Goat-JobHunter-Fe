@@ -3,7 +3,7 @@
 import {
   RecruiterHeader,
   RecruiterInfo,
-  RecruiterJobs,
+  RecruiterJobs
 } from "@/app/(main)/recruiters/[id]/components";
 import ErrorMessage from "@/components/ErrorMessage";
 import LoaderSpin from "@/components/LoaderSpin";
@@ -13,7 +13,7 @@ import {
   Empty,
   EmptyDescription,
   EmptyHeader,
-  EmptyTitle,
+  EmptyTitle
 } from "@/components/ui/empty";
 import { Separator } from "@/components/ui/separator";
 import { useFetchJobsByRecruiterQuery } from "@/services/job/jobApi";
@@ -24,21 +24,20 @@ import { useParams } from "next/navigation";
 import { useMemo } from "react";
 
 export default function RecruiterDetailPage() {
-  const params = useParams<{ id: string }>();
-  const recruiterId = params?.id;
+  const { id } = useParams<{ id: string }>();
 
   const {
     data: recruiterResp,
     isLoading: isRecruiterLoading,
-    isError: isRecruiterError,
-  } = useFetchRecruiterByIdQuery(recruiterId as string, {
-    skip: !recruiterId,
+    isError: isRecruiterError
+  } = useFetchRecruiterByIdQuery(Number(id), {
+    skip: !Number(id)
   });
 
   const { data: jobsResp, isLoading: isJobsLoading } =
     useFetchJobsByRecruiterQuery(
-      { page: 1, size: 100, recruiterId }, // Changed limit to size, increased to get all jobs
-      { skip: !recruiterId },
+      { page: 1, size: 100, recruiterId: Number(id) }, // Changed limit to size, increased to get all jobs
+      { skip: !Number(id) }
     );
 
   const recruiter = useMemo(() => {
@@ -49,9 +48,9 @@ export default function RecruiterDetailPage() {
     const jobs = jobsResp?.data?.result || [];
     // Filter jobs by current recruiter ID
     return jobs.filter(
-      (job) => job.recruiter?.userId.toString() == recruiterId,
+      (job) => job.recruiter?.userId == Number(id)
     );
-  }, [jobsResp, recruiterId]);
+  }, [jobsResp, id]);
 
   if (!recruiter && (isRecruiterLoading || isRecruiterError === false)) {
     return <LoaderSpin />;

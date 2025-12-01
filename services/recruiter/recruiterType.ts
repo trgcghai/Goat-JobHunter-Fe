@@ -53,7 +53,7 @@ export type FetchRecruitersRequest = {
 export type FetchRecruitersResponse = IBackendRes<IModelPaginate<Recruiter>>;
 
 // Fetch Recruiter By Id
-export type FetchRecruiterByIdRequest = string; // recruiterId
+export type FetchRecruiterByIdRequest = number; // recruiterId
 
 export type FetchRecruiterByIdResponse = IBackendRes<Recruiter>;
 

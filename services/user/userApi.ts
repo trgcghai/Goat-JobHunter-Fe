@@ -13,7 +13,6 @@ import type {
   FollowRecruitersResponse,
   GetFollowedRecruiters,
   GetSavedJobsResponse,
-  MarkNotificationsAsSeenRequest,
   MarkNotificationsAsSeenResponse,
   NotificationPaginationRequest,
   NotificationPaginationResponse,
@@ -234,12 +233,12 @@ export const userApi = api.injectEndpoints({
     // PUT /users/me/notifications - Đánh dấu notifications đã xem
     markNotificationsAsSeen: builder.mutation<
       MarkNotificationsAsSeenResponse,
-      MarkNotificationsAsSeenRequest
+      number[]
     >({
-      query: (body) => ({
+      query: (data) => ({
         url: "/users/me/notifications",
         method: "PUT",
-        body
+        data
       }),
       invalidatesTags: ["Notifications"]
     }),

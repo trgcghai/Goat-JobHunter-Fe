@@ -19,25 +19,48 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { useGetLatestNotificationsQuery } from "@/services/user/userApi";
+import { useGetLatestNotificationsQuery, useMarkNotificationsAsSeenMutation } from "@/services/user/userApi";
 import { Bell, BellRing, CheckCheck } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
+import { toast } from "sonner";
 
 export default function NotificationPopup() {
   const { data, isLoading, isError, isSuccess, refetch } =
     useGetLatestNotificationsQuery();
 
+  const [markAsRead] = useMarkNotificationsAsSeenMutation();
+
   const notifications = useMemo(() => data?.data || [], [data]);
 
   const unreadCount = notifications.filter((n) => !n.seen).length;
 
-  const markAsRead = (id: string) => {
+  const handleMarkAsRead = async (id: number) => {
     console.log("mark as read for ", id);
+    try {
+      await markAsRead([id]).unwrap();
+      toast.success("Đã đánh dấu là đã đọc");
+    } catch (error) {
+      console.log(error);
+      toast.error("Đánh dấu đã đọc thất bại. Vui lòng thử lại sau");
+    }
   };
 
-  const markAllAsRead = () => {
-    console.log("mark all as read");
+  const handleMarkAllAsRead = async () => {
+
+    if (!unreadCount) return;
+
+    const unreadNotificationIds = notifications
+      .filter((n) => !n.seen)
+      .map((n) => n.notificationId);
+
+    try {
+      await markAsRead(unreadNotificationIds).unwrap();
+      toast.success("Đã đánh dấu là đã đọc");
+    } catch (error) {
+      console.log(error);
+      toast.error("Đánh dấu đã đọc thất bại. Vui lòng thử lại sau");
+    }
   };
 
   return (
@@ -84,7 +107,7 @@ export default function NotificationPopup() {
                   variant="ghost"
                   size="sm"
                   className="text-xs text-primary hover:text-primary/80 rounded-xl"
-                  onClick={markAllAsRead}
+                  onClick={handleMarkAllAsRead}
                 >
                   <CheckCheck className="h-4 w-4 mr-1" />
                   Đánh dấu tất cả đã đọc
@@ -102,7 +125,7 @@ export default function NotificationPopup() {
                     <NotificationCard
                       key={notification.notificationId}
                       notification={notification}
-                      markAsRead={markAsRead}
+                      markAsRead={handleMarkAsRead}
                       variant="compact"
                     />
                   ))}

@@ -88,10 +88,6 @@ export type NotificationPaginationRequest = {
   size?: number;
 };
 
-export type MarkNotificationsAsSeenRequest = IBackendRes<{
-  notificationIds: number[];
-}>;
-
 export type MarkNotificationsAsSeenResponse = IBackendRes<{
   message: string;
 }>;

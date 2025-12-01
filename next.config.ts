@@ -32,7 +32,13 @@ const nextConfig: NextConfig = {
         hostname: "api.dicebear.com",
         port: "",
         pathname: "/**",
-      }
+      },
+      {
+        protocol: "https",
+        hostname: "t2.gstatic.com",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
   allowedDevOrigins: ["192.168.0.245"],

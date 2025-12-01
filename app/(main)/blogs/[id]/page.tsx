@@ -2,7 +2,7 @@
 
 import {
   BlogActions,
-  CommentSection,
+  CommentSection
 } from "@/app/(main)/blogs/[id]/components";
 import ErrorMessage from "@/components/ErrorMessage";
 import LoaderSpin from "@/components/LoaderSpin";
@@ -11,7 +11,7 @@ import {
   Empty,
   EmptyDescription,
   EmptyHeader,
-  EmptyTitle,
+  EmptyTitle
 } from "@/components/ui/empty";
 import { useFetchBlogByIdQuery } from "@/services/blog/blogApi";
 import { formatDate } from "@/utils/formatDate";
@@ -21,17 +21,25 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
 import MarkdownDisplay from "@/components/MarkdownDisplay";
+import { useFetchRecruiterByIdQuery } from "@/services/recruiter/recruiterApi";
+import { toast } from "sonner";
 
 const DetailBlogPage = () => {
   const params = useParams<{ id: string }>();
 
   const { data, isLoading, isError } = useFetchBlogByIdQuery(params.id, {
-    skip: !params.id,
+    skip: !params.id
   });
 
   const blog = useMemo(() => {
     return data?.data;
   }, [data]);
+
+  const { data: authorData } = useFetchRecruiterByIdQuery(blog?.author.userId || 0, {
+    skip: !blog?.author.userId
+  });
+
+  const author = useMemo(() => authorData?.data || undefined, [authorData]);
 
   if (!blog) {
     return (
@@ -59,21 +67,27 @@ const DetailBlogPage = () => {
           author: "Admin",
           avatar: "/placeholder.svg",
           content: "Cảm ơn bạn đã đọc bài viết!",
-          createdAt: "2025-11-01T11:00:00Z",
-        },
-      ],
+          createdAt: "2025-11-01T11:00:00Z"
+        }
+      ]
     },
     {
       id: "2",
       author: "Trần Thị B",
       avatar: "/placeholder.svg",
       content: "Mình đã thử theo hướng dẫn và rất hiệu quả.",
-      createdAt: "2025-11-02T14:30:00Z",
-    },
+      createdAt: "2025-11-02T14:30:00Z"
+    }
   ];
 
-  const handleShare = () => {
-    console.log("Share blog:", blog.blogId);
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.toString());
+      toast.success(`Đã sao chép liên kết bài viết`);
+    } catch (err) {
+      console.error("Không thể copy:", err);
+      toast.error("Sao chép liên kết thất bại. Vui lòng thử lại.");
+    }
   };
 
   return (
@@ -121,15 +135,15 @@ const DetailBlogPage = () => {
 
         <div className="flex items-center justify-between mb-6 pb-6 border-b border-border">
           <div className="flex items-center gap-4">
-            <Avatar className="h-12 w-12">
-              <AvatarImage src="/placeholder.svg" alt={blog.createdBy} />
+            <Avatar className="h-12 w-12 border">
+              <AvatarImage src={author?.avatar || ""} alt={author?.fullName || blog?.author.fullName} />
               <AvatarFallback>
-                {blog.createdBy?.charAt(0).toUpperCase()}
+                {author?.fullName?.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div>
-              <p className="font-semibold text-foreground">{blog.createdBy}</p>
-              <p className="text-sm text-muted-foreground">
+              <p className="font-semibold text-base text-foreground">{author?.fullName || author?.contact.email || blog?.author.fullName}</p>
+              <p className="text-xs text-muted-foreground">
                 {formatDate(blog.createdAt || "")}
               </p>
             </div>
