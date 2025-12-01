@@ -10,6 +10,7 @@ import useBlogActions from "@/hooks/useBlogActions";
 import { useUser } from "@/hooks/useUser";
 import { ROLE } from "@/constants/constant";
 import DisableBlogsDialog from "@/components/management/blogs/DisableBlogsDialog";
+import { useMemo } from "react";
 
 interface BlogActionsCellProps {
   blog: Blog;
@@ -42,10 +43,21 @@ const BlogActionsCell = ({ blog }: BlogActionsCellProps) => {
       isDisabling
     });
 
+  const detailLink = useMemo<string>(() => {
+    switch (user?.role.name) {
+      case ROLE.SUPER_ADMIN:
+        return `/admin/blog/${blog.blogId}`;
+      case ROLE.HR:
+        return `/recruiter-portal/blogs/${blog.blogId}`;
+      default:
+        return `/blogs/${blog.blogId}`;
+    }
+  }, [blog, user])
+
   return (
     <>
       <div className="flex items-center gap-2">
-        <Link href={`/recruiter-portal/blogs/${blog.blogId}`}>
+        <Link href={detailLink}>
           <Button
             size={"icon"}
             className={"rounded-xl"}
