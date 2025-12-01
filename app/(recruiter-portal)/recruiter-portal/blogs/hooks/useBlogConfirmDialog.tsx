@@ -3,18 +3,18 @@ import { useMemo, useState } from "react";
 export type BlogActionType = "enable" | "disable" | "delete" | null;
 
 interface UseBlogConfirmDialogProps {
-  onConfirm: (actionType: BlogActionType, ids: number[]) => Promise<void>;
+  onConfirm: (actionType: BlogActionType, ids: number[], reason?: string) => Promise<void>;
   isDeleting?: boolean;
   isEnabling?: boolean;
   isDisabling?: boolean;
 }
 
 export const useBlogConfirmDialog = ({
-  onConfirm,
-  isDeleting = false,
-  isEnabling = false,
-  isDisabling = false,
-}: UseBlogConfirmDialogProps) => {
+                                       onConfirm,
+                                       isDeleting = false,
+                                       isEnabling = false,
+                                       isDisabling = false,
+                                     }: UseBlogConfirmDialogProps) => {
   const [actionType, setActionType] = useState<BlogActionType>(null);
   const [targetIds, setTargetIds] = useState<number[]>([]);
   const [targetTitle, setTargetTitle] = useState<string>("");
@@ -35,9 +35,9 @@ export const useBlogConfirmDialog = ({
     setTargetTitle("");
   };
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (reason?: string) => {
     try {
-      await onConfirm(actionType, targetIds);
+      await onConfirm(actionType, targetIds, reason);
       closeDialog();
     } catch (error) {
       console.error("Action failed", error);

@@ -1,22 +1,24 @@
-import { useFetchBlogsByCurrentRecruiterQuery } from "@/services/blog/blogApi";
+import { useFetchBlogsQuery } from "@/services/blog/blogApi";
 import { useEffect, useMemo, useState } from "react";
 
-export interface RecruiterBlogFilters {
+export interface AdminBlogFilters {
   title?: string;
   draft?: boolean | null; // null = all, true = draft, false = published
+  enabled?: boolean | null; // null = all, true = enabled, false = disabled
 }
 
-interface UseBlogManagementProps {
+interface UseBlogAdminManagementProps {
   initialPage?: number;
   initialSize?: number;
 }
 
-export const useBlogManagement = ({ initialPage = 1, initialSize = 10 }: UseBlogManagementProps) => {
+export const useBlogAdminManagement = ({ initialPage = 1, initialSize = 10 }: UseBlogAdminManagementProps) => {
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
-  const [filters, setFilters] = useState<RecruiterBlogFilters>({
+  const [filters, setFilters] = useState<AdminBlogFilters>({
     title: "",
-    draft: null
+    draft: null,
+    enabled: null
   });
 
   useEffect(() => {
@@ -33,12 +35,13 @@ export const useBlogManagement = ({ initialPage = 1, initialSize = 10 }: UseBlog
 
     if (filters.title) params.title = filters.title;
     if (filters.draft != undefined) params.draft = filters.draft;
+    if (filters.enabled != undefined) params.enabled = filters.enabled;
 
     return params;
   }, [page, size, filters]);
 
   const { data, isLoading, isFetching, isError, error } =
-    useFetchBlogsByCurrentRecruiterQuery(queryParams);
+    useFetchBlogsQuery(queryParams);
 
   const blogs = data?.data?.result || [];
   const meta = data?.data?.meta || {
@@ -53,7 +56,7 @@ export const useBlogManagement = ({ initialPage = 1, initialSize = 10 }: UseBlog
     setPage(1);
   };
 
-  const handleFilterChange = (newFilters: Partial<RecruiterBlogFilters>) => {
+  const handleFilterChange = (newFilters: Partial<AdminBlogFilters>) => {
     setFilters((prev) => ({ ...prev, ...newFilters }));
     setPage(1);
   };

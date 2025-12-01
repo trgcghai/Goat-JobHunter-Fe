@@ -83,17 +83,17 @@ interface EmailDialogProps {
 }
 
 const EmailDialog = ({
-                       open,
-                       onOpenChange,
-                       mode,
-                       isLoading,
-                       onAcceptSubmit,
-                       onRejectSubmit,
-                       onInvite,
-                       application,
-                       applicant,
-                       selectedCount = 0
-                     }: EmailDialogProps) => {
+ open,
+ onOpenChange,
+ mode,
+ isLoading,
+ onAcceptSubmit,
+ onRejectSubmit,
+ onInvite,
+ application,
+ applicant,
+ selectedCount = 0
+}: EmailDialogProps) => {
 
   const isBulk = useMemo(() => selectedCount > 0, [selectedCount]);
   const count = useMemo(() => isBulk ? selectedCount : 1, [isBulk, selectedCount]);

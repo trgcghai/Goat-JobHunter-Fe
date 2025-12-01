@@ -5,6 +5,7 @@ import { useUser } from "@/hooks/useUser";
 import { useGetMyAccountQuery } from "@/services/auth/authApi";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { ROLE } from "@/constants/constant";
 
 const RecruiterPortal = () => {
   useGetMyAccountQuery();
@@ -13,7 +14,7 @@ const RecruiterPortal = () => {
 
   useEffect(() => {
     // Check if user has recruiter role
-    const hasRecruiterRole = user?.role?.name == "HR";
+    const hasRecruiterRole = user?.role?.name === ROLE.HR;
 
     if (!hasRecruiterRole) {
       // Not recruiter, redirect to home

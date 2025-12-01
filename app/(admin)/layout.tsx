@@ -17,7 +17,7 @@ const AdminTabs: SidebarTab[] = [
   },
   {
     id: "blog",
-    label: "Blog",
+    label: "Bài viết",
     url: "/admin/blog",
     icon: <FileText className="w-4 h-4" />,
   },

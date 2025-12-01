@@ -98,7 +98,7 @@ export const recruiterBlogColumns: ColumnDef<Blog>[] = [
     id: "actions",
     enableSorting: false,
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Ngày tạo" />
+      <DataTableColumnHeader column={column} title="Hành động" />
     ),
     cell: ({ row }) => <BlogActionsCell blog={row.original} />
   }

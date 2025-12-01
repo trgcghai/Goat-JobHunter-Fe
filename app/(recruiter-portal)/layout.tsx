@@ -6,6 +6,7 @@ import { BookOpen, Briefcase, FileText, MessageCircleCode, Users } from "lucide-
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { AIChatPopup } from "@/components/AIChatPopup";
+import { ROLE } from "@/constants/constant";
 
 const RecruiterTabs: SidebarTab[] = [
   {
@@ -54,7 +55,7 @@ const RecruiterLayout = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     // Check if user has recruiter role
-    const hasRecruiterRole = user?.role?.name == "HR";
+    const hasRecruiterRole = user?.role?.name === ROLE.HR;
 
     if (!hasRecruiterRole) {
       // Not recruiter, redirect to home
