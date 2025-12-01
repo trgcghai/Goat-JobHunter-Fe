@@ -17,9 +17,6 @@ export type UpdateRoleRequest = {
 
 export type UpdateRoleResponse = IBackendRes<Role>;
 
-// Delete Role
-export type DeleteRoleRequest = string; // roleId
-
 export type DeleteRoleResponse = IBackendRes<Role>;
 
 // Fetch Roles (with pagination)

@@ -5,6 +5,7 @@ import { useState } from "react";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import ManagePermissionsDialog from "./ManagePermissionsDialog";
 import type { Role } from "@/types/model";
+import useRoleAndPermissionActions from "@/hooks/useRoleAndPermissionActions";
 
 interface RoleActionsCellProps {
   role: Role;
@@ -13,13 +14,16 @@ interface RoleActionsCellProps {
 export default function RoleActionsCell({ role }: RoleActionsCellProps) {
   const [isPermOpen, setIsPermOpen] = useState(false);
   const [actionType, setActionType] = useState<"activate" | "deactivate" | "delete" | null>(null);
+  const { handleDeleteRole } = useRoleAndPermissionActions();
 
   const openConfirm = (type: "activate" | "deactivate" | "delete") => setActionType(type);
 
   const handleConfirm = async () => {
     if (!actionType) return;
     try {
-      console.log(role);
+      if (actionType === "delete") {
+        await handleDeleteRole(role.roleId);
+      }
     } catch (e) {
       console.error(e);
     }

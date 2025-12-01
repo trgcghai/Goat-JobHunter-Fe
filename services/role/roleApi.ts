@@ -2,7 +2,6 @@ import { api } from "@/services/api";
 import type {
   CreateRoleRequest,
   CreateRoleResponse,
-  DeleteRoleRequest,
   DeleteRoleResponse,
   FetchRoleByIdResponse,
   FetchRolesRequest,
@@ -31,7 +30,7 @@ export const roleApi = api.injectEndpoints({
       invalidatesTags: ["Role"],
     }),
 
-    deleteRole: builder.mutation<DeleteRoleResponse, DeleteRoleRequest>({
+    deleteRole: builder.mutation<DeleteRoleResponse, number>({
       query: (roleId) => ({
         url: `/roles/${roleId}`,
         method: "DELETE",
