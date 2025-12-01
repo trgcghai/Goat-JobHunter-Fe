@@ -4,7 +4,6 @@ import type {
   CreateRoleResponse,
   DeleteRoleRequest,
   DeleteRoleResponse,
-  FetchRoleByIdRequest,
   FetchRoleByIdResponse,
   FetchRolesRequest,
   FetchRolesResponse,
@@ -24,7 +23,7 @@ export const roleApi = api.injectEndpoints({
     }),
 
     updateRole: builder.mutation<UpdateRoleResponse, UpdateRoleRequest>({
-      query: ({ roleId, role }) => ({
+      query: ({ roleId, ...role }) => ({
         url: "/roles",
         method: "PUT",
         data: { roleId, ...role },
@@ -49,7 +48,7 @@ export const roleApi = api.injectEndpoints({
       providesTags: ["Role"],
     }),
 
-    fetchRoleById: builder.query<FetchRoleByIdResponse, FetchRoleByIdRequest>({
+    fetchRoleById: builder.query<FetchRoleByIdResponse, number>({
       query: (roleId) => ({
         url: `/roles/${roleId}`,
         method: "GET",

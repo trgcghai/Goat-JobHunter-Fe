@@ -108,18 +108,17 @@ export type Permission = {
 };
 
 export type Role = {
-  roleId?: string;
+  roleId: number;
   description: string;
   active: boolean;
   name: string;
 
-  permissions: Permission[] | string[];
+  permissions: Permission[];
 
-  createdAt?: string;
-  createdBy?: string;
-  isDeleted?: boolean;
-  deletedAt?: boolean | null;
-  updatedAt?: string;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
 };
 
 export type Contact = {

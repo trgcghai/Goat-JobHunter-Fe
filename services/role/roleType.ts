@@ -2,13 +2,16 @@ import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type { Role } from "@/types/model";
 
 // Create Role
-export type CreateRoleRequest = Role;
+export type CreateRoleRequest = {
+  name: string;
+  description?: string;
+};
 
 export type CreateRoleResponse = IBackendRes<Role>;
 
 // Update Role
 export type UpdateRoleRequest = {
-  roleId: string;
+  roleId: number;
   role: Role;
 };
 
@@ -29,8 +32,5 @@ export type FetchRolesRequest = {
 };
 
 export type FetchRolesResponse = IBackendRes<IModelPaginate<Role>>;
-
-// Fetch Role By Id
-export type FetchRoleByIdRequest = string; // roleId
 
 export type FetchRoleByIdResponse = IBackendRes<Role>;
