@@ -11,6 +11,7 @@ import { useUser } from "@/hooks/useUser";
 import { ROLE } from "@/constants/constant";
 import DisableBlogsDialog from "@/components/management/blogs/DisableBlogsDialog";
 import { useMemo } from "react";
+import { HasAdmin, HasRecruiter } from "@/components/common/HasRole";
 
 interface BlogActionsCellProps {
   blog: Blog;
@@ -67,8 +68,7 @@ const BlogActionsCell = ({ blog }: BlogActionsCellProps) => {
             <FileText className={"h-4 w-4"} />
           </Button>
         </Link>
-
-        {user?.role.name === ROLE.SUPER_ADMIN &&
+        <HasAdmin user={user}>
           <Button
             size={"icon"}
             variant={"outline"}
@@ -93,36 +93,34 @@ const BlogActionsCell = ({ blog }: BlogActionsCellProps) => {
               <Eye className={"h-4 w-4"} />
             )}
           </Button>
-        }
-
-        {user?.role.name === ROLE.HR &&
-          <>
-            <Link href={`/recruiter-portal/blogs/form?blogId=${blog.blogId}`}>
-              <Button
-                size={"icon"}
-                className={"rounded-xl"}
-                variant={"outline"}
-                title="Chỉnh sửa"
-              >
-                <Edit className={"h-4 w-4"} />
-              </Button>
-            </Link>
-
+        </HasAdmin>
+        <HasRecruiter user={user}>
+          <Link href={`/recruiter-portal/blogs/form?blogId=${blog.blogId}`}>
             <Button
               size={"icon"}
-              className="rounded-xl text-destructive hover:text-destructive hover:bg-destructive/10"
+              className={"rounded-xl"}
               variant={"outline"}
-              title="Xóa"
-              disabled={isLoading}
-              onClick={() => openDialog("delete", [blog.blogId], blog.title)}
+              title="Chỉnh sửa"
             >
-              {isLoading && actionType === "delete" ? (
-                <Loader2 className={"h-4 w-4 animate-spin"} />
-              ) : (
-                <Trash2 className={"h-4 w-4"} />
-              )}
+              <Edit className={"h-4 w-4"} />
             </Button>
-          </>}
+          </Link>
+
+          <Button
+            size={"icon"}
+            className="rounded-xl text-destructive hover:text-destructive hover:bg-destructive/10"
+            variant={"outline"}
+            title="Xóa"
+            disabled={isLoading}
+            onClick={() => openDialog("delete", [blog.blogId], blog.title)}
+          >
+            {isLoading && actionType === "delete" ? (
+              <Loader2 className={"h-4 w-4 animate-spin"} />
+            ) : (
+              <Trash2 className={"h-4 w-4"} />
+            )}
+          </Button>
+        </HasRecruiter>
       </div>
 
       <ConfirmDialog

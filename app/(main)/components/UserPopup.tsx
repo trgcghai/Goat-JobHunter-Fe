@@ -9,12 +9,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ROLE } from "@/constants/constant";
 import { useUser } from "@/hooks/useUser";
 import { LogOut, Shield, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { HasAdmin } from "@/components/common/HasRole";
 
 export default function UserPopup() {
   const { user, signOut, isSigningOut, isSignedIn } = useUser();
@@ -95,19 +95,17 @@ export default function UserPopup() {
           </Link>
         </DropdownMenuItem>
 
-        {user?.role.name === ROLE.SUPER_ADMIN && (
-          <>
-            <DropdownMenuItem asChild>
-              <Link
-                href="/dashboard"
-                className="flex items-center cursor-pointer rounded-xl"
-              >
-                <Shield className="mr-2 h-4 w-4" />
-                <span>Bảng Điều Khiển</span>
-              </Link>
-            </DropdownMenuItem>
-          </>
-        )}
+        <HasAdmin user={user}>
+          <DropdownMenuItem asChild>
+            <Link
+              href="/dashboard"
+              className="flex items-center cursor-pointer rounded-xl"
+            >
+              <Shield className="mr-2 h-4 w-4" />
+              <span>Bảng Điều Khiển</span>
+            </Link>
+          </DropdownMenuItem>
+        </HasAdmin>
 
         <DropdownMenuSeparator />
 

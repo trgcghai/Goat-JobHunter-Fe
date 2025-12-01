@@ -6,8 +6,8 @@ import ConfirmDialog from "@/components/common/ConfirmDialog";
 import { useBlogConfirmDialog } from "@/app/(recruiter-portal)/recruiter-portal/blogs/hooks/useBlogConfirmDialog";
 import useBlogActions from "@/hooks/useBlogActions";
 import { useUser } from "@/hooks/useUser";
-import { ROLE } from "@/constants/constant";
 import DisableBlogsDialog from "@/components/management/blogs/DisableBlogsDialog";
+import { HasAdmin } from "@/components/common/HasRole";
 
 interface BlogActionsProps {
   selectedCount: number;
@@ -53,28 +53,26 @@ export default function BlogActions({
           Đã chọn {selectedCount} bài viết
         </span>
         <div className="flex gap-4 ml-auto">
-          {user?.role.name === ROLE.SUPER_ADMIN &&
-            <>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => openDialog("enable", selectedIds)}
-                className="text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200 rounded-xl"
-              >
-                <Eye className="h-4 w-4" />
-                Hiển thị
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => openDialog("disable", selectedIds)}
-                className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 border-orange-200 rounded-xl"
-              >
-                <EyeOff className="h-4 w-4" />
-                Ẩn
-              </Button>
-            </>
-          }
+          <HasAdmin user={user}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => openDialog("enable", selectedIds)}
+              className="text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200 rounded-xl"
+            >
+              <Eye className="h-4 w-4" />
+              Hiển thị
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => openDialog("disable", selectedIds)}
+              className="text-orange-500 hover:text-orange-600 hover:bg-orange-50 border-orange-200 rounded-xl"
+            >
+              <EyeOff className="h-4 w-4" />
+              Ẩn
+            </Button>
+          </HasAdmin>
           <Button
             variant="destructive"
             size="sm"

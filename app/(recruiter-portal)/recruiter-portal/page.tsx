@@ -14,9 +14,9 @@ const RecruiterPortal = () => {
 
   useEffect(() => {
     // Check if user has recruiter role
-    const hasRecruiterRole = user?.role?.name === ROLE.HR;
+    const isRecruiter = user?.role?.name === ROLE.HR;
 
-    if (!hasRecruiterRole) {
+    if (!isRecruiter) {
       // Not recruiter, redirect to home
       router.replace("/");
     } else {
