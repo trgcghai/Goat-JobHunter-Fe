@@ -11,6 +11,7 @@ import type {
 } from "./roleType";
 
 export const roleApi = api.injectEndpoints({
+  overrideExisting: true,
   endpoints: (builder) => ({
     createRole: builder.mutation<CreateRoleResponse, CreateRoleRequest>({
       query: (role) => ({
@@ -26,6 +27,22 @@ export const roleApi = api.injectEndpoints({
         url: "/roles",
         method: "PUT",
         data: { roleId, ...role },
+      }),
+      invalidatesTags: ["Role"],
+    }),
+
+    activateRole: builder.mutation({
+      query: (roleId: number) => ({
+        url: `/roles/${roleId}/activate`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["Role"],
+    }),
+
+    deactivateRole: builder.mutation({
+      query: (roleId: number) => ({
+        url: `/roles/${roleId}/deactivate`,
+        method: "PUT",
       }),
       invalidatesTags: ["Role"],
     }),
@@ -60,6 +77,8 @@ export const roleApi = api.injectEndpoints({
 export const {
   useCreateRoleMutation,
   useUpdateRoleMutation,
+  useActivateRoleMutation,
+  useDeactivateRoleMutation,
   useDeleteRoleMutation,
   useFetchRolesQuery,
   useFetchRoleByIdQuery,

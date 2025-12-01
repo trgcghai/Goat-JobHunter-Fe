@@ -14,7 +14,14 @@ interface RoleActionsCellProps {
 export default function RoleActionsCell({ role }: RoleActionsCellProps) {
   const [isPermOpen, setIsPermOpen] = useState(false);
   const [actionType, setActionType] = useState<"activate" | "deactivate" | "delete" | null>(null);
-  const { handleDeleteRole } = useRoleAndPermissionActions();
+  const {
+    handleDeleteRole,
+    handleActivateRole,
+    handleDeactivateRole,
+    isDeleting,
+    isActivating,
+    isDeactivating
+  } = useRoleAndPermissionActions();
 
   const openConfirm = (type: "activate" | "deactivate" | "delete") => setActionType(type);
 
@@ -23,6 +30,10 @@ export default function RoleActionsCell({ role }: RoleActionsCellProps) {
     try {
       if (actionType === "delete") {
         await handleDeleteRole(role.roleId);
+      } else if (actionType === "activate") {
+        await handleActivateRole(role.roleId);
+      } else if (actionType === "deactivate") {
+        await handleDeactivateRole(role.roleId);
       }
     } catch (e) {
       console.error(e);
@@ -86,8 +97,8 @@ export default function RoleActionsCell({ role }: RoleActionsCellProps) {
         confirmText={actionType === "delete" ? "Xóa" : actionType === "activate" ? "Kích hoạt" : "Vô hiệu hóa"}
         confirmBtnClass={actionType === "delete" ? "bg-destructive text-white" : "bg-primary text-white"}
         onConfirm={handleConfirm}
-        isLoading={false}
-        disableCancel={false}
+        isLoading={isDeleting || isActivating || isDeactivating}
+        disableCancel={isDeleting || isActivating || isDeactivating}
       />
 
       <ManagePermissionsDialog roleId={role.roleId} open={isPermOpen} onOpenChange={setIsPermOpen} />
