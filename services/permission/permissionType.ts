@@ -2,20 +2,16 @@ import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type { Permission } from "@/types/model";
 
 // Create Permission
-export type CreatePermissionRequest = Permission;
+export type CreatePermissionRequest = {
+  name: string;
+  module: string;
+  method: string;
+  apiPath: string;
+};
 
 export type CreatePermissionResponse = IBackendRes<Permission>;
 
-// Update Permission
-export type UpdatePermissionRequest = {
-  permissionId: string;
-  permission: Permission;
-};
-
 export type UpdatePermissionResponse = IBackendRes<Permission>;
-
-// Delete Permission
-export type DeletePermissionRequest = string; // permissionId
 
 export type DeletePermissionResponse = IBackendRes<Permission>;
 
@@ -23,11 +19,9 @@ export type DeletePermissionResponse = IBackendRes<Permission>;
 export type FetchPermissionsRequest = {
   page?: number;
   size?: number;
-  sortBy?: string;
-  keyword?: string;
+  name?: string;
   module?: string;
   method?: string;
-  apiPath?: string;
 };
 
 export type FetchPermissionsResponse = IBackendRes<IModelPaginate<Permission>>;

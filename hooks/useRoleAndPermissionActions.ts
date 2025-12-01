@@ -6,7 +6,13 @@ import {
 } from "@/services/role/roleApi";
 import { RoleFormValues } from "@/app/(admin)/admin/role/components/CreateRoleDialog";
 import { toast } from "sonner";
-import { Role } from "@/types/model";
+import { Permission, Role } from "@/types/model";
+import {
+  useCreatePermissionMutation,
+  useDeletePermissionMutation,
+  useUpdatePermissionMutation
+} from "@/services/permission/permissionApi";
+import { PermissionFormValues } from "@/app/(admin)/admin/permission/components/EditPermissionDialog";
 
 const UseRoleAndPermissionActions = () => {
   const [createRole, { isLoading: isCreating }] = useCreateRoleMutation();
@@ -14,7 +20,9 @@ const UseRoleAndPermissionActions = () => {
   const [activateRole, { isLoading: isActivating }] = useActivateRoleMutation();
   const [deactivateRole, { isLoading: isDeactivating }] = useDeactivateRoleMutation();
   const [updateRole, { isLoading: isUpdating }] = useUpdateRoleMutation();
-
+  const [createPermission, { isLoading: isCreatingPermission }] = useCreatePermissionMutation();
+  const [updatePermission, { isLoading: isUpdatingPermission }] = useUpdatePermissionMutation();
+  const [deletePermission, { isLoading:isDeletingPermission }] = useDeletePermissionMutation();
 
   const handleCreateRole = async (data: RoleFormValues) => {
     try {
@@ -64,6 +72,36 @@ const UseRoleAndPermissionActions = () => {
       console.error(e);
       toast.error("Đã có lỗi khi cập nhật vai trò. Vui lòng thử lại.");
     }
+  };
+
+  const handleCreatePermission = async (data: PermissionFormValues) => {
+    try {
+      await createPermission(data).unwrap();
+      toast.success("Tạo permission thành công.");
+    } catch (e) {
+      console.error(e);
+      toast.error("Đã có lỗi xảy ra khi tạo permission. Vui lòng thử lại.");
+    }
+  }
+
+  const handleUpdatePermission = async (data: Permission) => {
+    try {
+      await updatePermission(data).unwrap();
+      toast.success("Cập nhật permission thành công.");
+    } catch (e) {
+      console.error(e);
+      toast.error("Đã có lỗi xảy ra khi cập nhật permission. Vui lòng thử lại.");
+    }
+  }
+
+  const handleDeletePermission = async (permissionId: number) => {
+    try {
+      await deletePermission(permissionId).unwrap();
+      toast.success("Xóa permission thành công.");
+    } catch (e) {
+      console.error(e);
+      toast.error("Đã có lỗi xảy ra khi xóa permission. Vui lòng thử lại.");
+    }
   }
 
   return {
@@ -72,12 +110,18 @@ const UseRoleAndPermissionActions = () => {
     handleActivateRole,
     handleDeactivateRole,
     handleUpdateRole,
+    handleCreatePermission,
+    handleUpdatePermission,
+    handleDeletePermission,
 
     isCreating,
     isDeleting,
     isActivating,
     isDeactivating,
-    isUpdating
+    isUpdating,
+    isCreatingPermission,
+    isUpdatingPermission,
+    isDeletingPermission,
   };
 };
 export default UseRoleAndPermissionActions;

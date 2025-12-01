@@ -2,15 +2,15 @@ import { api } from "@/services/api";
 import type {
   CreatePermissionRequest,
   CreatePermissionResponse,
-  DeletePermissionRequest,
   DeletePermissionResponse,
   FetchPermissionByIdRequest,
   FetchPermissionByIdResponse,
   FetchPermissionsRequest,
   FetchPermissionsResponse,
-  UpdatePermissionRequest,
-  UpdatePermissionResponse,
+  UpdatePermissionResponse
 } from "./permissionType";
+import { Permission } from "@/types/model";
+import { buildSpringQuery } from "@/utils/buildSpringQuery";
 
 export const permissionApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -21,44 +21,54 @@ export const permissionApi = api.injectEndpoints({
       query: (permission) => ({
         url: "/permissions",
         method: "POST",
-        data: permission,
+        data: permission
       }),
-      invalidatesTags: ["Permission"],
+      invalidatesTags: ["Permission"]
     }),
 
     updatePermission: builder.mutation<
       UpdatePermissionResponse,
-      UpdatePermissionRequest
+      Permission
     >({
-      query: ({ permissionId, permission }) => ({
+      query: (data) => ({
         url: "/permissions",
         method: "PUT",
-        data: { permissionId, ...permission },
+        data
       }),
-      invalidatesTags: ["Permission"],
+      invalidatesTags: ["Permission"]
     }),
 
     deletePermission: builder.mutation<
       DeletePermissionResponse,
-      DeletePermissionRequest
+      number
     >({
       query: (permissionId) => ({
         url: `/permissions/${permissionId}`,
-        method: "DELETE",
+        method: "DELETE"
       }),
-      invalidatesTags: ["Permission"],
+      invalidatesTags: ["Permission"]
     }),
 
     fetchPermissions: builder.query<
       FetchPermissionsResponse,
       FetchPermissionsRequest
     >({
-      query: (params) => ({
-        url: "/permissions",
-        method: "GET",
-        params,
-      }),
-      providesTags: ["Permission"],
+      query: (params) => {
+        const { params: queryParams } = buildSpringQuery({
+          params,
+          filterFields: ["module", "name", "method"],
+          textSearchFields: ["module", "name"], // LIKE search
+          defaultSort: "createdAt,desc",
+          sortableFields: ["createdAt", "updatedAt"],
+        });
+
+        return {
+          url: "/permissions",
+          method: "GET",
+          params: queryParams
+        };
+      },
+      providesTags: ["Permission"]
     }),
 
     fetchPermissionById: builder.query<
@@ -67,11 +77,11 @@ export const permissionApi = api.injectEndpoints({
     >({
       query: (permissionId) => ({
         url: `/permissions/${permissionId}`,
-        method: "GET",
+        method: "GET"
       }),
-      providesTags: ["Permission"],
-    }),
-  }),
+      providesTags: ["Permission"]
+    })
+  })
 });
 
 export const {
@@ -79,5 +89,5 @@ export const {
   useUpdatePermissionMutation,
   useDeletePermissionMutation,
   useFetchPermissionsQuery,
-  useFetchPermissionByIdQuery,
+  useFetchPermissionByIdQuery
 } = permissionApi;
