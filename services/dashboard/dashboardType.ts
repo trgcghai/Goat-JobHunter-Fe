@@ -23,11 +23,9 @@ export type StatisticsApplicationResponse = IBackendRes<Record<string, number>>;
 
 // Statistics Application By Year
 export type StatisticsApplicationByYearRequest = {
-  year: number;
+  year?: number;
   status?: string;
-  recruiterId?: string;
+  recruiterId?: number;
 };
 
-export type StatisticsApplicationByYearResponse = IBackendRes<
-  Record<number, number>
->;
+export type StatisticsApplicationByYearResponse = IBackendRes<Record<number, number>>;
