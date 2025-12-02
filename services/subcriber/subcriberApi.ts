@@ -1,64 +1,61 @@
 import { api } from "@/services/api";
 import type {
   CreateSubscriberRequest,
-  CreateSubscriberResponse,
-  DeleteSubscriberRequest,
-  DeleteSubscriberResponse,
-  FetchSubscriberByIdRequest,
   FetchSubscriberByIdResponse,
   FetchSubscribersRequest,
   FetchSubscribersResponse,
   GetSubscriberSkillsResponse,
-  UpdateSubscriberRequest,
-  UpdateSubscriberResponse,
+  SubscriberIdRequest,
+  SubscriberMutationResponse,
+  UpdateSubscriberRequest
 } from "./subcriberType";
 
 export const subscriberApi = api.injectEndpoints({
   endpoints: (builder) => ({
     createSubscriber: builder.mutation<
-      CreateSubscriberResponse,
+      SubscriberMutationResponse,
       CreateSubscriberRequest
     >({
       query: (data) => ({
         url: "/subscribers",
         method: "POST",
-        data,
+        data
       }),
-      invalidatesTags: ["Subscriber"],
+      invalidatesTags: ["Subscriber"]
     }),
 
     updateSubscriber: builder.mutation<
-      UpdateSubscriberResponse,
+      SubscriberMutationResponse,
       UpdateSubscriberRequest
     >({
       query: (data) => ({
         url: "/subscribers",
         method: "PUT",
-        data,
+        data
       }),
-      invalidatesTags: ["Subscriber"],
+      invalidatesTags: ["Subscriber"]
     }),
 
     deleteSubscriber: builder.mutation<
-      DeleteSubscriberResponse,
-      DeleteSubscriberRequest
+      SubscriberMutationResponse,
+      SubscriberIdRequest
     >({
       query: (id) => ({
         url: `/subscribers/${id}`,
-        method: "DELETE",
+        method: "DELETE"
       }),
-      invalidatesTags: ["Subscriber"],
+      invalidatesTags: ["Subscriber"]
     }),
 
     fetchSubscriberById: builder.query<
       FetchSubscriberByIdResponse,
-      FetchSubscriberByIdRequest
+      SubscriberIdRequest
     >({
       query: (id) => ({
         url: `/subscribers/${id}`,
-        method: "GET",
+        method: "GET"
       }),
-      providesTags: ["Subscriber"],
+      providesTags: ["Subscriber"]
     }),
 
     fetchSubscribers: builder.query<
@@ -68,9 +65,9 @@ export const subscriberApi = api.injectEndpoints({
       query: (params) => ({
         url: "/subscribers",
         method: "GET",
-        params,
+        params
       }),
-      providesTags: ["Subscriber"],
+      providesTags: ["Subscriber"]
     }),
 
     getCurrentUserSubscriberSkills: builder.query<
@@ -79,11 +76,11 @@ export const subscriberApi = api.injectEndpoints({
     >({
       query: () => ({
         url: "/subscribers/skills",
-        method: "GET",
+        method: "GET"
       }),
-      providesTags: ["Subscriber"],
-    }),
-  }),
+      providesTags: ["Subscriber"]
+    })
+  })
 });
 
 export const {
@@ -92,5 +89,5 @@ export const {
   useDeleteSubscriberMutation,
   useFetchSubscriberByIdQuery,
   useFetchSubscribersQuery,
-  useGetCurrentUserSubscriberSkillsQuery,
+  useGetCurrentUserSubscriberSkillsQuery
 } = subscriberApi;

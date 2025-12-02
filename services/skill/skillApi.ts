@@ -2,66 +2,64 @@ import { api } from "@/services/api";
 import { buildSpringQuery } from "@/utils/buildSpringQuery";
 import type {
   CreateSkillRequest,
-  CreateSkillResponse,
-  DeleteSkillRequest,
-  DeleteSkillResponse,
   FetchSkillsRequest,
   FetchSkillsResponse,
-  UpdateSkillRequest,
-  UpdateSkillResponse,
+  SkillIdRequest,
+  SkillMutationResponse,
+  UpdateSkillRequest
 } from "./skillType";
 
 export const skillApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    createSkill: builder.mutation<CreateSkillResponse, CreateSkillRequest>({
+    createSkill: builder.mutation<SkillMutationResponse, CreateSkillRequest>({
       query: ({ name }) => ({
         url: "/skills",
         method: "POST",
-        data: { name },
+        data: { name }
       }),
-      invalidatesTags: ["Skill"],
+      invalidatesTags: ["Skill"]
     }),
 
-    updateSkill: builder.mutation<UpdateSkillResponse, UpdateSkillRequest>({
+    updateSkill: builder.mutation<SkillMutationResponse, UpdateSkillRequest>({
       query: ({ skillId, name }) => ({
         url: "/skills",
         method: "PUT",
-        data: { skillId, name },
+        data: { skillId, name }
       }),
-      invalidatesTags: ["Skill"],
+      invalidatesTags: ["Skill"]
     }),
 
-    deleteSkill: builder.mutation<DeleteSkillResponse, DeleteSkillRequest>({
+    deleteSkill: builder.mutation<SkillMutationResponse, SkillIdRequest>({
       query: (skillId) => ({
         url: `/skills/${skillId}`,
-        method: "DELETE",
+        method: "DELETE"
       }),
-      invalidatesTags: ["Skill"],
+      invalidatesTags: ["Skill"]
     }),
 
     getSkills: builder.query<FetchSkillsResponse, FetchSkillsRequest>({
       query: (params) => {
         const { params: queryParams } = buildSpringQuery({
           params,
-          filterFields: ["name"], // Không filter
-          textSearchFields: ["name"], // Tìm kiếm theo tên kỹ năng
-          nestedArrayFields: {}, // Không có nested array
-          defaultSort: "updatedAt,desc",
+          filterFields: ["name"],
+          textSearchFields: ["name"],
+          nestedArrayFields: {},
+          defaultSort: "updatedAt,desc"
         });
         return {
           url: "/skills",
           method: "GET",
-          params: queryParams,
+          params: queryParams
         };
       },
-      providesTags: ["Skill"],
-    }),
-  }),
+      providesTags: ["Skill"]
+    })
+  })
 });
 
 export const {
   useCreateSkillMutation,
   useUpdateSkillMutation,
   useDeleteSkillMutation,
-  useGetSkillsQuery,
+  useGetSkillsQuery
 } = skillApi;

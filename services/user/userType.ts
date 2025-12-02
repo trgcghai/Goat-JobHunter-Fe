@@ -4,10 +4,41 @@ import type {
   Job,
   NotificationType,
   Recruiter,
-  User,
+  User
 } from "@/types/model";
 
-// Fetch Users (with pagination)
+// Base Request Types
+export type UserIdsRequest = {
+  userIds: number[];
+};
+
+// Password Management
+export type UpdatePasswordRequest = {
+  currentPassword: string;
+  newPassword: string;
+  rePassword: string;
+};
+
+export type ResetPasswordRequest = {
+  email: string;
+  newPassword: string;
+};
+
+// Saved Jobs
+export type JobIdsRequest = {
+  jobIds: number[];
+};
+
+export type CheckSavedJobsRequest = JobIdsRequest;
+
+// Follow Recruiters
+export type RecruiterIdsRequest = {
+  recruiterIds: number[];
+};
+
+export type FollowRecruitersRequest = RecruiterIdsRequest;
+
+// Fetch with Pagination
 export type FetchUsersRequest = {
   page?: number;
   size?: number;
@@ -17,39 +48,23 @@ export type FetchUsersRequest = {
   enabled?: boolean;
 };
 
+export type NotificationPaginationRequest = {
+  page?: number;
+  size?: number;
+};
+
+// Response Types
+export type UserMutationResponse = IBackendRes<User>;
+
 export type FetchUsersResponse = IBackendRes<IModelPaginate<User>>;
 
-// Fetch User By Email
 export type FetchUserByEmailResponse = IBackendRes<FullUser>;
-
-// Update Password
-export type UpdatePasswordRequest = {
-  currentPassword: string;
-  newPassword: string;
-  rePassword: string;
-};
 
 export type UpdatePasswordResponse = IBackendRes<User>;
 
-// Reset Password
-export type ResetPasswordRequest = {
-  email: string;
-  newPassword: string;
-};
-
 export type ResetPasswordResponse = IBackendRes<unknown>;
 
-// Save Jobs
-// Request types
-export type SaveJobsRequest = {
-  jobIds: number[];
-};
-
-export type CheckSavedJobsRequest = {
-  jobIds: number[];
-};
-
-// Response types
+// Saved Jobs Responses
 export type GetSavedJobsResponse = IBackendRes<Job[]>;
 
 export type SaveJobsResponse = {
@@ -64,10 +79,8 @@ export type CheckSavedJobsResponse = IBackendRes<
   }[]
 >;
 
-// Follow Recruiters
-export type GetFollowedRecruiters = IBackendRes<Recruiter[]>;
-
-export type FollowRecruitersRequest = { recruiterIds: number[] };
+// Follow Recruiters Responses
+export type GetFollowedRecruitersResponse = IBackendRes<Recruiter[]>;
 
 export type FollowRecruitersResponse = IBackendRes<User>;
 
@@ -78,16 +91,22 @@ export type CheckRecruitersFollowedResponse = IBackendRes<
   }[]
 >;
 
-// User's Notifications
+// Notification Responses
 export type NotificationPaginationResponse = IBackendRes<
   IModelPaginate<NotificationType>
 >;
 
-export type NotificationPaginationRequest = {
-  page?: number;
-  size?: number;
-};
+export type LatestNotificationsResponse = IBackendRes<NotificationType[]>;
 
 export type MarkNotificationsAsSeenResponse = IBackendRes<{
-  message: string;
+  userId: number;
+  seenNotificationIds: number[];
 }>;
+
+// User Status Responses
+export type UserStatusResponse = IBackendRes<
+  {
+    userId: number;
+    enabled: boolean;
+  }[]
+>;

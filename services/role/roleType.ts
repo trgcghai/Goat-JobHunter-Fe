@@ -1,19 +1,18 @@
 import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type { Role } from "@/types/model";
 
-// Create Role
+// Base Request Types
+export type RoleIdRequest = number;
+
+// Create & Update
 export type CreateRoleRequest = {
   name: string;
   description?: string;
 };
 
-export type CreateRoleResponse = IBackendRes<Role>;
+export type UpdateRoleRequest = Role;
 
-export type UpdateRoleResponse = IBackendRes<Role>;
-
-export type DeleteRoleResponse = IBackendRes<Role>;
-
-// Fetch Roles (with pagination)
+// Fetch with Pagination
 export type FetchRolesRequest = {
   page?: number;
   size?: number;
@@ -21,6 +20,9 @@ export type FetchRolesRequest = {
   keyword?: string;
   active?: boolean;
 };
+
+// Response Types
+export type RoleMutationResponse = IBackendRes<Role>;
 
 export type FetchRolesResponse = IBackendRes<IModelPaginate<Role>>;
 

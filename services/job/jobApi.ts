@@ -2,26 +2,25 @@ import { api } from "@/services/api";
 import { buildSpringQuery } from "@/utils/buildSpringQuery";
 import {
   CreateJobRequest,
-  CreateJobResponse,
-  DeleteJobRequest,
-  DeleteJobResponse,
   FetchJobByCurrentRecruiterRequest,
-  FetchJobByIdRequest,
   FetchJobByIdResponse,
   FetchJobByRecruiterRequest,
   FetchJobsRequest,
-  FetchJobsResponse, FetchSuitableApplicantsRequest, FetchSuitableApplicantsResponse,
+  FetchJobsResponse,
+  FetchSuitableApplicantsRequest,
+  FetchSuitableApplicantsResponse,
   JobApplicationCountResponse,
+  JobIdRequest,
   JobIdsRequest,
+  JobMutationResponse,
   ToggleJobActiveResponse,
-  UpdateJobRequest,
-  UpdateJobResponse
+  UpdateJobRequest
 } from "./jobType";
 
 export const jobApi = api.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
-    createJob: builder.mutation<CreateJobResponse, CreateJobRequest>({
+    createJob: builder.mutation<JobMutationResponse, CreateJobRequest>({
       query: (job) => ({
         url: "/jobs",
         method: "POST",
@@ -30,7 +29,7 @@ export const jobApi = api.injectEndpoints({
       invalidatesTags: ["Job"]
     }),
 
-    updateJob: builder.mutation<UpdateJobResponse, UpdateJobRequest>({
+    updateJob: builder.mutation<JobMutationResponse, UpdateJobRequest>({
       query: ({ jobId, ...job }) => ({
         url: "/jobs",
         method: "PUT",
@@ -39,7 +38,7 @@ export const jobApi = api.injectEndpoints({
       invalidatesTags: ["Job"]
     }),
 
-    deleteJob: builder.mutation<DeleteJobResponse, DeleteJobRequest>({
+    deleteJob: builder.mutation<JobMutationResponse, JobIdRequest>({
       query: (jobId) => ({
         url: `/jobs/${jobId}`,
         method: "DELETE"
@@ -47,7 +46,6 @@ export const jobApi = api.injectEndpoints({
       invalidatesTags: ["Job"]
     }),
 
-    // Fetch jobs with advanced filtering, sorting, and pagination for administrators
     fetchJobs: builder.query<FetchJobsResponse, FetchJobsRequest>({
       query: (params) => {
         const { params: queryParams } = buildSpringQuery({
@@ -60,9 +58,9 @@ export const jobApi = api.injectEndpoints({
             "level",
             "workingType"
           ],
-          textSearchFields: ["title", "location"], // Dùng LIKE search
+          textSearchFields: ["title", "location"],
           nestedArrayFields: {
-            skills: "skills.name" // Map skills -> skills.name
+            skills: "skills.name"
           },
           defaultSort: "updatedAt,desc",
           sortableFields: ["title", "salary", "createdAt", "updatedAt"]
@@ -77,7 +75,7 @@ export const jobApi = api.injectEndpoints({
       providesTags: ["Job"]
     }),
 
-    fetchJobById: builder.query<FetchJobByIdResponse, FetchJobByIdRequest>({
+    fetchJobById: builder.query<FetchJobByIdResponse, JobIdRequest>({
       query: (jobId) => ({
         url: `/jobs/${jobId}`,
         method: "GET"
@@ -85,7 +83,6 @@ export const jobApi = api.injectEndpoints({
       providesTags: ["Job"]
     }),
 
-    // Fetch available jobs (active = true) for applicants
     fetchJobsAvailable: builder.query<
       FetchJobsResponse,
       Omit<FetchJobsRequest, "active">
@@ -94,7 +91,7 @@ export const jobApi = api.injectEndpoints({
         const { params: queryParams } = buildSpringQuery({
           params: {
             ...params,
-            active: true // Force active = true
+            active: true
           },
           filterFields: [
             "title",
@@ -121,7 +118,6 @@ export const jobApi = api.injectEndpoints({
       providesTags: ["Job"]
     }),
 
-    // Fetch related jobs based on skills (active = true) for job detail page
     fetchRelatedJobs: builder.query<
       FetchJobsResponse,
       {
@@ -134,7 +130,7 @@ export const jobApi = api.injectEndpoints({
         const { params: queryParams } = buildSpringQuery({
           params: {
             skills,
-            active: true, // Only active jobs
+            active: true,
             page,
             size
           },
@@ -155,7 +151,6 @@ export const jobApi = api.injectEndpoints({
       providesTags: ["Job"]
     }),
 
-    // fetch jobs by recruiter id
     fetchJobsByRecruiter: builder.query<
       FetchJobsResponse,
       FetchJobByRecruiterRequest
@@ -171,9 +166,9 @@ export const jobApi = api.injectEndpoints({
             "workingType",
             "active"
           ],
-          textSearchFields: ["title", "location"], // Dùng LIKE search
+          textSearchFields: ["title", "location"],
           nestedArrayFields: {
-            skills: "skills.name" // Map skills -> skills.name
+            skills: "skills.name"
           },
           defaultSort: "updatedAt,desc",
           sortableFields: ["title", "salary", "createdAt", "updatedAt"]
@@ -187,7 +182,6 @@ export const jobApi = api.injectEndpoints({
       providesTags: ["Job"]
     }),
 
-    // fetch jobs by current login recruiter
     fetchJobsByCurrentRecruiter: builder.query<
       FetchJobsResponse,
       FetchJobByCurrentRecruiterRequest
@@ -203,9 +197,9 @@ export const jobApi = api.injectEndpoints({
             "workingType",
             "active"
           ],
-          textSearchFields: ["title", "location"], // Dùng LIKE search
+          textSearchFields: ["title", "location"],
           nestedArrayFields: {
-            skills: "skills.name" // Map skills -> skills.name
+            skills: "skills.name"
           },
           defaultSort: "updatedAt,desc",
           sortableFields: ["title", "salary", "createdAt", "updatedAt"]
@@ -220,7 +214,6 @@ export const jobApi = api.injectEndpoints({
       providesTags: ["Job"]
     }),
 
-    // activate jobs
     activateJobs: builder.mutation<ToggleJobActiveResponse, JobIdsRequest>({
       query: (data) => ({
         url: "/jobs/activate",
@@ -230,7 +223,6 @@ export const jobApi = api.injectEndpoints({
       invalidatesTags: ["Job"]
     }),
 
-    // deactivate jobs
     deactivateJobs: builder.mutation<ToggleJobActiveResponse, JobIdsRequest>({
       query: (data) => ({
         url: "/jobs/deactivate",
@@ -240,7 +232,6 @@ export const jobApi = api.injectEndpoints({
       invalidatesTags: ["Job"]
     }),
 
-    // count applications for jobs
     countApplications: builder.query<
       JobApplicationCountResponse,
       JobIdsRequest
@@ -257,12 +248,15 @@ export const jobApi = api.injectEndpoints({
       providesTags: ["Job"]
     }),
 
-    fetchApplicantsSuitableForJob: builder.query<FetchSuitableApplicantsResponse, FetchSuitableApplicantsRequest>({
+    fetchApplicantsSuitableForJob: builder.query<
+      FetchSuitableApplicantsResponse,
+      FetchSuitableApplicantsRequest
+    >({
       query: ({ jobId, ...params }) => {
         const { params: queryParams } = buildSpringQuery({
           params,
           filterFields: ["fullName"],
-          textSearchFields: ["fullName"] // Dùng LIKE search
+          textSearchFields: ["fullName"]
         });
 
         return {

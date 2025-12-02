@@ -1,10 +1,14 @@
 import { api } from "@/services/api";
-import { SendInvitationEmailRequest } from "@/services/email/emailType";
 
-export  const emailApi = api.injectEndpoints({
+export const emailApi = api.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
-    sendInvitationEmail: builder.mutation<void, SendInvitationEmailRequest>({
+    sendInvitationEmail: builder.mutation<void,
+      {
+        applicantIds: number[],
+        jobId: number
+      }
+    >({
       query: (data) => ({
         url: "/email/jobs",
         method: "POST",
@@ -12,7 +16,7 @@ export  const emailApi = api.injectEndpoints({
       })
     })
   })
-})
+});
 
 export const {
   useSendInvitationEmailMutation

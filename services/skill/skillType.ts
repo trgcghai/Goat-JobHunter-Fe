@@ -1,31 +1,28 @@
 import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type { Skill } from "@/types/model";
 
-// Create Skill
-export type CreateSkillRequest = {
+// Base Request Types
+export type SkillIdRequest = string;
+
+export type SkillNameRequest = {
   name: string;
 };
 
-export type CreateSkillResponse = IBackendRes<Skill>;
+// Create & Update
+export type CreateSkillRequest = SkillNameRequest;
 
-// Update Skill
-export type UpdateSkillRequest = {
+export type UpdateSkillRequest = SkillNameRequest & {
   skillId: string;
-  name: string;
 };
 
-export type UpdateSkillResponse = IBackendRes<Skill>;
-
-// Delete Skill
-export type DeleteSkillRequest = string; // skillId
-
-export type DeleteSkillResponse = IBackendRes<Skill>;
-
-// Fetch Skills (with pagination)
+// Fetch with Pagination
 export type FetchSkillsRequest = {
   page?: number;
   size?: number;
   name?: string;
 };
+
+// Response Types
+export type SkillMutationResponse = IBackendRes<Skill>;
 
 export type FetchSkillsResponse = IBackendRes<IModelPaginate<Skill>>;

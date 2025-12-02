@@ -1,6 +1,4 @@
 import { api } from "@/services/api";
-import { IBackendRes } from "@/types/api";
-import { NotificationType } from "@/types/model";
 import { buildSpringQuery } from "@/utils/buildSpringQuery";
 import type {
   CheckRecruitersFollowedResponse,
@@ -11,17 +9,20 @@ import type {
   FetchUsersResponse,
   FollowRecruitersRequest,
   FollowRecruitersResponse,
-  GetFollowedRecruiters,
+  GetFollowedRecruitersResponse,
   GetSavedJobsResponse,
+  JobIdsRequest,
+  LatestNotificationsResponse,
   MarkNotificationsAsSeenResponse,
   NotificationPaginationRequest,
   NotificationPaginationResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
-  SaveJobsRequest,
   SaveJobsResponse,
   UpdatePasswordRequest,
-  UpdatePasswordResponse
+  UpdatePasswordResponse,
+  UserIdsRequest,
+  UserStatusResponse
 } from "./userType";
 
 export const userApi = api.injectEndpoints({
@@ -29,11 +30,10 @@ export const userApi = api.injectEndpoints({
   endpoints: (builder) => ({
     fetchUsers: builder.query<FetchUsersResponse, FetchUsersRequest>({
       query: (params) => {
-
         const { params: queryParams } = buildSpringQuery({
           params,
           filterFields: ["email", "phone", "role", "enabled"],
-          textSearchFields: ["email", "phone"], // Dùng LIKE search
+          textSearchFields: ["email", "phone"],
           nestedFields: {
             role: "role.name",
             email: "contact.email",
@@ -90,12 +90,12 @@ export const userApi = api.injectEndpoints({
       providesTags: (result) =>
         result?.data
           ? [
-            ...result.data.map((job) => ({
-              type: "SavedJob" as const,
-              id: job.jobId
-            })),
-            { type: "SavedJob", id: "LIST" }
-          ]
+              ...result.data.map((job) => ({
+                type: "SavedJob" as const,
+                id: job.jobId
+              })),
+              { type: "SavedJob", id: "LIST" }
+            ]
           : [{ type: "SavedJob", id: "LIST" }]
     }),
 
@@ -111,13 +111,13 @@ export const userApi = api.injectEndpoints({
       providesTags: (_, __, arg) =>
         arg.jobIds
           ? arg.jobIds.map((jobId) => ({
-            type: "SavedJob" as const,
-            id: jobId
-          }))
+              type: "SavedJob" as const,
+              id: jobId
+            }))
           : []
     }),
 
-    saveJobs: builder.mutation<SaveJobsResponse, SaveJobsRequest>({
+    saveJobs: builder.mutation<SaveJobsResponse, JobIdsRequest>({
       query: (data) => ({
         url: "/users/me/saved-jobs",
         method: "PUT",
@@ -132,7 +132,7 @@ export const userApi = api.injectEndpoints({
       ]
     }),
 
-    unsaveJobs: builder.mutation<SaveJobsResponse, SaveJobsRequest>({
+    unsaveJobs: builder.mutation<SaveJobsResponse, JobIdsRequest>({
       query: (data) => ({
         url: "/users/me/saved-jobs",
         method: "DELETE",
@@ -147,9 +147,8 @@ export const userApi = api.injectEndpoints({
       ]
     }),
 
-    // Follow Recruiters APIs for current user
-    // -- Followed recruiters --
-    getFollowedRecruiters: builder.query<GetFollowedRecruiters, void>({
+    // Follow Recruiters APIs
+    getFollowedRecruiters: builder.query<GetFollowedRecruitersResponse, void>({
       query: () => ({
         url: "/users/me/followed-recruiters",
         method: "GET"
@@ -157,18 +156,16 @@ export const userApi = api.injectEndpoints({
       providesTags: ["User"]
     }),
 
-    // Check if recruiters are followed. Pass recruiterIds: number[]
     checkRecruitersFollowed: builder.query<
       CheckRecruitersFollowedResponse,
       FollowRecruitersRequest
     >({
       query: ({ recruiterIds }) => ({
         url: "/users/me/followed-recruiters/contains",
-        params: { recruiterIds } // array -> repeated param
+        params: { recruiterIds }
       })
     }),
 
-    // Follow recruiters (body: { recruiterIds: number[] }), returns UserResponse
     followRecruiters: builder.mutation<
       FollowRecruitersResponse,
       FollowRecruitersRequest
@@ -181,7 +178,6 @@ export const userApi = api.injectEndpoints({
       invalidatesTags: ["User"]
     }),
 
-    // Unfollow recruiters (DELETE with body { recruiterIds })
     unfollowRecruiters: builder.mutation<
       FollowRecruitersResponse,
       FollowRecruitersRequest
@@ -194,8 +190,7 @@ export const userApi = api.injectEndpoints({
       invalidatesTags: ["User"]
     }),
 
-    // Notification APIs: mark as read, get, get latest
-    // GET /users/me/notifications - Lấy notifications có phân trang
+    // Notification APIs
     getUsersNotifications: builder.query<
       NotificationPaginationResponse,
       NotificationPaginationRequest
@@ -203,9 +198,9 @@ export const userApi = api.injectEndpoints({
       query: (params) => {
         const { params: queryParams } = buildSpringQuery({
           params,
-          filterFields: [], // Không filter
-          textSearchFields: [], // Không dùng LIKE search
-          nestedArrayFields: {}, // Không có nested array
+          filterFields: [],
+          textSearchFields: [],
+          nestedArrayFields: {},
           defaultSort: "createdAt,desc"
         });
 
@@ -218,11 +213,7 @@ export const userApi = api.injectEndpoints({
       providesTags: ["Notifications"]
     }),
 
-    // GET /users/me/notifications/latest - Lấy 10 notifications mới nhất
-    getLatestNotifications: builder.query<
-      IBackendRes<NotificationType[]>,
-      void
-    >({
+    getLatestNotifications: builder.query<LatestNotificationsResponse, void>({
       query: () => ({
         url: "/users/me/notifications/latest",
         method: "GET"
@@ -230,7 +221,6 @@ export const userApi = api.injectEndpoints({
       providesTags: ["Notifications"]
     }),
 
-    // PUT /users/me/notifications - Đánh dấu notifications đã xem
     markNotificationsAsSeen: builder.mutation<
       MarkNotificationsAsSeenResponse,
       number[]
@@ -243,22 +233,21 @@ export const userApi = api.injectEndpoints({
       invalidatesTags: ["Notifications"]
     }),
 
-    // activate users - set enabled to true
-    activateUsers: builder.mutation({
-      query: (userIds: number[]) => ({
+    // User Status APIs
+    activateUsers: builder.mutation<UserStatusResponse, UserIdsRequest>({
+      query: (data) => ({
         url: "/users/activate",
         method: "PUT",
-        data: { userIds }
+        data
       }),
       invalidatesTags: ["User", "Recruiter", "Applicant"]
     }),
 
-    // deactivate users - set enabled to false
-    deactivateUsers: builder.mutation({
-      query: (userIds: number[]) => ({
+    deactivateUsers: builder.mutation<UserStatusResponse, UserIdsRequest>({
+      query: (data) => ({
         url: "/users/deactivate",
         method: "PUT",
-        data: { userIds }
+        data
       }),
       invalidatesTags: ["User", "Recruiter", "Applicant"]
     })
@@ -266,29 +255,21 @@ export const userApi = api.injectEndpoints({
 });
 
 export const {
-  // hooks for user information endpoints
   useFetchUsersQuery,
   useFetchUserByEmailMutation,
   useUpdatePasswordMutation,
   useResetPasswordMutation,
-
-  // hooks for saved jobs endpoints
   useGetSavedJobsQuery,
   useCheckSavedJobsQuery,
   useSaveJobsMutation,
   useUnsaveJobsMutation,
-
-  // hooks for follow recruiters endpoints
   useGetFollowedRecruitersQuery,
   useCheckRecruitersFollowedQuery,
   useFollowRecruitersMutation,
   useUnfollowRecruitersMutation,
-
-  // hooks for user's notifications endpoints
   useGetUsersNotificationsQuery,
   useGetLatestNotificationsQuery,
   useMarkNotificationsAsSeenMutation,
-
   useActivateUsersMutation,
   useDeactivateUsersMutation
 } = userApi;
