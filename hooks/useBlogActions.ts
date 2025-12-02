@@ -1,24 +1,32 @@
 import {
   useDeleteBlogMutation,
   useEnableBlogsMutation,
-  useDisableBlogsMutation, useCreateBlogMutation, useUpdateBlogMutation
+  useDisableBlogsMutation,
+  useCreateBlogMutation,
+  useUpdateBlogMutation,
 } from "@/services/blog/blogApi";
 import { useCallback } from "react";
 import { toast } from "sonner";
 import { BlogActionType } from "@/types/enum";
 import { BlogFormData } from "@/app/(recruiter-portal)/recruiter-portal/blogs/form/components/schema";
+import { useUser } from "@/hooks/useUser";
 
 const useBlogActions = () => {
+  const { isSignedIn, user } = useUser();
   const [deleteBlog, { isLoading: isDeleting }] = useDeleteBlogMutation();
   const [enableBlogs, { isLoading: isEnabling }] = useEnableBlogsMutation();
   const [disableBlogs, { isLoading: isDisabling }] = useDisableBlogsMutation();
   const [createBlog, { isLoading: isCreating }] = useCreateBlogMutation();
   const [updateBlog, { isLoading: isUpdating }] = useUpdateBlogMutation();
 
-
   // Delete multiple blogs
   const handleDeleteBlogs = useCallback(
     async (blogIds: number[]) => {
+      if (!isSignedIn || !user) {
+        toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
+        return;
+      }
+
       try {
         await deleteBlog({
           blogIds,
@@ -34,12 +42,16 @@ const useBlogActions = () => {
         throw error;
       }
     },
-    [deleteBlog]
+    [deleteBlog, isSignedIn, user]
   );
 
   // Enable blogs
   const handleEnableBlogs = useCallback(
     async (blogIds: number[]) => {
+      if (!isSignedIn || !user) {
+        toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
+        return;
+      }
       try {
         await enableBlogs({
           blogIds,
@@ -47,19 +59,22 @@ const useBlogActions = () => {
         }).unwrap();
 
         toast.success("Hiển thị bài viết thành công!");
-
       } catch (error) {
         console.error("Failed to enable blogs:", error);
         toast.error("Không thể hiển thị bài viết. Vui lòng thử lại sau.");
         throw error;
       }
     },
-    [enableBlogs]
+    [enableBlogs, isSignedIn, user]
   );
 
   // Disable blogs
   const handleDisableBlogs = useCallback(
     async (blogIds: number[], reason?: string) => {
+      if (!isSignedIn || !user) {
+        toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
+        return;
+      }
       try {
         await disableBlogs({
           blogIds,
@@ -68,19 +83,22 @@ const useBlogActions = () => {
         }).unwrap();
 
         toast.success("Ẩn bài viết thành công!");
-
       } catch (error) {
         console.error("Failed to disable blogs:", error);
         toast.error("Không thể ẩn bài viết. Vui lòng thử lại sau.");
         throw error;
       }
     },
-    [disableBlogs]
+    [disableBlogs, isSignedIn, user]
   );
 
   // Toggle enable/disable for single blog
   const handleToggleBlogStatus = useCallback(
     async (blogId: number, isEnabled: boolean) => {
+      if (!isSignedIn || !user) {
+        toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
+        return;
+      }
       try {
         if (isEnabled) {
           await disableBlogs({
@@ -103,12 +121,17 @@ const useBlogActions = () => {
         throw error;
       }
     },
-    [enableBlogs, disableBlogs]
+    [isSignedIn, user, disableBlogs, enableBlogs]
   );
 
   // Create blog
   const handleCreateBlog = useCallback(
     async (data: BlogFormData & { banner: string }) => {
+      if (!isSignedIn || !user) {
+        toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
+        return;
+      }
+
       try {
         const response = await createBlog(data).unwrap();
 
@@ -122,15 +145,17 @@ const useBlogActions = () => {
         throw error;
       }
     },
-    [createBlog]
+    [createBlog, isSignedIn, user]
   );
 
   // Update blog
   const handleUpdateBlog = useCallback(
     async (blogId: number, data: BlogFormData & { banner: string }) => {
-
-      console.log({ blogId, data });
-
+      if (!isSignedIn || !user) {
+        toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
+        return;
+      }
+      
       try {
         const response = await updateBlog({
           ...data,
@@ -147,7 +172,7 @@ const useBlogActions = () => {
         throw error;
       }
     },
-    [updateBlog]
+    [isSignedIn, updateBlog, user]
   );
 
   return {
@@ -156,14 +181,19 @@ const useBlogActions = () => {
     isDisabling,
     isCreating,
     isUpdating,
-    isLoading: isDeleting || isEnabling || isDisabling || isCreating || isUpdating,
+    isLoading:
+      isDeleting ||
+      isEnabling ||
+      isDisabling ||
+      isCreating ||
+      isUpdating ||
 
     handleDeleteBlogs,
     handleEnableBlogs,
     handleDisableBlogs,
     handleToggleBlogStatus,
     handleCreateBlog,
-    handleUpdateBlog
+    handleUpdateBlog,
   };
 };
 

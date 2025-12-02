@@ -1,71 +1,68 @@
 "use client";
 
-import CommentItem, {
-  Comment,
-} from "@/app/(main)/blogs/[id]/components/CommentItem";
+import CommentItem from "@/app/(main)/blogs/[id]/components/CommentItem";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Send } from "lucide-react";
 import { useState } from "react";
+import LoaderSpin from "@/components/common/LoaderSpin";
+import ErrorMessage from "@/components/common/ErrorMessage";
+import { NestedComment } from "@/app/(main)/blogs/[id]/components/utils/formatComments";
 
 interface CommentSectionProps {
-  initialComments?: Comment[];
+  totalComments: number;
+  initialComments: NestedComment[];
+  isLoading: boolean;
+  isError: boolean;
 }
 
 export default function CommentSection({
-  initialComments = [],
+  totalComments,
+  initialComments,
+  isLoading,
+  isError
 }: CommentSectionProps) {
   const [comment, setComment] = useState("");
-  const [comments, setComments] = useState<Comment[]>(initialComments);
 
   const handleComment = () => {
     if (!comment.trim()) return;
-
-    const newComment: Comment = {
-      id: (comments.length + 1).toString(),
-      author: "Current User",
-      avatar: "/placeholder.svg",
-      content: comment,
-      createdAt: new Date().toISOString(),
-    };
-    setComments([...comments, newComment]);
+    // TODO: Implement create comment API call
+    console.log("New comment:", comment);
     setComment("");
   };
 
-  const handleReply = (commentId: string, replyContent: string) => {
-    setComments((prev) =>
-      prev.map((c) => {
-        if (c.id === commentId) {
-          return {
-            ...c,
-            replies: [
-              ...(c.replies || []),
-              {
-                id: `${c.id}-${(c.replies?.length || 0) + 1}`,
-                author: "Current User",
-                avatar: "/placeholder.svg",
-                content: replyContent,
-                createdAt: new Date().toISOString(),
-              },
-            ],
-          };
-        }
-        return c;
-      }),
-    );
+  const handleReply = (commentId: number, replyContent: string) => {
+    // TODO: Implement reply comment API call
+    console.log("Reply to comment", commentId, ":", replyContent);
   };
+
+  if (isLoading) {
+    return (
+      <Card className="p-6">
+        <LoaderSpin />
+      </Card>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Card className="p-6">
+        <ErrorMessage message="Không thể tải bình luận. Vui lòng thử lại sau." />
+      </Card>
+    );
+  }
 
   return (
     <Card className="p-6">
       <h2 className="text-2xl font-bold text-foreground mb-6">
-        Bình luận ({comments.length})
+        Bình luận ({totalComments})
       </h2>
 
       <div className="mb-8">
         <div className="flex gap-4">
-          <Avatar className="h-10 w-10">
+          <Avatar className="h-10 w-10 flex-shrink-0">
             <AvatarImage src="/placeholder.svg" alt="Current User" />
             <AvatarFallback>U</AvatarFallback>
           </Avatar>
@@ -88,9 +85,9 @@ export default function CommentSection({
       </div>
 
       <div className="space-y-6">
-        {comments.map((comment) => (
+        {initialComments.map((comment) => (
           <CommentItem
-            key={comment.id}
+            key={comment.commentId}
             comment={comment}
             onReply={handleReply}
           />

@@ -10,7 +10,7 @@ import type {
   FetchBlogsRequest,
   FetchBlogsResponse,
   FetchTagsRequest,
-  FetchTagsResponse,
+  FetchTagsResponse, GetCommentsResponse,
   LikeBlogRequest,
   UpdateBlogRequest
 } from "./blogType";
@@ -178,6 +178,15 @@ export const blogApi = api.injectEndpoints({
         data: blogIds
       }),
       invalidatesTags: ["Blog"]
+    }),
+
+    // comments endpoints
+    getCommentsByBlogId: builder.query<GetCommentsResponse, string>({
+      query: (blogId: string) => ({
+        url: `/comments/blog/${blogId}`,
+        method: "GET"
+      }),
+      providesTags: ["Blog", "Comment"]
     })
   })
 });
@@ -194,5 +203,8 @@ export const {
   useFetchTagsQuery,
   useFetchBlogsByCurrentRecruiterQuery,
   useEnableBlogsMutation,
-  useDisableBlogsMutation
+  useDisableBlogsMutation,
+
+  // comments hooks
+  useGetCommentsByBlogIdQuery
 } = blogApi;

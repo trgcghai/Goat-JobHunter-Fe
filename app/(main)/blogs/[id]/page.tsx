@@ -4,8 +4,10 @@ import {
   BlogActions,
   CommentSection
 } from "@/app/(main)/blogs/[id]/components";
+import useDetailBlog from "@/app/(main)/blogs/[id]/hooks/useDetailBlog";
 import ErrorMessage from "@/components/common/ErrorMessage";
 import LoaderSpin from "@/components/common/LoaderSpin";
+import MarkdownDisplay from "@/components/common/MarkdownDisplay";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Empty,
@@ -13,33 +15,31 @@ import {
   EmptyHeader,
   EmptyTitle
 } from "@/components/ui/empty";
-import { useFetchBlogByIdQuery } from "@/services/blog/blogApi";
 import { formatDate } from "@/utils/formatDate";
 import { ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useMemo } from "react";
-import MarkdownDisplay from "@/components/common/MarkdownDisplay";
-import { useFetchRecruiterByIdQuery } from "@/services/recruiter/recruiterApi";
 import { toast } from "sonner";
 
 const DetailBlogPage = () => {
   const params = useParams<{ id: string }>();
+  const { blog, isLoading, isError, author, isLoadingComments, isLoadCommentsFailed, comments, totalComments } = useDetailBlog(
+    params.id
+  );
+  if (!blog && (isLoading || isError === false)) {
+    return <LoaderSpin />;
+  }
 
-  const { data, isLoading, isError } = useFetchBlogByIdQuery(params.id, {
-    skip: !params.id
-  });
-
-  const blog = useMemo(() => {
-    return data?.data;
-  }, [data]);
-
-  const { data: authorData } = useFetchRecruiterByIdQuery(blog?.author.userId || 0, {
-    skip: !blog?.author.userId
-  });
-
-  const author = useMemo(() => authorData?.data || undefined, [authorData]);
+  if (!blog && isError) {
+    return (
+      <main className="min-h-screen bg-background">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+          <ErrorMessage message="Không thể tải thông tin bài viết. Vui lòng thử lại sau." />
+        </div>
+      </main>
+    );
+  }
 
   if (!blog) {
     return (
@@ -54,32 +54,6 @@ const DetailBlogPage = () => {
     );
   }
 
-  const initialComments = [
-    {
-      id: "1",
-      author: "Nguyễn Văn A",
-      avatar: "/placeholder.svg",
-      content: "Bài viết rất hữu ích, cảm ơn tác giả!",
-      createdAt: "2025-11-01T10:00:00Z",
-      replies: [
-        {
-          id: "1-1",
-          author: "Admin",
-          avatar: "/placeholder.svg",
-          content: "Cảm ơn bạn đã đọc bài viết!",
-          createdAt: "2025-11-01T11:00:00Z"
-        }
-      ]
-    },
-    {
-      id: "2",
-      author: "Trần Thị B",
-      avatar: "/placeholder.svg",
-      content: "Mình đã thử theo hướng dẫn và rất hiệu quả.",
-      createdAt: "2025-11-02T14:30:00Z"
-    }
-  ];
-
   const handleShare = async () => {
     try {
       await navigator.clipboard.writeText(window.location.toString());
@@ -88,6 +62,10 @@ const DetailBlogPage = () => {
       console.error("Không thể copy:", err);
       toast.error("Sao chép liên kết thất bại. Vui lòng thử lại.");
     }
+  };
+
+  const handleLike = () => {
+    toast.info("Tính năng thích bài viết đang được phát triển.");
   };
 
   return (
@@ -99,12 +77,6 @@ const DetailBlogPage = () => {
         <ChevronLeft className="w-4 h-4 mr-1" />
         Quay lại trang blog
       </Link>
-
-      {isLoading && <LoaderSpin />}
-
-      {isError && (
-        <ErrorMessage message="Có lỗi xảy ra khi tải thông tin bài viết. Vui lòng thử lại sau." />
-      )}
 
       {blog.banner && (
         <div className="relative w-full h-96 rounded-xl overflow-hidden mb-8">
@@ -136,13 +108,20 @@ const DetailBlogPage = () => {
         <div className="flex items-center justify-between mb-6 pb-6 border-b border-border">
           <div className="flex items-center gap-4">
             <Avatar className="h-12 w-12 border">
-              <AvatarImage src={author?.avatar || ""} alt={author?.fullName || blog?.author.fullName} />
+              <AvatarImage
+                src={author?.avatar || ""}
+                alt={author?.fullName || blog?.author.fullName}
+              />
               <AvatarFallback>
                 {author?.fullName?.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div>
-              <p className="font-semibold text-base text-foreground">{author?.fullName || author?.contact.email || blog?.author.fullName}</p>
+              <p className="font-semibold text-base text-foreground">
+                {author?.fullName ||
+                  author?.contact.email ||
+                  blog?.author.fullName}
+              </p>
               <p className="text-xs text-muted-foreground">
                 {formatDate(blog.createdAt || "")}
               </p>
@@ -169,13 +148,14 @@ const DetailBlogPage = () => {
 
       <div className="mb-6">
         <BlogActions
-          initialLikes={blog.activity?.totalLikes}
+          totalLikes={blog.activity?.totalLikes}
           totalComments={blog.activity?.totalComments}
+          onLike={handleLike}
           onShare={handleShare}
         />
       </div>
 
-      <CommentSection initialComments={initialComments} />
+      <CommentSection initialComments={comments} isLoading={isLoadingComments} isError={isLoadCommentsFailed} totalComments={totalComments} />
     </main>
   );
 };

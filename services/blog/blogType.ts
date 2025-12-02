@@ -1,5 +1,5 @@
 import type { IBackendRes, IModelPaginate } from "@/types/api";
-import type { Blog } from "@/types/model";
+import { Blog, CommentType } from "@/types/model";
 import { BlogActionType } from "@/types/enum";
 
 // Base Request Types
@@ -62,3 +62,5 @@ export type BlogStatusResponse = IBackendRes<{
   blogId: number;
   enabled: boolean;
 }[]>;
+
+export type GetCommentsResponse = IBackendRes<CommentType[]>

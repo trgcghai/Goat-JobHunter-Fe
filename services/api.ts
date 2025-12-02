@@ -59,7 +59,8 @@ export const api = createApi({
     "Role",
     "Subscriber",
     "Notifications",
-    "SavedJob"
+    "SavedJob",
+    "Comment"
   ],
   endpoints: (builder) => ({
     ping: builder.query<string, void>({

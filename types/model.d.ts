@@ -167,21 +167,24 @@ export type Blog = {
   updatedBy: string;
 };
 
-export type Comment = {
-  commentId?: string;
+export type CommentType = {
+  commentId: number;
   comment: string;
-  isReply: boolean;
+  reply: boolean;
   blog: {
-    blogId: string;
+    blogId: number;
+    title: string;
   };
-  parent: {
+  parent?: {
     commentId: string;
+    comment: string;
   };
-
-  createdBy?: string;
-  updatedBy?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  commentedBy: {
+    userId: string;
+    email: string;
+    avatar: string;
+  };
+  createdAt: string;
 };
 
 export type NotificationType = {
