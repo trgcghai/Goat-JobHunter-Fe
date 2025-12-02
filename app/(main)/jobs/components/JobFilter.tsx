@@ -4,67 +4,44 @@ import { JobFilters } from "@/app/(main)/jobs/hooks/useJobsFilter";
 import { Button } from "@/components/ui/button";
 import MultipleSelector, { Option } from "@/components/ui/MultipleSelector";
 import { JOBFILTER_CONFIG } from "@/constants/constant";
-import { useGetSkillsQuery } from "@/services/skill/skillApi";
-import { debounce } from "lodash";
 import { X } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { toast } from "sonner";
 import LoaderSpin from "@/components/common/LoaderSpin";
+import type { Skill } from "@/types/model";
 
 interface JobFilterProps {
   filters: JobFilters;
   onFilterChange: (filters: Partial<JobFilters>) => void;
   onResetFilters: () => void;
   activeFiltersCount: number;
+
+  // Skills props
+  skills: Skill[];
+  isFetchingSkills: boolean;
+  skillInputValue: string;
+  onSkillInputChange: (value: string) => void;
 }
 
 export default function JobFilter({
-                                    filters,
-                                    onFilterChange,
-                                    onResetFilters,
-                                    activeFiltersCount
-                                  }: JobFilterProps) {
-  const [skillInputValue, setSkillInputValue] = useState<string>("");
-  const [debouncedSkillInput, setDebouncedSkillInput] = useState<string>("");
-
-  // Fetch skills from API (only when user types)
-  const { data: skillsData, isFetching: isFetchingSkills } = useGetSkillsQuery(
-    {
-      page: 1,
-      size: 50,
-      name: debouncedSkillInput
-    },
-    {
-      skip: !debouncedSkillInput || debouncedSkillInput.length < 2
-    }
-  );
-
-  // Debounced function to update search query
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedSkillSearch = useCallback(
-    debounce((value: string) => {
-      setDebouncedSkillInput(value);
-    }, 500),
-    []
-  );
-
-  // Handle skill input value change
-  const handleSkillInputChange = (value: string) => {
-    setSkillInputValue(value);
-    debouncedSkillSearch(value);
-  };
-
+  filters,
+  onFilterChange,
+  onResetFilters,
+  activeFiltersCount,
+  skills,
+  isFetchingSkills,
+  skillInputValue,
+  onSkillInputChange
+}: JobFilterProps) {
   // Convert API skills to options
   const skillOptions = useMemo<Option[]>(() => {
-    if (!debouncedSkillInput || debouncedSkillInput.length < 2) return [];
+    if (!skillInputValue || skillInputValue.length < 2) return [];
 
-    if (!skillsData?.data?.result) return [];
-
-    return skillsData.data.result.map((skill) => ({
+    return skills.map((skill) => ({
       label: skill.name,
-      value: skill.skillId.toString()
+      value: skill.name // Use name as value instead of ID
     }));
-  }, [skillsData, debouncedSkillInput]);
+  }, [skills, skillInputValue]);
 
   const handleSkillsChange = (options: Option[]) => {
     onFilterChange({
@@ -90,14 +67,11 @@ export default function JobFilter({
     });
   };
 
-
   const selectedSkills: Option[] =
     filters.skills?.map((skill) => ({
       value: skill,
       label: skill
     })) || [];
-
-  console.log(selectedSkills);
 
   const selectedLocation: Option[] =
     filters.location?.map((location) => ({
@@ -146,7 +120,7 @@ export default function JobFilter({
           value={selectedSkills}
           onChange={handleSkillsChange}
           inputValue={skillInputValue}
-          onInputValueChange={handleSkillInputChange}
+          onInputValueChange={onSkillInputChange}
           placeholder="Nhập tên kỹ năng..."
           loadingIndicator={
             isFetchingSkills && (
@@ -162,7 +136,7 @@ export default function JobFilter({
                 : "Không tìm thấy kỹ năng"}
             </p>
           }
-          className="flex-1 rounded-xl"
+          className="rounded-xl"
           hidePlaceholderWhenSelected
           maxSelected={5}
           onMaxSelected={(maxLimit) => {
@@ -180,7 +154,7 @@ export default function JobFilter({
               Không tìm thấy địa điểm
             </p>
           }
-          className="flex-1 rounded-xl"
+          className="rounded-xl"
           hidePlaceholderWhenSelected
           maxSelected={JOBFILTER_CONFIG.location.maxSelected}
           onMaxSelected={() => {
@@ -198,7 +172,7 @@ export default function JobFilter({
               Không tìm thấy cấp bậc
             </p>
           }
-          className="flex-1 rounded-xl"
+          className="rounded-xl"
           hidePlaceholderWhenSelected
           maxSelected={JOBFILTER_CONFIG.level.maxSelected}
           onMaxSelected={() => {
@@ -216,7 +190,7 @@ export default function JobFilter({
               Không tìm thấy loại công việc
             </p>
           }
-          className="flex-1 rounded-xl"
+          className="rounded-xl"
           hidePlaceholderWhenSelected
           maxSelected={JOBFILTER_CONFIG.workingType.maxSelected}
           onMaxSelected={() => {

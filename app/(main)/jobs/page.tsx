@@ -35,6 +35,12 @@ export default function JobsPage() {
     hasNextPage,
     hasPreviousPage,
     activeFiltersCount,
+
+    // Skills props can be used in JobFilter
+    skillsData,
+    isFetchingSkills,
+    skillInputValue,
+    handleSkillInputChange
   } = useJobsFilter({
     itemsPerPage,
     initialFilters: {
@@ -54,6 +60,10 @@ export default function JobsPage() {
             onFilterChange={handleFilterChange}
             onResetFilters={resetFilters}
             activeFiltersCount={activeFiltersCount}
+            skills={skillsData}
+            isFetchingSkills={isFetchingSkills}
+            skillInputValue={skillInputValue}
+            onSkillInputChange={handleSkillInputChange}
           />
         </div>
       </section>
