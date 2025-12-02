@@ -2,8 +2,11 @@ import { useFetchBlogByIdQuery, useGetCommentsByBlogIdQuery } from "@/services/b
 import { useFetchRecruiterByIdQuery } from "@/services/recruiter/recruiterApi";
 import { useMemo } from "react";
 import { formatCommentsToNested, NestedComment } from "@/app/(main)/blogs/[id]/components/utils/formatComments";
+import useCommentActions from "@/hooks/useCommentActions";
+import { toast } from "sonner";
 
 const useDetailBlog = (blogId: string) => {
+  const { handleCommentBlog, handleReplyComment, isCommenting } = useCommentActions();
   const { data, isLoading, isError } = useFetchBlogByIdQuery(blogId, {
     skip: !blogId
   });
@@ -47,6 +50,24 @@ const useDetailBlog = (blogId: string) => {
     };
   }, [commentsData]);
 
+  const handleComment = async (comment: string) => {
+    if (!comment.trim()) {
+      toast.info("Vui lòng nhập nội dung bình luận.");
+      return;
+    }
+
+    await handleCommentBlog(Number(blogId), comment);
+  };
+
+  const handleReply = async (replyTo: number, comment: string) => {
+    if (!comment.trim()) {
+      toast.info("Vui lòng nhập nội dung trả lời.");
+      return;
+    }
+
+    await handleReplyComment(Number(blogId), replyTo, comment);
+  };
+
 
   return {
     // blog data
@@ -60,7 +81,12 @@ const useDetailBlog = (blogId: string) => {
     comments,
     totalComments,
     isLoadingComments,
-    isLoadCommentsFailed
+    isLoadCommentsFailed,
+
+    // actions
+    handleComment,
+    handleReply,
+    isCommenting
   };
 };
 

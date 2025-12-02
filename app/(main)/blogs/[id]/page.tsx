@@ -24,9 +24,21 @@ import { toast } from "sonner";
 
 const DetailBlogPage = () => {
   const params = useParams<{ id: string }>();
-  const { blog, isLoading, isError, author, isLoadingComments, isLoadCommentsFailed, comments, totalComments } = useDetailBlog(
+  const {
+    blog,
+    isLoading,
+    isError,
+    author,
+    isLoadingComments,
+    isLoadCommentsFailed,
+    comments,
+    totalComments,
+    handleComment,
+    handleReply
+  } = useDetailBlog(
     params.id
   );
+
   if (!blog && (isLoading || isError === false)) {
     return <LoaderSpin />;
   }
@@ -155,7 +167,14 @@ const DetailBlogPage = () => {
         />
       </div>
 
-      <CommentSection initialComments={comments} isLoading={isLoadingComments} isError={isLoadCommentsFailed} totalComments={totalComments} />
+      <CommentSection
+        initialComments={comments}
+        isLoading={isLoadingComments}
+        isError={isLoadCommentsFailed}
+        totalComments={totalComments}
+        onComment={handleComment}
+        onReply={handleReply}
+      />
     </main>
   );
 };

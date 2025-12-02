@@ -64,3 +64,9 @@ export type BlogStatusResponse = IBackendRes<{
 }[]>;
 
 export type GetCommentsResponse = IBackendRes<CommentType[]>
+
+export type CreateCommentRequest = {
+  blogId: number;
+  comment: string;
+  replyTo?: number;
+}

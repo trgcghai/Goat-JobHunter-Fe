@@ -1,11 +1,11 @@
 import { api } from "@/services/api";
 import { buildSpringQuery } from "@/utils/buildSpringQuery";
-import type {
+import {
   BlogIdRequest,
   BlogIdsRequest,
   BlogMutationResponse,
   BlogStatusResponse,
-  CreateBlogRequest,
+  CreateBlogRequest, CreateCommentRequest,
   FetchBlogByIdResponse,
   FetchBlogsRequest,
   FetchBlogsResponse,
@@ -182,11 +182,30 @@ export const blogApi = api.injectEndpoints({
 
     // comments endpoints
     getCommentsByBlogId: builder.query<GetCommentsResponse, string>({
-      query: (blogId: string) => ({
-        url: `/comments/blog/${blogId}`,
-        method: "GET"
-      }),
+      query: (blogId: string) => {
+        const { params } = buildSpringQuery({
+          params: {},
+          filterFields: [],
+          sortableFields: ["createdAt"],
+          defaultSort: "createdAt,desc"
+        });
+
+        return {
+          url: `/comments/blog/${blogId}`,
+          method: "GET",
+          params
+        };
+      },
       providesTags: ["Blog", "Comment"]
+    }),
+
+    createComment: builder.mutation<unknown, CreateCommentRequest>({
+      query: (data) => ({
+        url: `/comments`,
+        method: "POST",
+        data
+      }),
+      invalidatesTags: ["Blog", "Comment"]
     })
   })
 });
@@ -206,5 +225,6 @@ export const {
   useDisableBlogsMutation,
 
   // comments hooks
-  useGetCommentsByBlogIdQuery
+  useGetCommentsByBlogIdQuery,
+  useCreateCommentMutation
 } = blogApi;

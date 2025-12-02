@@ -3,30 +3,23 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { formatDate } from "@/utils/formatDate";
+import { formatDateTime } from "@/utils/formatDate";
 import { CornerDownRight, Send, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { NestedComment } from "@/app/(main)/blogs/[id]/components/utils/formatComments";
 
 interface CommentItemProps {
   comment: NestedComment;
-  onReply: (commentId: number, replyContent: string) => void;
+  onReply: (replyTo: number, comment: string) => void;
 }
 
 export default function CommentItem({ comment, onReply }: CommentItemProps) {
   const [isReplying, setIsReplying] = useState(false);
   const [replyContent, setReplyContent] = useState("");
 
-  const handleReply = () => {
-    if (!replyContent.trim()) return;
-    onReply(comment.commentId, replyContent);
-    setReplyContent("");
-    setIsReplying(false);
-  };
-
   // Calculate margin based on level (max 3 levels)
-  const marginClass = comment.level > 0 ? "ml-14" : "";
-  const showReplyButton = comment.level < 2; // Only show reply for levels 0 and 1
+  const marginClass = useMemo(() => comment.level > 0 ? "ml-14" : "", [comment.level]);
+  const showReplyButton = useMemo(() => comment.level < 2, [comment.level]); // Only show reply for levels 0 and 1
 
   const author = useMemo(() => {
     return comment.commentedBy.fullName || comment.commentedBy.username || "Người dùng ẩn danh";
@@ -34,7 +27,13 @@ export default function CommentItem({ comment, onReply }: CommentItemProps) {
 
   const replyTo = useMemo(() => {
     return comment.parent?.commentedBy.fullName || comment.parent?.commentedBy.username || "Người dùng ẩn danh";
-  }, [comment.parent?.commentedBy])
+  }, [comment.parent?.commentedBy]);
+
+  const handleReply = async () => {
+    await onReply(comment.commentId, replyContent);
+    setIsReplying(false);
+    setReplyContent("");
+  };
 
   return (
     <div className={`space-y-4 ${marginClass}`}>
@@ -55,7 +54,7 @@ export default function CommentItem({ comment, onReply }: CommentItemProps) {
                 {author}
               </p>
               <p className="text-xs text-muted-foreground whitespace-nowrap ml-2">
-                {comment.createdAt ? formatDate(comment.createdAt)  : "-"}
+                {comment.createdAt ? formatDateTime(comment.createdAt) : "-"}
               </p>
             </div>
             {comment.parent && (
