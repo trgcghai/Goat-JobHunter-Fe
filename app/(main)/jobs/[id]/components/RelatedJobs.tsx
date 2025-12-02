@@ -14,9 +14,13 @@ interface RelatedJobsProps {
   jobs: Job[];
   isLoading: boolean;
   isError: boolean;
+  savedJobs: {
+    jobId: number;
+    result: boolean;
+  }[]
 }
 
-function RelatedJobs({ jobs, isLoading, isError }: RelatedJobsProps) {
+function RelatedJobs({ jobs, isLoading, isError, savedJobs }: RelatedJobsProps) {
   return (
     <Card className="p-6">
       <h3 className="text-xl font-bold text-foreground">Việc Làm Liên Quan</h3>
@@ -38,7 +42,7 @@ function RelatedJobs({ jobs, isLoading, isError }: RelatedJobsProps) {
 
       <div className="flex flex-col gap-2">
         {jobs && jobs.map((relatedJob) => (
-          <JobCard key={relatedJob.jobId} job={relatedJob} viewMode="list" />
+          <JobCard key={relatedJob.jobId} job={relatedJob} viewMode="list" isSaved={savedJobs.find(j => j.jobId === relatedJob.jobId)?.result || false} />
         ))}
       </div>
     </Card>

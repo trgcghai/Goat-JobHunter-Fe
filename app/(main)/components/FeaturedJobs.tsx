@@ -6,7 +6,7 @@ import {
   EmptyContent,
   EmptyDescription,
   EmptyHeader,
-  EmptyTitle,
+  EmptyTitle
 } from "@/components/ui/empty";
 import { Job } from "@/types/model";
 import { ArrowRight, RefreshCcwIcon } from "lucide-react";
@@ -16,9 +16,13 @@ interface FeaturedJobsProps {
   jobs: Job[];
   isLoading: boolean;
   isError: boolean;
+  savedJobs: {
+    jobId: number;
+    result: boolean;
+  }[];
 }
 
-export default function FeaturedJobs({ jobs, isLoading }: FeaturedJobsProps) {
+export default function FeaturedJobs({ jobs, isLoading, savedJobs }: FeaturedJobsProps) {
   return (
     <section className="py-16 md:py-24 bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -53,7 +57,12 @@ export default function FeaturedJobs({ jobs, isLoading }: FeaturedJobsProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {jobs.length > 0 &&
             jobs.map((job) => (
-              <JobCard key={job.jobId} job={job} viewMode="grid" />
+              <JobCard
+                key={job.jobId}
+                job={job}
+                viewMode="grid"
+                isSaved={savedJobs.find(j => j.jobId === job.jobId)?.result || false}
+              />
             ))}
         </div>
 

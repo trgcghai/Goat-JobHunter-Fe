@@ -16,11 +16,16 @@ interface FeaturedEmployersProps {
   recruiters: Recruiter[];
   isLoading: boolean;
   isError: boolean;
+  followedRecruiters: {
+    recruiterId: number;
+    result: boolean
+  }[]
 }
 
 export default function FeaturedEmployers({
   recruiters,
   isLoading,
+  followedRecruiters
 }: FeaturedEmployersProps) {
   return (
     <section className="py-16 md:py-24 bg-primary/5">
@@ -60,6 +65,7 @@ export default function FeaturedEmployers({
               key={recruiter.userId}
               recruiter={recruiter}
               viewMode="grid"
+              isFollowed={followedRecruiters.find(item => item.recruiterId === recruiter.userId)?.result || false}
             />
           ))}
         </div>

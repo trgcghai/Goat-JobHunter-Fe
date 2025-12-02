@@ -4,7 +4,7 @@ import {
   JobHeader,
   JobInfoGrid,
   JobInfoSidebar,
-  RelatedJobs,
+  RelatedJobs
 } from "@/app/(main)/jobs/[id]/components";
 import ResumeDialog from "@/app/(main)/jobs/[id]/components/ResumeDialog";
 import useDetailJob from "@/app/(main)/jobs/[id]/hooks/useDetailJob";
@@ -18,7 +18,7 @@ import {
   EmptyContent,
   EmptyDescription,
   EmptyHeader,
-  EmptyTitle,
+  EmptyTitle
 } from "@/components/ui/empty";
 import { Separator } from "@/components/ui/separator";
 import useJobActions from "@/hooks/useJobActions";
@@ -27,13 +27,15 @@ import { BookmarkPlus, ChevronLeft, Send } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
+import { useCheckSavedJobsQuery } from "@/services/user/userApi";
+import { useUser } from "@/hooks/useUser";
 
 export default function JobDetailPage() {
   const params = useParams<{ id: string }>();
+  const { user, isSignedIn } = useUser();
   const { handleToggleSaveJob } = useJobActions();
   const {
     isSaved,
-    setIsSaved,
     isDialogOpen,
     setIsDialogOpen,
     job,
@@ -43,16 +45,27 @@ export default function JobDetailPage() {
     relatedJobs,
     isRelatedJobsLoading,
     isRelatedJobsError,
-    handleOpenCVDialog,
-    user,
+    handleOpenCVDialog
   } = useDetailJob(params.id);
 
   const { data } = useCountApplicationsQuery(
     { jobIds: job ? [job.jobId] : [] },
     {
-      skip: !job,
-    },
+      skip: !job
+    }
   );
+
+  const { data: checkSavedJobsData } =
+    useCheckSavedJobsQuery(
+      {
+        jobIds: relatedJobs.map(j => j.jobId)
+      },
+      {
+        skip: !relatedJobs || !isSignedIn || !user // Skip if job is not available or user is not signed in
+      }
+    );
+
+  const savedJobs = useMemo(() => checkSavedJobsData?.data || [], [checkSavedJobsData]);
 
   const numberOfApplications = useMemo(() => {
     if (data) {
@@ -154,7 +167,7 @@ export default function JobDetailPage() {
 
                     <Button
                       onClick={(e) =>
-                        handleToggleSaveJob(e, job, isSaved, setIsSaved)
+                        handleToggleSaveJob(e, job, isSaved)
                       }
                       variant="outline"
                       className="w-full text-base flex items-center justify-center gap-2 rounded-xl border-border"
@@ -177,6 +190,7 @@ export default function JobDetailPage() {
               jobs={relatedJobs || []}
               isLoading={isRelatedJobsLoading}
               isError={isRelatedJobsError}
+              savedJobs={savedJobs}
             />
           </>
         )}

@@ -22,10 +22,12 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
+import { useCheckSavedJobsQuery } from "@/services/user/userApi";
+import { useUser } from "@/hooks/useUser";
 
 export default function RecruiterDetailPage() {
   const { id } = useParams<{ id: string }>();
-
+  const { user, isSignedIn } = useUser();
   const {
     data: recruiterResp,
     isLoading: isRecruiterLoading,
@@ -40,17 +42,24 @@ export default function RecruiterDetailPage() {
       { skip: !Number(id) }
     );
 
+  const recruiterJobs = useMemo(() => jobsResp?.data?.result || [], [jobsResp]);
+
+  const { data: checkSavedJobsData } =
+    useCheckSavedJobsQuery(
+      {
+        jobIds: recruiterJobs.map(j => j.jobId)
+      },
+      {
+        skip: !recruiterJobs || !isSignedIn || !user
+      }
+    );
+
+  const savedJobs = useMemo(() => checkSavedJobsData?.data || [], [checkSavedJobsData]);
+
   const recruiter = useMemo(() => {
     return recruiterResp?.data;
   }, [recruiterResp]);
 
-  const recruiterJobs = useMemo(() => {
-    const jobs = jobsResp?.data?.result || [];
-    // Filter jobs by current recruiter ID
-    return jobs.filter(
-      (job) => job.recruiter?.userId == Number(id)
-    );
-  }, [jobsResp, id]);
 
   if (!recruiter && (isRecruiterLoading || isRecruiterError === false)) {
     return <LoaderSpin />;
@@ -129,7 +138,7 @@ export default function RecruiterDetailPage() {
             <LoaderSpin />
           </div>
         ) : recruiterJobs.length > 0 ? (
-          <RecruiterJobs recruiterJobs={recruiterJobs} />
+          <RecruiterJobs recruiterJobs={recruiterJobs} savedJobs={savedJobs} />
         ) : (
           <div className="mt-12">
             <Empty>

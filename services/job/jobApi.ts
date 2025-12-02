@@ -121,7 +121,7 @@ export const jobApi = api.injectEndpoints({
     fetchRelatedJobs: builder.query<
       FetchJobsResponse,
       {
-        skills: string[];
+        skills: number[];
         page?: number;
         size?: number;
       }
@@ -136,7 +136,7 @@ export const jobApi = api.injectEndpoints({
           },
           filterFields: ["active"],
           nestedArrayFields: {
-            skills: "skills.name"
+            skills: "skills.skillId"
           },
           defaultSort: "updatedAt,desc",
           sortableFields: ["updatedAt", "createdAt"]
