@@ -27,7 +27,7 @@ const useDetailRecruiter = (id: string) => {
     isLoading: isJobsLoading,
     isError: isJobsError
   } = useFetchJobsByRecruiterQuery(
-    { page: 1, size: 100, recruiterId: Number(id) },
+    { page: 1, size: 10, recruiterId: Number(id) },
     { skip: !Number(id) }
   );
 

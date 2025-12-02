@@ -43,7 +43,9 @@ const useDetailJob = (id: string) => {
     isError: isRelatedJobsError
   } = useFetchRelatedJobsQuery(
     {
-      skills: job?.skills.map((skill) => skill.skillId) || []
+      skills: job?.skills.map((skill) => skill.skillId) || [],
+      page: 1,
+      size: 10
     },
     { skip: !id || !job || !job.skills }
   );
