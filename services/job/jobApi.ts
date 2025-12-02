@@ -103,7 +103,7 @@ export const jobApi = api.injectEndpoints({
           ],
           textSearchFields: ["title", "location"],
           nestedArrayFields: {
-            skills: "skills.name"
+            skills: "skills.skillId"
           },
           defaultSort: "updatedAt,desc",
           sortableFields: ["title", "salary", "createdAt", "updatedAt"]

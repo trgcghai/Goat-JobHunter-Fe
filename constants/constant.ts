@@ -1,33 +1,6 @@
 import { Option } from "@/components/ui/MultipleSelector";
 import { Level, WorkingType } from "@/types/enum";
 
-export const SKILL_OPTIONS: Option[] = [
-  { value: "React", label: "React" },
-  { value: "Node.js", label: "Node.js" },
-  { value: "TypeScript", label: "TypeScript" },
-  { value: "Python", label: "Python" },
-  { value: "AWS", label: "AWS" },
-  { value: "SQL", label: "SQL" },
-  { value: "Figma", label: "Figma" },
-  { value: "UI Design", label: "UI Design" },
-  { value: "Mobile UI", label: "Mobile UI" },
-  { value: "Kubernetes", label: "Kubernetes" },
-  { value: "Docker", label: "Docker" },
-  { value: "PostgreSQL", label: "PostgreSQL" },
-  { value: "Flutter", label: "Flutter" },
-  { value: "React Native", label: "React Native" },
-];
-
-export const EMPLOYER_OPTIONS: Option[] = [
-  { value: "TechCorp Vietnam", label: "TechCorp Vietnam" },
-  { value: "StartupXYZ", label: "StartupXYZ" },
-  { value: "DesignStudio", label: "DesignStudio" },
-  { value: "CloudServices Inc", label: "CloudServices Inc" },
-  { value: "DataCorp", label: "DataCorp" },
-  { value: "AppStudio", label: "AppStudio" },
-  { value: "InfraTech", label: "InfraTech" },
-];
-
 export const LEVEL_OPTIONS = [
   { value: Level.INTERN, label: "Intern" },
   { value: Level.FRESHER, label: "Fresher" },
@@ -87,11 +60,6 @@ export const LOCATION_OPTIONS: Option[] = [
 ];
 
 export const JOBFILTER_CONFIG = {
-  skill: {
-    option: SKILL_OPTIONS,
-    maxSelected: 4,
-    maxSelectedMessage: "Bạn chỉ có thể chọn tối đa 4 kỹ năng",
-  },
   location: {
     option: LOCATION_OPTIONS,
     maxSelected: 1,
@@ -106,11 +74,6 @@ export const JOBFILTER_CONFIG = {
     option: WORKING_TYPE_OPTIONS,
     maxSelected: WORKING_TYPE_OPTIONS.length - 1,
     maxSelectedMessage: `Bạn chỉ có thể chọn tối đa ${WORKING_TYPE_OPTIONS.length - 1} hình thức làm việc`,
-  },
-  recruiter: {
-    option: EMPLOYER_OPTIONS,
-    maxSelected: 3,
-    maxSelectedMessage: "Bạn chỉ có thể chọn tối đa 3 nhà tuyển dụng",
   },
 };
 

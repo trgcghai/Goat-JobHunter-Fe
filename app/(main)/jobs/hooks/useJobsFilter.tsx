@@ -3,13 +3,9 @@ import { useMemo, useState } from "react";
 
 export interface JobFilters {
   location?: string[];
-  skills?: string[];
-  employer?: string[];
+  skills?: number[];
   level?: string[];
   workingType?: string[];
-  title?: string;
-  salary?: number;
-  recruiterId?: string;
 }
 
 export interface UseJobsFilterOptions {
@@ -30,15 +26,10 @@ export const useJobsFilter = (options?: UseJobsFilterOptions) => {
 
   // Build query params matching FetchJobsRequest
   const queryParams = useMemo(() => {
-    const params: Record<string, string | number | string[] | boolean> = {
+    const params: Record<string, string | number | string[] | boolean | number[]> = {
       page: currentPage,
       size: itemsPerPage, // Changed from 'limit' to 'size'
     };
-
-    // Add filters
-    if (filters.title) {
-      params.title = filters.title;
-    }
 
     if (filters.location && filters.location.length > 0) {
       params.location = filters.location.join(",");
@@ -53,21 +44,12 @@ export const useJobsFilter = (options?: UseJobsFilterOptions) => {
     }
 
     if (filters.skills && filters.skills.length > 0) {
-      params.skills = filters.skills; // API accepts string[]
-    }
-
-    if (filters.salary !== undefined) {
-      params.salary = filters.salary;
-    }
-
-    if (filters.recruiterId) {
-      params.recruiterId = filters.recruiterId;
+      params.skills = filters.skills;
     }
 
     return params;
   }, [currentPage, itemsPerPage, filters]);
 
-  // Fetch jobs with RTK Query
   const {
     data: jobsResponse,
     isLoading,

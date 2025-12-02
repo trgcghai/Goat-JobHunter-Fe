@@ -43,7 +43,7 @@ export type FetchJobsRequest = {
   workingType?: string | string[];
   salary?: number;
   active?: boolean;
-  skills?: string[];
+  skills?: number[];
 };
 
 export type FetchJobByRecruiterRequest = {

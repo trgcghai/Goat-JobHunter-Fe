@@ -133,7 +133,7 @@ export default function JobsPage() {
                   </EmptyDescription>
                 </EmptyHeader>
                 {activeFiltersCount > 0 && (
-                  <Button onClick={resetFilters}>Xóa bộ lọc</Button>
+                  <Button onClick={resetFilters} className={"rounded-xl"}>Xóa bộ lọc</Button>
                 )}
               </Empty>
             )}
