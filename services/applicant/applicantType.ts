@@ -21,8 +21,6 @@ export type CreateApplicantRequest = {
   resumeUrl?: string;
 };
 
-export type CreateApplicantResponse = IBackendRes<Applicant>;
-
 // Update Applicant
 export type UpdateApplicantRequest = {
   userId: number,
@@ -37,19 +35,10 @@ export type UpdateApplicantRequest = {
   avatar: string;
 }
 
-export type UpdateApplicantResponse = IBackendRes<Applicant>;
+export type ApplicantMutationResponse = IBackendRes<Applicant>;
 
-// Delete Applicant
-export type DeleteApplicantRequest = string; // applicantId
-
-export type DeleteApplicantResponse = IBackendRes<Applicant>;
-
-// Fetch Applicants (with pagination)
-export type FetchApplicantsRequest = string; // query string
 
 export type FetchApplicantsResponse = IBackendRes<IModelPaginate<Applicant>>;
 
-// Fetch Applicant By Id
-export type FetchApplicantByIdRequest = string; // applicantId
 
 export type FetchApplicantByIdResponse = IBackendRes<FetchCurrentApplicantDto>;

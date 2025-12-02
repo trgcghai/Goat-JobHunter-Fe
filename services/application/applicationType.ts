@@ -2,7 +2,14 @@ import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type { Application } from "@/types/model";
 import { InterviewType } from "@/types/enum";
 
-// Create Application
+// Base Request Types
+export type ApplicationIdRequest = string;
+
+export type ApplicationIdsRequest = {
+  applicationIds: number[];
+};
+
+// Create
 export type CreateApplicationRequest = {
   resumeUrl: string;
   email: string;
@@ -10,35 +17,19 @@ export type CreateApplicationRequest = {
   userId: string | number;
 };
 
-export type CreateApplicationResponse = IBackendRes<Application>;
-
-// Update Application Status
-export type AcceptApplicationStatusRequest = {
-  applicationIds: number[],
-  interviewDate: Date,
-  interviewType: InterviewType,
-  location: string,
-  note: string,
+// Update Status
+export type AcceptApplicationStatusRequest = ApplicationIdsRequest & {
+  interviewDate: Date;
+  interviewType: InterviewType;
+  location: string;
+  note: string;
 };
 
-export type RejectApplicationStatusRequest = {
-  applicationIds: number[],
-  reason: string,
-}
+export type RejectApplicationStatusRequest = ApplicationIdsRequest & {
+  reason: string;
+};
 
-export type UpdateApplicationStatusResponse = IBackendRes<Application>;
-
-// Delete Application
-export type DeleteApplicationRequest = string; // applicationId
-
-export type DeleteApplicationResponse = IBackendRes<Application>;
-
-// Fetch Application By Id
-export type FetchApplicationByIdRequest = string; // applicationId
-
-export type FetchApplicationByIdResponse = IBackendRes<Application>;
-
-// Fetch All Applications (Admin)
+// Fetch with Pagination
 export type FetchApplicationsRequest = {
   page?: number;
   size?: number;
@@ -47,20 +38,15 @@ export type FetchApplicationsRequest = {
   status?: string[];
 };
 
-export type FetchApplicationsResponse = IBackendRes<
-  IModelPaginate<Application>
->;
-
-export type FetchApplicationsByRecruiterResponse = IBackendRes<
-  IModelPaginate<Application>
->;
-
-// Fetch Applications By Applicant
-export type FetchApplicationsByApplicantResponse = IBackendRes<
-  IModelPaginate<Application>
->;
-
 export type FetchApplicationsByApplicantRequest = {
   page?: number;
   size?: number;
+  applicantId?: number;
 };
+
+// Response Types
+export type ApplicationMutationResponse = IBackendRes<Application>;
+
+export type FetchApplicationsResponse = IBackendRes<IModelPaginate<Application>>;
+
+export type FetchApplicationByIdResponse = IBackendRes<Application>;

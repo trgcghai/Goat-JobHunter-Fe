@@ -2,8 +2,17 @@ import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type { Blog } from "@/types/model";
 import { BlogActionType } from "@/types/enum";
 
-// Create Blog
-export type CreateBlogRequest = {
+// Base Request Types
+export type BlogIdRequest = string;
+
+export type BlogIdsRequest = {
+  blogIds: number[];
+  reason?: string;
+  mode: BlogActionType;
+};
+
+// Base Blog Content
+type BlogContent = {
   title: string;
   banner: string;
   description: string;
@@ -12,24 +21,14 @@ export type CreateBlogRequest = {
   draft: boolean;
 };
 
-export type CreateBlogResponse = IBackendRes<Blog>;
+// Create & Update
+export type CreateBlogRequest = BlogContent;
 
-// Update Blog
-export type UpdateBlogRequest = {
+export type UpdateBlogRequest = BlogContent & {
   blogId: string;
-  title: string;
-  banner: string;
-  description: string;
-  content: string;
-  tags: string[];
-  draft: boolean;
 };
 
-export type UpdateBlogResponse = IBackendRes<Blog>;
-
-export type DeleteBlogResponse = IBackendRes<Blog>;
-
-// Fetch Blogs (with pagination)
+// Fetch with Pagination
 export type FetchBlogsRequest = {
   page?: number;
   size?: number;
@@ -40,34 +39,24 @@ export type FetchBlogsRequest = {
   enabled?: boolean;
 };
 
-export type FetchBlogsResponse = IBackendRes<IModelPaginate<Blog>>;
+export type FetchTagsRequest = {
+  keyword?: string;
+};
 
-// Fetch Blog By Id
-export type FetchBlogByIdRequest = string; // blogId
-
-export type FetchBlogByIdResponse = IBackendRes<Blog>;
-
-// Like Blog
+// Like
 export type LikeBlogRequest = {
   blog: Blog;
   liked: boolean;
 };
 
-export type LikeBlogResponse = IBackendRes<Blog>;
+// Response Types
+export type BlogMutationResponse = IBackendRes<Blog>;
 
-// Fetch Tags
-export type FetchTagsRequest = {
-  keyword?: string;
-};
+export type FetchBlogsResponse = IBackendRes<IModelPaginate<Blog>>;
+
+export type FetchBlogByIdResponse = IBackendRes<Blog>;
 
 export type FetchTagsResponse = IBackendRes<[[string, number]]>;
-
-// accept and reject blogs
-export type BlogIdsRequest = {
-  blogIds: number[];
-  reason?: string;
-  mode: BlogActionType;
-}
 
 export type BlogStatusResponse = IBackendRes<{
   blogId: number;

@@ -1,26 +1,24 @@
 import { api } from "@/services/api";
 import { buildSpringQuery } from "@/utils/buildSpringQuery";
 import type {
-  BlogIdsRequest, BlogStatusResponse,
+  BlogIdRequest,
+  BlogIdsRequest,
+  BlogMutationResponse,
+  BlogStatusResponse,
   CreateBlogRequest,
-  CreateBlogResponse,
-  DeleteBlogResponse,
-  FetchBlogByIdRequest,
   FetchBlogByIdResponse,
   FetchBlogsRequest,
   FetchBlogsResponse,
   FetchTagsRequest,
   FetchTagsResponse,
   LikeBlogRequest,
-  LikeBlogResponse,
-  UpdateBlogRequest,
-  UpdateBlogResponse
+  UpdateBlogRequest
 } from "./blogType";
 
 export const blogApi = api.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
-    createBlog: builder.mutation<CreateBlogResponse, CreateBlogRequest>({
+    createBlog: builder.mutation<BlogMutationResponse, CreateBlogRequest>({
       query: (blog) => ({
         url: "/blogs",
         method: "POST",
@@ -29,7 +27,7 @@ export const blogApi = api.injectEndpoints({
       invalidatesTags: ["Blog"]
     }),
 
-    updateBlog: builder.mutation<UpdateBlogResponse, UpdateBlogRequest>({
+    updateBlog: builder.mutation<BlogMutationResponse, UpdateBlogRequest>({
       query: (data) => ({
         url: "/blogs",
         method: "PUT",
@@ -38,7 +36,7 @@ export const blogApi = api.injectEndpoints({
       invalidatesTags: ["Blog"]
     }),
 
-    deleteBlog: builder.mutation<DeleteBlogResponse, BlogIdsRequest>({
+    deleteBlog: builder.mutation<BlogMutationResponse, BlogIdsRequest>({
       query: (data) => ({
         url: `/blogs`,
         method: "DELETE",
@@ -51,13 +49,9 @@ export const blogApi = api.injectEndpoints({
       query: (params) => {
         const { params: queryParams } = buildSpringQuery({
           params,
-          filterFields: [
-            "title",
-            'draft',
-            "enabled",
-          ],
-          textSearchFields: ["title"], // Dùng LIKE search
-          defaultSort: "createdAt,updatedAt,desc",
+          filterFields: ["title", "draft", "enabled"],
+          textSearchFields: ["title"],
+          defaultSort: "createdAt,updatedAt,desc"
         });
 
         return {
@@ -74,9 +68,9 @@ export const blogApi = api.injectEndpoints({
         const { params: queryParams } = buildSpringQuery({
           params,
           filterFields: ["title", "content", "authorId"],
-          textSearchFields: ["title", "content"], // LIKE search
+          textSearchFields: ["title", "content"],
           nestedArrayFields: {
-            tags: "tags.name" // Map tags -> tags.name
+            tags: "tags.name"
           },
           defaultSort: "createdAt,desc",
           sortableFields: ["title", "createdAt", "updatedAt"]
@@ -93,10 +87,9 @@ export const blogApi = api.injectEndpoints({
 
     fetchPopularBlogs: builder.query<FetchBlogsResponse, FetchBlogsRequest>({
       query: (params) => {
-        // Override sort to prioritize reads and likes
         const modifiedParams = {
           ...params,
-          sort: "activity.totalReads,desc" // Sort by reads descending
+          sort: "activity.totalReads,desc"
         };
 
         const { params: queryParams } = buildSpringQuery({
@@ -106,7 +99,7 @@ export const blogApi = api.injectEndpoints({
           nestedArrayFields: {
             tags: "tags.name"
           },
-          defaultSort: "activity.totalReads,desc", // Default sort by reads
+          defaultSort: "activity.totalReads,desc",
           sortableFields: [
             "title",
             "createdAt",
@@ -126,7 +119,7 @@ export const blogApi = api.injectEndpoints({
       providesTags: ["Blog"]
     }),
 
-    fetchBlogById: builder.query<FetchBlogByIdResponse, FetchBlogByIdRequest>({
+    fetchBlogById: builder.query<FetchBlogByIdResponse, BlogIdRequest>({
       query: (blogId) => ({
         url: `/blogs/${blogId}`,
         method: "GET"
@@ -134,7 +127,7 @@ export const blogApi = api.injectEndpoints({
       providesTags: ["Blog"]
     }),
 
-    likeBlog: builder.mutation<LikeBlogResponse, LikeBlogRequest>({
+    likeBlog: builder.mutation<BlogMutationResponse, LikeBlogRequest>({
       query: ({ blog, liked }) => ({
         url: "/blogs/liked-blogs",
         method: "PUT",
@@ -155,12 +148,9 @@ export const blogApi = api.injectEndpoints({
       query: (params) => {
         const { params: queryParams } = buildSpringQuery({
           params,
-          filterFields: [
-            "title",
-            'draft'
-          ],
-          textSearchFields: ["title"], // Dùng LIKE search
-          defaultSort: "createdAt,updatedAt,desc",
+          filterFields: ["title", "draft"],
+          textSearchFields: ["title"],
+          defaultSort: "createdAt,updatedAt,desc"
         });
 
         return {
@@ -174,21 +164,21 @@ export const blogApi = api.injectEndpoints({
 
     enableBlogs: builder.mutation<BlogStatusResponse, BlogIdsRequest>({
       query: (blogIds) => ({
-        url: '/blogs/enabled',
-        method: 'PUT',
-        data: blogIds,
+        url: "/blogs/enabled",
+        method: "PUT",
+        data: blogIds
       }),
-      invalidatesTags: ['Blog'],
+      invalidatesTags: ["Blog"]
     }),
 
     disableBlogs: builder.mutation<BlogStatusResponse, BlogIdsRequest>({
       query: (blogIds) => ({
-        url: '/blogs/disabled',
-        method: 'PUT',
-        data: blogIds,
+        url: "/blogs/disabled",
+        method: "PUT",
+        data: blogIds
       }),
-      invalidatesTags: ['Blog'],
-    }),
+      invalidatesTags: ["Blog"]
+    })
   })
 });
 

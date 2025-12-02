@@ -1,22 +1,17 @@
 import { api } from "@/services/api";
 import dayjs from "dayjs";
-import type {
+import {
+  ApplicantMutationResponse,
   CreateApplicantRequest,
-  CreateApplicantResponse,
-  DeleteApplicantRequest,
-  DeleteApplicantResponse,
-  FetchApplicantByIdRequest,
   FetchApplicantByIdResponse,
-  FetchApplicantsRequest,
   FetchApplicantsResponse,
-  UpdateApplicantRequest,
-  UpdateApplicantResponse
+  UpdateApplicantRequest
 } from "./applicantType";
 
 export const applicantApi = api.injectEndpoints({
   endpoints: (builder) => ({
     createApplicant: builder.mutation<
-      CreateApplicantResponse,
+      ApplicantMutationResponse,
       CreateApplicantRequest
     >({
       query: (data) => ({
@@ -32,7 +27,7 @@ export const applicantApi = api.injectEndpoints({
     }),
 
     updateApplicant: builder.mutation<
-      UpdateApplicantResponse,
+      ApplicantMutationResponse,
       UpdateApplicantRequest
     >({
       query: (data) => ({
@@ -44,8 +39,8 @@ export const applicantApi = api.injectEndpoints({
     }),
 
     deleteApplicant: builder.mutation<
-      DeleteApplicantResponse,
-      DeleteApplicantRequest
+      ApplicantMutationResponse,
+      number
     >({
       query: (applicantId) => ({
         url: `/applicants/${applicantId}`,
@@ -56,15 +51,15 @@ export const applicantApi = api.injectEndpoints({
 
     fetchApplicant: builder.query<
       FetchApplicantsResponse,
-      FetchApplicantsRequest
+      void
     >({
-      query: (params) => ({ url: `/applicants`, method: "GET", params }),
+      query: () => ({ url: `/applicants`, method: "GET" }),
       providesTags: ["Applicant"]
     }),
 
     fetchApplicantById: builder.query<
       FetchApplicantByIdResponse,
-      FetchApplicantByIdRequest
+      number
     >({
       query: (applicantId) => ({
         url: `/applicants/${applicantId}`,
