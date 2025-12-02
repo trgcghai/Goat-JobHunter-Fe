@@ -1,6 +1,3 @@
-"use client";
-
-
 import { ApplicationsByYearChart, Top10BlogsChart, TotalStatisticsChart } from "@/app/(admin)/dashboard/components";
 
 export default function AdminDashboard() {

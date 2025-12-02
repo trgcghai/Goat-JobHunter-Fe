@@ -82,8 +82,15 @@ export const api = createApi({
         method: "POST",
         data: { message }
       })
+    }),
+
+    backup: builder.query({
+      query: () => ({
+        url: "/admin/backup",
+        method: "GET"
+      })
     })
   })
 });
 
-export const { usePingQuery, useClearCookiesQuery, useAiChatMutation } = api;
+export const { usePingQuery, useClearCookiesQuery, useAiChatMutation, useBackupQuery } = api;

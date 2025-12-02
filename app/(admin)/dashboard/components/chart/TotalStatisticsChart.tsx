@@ -1,3 +1,5 @@
+"use client"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Briefcase, ClipboardList, BookOpen, LucideProps } from "lucide-react";
 import { useTotalStatistics } from "@/app/(admin)/dashboard/hooks/useDashboard";
