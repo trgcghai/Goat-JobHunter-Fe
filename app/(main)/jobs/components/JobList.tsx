@@ -6,22 +6,27 @@ import { Job } from "@/types/model";
 
 interface JobListProps {
   jobs: Job[];
+  savedJobs: {
+    jobId: number;
+    result: boolean;
+  }[];
   viewMode: "list" | "grid";
   filters: JobFilters;
   onFilterChange: (filters: JobFilters) => void;
 }
 
 export default function JobList({
-  jobs,
-  viewMode,
-  filters,
-  onFilterChange,
-}: JobListProps) {
+                                  jobs,
+                                  savedJobs,
+                                  viewMode,
+                                  filters,
+                                  onFilterChange
+                                }: JobListProps) {
   const handleLevelClick = (level: string) => {
     if (onFilterChange && filters) {
       onFilterChange({
         ...filters,
-        level: filters.level && filters.level.includes(level) ? [] : [level],
+        level: filters.level && filters.level.includes(level) ? [] : [level]
       });
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -34,7 +39,7 @@ export default function JobList({
         workingType:
           filters.workingType && filters.workingType.includes(workingType)
             ? []
-            : [workingType],
+            : [workingType]
       });
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -50,6 +55,7 @@ export default function JobList({
             viewMode="grid"
             onLevelClick={handleLevelClick}
             onWorkingTypeClick={handleWorkingTypeClick}
+            isSaved={savedJobs.find(j => j.jobId === job.jobId)?.result || false}
           />
         ))}
       </div>
@@ -65,6 +71,7 @@ export default function JobList({
           viewMode="list"
           onLevelClick={handleLevelClick}
           onWorkingTypeClick={handleWorkingTypeClick}
+          isSaved={savedJobs.find(j => j.jobId === job.jobId)?.result || false}
         />
       ))}
     </div>

@@ -55,8 +55,7 @@ const useJobActions = () => {
   const handleToggleSaveJob = async (
     e: React.MouseEvent,
     job: Job,
-    isSaved: boolean,
-    setIsSaved: React.Dispatch<React.SetStateAction<boolean>>,
+    isSaved: boolean
   ) => {
     e.preventDefault();
     e.stopPropagation();
@@ -65,8 +64,6 @@ const useJobActions = () => {
       toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
       return;
     }
-
-    setIsSaved(!isSaved);
 
     if (isSaved) {
       await unsaveJobs({
@@ -86,7 +83,6 @@ const useJobActions = () => {
 
     if (isSaveError || isUnsaveError) {
       toast.error("Đã xảy ra lỗi. Vui lòng thử lại.");
-      setIsSaved(!isSaved); // Revert state on error
     }
   };
 

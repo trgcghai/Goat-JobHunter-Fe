@@ -8,16 +8,18 @@ import {
   Empty,
   EmptyDescription,
   EmptyHeader,
-  EmptyTitle,
+  EmptyTitle
 } from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Grid3x3, List, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useCheckSavedJobsQuery } from "@/services/user/userApi";
+import { useUser } from "@/hooks/useUser";
 
 export default function JobsPage() {
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
   const itemsPerPage = viewMode === "grid" ? 9 : 10;
-
+  const { user, isSignedIn } = useUser();
   const {
     jobs,
     isLoading,
@@ -47,9 +49,21 @@ export default function JobsPage() {
       location: [],
       skills: [],
       level: [],
-      workingType: [],
-    },
+      workingType: []
+    }
   });
+
+  const { data: checkSavedJobsData } =
+    useCheckSavedJobsQuery(
+      {
+        jobIds: jobs.map((job) => job.jobId)
+      },
+      {
+        skip: !jobs || jobs.length === 0 || !user || !isSignedIn
+      }
+    );
+
+  const savedJobs = useMemo(() => checkSavedJobsData?.data || [], [checkSavedJobsData]);
 
   return (
     <main className="flex-1">
@@ -151,6 +165,7 @@ export default function JobsPage() {
             {!isLoading && !isError && jobs.length > 0 && (
               <JobList
                 jobs={jobs}
+                savedJobs={savedJobs}
                 viewMode={viewMode}
                 filters={filters}
                 onFilterChange={handleFilterChange}
