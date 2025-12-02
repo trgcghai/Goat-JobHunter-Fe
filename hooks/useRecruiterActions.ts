@@ -31,7 +31,6 @@ const useRecruiterActions = () => {
     e: React.MouseEvent,
     recruiter: Recruiter,
     isFollowed: boolean,
-    setIsFollowed: React.Dispatch<React.SetStateAction<boolean>>,
   ) => {
     e.preventDefault();
     e.stopPropagation();
@@ -40,8 +39,6 @@ const useRecruiterActions = () => {
       toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
       return;
     }
-
-    setIsFollowed(!isFollowed);
 
     if (isFollowed) {
       await unfollowRecruiters({
@@ -63,7 +60,6 @@ const useRecruiterActions = () => {
 
     if (isFollowError || isUnfollowError) {
       toast.error("Đã xảy ra lỗi. Vui lòng thử lại.");
-      setIsFollowed(!isFollowed); // Revert state on error
     }
   };
 

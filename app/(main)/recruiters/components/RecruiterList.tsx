@@ -5,11 +5,16 @@ import { Recruiter } from "@/types/model";
 
 interface RecruiterListProps {
   recruiters: Recruiter[];
+  followedRecruiters: {
+    recruiterId: number;
+    result: boolean;
+  }[]
   viewMode: "list" | "grid";
 }
 
 export default function RecruiterList({
   recruiters,
+  followedRecruiters,
   viewMode,
 }: RecruiterListProps) {
   if (viewMode === "grid") {
@@ -20,6 +25,7 @@ export default function RecruiterList({
             key={recruiter.userId}
             recruiter={recruiter}
             viewMode="grid"
+            isFollowed={followedRecruiters.find(r => r.recruiterId === recruiter.userId)?.result || false}
           />
         ))}
       </div>
@@ -33,6 +39,7 @@ export default function RecruiterList({
           key={recruiter.userId}
           recruiter={recruiter}
           viewMode="list"
+          isFollowed={followedRecruiters.find(r => r.recruiterId === recruiter.userId)?.result || false}
         />
       ))}
     </div>

@@ -2,7 +2,7 @@
 
 import {
   RecruiterFilter,
-  RecruiterList,
+  RecruiterList
 } from "@/app/(main)/recruiters/components";
 import useRecruitersFilter from "@/app/(main)/recruiters/hooks/useRecruitersFilter";
 import CustomPagination from "@/components/common/CustomPagination";
@@ -11,16 +11,18 @@ import {
   Empty,
   EmptyDescription,
   EmptyHeader,
-  EmptyTitle,
+  EmptyTitle
 } from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Grid3x3, List, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useCheckRecruitersFollowedQuery } from "@/services/user/userApi";
+import { useUser } from "@/hooks/useUser";
 
 export default function RecruitersPage() {
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
   const itemsPerPage = viewMode === "grid" ? 9 : 10;
-
+  const { user, isSignedIn } = useUser();
   const {
     recruiters,
     isLoading,
@@ -37,14 +39,26 @@ export default function RecruitersPage() {
     previousPage,
     hasNextPage,
     hasPreviousPage,
-    activeFiltersCount,
+    activeFiltersCount
   } = useRecruitersFilter({
     itemsPerPage,
     initialFilters: {
       fullName: "",
-      address: undefined,
-    },
+      address: undefined
+    }
   });
+
+  const { data: checkFollowedData } =
+    useCheckRecruitersFollowedQuery(
+      {
+        recruiterIds: recruiters.map((recruiter) => recruiter.userId)
+      },
+      {
+        skip: !recruiters || recruiters.length === 0 || !isSignedIn || !user
+      }
+    );
+
+  const followedRecruiters = useMemo(() => checkFollowedData?.data || [], [checkFollowedData]);
 
   return (
     <main className="flex-1">
@@ -141,7 +155,7 @@ export default function RecruitersPage() {
             )}
 
             {!isLoading && !isError && recruiters.length > 0 && (
-              <RecruiterList recruiters={recruiters} viewMode={viewMode} />
+              <RecruiterList recruiters={recruiters} viewMode={viewMode} followedRecruiters={followedRecruiters} />
             )}
 
             {!isLoading && (
