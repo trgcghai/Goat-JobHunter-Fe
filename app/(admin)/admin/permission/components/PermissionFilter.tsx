@@ -34,7 +34,7 @@ export default function PermissionFilter({ filters, onFilterChange, onResetFilte
   );
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const deboucedName = useCallback(
+  const debouncedName = useCallback(
     debounce((value: string) => {
       onFilterChange({ name: value });
     }, 700),
@@ -49,9 +49,9 @@ export default function PermissionFilter({ filters, onFilterChange, onResetFilte
 
   useEffect(() => {
     return () => {
-      deboucedName.cancel();
+      debouncedName.cancel();
     }
-  }, [deboucedName]);
+  }, [debouncedName]);
 
   const handleModuleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -62,7 +62,7 @@ export default function PermissionFilter({ filters, onFilterChange, onResetFilte
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setNameInput(value);
-    deboucedName(value);
+    debouncedName(value);
   }
 
   const handleMethodChange = (v: string) => {

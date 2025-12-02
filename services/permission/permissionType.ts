@@ -2,7 +2,7 @@ import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type { Permission } from "@/types/model";
 
 // Base Request Types
-export type PermissionIdRequest = string;
+export type PermissionIdRequest = number;
 
 // Create & Update
 export type CreatePermissionRequest = {

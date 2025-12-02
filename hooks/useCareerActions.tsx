@@ -35,12 +35,10 @@ export default function useCareerActions() {
     }
   };
 
-  const handleDeleteCareer = async (careerId: string) => {
+  const handleDeleteCareers = async (careerIds: number[]) => {
     try {
-      const result = await deleteCareer(careerId).unwrap();
-      if (result.statusCode === 200) {
-        toast.success("Xóa ngành nghề thành công");
-      }
+      await Promise.all(careerIds.map(async careerId => await deleteCareer(careerId)));
+      toast.success("Xóa ngành nghề thành công");
     } catch (error) {
       toast.error("Có lỗi xảy ra khi xóa ngành nghề. Vui lòng thử lại.");
       console.error(error);
@@ -50,7 +48,7 @@ export default function useCareerActions() {
   return {
     handleCreateCareer,
     handleUpdateCareer,
-    handleDeleteCareer,
+    handleDeleteCareers,
     isCreating,
     isUpdating,
     isDeleting

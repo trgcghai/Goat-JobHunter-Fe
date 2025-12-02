@@ -12,15 +12,13 @@ interface CareerActionsProps {
 
 export default function CareerActions({ selectedItems }: CareerActionsProps) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const { handleDeleteCareer, isDeleting } = useCareerActions();
+  const { handleDeleteCareers, isDeleting } = useCareerActions();
 
   if (selectedItems.length === 0) return null;
 
   const handleDeleteSelected = async () => {
     try {
-      for (const career of selectedItems) {
-        await handleDeleteCareer(String(career.careerId));
-      }
+      await handleDeleteCareers(selectedItems.map(item => item.careerId));
       setIsDeleteOpen(false);
     } catch (error) {
       console.error(error);
@@ -29,14 +27,18 @@ export default function CareerActions({ selectedItems }: CareerActionsProps) {
 
   return (
     <>
-      <div className="mb-4 flex items-center gap-2">
-        <Button
-          variant="destructive"
-          className="rounded-xl"
-          onClick={() => setIsDeleteOpen(true)}>
-          <Trash2 className="w-4 h-4" />
-          Xóa {selectedItems.length} ngành nghề
-        </Button>
+      <div className="flex items-center gap-3 px-4 py-2 border border-border rounded-xl mb-4">
+        <span className="text-sm font-medium">Đã chọn {selectedItems.length} ngành nghề</span>
+        <div className={"flex gap-4 ml-auto"}>
+          <Button
+            variant="destructive"
+            size={"sm"}
+            className="rounded-xl"
+            onClick={() => setIsDeleteOpen(true)}>
+            <Trash2 className="w-4 h-4" />
+            Xóa
+          </Button>
+        </div>
       </div>
 
       <ConfirmDialog

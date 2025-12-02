@@ -2,7 +2,7 @@ import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type { Career } from "@/types/model";
 
 // Base Request Types
-export type CareerIdRequest = string;
+export type CareerIdRequest = number;
 
 export type CareerNameRequest = {
   name: string;

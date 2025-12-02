@@ -14,11 +14,11 @@ interface CareerActionsCellProps {
 export default function CareerActionsCell({ career }: CareerActionsCellProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const { handleDeleteCareer, isDeleting } = useCareerActions();
+  const { handleDeleteCareers, isDeleting } = useCareerActions();
 
   const handleConfirmDelete = async () => {
     try {
-      await handleDeleteCareer(String(career.careerId));
+      await handleDeleteCareers([career.careerId]);
       setIsDeleteOpen(false);
     } catch (e) {
       console.error(e);

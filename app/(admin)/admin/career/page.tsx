@@ -1,7 +1,7 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, XIcon } from "lucide-react";
 import EditCareerDialog from "./components/EditCareerDialog";
 import { CareerTable } from "./components/CareerTable";
 import { Button } from "@/components/ui/button";
@@ -11,14 +11,31 @@ import { Input } from "@/components/ui/input";
 import { DataTablePagination } from "@/components/dataTable/DataTablePagination";
 import CareerActions from "./components/CareerActions";
 import type { Career } from "@/types/model";
+import { debounce } from "lodash";
 
 const CareerManagement = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedCareer, setSelectedCareer] = useState<Career | null>(null);
   const [selectedItems, setSelectedItems] = useState<Career[]>([]);
+  const [nameInput, setNameInput] = useState("");
   const [nameFilter, setNameFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedNameFilter = useCallback(
+    debounce((value: string) => {
+      setNameFilter(value);
+      setCurrentPage(1);
+    }, 700),
+    []
+  );
+
+  useEffect(() => {
+    return () => {
+      debouncedNameFilter.cancel();
+    };
+  }, [debouncedNameFilter]);
 
   const { data, isLoading, isError } = useFetchCareersQuery({
     name: nameFilter || undefined,
@@ -44,6 +61,19 @@ const CareerManagement = () => {
     setCurrentPage(1);
   };
 
+  const handleNameFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setNameInput(value);
+    debouncedNameFilter(value);
+  };
+
+  const handleClearFilter = () => {
+    setNameInput("");
+    setNameFilter("");
+    setCurrentPage(1);
+    debouncedNameFilter.cancel();
+  };
+
   return (
     <div className="space-y-6">
       <Card>
@@ -66,11 +96,19 @@ const CareerManagement = () => {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Tìm kiếm theo tên ngành nghề..."
-                value={nameFilter}
-                onChange={(e) => setNameFilter(e.target.value)}
+                value={nameInput}
+                onChange={handleNameFilterChange}
                 className="pl-9 rounded-xl"
               />
             </div>
+            <Button
+              onClick={handleClearFilter}
+              variant="destructive"
+              className="rounded-xl"
+            >
+              <XIcon className="h-4 w-4 mr-2" />
+              Xóa bộ lọc
+            </Button>
           </div>
 
           {isLoading ? (
@@ -82,9 +120,10 @@ const CareerManagement = () => {
           ) : (
             <>
               <CareerActions selectedItems={selectedItems} />
-
-              <CareerTable careers={careers} onSelectionChange={setSelectedItems} />
-
+              <CareerTable
+                careers={careers}
+                onSelectionChange={setSelectedItems}
+              />
               <DataTablePagination
                 currentPage={currentPage}
                 totalPages={totalPages}
