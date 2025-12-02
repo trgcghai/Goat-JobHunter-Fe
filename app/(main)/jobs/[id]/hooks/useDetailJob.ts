@@ -1,5 +1,6 @@
 import { useUser } from "@/hooks/useUser";
 import {
+  useCountApplicationsQuery,
   useFetchJobByIdQuery,
   useFetchRelatedJobsQuery
 } from "@/services/job/jobApi";
@@ -16,6 +17,25 @@ const useDetailJob = (id: string) => {
   });
 
   const job = useMemo(() => data?.data, [data]);
+
+  const { data: checkSavedJobData, isSuccess: isCheckSavedSuccess } =
+    useCheckSavedJobsQuery(
+      {
+        jobIds: [Number(id)]
+      },
+      {
+        skip: !id || !isSignedIn || !user // Skip if job is not available or user is not signed in
+      }
+    );
+
+  const isSaved = useMemo(() => {
+    if (isCheckSavedSuccess && checkSavedJobData) {
+      return checkSavedJobData.data?.find(
+        (savedJob) => savedJob.jobId === Number(id)
+      )?.result || false;
+    }
+    return false;
+  }, [checkSavedJobData, id, isCheckSavedSuccess]);
 
   const {
     data: relatedJobsData,
@@ -36,24 +56,33 @@ const useDetailJob = (id: string) => {
     [id, relatedJobsData?.data?.result]
   );
 
-  const { data: checkSavedJobsData, isSuccess: isCheckSavedSuccess } =
+  const { data: checkSavedJobsData } =
     useCheckSavedJobsQuery(
       {
-        jobIds: [Number(id)]
+        jobIds: relatedJobs.map(j => j.jobId)
       },
       {
-        skip: !id || !isSignedIn || !user // Skip if job is not available or user is not signed in
+        skip: !relatedJobs || relatedJobs.length === 0 || !isSignedIn || !user // Skip if job is not available or user is not signed in
       }
     );
 
-  const isSaved = useMemo(() => {
-    if (isCheckSavedSuccess && checkSavedJobsData) {
-      return checkSavedJobsData.data?.find(
-        (savedJob) => savedJob.jobId === Number(id)
-      )?.result || false;
+  const savedJobs = useMemo(() => checkSavedJobsData?.data || [], [checkSavedJobsData]);
+
+  const { data: countApplicationsData } = useCountApplicationsQuery(
+    { jobIds: job ? [job.jobId] : [] },
+    {
+      skip: !job
     }
-    return false;
-  }, [checkSavedJobsData, id, isCheckSavedSuccess]);
+  );
+
+  const numberOfApplications = useMemo(() => {
+    if (countApplicationsData) {
+      return (
+        countApplicationsData.data?.find((item) => item.jobId == job?.jobId)?.applications || 0
+      );
+    }
+    return 0;
+  }, [countApplicationsData, job?.jobId]);
 
   const handleOpenCVDialog = () => {
     if (!isSignedIn || !user) {
@@ -80,9 +109,13 @@ const useDetailJob = (id: string) => {
     isLoading,
     isError,
     isSuccess,
+
     relatedJobs,
+    savedJobs,
     isRelatedJobsLoading,
     isRelatedJobsError,
+
+    numberOfApplications,
 
     // handlers and functions
     handleOpenCVDialog,

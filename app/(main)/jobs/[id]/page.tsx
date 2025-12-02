@@ -22,59 +22,34 @@ import {
 } from "@/components/ui/empty";
 import { Separator } from "@/components/ui/separator";
 import useJobActions from "@/hooks/useJobActions";
-import { useCountApplicationsQuery } from "@/services/job/jobApi";
 import { BookmarkPlus, ChevronLeft, Send } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useMemo } from "react";
-import { useCheckSavedJobsQuery } from "@/services/user/userApi";
 import { useUser } from "@/hooks/useUser";
 
 export default function JobDetailPage() {
   const params = useParams<{ id: string }>();
-  const { user, isSignedIn } = useUser();
+  const { user } = useUser();
   const { handleToggleSaveJob } = useJobActions();
   const {
-    isSaved,
     isDialogOpen,
     setIsDialogOpen,
+
     job,
+    isSaved,
     isLoading,
     isError,
     isSuccess,
+
     relatedJobs,
+    savedJobs,
     isRelatedJobsLoading,
     isRelatedJobsError,
+
+    numberOfApplications,
+
     handleOpenCVDialog
   } = useDetailJob(params.id);
-
-  const { data } = useCountApplicationsQuery(
-    { jobIds: job ? [job.jobId] : [] },
-    {
-      skip: !job
-    }
-  );
-
-  const { data: checkSavedJobsData } =
-    useCheckSavedJobsQuery(
-      {
-        jobIds: relatedJobs.map(j => j.jobId)
-      },
-      {
-        skip: !relatedJobs || !isSignedIn || !user // Skip if job is not available or user is not signed in
-      }
-    );
-
-  const savedJobs = useMemo(() => checkSavedJobsData?.data || [], [checkSavedJobsData]);
-
-  const numberOfApplications = useMemo(() => {
-    if (data) {
-      return (
-        data.data?.find((item) => item.jobId == job?.jobId)?.applications || 0
-      );
-    }
-    return 0;
-  }, [data, job?.jobId]);
 
   if (isLoading) {
     return <LoaderSpin />;
