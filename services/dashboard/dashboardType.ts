@@ -29,3 +29,39 @@ export type StatisticsApplicationByYearRequest = {
 };
 
 export type StatisticsApplicationByYearResponse = IBackendRes<Record<number, number>>;
+
+export interface UserStatistics {
+  applicants: number;
+  recruiters: number;
+  admins: number;
+}
+
+export type TotalStatisticsResponse = IBackendRes<{
+  users: UserStatistics;
+  totalJobs: number;
+  totalBlogs: number;
+  totalApplications: number;
+}>
+
+export type ApplicationsByStatusResponse = IBackendRes<{
+  [key: string]: {
+    [month: number]: number;
+  };
+}>
+
+export type TopBlogResponse = IBackendRes<{
+  id: number;
+  title: string;
+  totalLikes: number;
+  totalComments: number;
+  totalReads: number;
+}[]>
+
+export type ApplicationsByYearParams = {
+  year: number;
+}
+
+export type Top10BlogsParams = {
+  year: number;
+  month: number;
+}
