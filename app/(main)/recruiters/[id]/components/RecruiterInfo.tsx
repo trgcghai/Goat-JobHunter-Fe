@@ -3,6 +3,7 @@ import { Separator } from "@/components/ui/separator";
 import { Job, Recruiter } from "@/types/model";
 import { capitalize } from "lodash";
 import { useMemo } from "react";
+import { Briefcase, Mail, MapPin, PhoneCall } from "lucide-react";
 
 interface RecruiterInfoProps {
   recruiter: Recruiter;
@@ -11,16 +12,16 @@ interface RecruiterInfoProps {
 
 export default function RecruiterInfo({
   recruiter,
-  recruiterJobs,
+  recruiterJobs
 }: RecruiterInfoProps) {
   const address = useMemo(() => recruiter.address || "", [recruiter.address]);
   const email = useMemo(
     () => recruiter.contact?.email || "",
-    [recruiter.contact?.email],
+    [recruiter.contact?.email]
   );
   const phone = useMemo(
     () => recruiter.contact?.phone || "",
-    [recruiter.contact?.phone],
+    [recruiter.contact?.phone]
   );
 
   return (
@@ -30,30 +31,38 @@ export default function RecruiterInfo({
           <h2 className="text-xl font-bold text-foreground">
             Thông Tin Liên Hệ
           </h2>
-          <div className="space-y-4 mt-4">
+          <div className="space-y-4">
             <div>
-              <p className="text-sm text-muted-foreground mb-1">Địa chỉ</p>
+              <p className="text-sm text-muted-foreground mb-1 flex items-center">
+                <MapPin className={"w-4 h-4 mr-2"} />
+                Địa chỉ
+              </p>
               <p className="text-foreground font-medium">
-                {address ? capitalize(address) : "N/A"}
+                {address ? capitalize(address) : "Chưa cung cấp"}
               </p>
             </div>
             <Separator />
             <div>
-              <p className="text-sm text-muted-foreground mb-1">Email</p>
+              <p className="text-sm text-muted-foreground mb-1 flex items-center">
+                <Mail className={"w-4 h-4 mr-2"} />
+                Email
+              </p>
               <p className="text-foreground font-medium wrap-break-word">
-                {email || "N/A"}
+                {email || "Chưa cung cấp"}
               </p>
             </div>
             <Separator />
             <div>
-              <p className="text-sm text-muted-foreground mb-1">
+              <p className="text-sm text-muted-foreground mb-1 flex items-center">
+                <PhoneCall className={"w-4 h-4 mr-2"} />
                 Số điện thoại
               </p>
-              <p className="text-foreground font-medium">{phone || "N/A"}</p>
+              <p className="text-foreground font-medium">{phone || "Chưa cung cấp"}</p>
             </div>
             <Separator />
             <div>
-              <p className="text-sm text-muted-foreground mb-1">
+              <p className="text-sm text-muted-foreground mb-1 flex items-center">
+                <Briefcase className={"w-4 h-4 mr-2"} />
                 Số lượng việc làm
               </p>
               <p className="text-foreground font-medium">
@@ -64,5 +73,6 @@ export default function RecruiterInfo({
         </Card>
       </div>
     </div>
-  );
+  )
+    ;
 }

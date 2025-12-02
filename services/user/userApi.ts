@@ -163,7 +163,8 @@ export const userApi = api.injectEndpoints({
       query: ({ recruiterIds }) => ({
         url: "/users/me/followed-recruiters/contains",
         params: { recruiterIds }
-      })
+      }),
+      providesTags: ["User"]
     }),
 
     followRecruiters: builder.mutation<
