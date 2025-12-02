@@ -3,22 +3,22 @@ import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
-import useCareerActions from "@/hooks/useSkillAndCareerActions";
-import type { Career } from "@/types/model";
+import useSkillAndCareerActions from "@/hooks/useSkillAndCareerActions";
+import type { Skill } from "@/types/model";
 
-interface CareerActionsProps {
-  selectedItems: Career[];
+interface SkillActionsProps {
+  selectedItems: Skill[];
 }
 
-export default function CareerActions({ selectedItems }: CareerActionsProps) {
+export default function SkillActions({ selectedItems }: SkillActionsProps) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const { handleDeleteCareers, isDeleting } = useCareerActions();
+  const { handleDeleteSkills, isDeletingSkill } = useSkillAndCareerActions();
 
   if (selectedItems.length === 0) return null;
 
   const handleDeleteSelected = async () => {
     try {
-      await handleDeleteCareers(selectedItems.map(item => item.careerId));
+      await handleDeleteSkills(selectedItems.map(item => item.skillId));
       setIsDeleteOpen(false);
     } catch (error) {
       console.error(error);
@@ -28,7 +28,7 @@ export default function CareerActions({ selectedItems }: CareerActionsProps) {
   return (
     <>
       <div className="flex items-center gap-3 px-4 py-2 border border-border rounded-xl mb-4">
-        <span className="text-sm font-medium">Đã chọn {selectedItems.length} ngành nghề</span>
+        <span className="text-sm font-medium">Đã chọn {selectedItems.length} kỹ năng</span>
         <div className={"flex gap-4 ml-auto"}>
           <Button
             variant="destructive"
@@ -44,13 +44,13 @@ export default function CareerActions({ selectedItems }: CareerActionsProps) {
       <ConfirmDialog
         open={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}
-        title={`Xóa ${selectedItems.length} ngành nghề?`}
+        title={`Xóa ${selectedItems.length} kỹ năng?`}
         description="Hành động này không thể hoàn tác."
         confirmText="Xóa"
         confirmBtnClass="bg-destructive text-white"
         onConfirm={handleDeleteSelected}
-        isLoading={isDeleting}
-        disableCancel={isDeleting}
+        isLoading={isDeletingSkill}
+        disableCancel={isDeletingSkill}
       />
     </>
   );

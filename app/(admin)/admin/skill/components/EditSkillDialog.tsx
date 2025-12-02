@@ -13,54 +13,54 @@ import {
   FormControl,
   FormMessage
 } from "@/components/ui/form";
-import type { Career } from "@/types/model";
+import type { Skill } from "@/types/model";
 import { useEffect } from "react";
-import useCareerActions from "@/hooks/useSkillAndCareerActions";
+import useSkillAndCareerActions from "@/hooks/useSkillAndCareerActions";
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  career: Career | null;
+  skill: Skill | null;
 }
 
-const careerSchema = z.object({
-  name: z.string().min(1, { message: "Tên ngành nghề là bắt buộc" })
+const skillSchema = z.object({
+  name: z.string().min(1, { message: "Tên kỹ năng là bắt buộc" })
 });
 
-export type CareerFormValues = z.infer<typeof careerSchema>;
+export type SkillFormValues = z.infer<typeof skillSchema>;
 
-export default function EditCareerDialog({ open, onOpenChange, career }: Props) {
-  const { handleCreateCareer, handleUpdateCareer, isCreating, isUpdating } = useCareerActions();
-  const isEditMode = !!career;
+export default function EditSkillDialog({ open, onOpenChange, skill }: Props) {
+  const { handleCreateSkill, handleUpdateSkill, isCreatingSkill, isUpdatingSkill } = useSkillAndCareerActions();
+  const isEditMode = !!skill;
 
-  const form = useForm<CareerFormValues>({
-    resolver: zodResolver(careerSchema),
+  const form = useForm<SkillFormValues>({
+    resolver: zodResolver(skillSchema),
     defaultValues: {
       name: ""
     }
   });
 
   useEffect(() => {
-    if (career) {
+    if (skill) {
       form.reset({
-        name: career.name
+        name: skill.name
       });
     } else {
       form.reset({
         name: ""
       });
     }
-  }, [career, form]);
+  }, [skill, form]);
 
-  const onSubmit = async (data: CareerFormValues) => {
+  const onSubmit = async (data: SkillFormValues) => {
     try {
       if (isEditMode) {
-        await handleUpdateCareer({
-          careerId: String(career.careerId),
+        await handleUpdateSkill({
+          skillId: String(skill.skillId),
           name: data.name
         });
       } else {
-        await handleCreateCareer(data);
+        await handleCreateSkill(data);
       }
       form.reset();
       onOpenChange(false);
@@ -74,7 +74,7 @@ export default function EditCareerDialog({ open, onOpenChange, career }: Props) 
       <DialogContent className="rounded-xl">
         <DialogHeader>
           <DialogTitle>
-            {isEditMode ? "Cập nhật ngành nghề" : "Tạo ngành nghề mới"}
+            {isEditMode ? "Cập nhật kỹ năng" : "Tạo kỹ năng mới"}
           </DialogTitle>
         </DialogHeader>
 
@@ -85,9 +85,9 @@ export default function EditCareerDialog({ open, onOpenChange, career }: Props) 
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tên ngành nghề <span className="text-destructive">*</span></FormLabel>
+                  <FormLabel>Tên kỹ năng <span className="text-destructive">*</span></FormLabel>
                   <FormControl>
-                    <Input placeholder="Ví dụ: Công nghệ thông tin" {...field} className="rounded-xl" />
+                    <Input placeholder="Ví dụ: JavaScript, React..." {...field} className="rounded-xl" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -98,10 +98,10 @@ export default function EditCareerDialog({ open, onOpenChange, career }: Props) 
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="rounded-xl">
                 Hủy
               </Button>
-              <Button type="submit" className="rounded-xl" disabled={isCreating || isUpdating}>
-                {isCreating || isUpdating
+              <Button type="submit" className="rounded-xl" disabled={isCreatingSkill || isUpdatingSkill}>
+                {isCreatingSkill || isUpdatingSkill
                   ? (isEditMode ? "Đang cập nhật..." : "Đang tạo...")
-                  : (isEditMode ? "Cập nhật" : "Tạo ngành nghề")}
+                  : (isEditMode ? "Cập nhật" : "Tạo kỹ năng")}
               </Button>
             </DialogFooter>
           </form>

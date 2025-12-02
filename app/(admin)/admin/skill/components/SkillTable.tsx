@@ -1,18 +1,18 @@
 "use client";
-import type { Career } from "@/types/model";
+import type { Skill } from "@/types/model";
 import { DataTable } from "@/components/dataTable/DataTable";
 import { ColumnDef } from "@tanstack/react-table";
 import { formatDate } from "@/utils/formatDate";
-import CareerActionsCell from "./CareerActionsCell";
+import SkillActionsCell from "./SkillActionsCell";
 import { DataTableColumnHeader } from "@/components/dataTable/DataTableColumnHeader";
 import { Checkbox } from "@/components/ui/checkbox";
 
-interface CareerTableProps {
-  careers: Career[];
-  onSelectionChange: (selected: Career[]) => void;
+interface SkillTableProps {
+  skills: Skill[];
+  onSelectionChange: (selected: Skill[]) => void;
 }
 
-export function CareerTable({ careers, onSelectionChange }: CareerTableProps) {
+export function SkillTable({ skills, onSelectionChange }: SkillTableProps) {
   const columns = [
     {
       id: "select",
@@ -40,7 +40,7 @@ export function CareerTable({ careers, onSelectionChange }: CareerTableProps) {
       accessorKey: "name",
       enableSorting: false,
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Tên ngành nghề" />
+        <DataTableColumnHeader column={column} title="Tên kỹ năng" />
       ),
       cell: ({ row }) => <div>{row.getValue("name")}</div>
     },
@@ -62,14 +62,14 @@ export function CareerTable({ careers, onSelectionChange }: CareerTableProps) {
     {
       id: "actions",
       header: "Thao tác",
-      cell: ({ row }) => <CareerActionsCell career={row.original} />
+      cell: ({ row }) => <SkillActionsCell skill={row.original} />
     }
-  ] as ColumnDef<Career>[];
+  ] as ColumnDef<Skill>[];
 
   return (
     <DataTable
       columns={columns}
-      data={careers}
+      data={skills}
       onSelectionChange={onSelectionChange}
     />
   );

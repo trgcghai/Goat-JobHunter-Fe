@@ -10,6 +10,7 @@ import type {
 } from "./careerType";
 
 export const careerApi = api.injectEndpoints({
+  overrideExisting: true,
   endpoints: (builder) => ({
     createCareer: builder.mutation<CareerMutationResponse, CreateCareerRequest>({
       query: ({ name }) => ({
@@ -43,7 +44,7 @@ export const careerApi = api.injectEndpoints({
           params,
           filterFields: ["name"],
           textSearchFields: ["name"],
-          defaultSort: "createdAt,desc",
+          defaultSort: "name,asc",
           sortableFields: ["createdAt", "updatedAt"]
         });
 

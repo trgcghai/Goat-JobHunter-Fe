@@ -3,22 +3,22 @@ import { Button } from "@/components/ui/button";
 import { Edit3, Trash2 } from "lucide-react";
 import { useState } from "react";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
-import type { Career } from "@/types/model";
-import EditCareerDialog from "./EditCareerDialog";
-import useCareerActions from "@/hooks/useSkillAndCareerActions";
+import type { Skill } from "@/types/model";
+import EditSkillDialog from "./EditSkillDialog";
+import useSkillAndCareerActions from "@/hooks/useSkillAndCareerActions";
 
-interface CareerActionsCellProps {
-  career: Career;
+interface SkillActionsCellProps {
+  skill: Skill;
 }
 
-export default function CareerActionsCell({ career }: CareerActionsCellProps) {
+export default function SkillActionsCell({ skill }: SkillActionsCellProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const { handleDeleteCareers, isDeleting } = useCareerActions();
+  const { handleDeleteSkills, isDeletingSkill } = useSkillAndCareerActions();
 
   const handleConfirmDelete = async () => {
     try {
-      await handleDeleteCareers([career.careerId]);
+      await handleDeleteSkills([skill.skillId]);
       setIsDeleteOpen(false);
     } catch (e) {
       console.error(e);
@@ -41,28 +41,28 @@ export default function CareerActionsCell({ career }: CareerActionsCellProps) {
           size="icon"
           variant="destructive"
           className="rounded-xl"
-          title="Xóa ngành nghề"
+          title="Xóa kỹ năng"
           onClick={() => setIsDeleteOpen(true)}>
           <Trash2 className="h-4 w-4" />
         </Button>
       </div>
 
-      <EditCareerDialog
+      <EditSkillDialog
         open={isEditOpen}
         onOpenChange={setIsEditOpen}
-        career={career}
+        skill={skill}
       />
 
       <ConfirmDialog
         open={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}
-        title="Xóa ngành nghề?"
+        title="Xóa kỹ năng?"
         description="Hành động này không thể hoàn tác."
         confirmText="Xóa"
         confirmBtnClass="bg-destructive text-white"
         onConfirm={handleConfirmDelete}
-        isLoading={isDeleting}
-        disableCancel={isDeleting}
+        isLoading={isDeletingSkill}
+        disableCancel={isDeletingSkill}
       />
     </>
   );

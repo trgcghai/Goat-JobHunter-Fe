@@ -42,12 +42,10 @@ export type Skill = {
   skillId: number;
   name: string;
 
-  createdAt?: string;
-  createdBy?: string;
-  updatedAt?: string;
-  updatedBy?: string;
-  isDeleted?: boolean;
-  deletedAt?: boolean | null;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
 };
 
 export type Career = {
@@ -56,8 +54,8 @@ export type Career = {
 
   createdAt: string;
   createdBy: string;
-  updatedAt: string | null;
-  updatedBy: string | null;
+  updatedAt: string;
+  updatedBy: string;
 };
 
 export type Job = {
@@ -77,8 +75,8 @@ export type Job = {
   career: Career;
   createdAt: string;
   createdBy: string;
-  updatedAt: string | null;
-  updatedBy: string | null;
+  updatedAt: string;
+  updatedBy: string;
 };
 
 export type Application = {

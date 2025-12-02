@@ -10,6 +10,7 @@ import type {
 } from "./skillType";
 
 export const skillApi = api.injectEndpoints({
+  overrideExisting: true,
   endpoints: (builder) => ({
     createSkill: builder.mutation<SkillMutationResponse, CreateSkillRequest>({
       query: ({ name }) => ({
@@ -44,7 +45,7 @@ export const skillApi = api.injectEndpoints({
           filterFields: ["name"],
           textSearchFields: ["name"],
           nestedArrayFields: {},
-          defaultSort: "updatedAt,desc"
+          defaultSort: "name,asc"
         });
         return {
           url: "/skills",
