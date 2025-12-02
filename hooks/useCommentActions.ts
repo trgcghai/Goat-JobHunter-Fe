@@ -1,10 +1,11 @@
-import { useCreateCommentMutation } from "@/services/blog/blogApi";
+import { useCreateCommentMutation, useDeleteCommentMutation } from "@/services/blog/blogApi";
 import { toast } from "sonner";
 import { useUser } from "@/hooks/useUser";
 
 const useCommentActions = () => {
   const { user, isSignedIn } = useUser();
   const [createComment, { isLoading: isCommenting }] = useCreateCommentMutation();
+  const [deleteComment, { isLoading: isDeleting }] = useDeleteCommentMutation();
 
   const handleCommentBlog = async (blogId: number, comment: string) => {
 
@@ -42,11 +43,28 @@ const useCommentActions = () => {
     }
   };
 
+  const handleDeleteComment = async (commentId: number) => {
+    if (!isSignedIn || !user) {
+      toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
+      return;
+    }
+
+    try {
+      await deleteComment(commentId);
+      toast.success("Đã xóa bình luận.");
+    } catch (e) {
+      console.log(e);
+      toast.error("Không thể xóa bình luận bây giờ. Vui lòng thử lại sau.");
+    }
+  };
+
   return {
     isCommenting,
+    isDeleting,
 
     handleCommentBlog,
-    handleReplyComment
+    handleReplyComment,
+    handleDeleteComment
   };
 };
 export default useCommentActions;

@@ -12,7 +12,7 @@ interface CareerActionsProps {
 
 export default function CareerActions({ selectedItems }: CareerActionsProps) {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const { handleDeleteCareers, isDeleting } = useCareerActions();
+  const { handleDeleteCareers, isDeletingCareer } = useCareerActions();
 
   if (selectedItems.length === 0) return null;
 
@@ -49,8 +49,8 @@ export default function CareerActions({ selectedItems }: CareerActionsProps) {
         confirmText="Xóa"
         confirmBtnClass="bg-destructive text-white"
         onConfirm={handleDeleteSelected}
-        isLoading={isDeleting}
-        disableCancel={isDeleting}
+        isLoading={isDeletingCareer}
+        disableCancel={isDeletingCareer}
       />
     </>
   );

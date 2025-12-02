@@ -34,7 +34,8 @@ const DetailBlogPage = () => {
     comments,
     totalComments,
     handleComment,
-    handleReply
+    handleReply,
+    handleDelete
   } = useDetailBlog(
     params.id
   );
@@ -174,6 +175,7 @@ const DetailBlogPage = () => {
         totalComments={totalComments}
         onComment={handleComment}
         onReply={handleReply}
+        onDelete={handleDelete}
       />
     </main>
   );

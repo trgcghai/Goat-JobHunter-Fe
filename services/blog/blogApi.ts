@@ -206,6 +206,14 @@ export const blogApi = api.injectEndpoints({
         data
       }),
       invalidatesTags: ["Blog", "Comment"]
+    }),
+
+    deleteComment: builder.mutation<unknown, number>({
+      query: (commentId: number) => ({
+        url: `/comments/${commentId}`,
+        method: "DELETE"
+      }),
+      invalidatesTags: ["Blog", "Comment"]
     })
   })
 });
@@ -226,5 +234,6 @@ export const {
 
   // comments hooks
   useGetCommentsByBlogIdQuery,
-  useCreateCommentMutation
+  useCreateCommentMutation,
+  useDeleteCommentMutation
 } = blogApi;

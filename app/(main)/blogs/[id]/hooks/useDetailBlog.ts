@@ -6,7 +6,7 @@ import useCommentActions from "@/hooks/useCommentActions";
 import { toast } from "sonner";
 
 const useDetailBlog = (blogId: string) => {
-  const { handleCommentBlog, handleReplyComment, isCommenting } = useCommentActions();
+  const { handleCommentBlog, handleReplyComment, handleDeleteComment, isCommenting } = useCommentActions();
   const { data, isLoading, isError } = useFetchBlogByIdQuery(blogId, {
     skip: !blogId
   });
@@ -68,6 +68,7 @@ const useDetailBlog = (blogId: string) => {
     await handleReplyComment(Number(blogId), replyTo, comment);
   };
 
+  const handleDelete =  async (commentId: number) => await handleDeleteComment(commentId);
 
   return {
     // blog data
@@ -86,6 +87,8 @@ const useDetailBlog = (blogId: string) => {
     // actions
     handleComment,
     handleReply,
+    handleDelete,
+
     isCommenting
   };
 };

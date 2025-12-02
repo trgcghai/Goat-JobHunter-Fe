@@ -19,6 +19,7 @@ interface CommentSectionProps {
   isError: boolean;
   onComment: (comment: string) => void;
   onReply: (replyTo: number, comment: string) => void;
+  onDelete: (commentId: number) => void;
 }
 
 export default function CommentSection({
@@ -27,7 +28,8 @@ export default function CommentSection({
   isLoading,
   isError,
   onComment,
-  onReply
+  onReply,
+  onDelete
 }: CommentSectionProps) {
   const { user } = useUser();
   const [comment, setComment] = useState("");
@@ -98,12 +100,13 @@ export default function CommentSection({
         </div>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-6 pr-6">
         {initialComments.map((comment) => (
           <CommentItem
             key={comment.commentId}
             comment={comment}
             onReply={onReply}
+            onDelete={onDelete}
           />
         ))}
       </div>
