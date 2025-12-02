@@ -52,7 +52,7 @@ export type Skill = {
 
 export type Career = {
   careerId: number;
-  name?: string;
+  name: string;
 
   createdAt: string;
   createdBy: string;

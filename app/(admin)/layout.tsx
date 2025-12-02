@@ -1,7 +1,7 @@
 "use client";
 
 import Sidebar, { SidebarTab } from "@/components/common/Sidebar";
-import { FileText, Lock, MessageCircleCode, Shield, Users } from "lucide-react";
+import { FileText, GraduationCap, Lock, MessageCircleCode, Shield, Users, Wrench } from "lucide-react";
 import { AIChatPopup } from "@/components/common/AIChatPopup";
 import { useGetMyAccountQuery } from "@/services/auth/authApi";
 import { useRouter } from "next/navigation";
@@ -39,6 +39,18 @@ const AdminTabs: SidebarTab[] = [
     label: "Quyền hạn",
     url: "/admin/permission",
     icon: <Lock className="w-4 h-4" />,
+  },
+  {
+    id: "career",
+    label: "Quản lý ngành nghề",
+    url: "/admin/career",
+    icon: <GraduationCap className="w-4 h-4" />,
+  },
+  {
+    id: "skill",
+    label: "Quản lý kỹ năng",
+    url: "/admin/skill",
+    icon: <Wrench className="w-4 h-4" />,
   },
   {
     id: "chat",
