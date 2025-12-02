@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { formatDate } from "@/utils/formatDate";
 import { CornerDownRight, Send, X } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { NestedComment } from "@/app/(main)/blogs/[id]/components/utils/formatComments";
 
 interface CommentItemProps {
@@ -28,23 +28,31 @@ export default function CommentItem({ comment, onReply }: CommentItemProps) {
   const marginClass = comment.level > 0 ? "ml-14" : "";
   const showReplyButton = comment.level < 2; // Only show reply for levels 0 and 1
 
+  const author = useMemo(() => {
+    return comment.commentedBy.fullName || comment.commentedBy.username || "Người dùng ẩn danh";
+  }, [comment.commentedBy]);
+
+  const replyTo = useMemo(() => {
+    return comment.parent?.commentedBy.fullName || comment.parent?.commentedBy.username || "Người dùng ẩn danh";
+  }, [comment.parent?.commentedBy])
+
   return (
     <div className={`space-y-4 ${marginClass}`}>
       <div className="flex gap-4">
         <Avatar className="h-10 w-10 flex-shrink-0">
           <AvatarImage
-            src={comment.commentedBy?.avatar || "/placeholder.svg"}
-            alt={comment.commentedBy?.email || "User"}
+            src={comment.commentedBy.avatar || "/placeholder.svg"}
+            alt={author}
           />
           <AvatarFallback>
-            {comment.commentedBy?.email?.charAt(0).toUpperCase() || "U"}
+            {author.charAt(0).toUpperCase() || "U"}
           </AvatarFallback>
         </Avatar>
         <div className="flex-1 min-w-0">
           <div className="bg-gray-100 rounded-xl p-4">
             <div className="flex items-center justify-between mb-2">
               <p className="font-semibold text-foreground truncate">
-                {comment.commentedBy?.email || "Anonymous"}
+                {author}
               </p>
               <p className="text-xs text-muted-foreground whitespace-nowrap ml-2">
                 {comment.createdAt ? formatDate(comment.createdAt)  : "-"}
@@ -52,7 +60,8 @@ export default function CommentItem({ comment, onReply }: CommentItemProps) {
             </div>
             {comment.parent && (
               <p className="text-xs text-primary mb-2">
-                Trả lời {comment.parent.comment}
+                <span className={"font-light"}>Trả lời </span>
+                <span className={"font-bold text-sm"}>{replyTo}</span>
               </p>
             )}
             <p className="text-foreground break-words">{comment.comment}</p>
@@ -76,7 +85,7 @@ export default function CommentItem({ comment, onReply }: CommentItemProps) {
             <div className="mt-4 ml-4">
               <div className="mb-4 flex items-center justify-between bg-primary/5 p-3 rounded-lg">
                 <span className="text-sm text-muted-foreground">
-                  Đang trả lời {comment.commentedBy?.email || "bình luận này"}
+                  Đang trả lời {author || "bình luận này"}
                 </span>
                 <Button
                   variant="ghost"

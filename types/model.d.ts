@@ -3,7 +3,7 @@ import {
   Education,
   Gender,
   Level,
-  WorkingType,
+  WorkingType
 } from "@/types/enum";
 
 export type User = {
@@ -167,6 +167,13 @@ export type Blog = {
   updatedBy: string;
 };
 
+type CommentedBy = {
+  userId: number;
+  fullName: string;
+  username: string;
+  avatar: string;
+}
+
 export type CommentType = {
   commentId: number;
   comment: string;
@@ -178,12 +185,9 @@ export type CommentType = {
   parent?: {
     commentId: string;
     comment: string;
+    commentedBy: CommentedBy;
   };
-  commentedBy: {
-    userId: string;
-    email: string;
-    avatar: string;
-  };
+  commentedBy: CommentedBy;
   createdAt: string;
 };
 
