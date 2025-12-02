@@ -1,13 +1,17 @@
 import { api } from "@/services/api";
 import type {
-  ApplicationsByStatusResponse, ApplicationsByYearParams,
+  ApplicationsByStatusResponse,
+  ApplicationsByYearRequest,
   StatisticsApplicationByYearRequest,
   StatisticsApplicationByYearResponse,
   StatisticsApplicationRequest,
   StatisticsApplicationResponse,
   StatisticsJobRequest,
   StatisticsJobResponse,
-  StatisticsUserResponse, Top10BlogsParams, TopBlogResponse, TotalStatisticsResponse
+  StatisticsUserResponse,
+  Top10BlogsRequest,
+  TopBlogsResponse,
+  TotalStatisticsResponse
 } from "./dashboardType";
 
 export const dashboardApi = api.injectEndpoints({
@@ -15,16 +19,16 @@ export const dashboardApi = api.injectEndpoints({
     statisticsUser: builder.query<StatisticsUserResponse, void>({
       query: () => ({
         url: "/dashboard/users",
-        method: "GET",
-      }),
+        method: "GET"
+      })
     }),
 
     statisticsJob: builder.query<StatisticsJobResponse, StatisticsJobRequest>({
       query: (params) => ({
         url: "/dashboard/jobs",
         method: "GET",
-        params,
-      }),
+        params
+      })
     }),
 
     statisticsApplication: builder.query<
@@ -34,8 +38,8 @@ export const dashboardApi = api.injectEndpoints({
       query: (params) => ({
         url: "/dashboard/applications",
         method: "GET",
-        params,
-      }),
+        params
+      })
     }),
 
     statisticsApplicationByYear: builder.query<
@@ -45,36 +49,36 @@ export const dashboardApi = api.injectEndpoints({
       query: ({ year, ...params }) => ({
         url: "/dashboard/applications-year",
         method: "GET",
-        params: { year, ...params },
-      }),
+        params: { year, ...params }
+      })
     }),
 
     getTotalStatistics: builder.query<TotalStatisticsResponse, void>({
       query: () => ({
         url: "/dashboard/total",
-        method: "GET",
-      }),
+        method: "GET"
+      })
     }),
 
     getApplicationsByYear: builder.query<
       ApplicationsByStatusResponse,
-      ApplicationsByYearParams
+      ApplicationsByYearRequest
     >({
       query: ({ year }) => ({
         url: "/dashboard/applications/year",
         method: "GET",
-        params: { year },
-      }),
+        params: { year }
+      })
     }),
 
-    getTop10Blogs: builder.query<TopBlogResponse, Top10BlogsParams>({
+    getTop10Blogs: builder.query<TopBlogsResponse, Top10BlogsRequest>({
       query: ({ year, month }) => ({
         url: "/dashboard/blogs/top10",
         method: "GET",
-        params: { year, month },
-      }),
-    }),
-  }),
+        params: { year, month }
+      })
+    })
+  })
 });
 
 export const {
@@ -84,5 +88,5 @@ export const {
   useStatisticsApplicationByYearQuery,
   useGetTotalStatisticsQuery,
   useGetTop10BlogsQuery,
-  useGetApplicationsByYearQuery,
+  useGetApplicationsByYearQuery
 } = dashboardApi;

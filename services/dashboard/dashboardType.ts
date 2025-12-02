@@ -1,67 +1,75 @@
 import type { IBackendRes } from "@/types/api";
 
-// Statistics User
-export type StatisticsUserResponse = IBackendRes<Record<string, number>>;
-
-// Statistics Job
-export type StatisticsJobRequest = {
+// Base Request Types
+type DateRangeRequest = {
   startDate?: string;
   endDate?: string;
   status?: string;
 };
 
-export type StatisticsJobResponse = IBackendRes<Record<string, number>>;
-
-// Statistics Application
-export type StatisticsApplicationRequest = {
-  startDate?: string;
-  endDate?: string;
-  status?: string;
+type YearRequest = {
+  year: number;
 };
 
-export type StatisticsApplicationResponse = IBackendRes<Record<string, number>>;
+type YearMonthRequest = {
+  year: number;
+  month: number;
+};
 
-// Statistics Application By Year
+// Statistics Requests
+export type StatisticsJobRequest = DateRangeRequest;
+
+export type StatisticsApplicationRequest = DateRangeRequest;
+
 export type StatisticsApplicationByYearRequest = {
   year?: number;
   status?: string;
   recruiterId?: number;
 };
 
-export type StatisticsApplicationByYearResponse = IBackendRes<Record<number, number>>;
+export type ApplicationsByYearRequest = YearRequest;
 
-export interface UserStatistics {
+export type Top10BlogsRequest = YearMonthRequest;
+
+// Response Data Types
+export type UserStatistics = {
   applicants: number;
   recruiters: number;
   admins: number;
-}
+};
 
-export type TotalStatisticsResponse = IBackendRes<{
+export type TotalStatistics = {
   users: UserStatistics;
   totalJobs: number;
   totalBlogs: number;
   totalApplications: number;
-}>
+};
 
-export type ApplicationsByStatusResponse = IBackendRes<{
+export type ApplicationsByStatus = {
   [key: string]: {
     [month: number]: number;
   };
-}>
+};
 
-export type TopBlogResponse = IBackendRes<{
+export type TopBlog = {
   id: number;
   title: string;
   totalLikes: number;
   totalComments: number;
   totalReads: number;
-}[]>
+};
 
-export type ApplicationsByYearParams = {
-  year: number;
-}
+// Response Types
+export type StatisticsUserResponse = IBackendRes<Record<string, number>>;
 
-export type Top10BlogsParams = {
-  year: number;
-  month: number;
-}
+export type StatisticsJobResponse = IBackendRes<Record<string, number>>;
+
+export type StatisticsApplicationResponse = IBackendRes<Record<string, number>>;
+
+export type StatisticsApplicationByYearResponse = IBackendRes<Record<number, number>>;
+
+export type TotalStatisticsResponse = IBackendRes<TotalStatistics>;
+
+export type ApplicationsByStatusResponse = IBackendRes<ApplicationsByStatus>;
+
+export type TopBlogsResponse = IBackendRes<TopBlog[]>;

@@ -3,7 +3,10 @@ import type { Contact, Recruiter } from "@/types/model";
 import { Gender } from "@/types/enum";
 import { FetchCurrentRecruiterDto } from "@/types/dto";
 
-// Create Recruiter
+// Base Request Types
+export type RecruiterIdRequest = number;
+
+// Create & Update
 export type CreateRecruiterRequest = {
   fullName: string;
   password: string;
@@ -17,30 +20,20 @@ export type CreateRecruiterRequest = {
   website?: string;
 };
 
-export type CreateRecruiterResponse = IBackendRes<Recruiter>;
-
-// Update Recruiter
 export type UpdateRecruiterRequest = {
-  userId: number,
+  userId: number;
   username: string;
   fullName: string;
   contact: Contact;
   address: string;
-  dob: Date,
-  gender: Gender,
+  dob: Date;
+  gender: Gender;
   description: string;
   website: string;
   avatar: string;
-}
+};
 
-export type UpdateRecruiterResponse = IBackendRes<Recruiter>;
-
-// Delete Recruiter
-export type DeleteRecruiterRequest = string; // recruiterId
-
-export type DeleteRecruiterResponse = IBackendRes<Recruiter>;
-
-// Fetch Recruiters (with pagination)
+// Fetch with Pagination
 export type FetchRecruitersRequest = {
   page?: number;
   size?: number;
@@ -50,10 +43,10 @@ export type FetchRecruitersRequest = {
   enabled?: boolean;
 };
 
-export type FetchRecruitersResponse = IBackendRes<IModelPaginate<Recruiter>>;
+// Response Types
+export type RecruiterMutationResponse = IBackendRes<Recruiter>;
 
-// Fetch Recruiter By Id
-export type FetchRecruiterByIdRequest = number; // recruiterId
+export type FetchRecruitersResponse = IBackendRes<IModelPaginate<Recruiter>>;
 
 export type FetchRecruiterByIdResponse = IBackendRes<Recruiter>;
 

@@ -1,31 +1,28 @@
 import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type { Career } from "@/types/model";
 
-// Create Career
-export type CreateCareerRequest = {
+// Base Request Types
+export type CareerIdRequest = string;
+
+export type CareerNameRequest = {
   name: string;
 };
 
-export type CreateCareerResponse = IBackendRes<Career>;
+// Create & Update
+export type CreateCareerRequest = CareerNameRequest;
 
-// Update Career
-export type UpdateCareerRequest = {
+export type UpdateCareerRequest = CareerNameRequest & {
   careerId: string;
-  name: string;
 };
 
-export type UpdateCareerResponse = IBackendRes<Career>;
-
-// Delete Career
-export type DeleteCareerRequest = string; // careerId
-
-export type DeleteCareerResponse = IBackendRes<Career>;
-
-// Fetch Careers (with pagination)
+// Fetch with Pagination
 export type FetchCareersRequest = {
   page?: number;
   size?: number;
   name?: string;
 };
+
+// Response Types
+export type CareerMutationResponse = IBackendRes<Career>;
 
 export type FetchCareersResponse = IBackendRes<IModelPaginate<Career>>;

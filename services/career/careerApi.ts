@@ -1,42 +1,40 @@
 import { api } from "@/services/api";
 import { buildSpringQuery } from "@/utils/buildSpringQuery";
 import type {
+  CareerIdRequest,
+  CareerMutationResponse,
   CreateCareerRequest,
-  CreateCareerResponse,
-  DeleteCareerRequest,
-  DeleteCareerResponse,
   FetchCareersRequest,
   FetchCareersResponse,
-  UpdateCareerRequest,
-  UpdateCareerResponse,
+  UpdateCareerRequest
 } from "./careerType";
 
 export const careerApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    createCareer: builder.mutation<CreateCareerResponse, CreateCareerRequest>({
+    createCareer: builder.mutation<CareerMutationResponse, CreateCareerRequest>({
       query: ({ name }) => ({
         url: "/careers",
         method: "POST",
-        data: { name },
+        data: { name }
       }),
-      invalidatesTags: ["Career"],
+      invalidatesTags: ["Career"]
     }),
 
-    updateCareer: builder.mutation<UpdateCareerResponse, UpdateCareerRequest>({
+    updateCareer: builder.mutation<CareerMutationResponse, UpdateCareerRequest>({
       query: ({ careerId, name }) => ({
         url: "/careers",
         method: "PUT",
-        data: { careerId, name },
+        data: { careerId, name }
       }),
-      invalidatesTags: ["Career"],
+      invalidatesTags: ["Career"]
     }),
 
-    deleteCareer: builder.mutation<DeleteCareerResponse, DeleteCareerRequest>({
+    deleteCareer: builder.mutation<CareerMutationResponse, CareerIdRequest>({
       query: (careerId) => ({
         url: `/careers/${careerId}`,
-        method: "DELETE",
+        method: "DELETE"
       }),
-      invalidatesTags: ["Career"],
+      invalidatesTags: ["Career"]
     }),
 
     fetchCareers: builder.query<FetchCareersResponse, FetchCareersRequest>({
@@ -44,26 +42,25 @@ export const careerApi = api.injectEndpoints({
         const { params: queryParams } = buildSpringQuery({
           params,
           filterFields: ["name"],
-          textSearchFields: ["name"], // LIKE search
-          nestedArrayFields: {},
+          textSearchFields: ["name"],
           defaultSort: "createdAt,desc",
-          sortableFields: ["createdAt", "updatedAt"],
+          sortableFields: ["createdAt", "updatedAt"]
         });
 
         return {
           url: "/careers",
           method: "GET",
-          params: queryParams,
+          params: queryParams
         };
       },
-      providesTags: ["Career"],
-    }),
-  }),
+      providesTags: ["Career"]
+    })
+  })
 });
 
 export const {
   useCreateCareerMutation,
   useUpdateCareerMutation,
   useDeleteCareerMutation,
-  useFetchCareersQuery,
+  useFetchCareersQuery
 } = careerApi;

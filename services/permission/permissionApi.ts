@@ -1,21 +1,19 @@
 import { api } from "@/services/api";
+import { buildSpringQuery } from "@/utils/buildSpringQuery";
 import type {
   CreatePermissionRequest,
-  CreatePermissionResponse,
-  DeletePermissionResponse,
-  FetchPermissionByIdRequest,
   FetchPermissionByIdResponse,
   FetchPermissionsRequest,
   FetchPermissionsResponse,
-  UpdatePermissionResponse
+  PermissionIdRequest,
+  PermissionMutationResponse,
+  UpdatePermissionRequest
 } from "./permissionType";
-import { Permission } from "@/types/model";
-import { buildSpringQuery } from "@/utils/buildSpringQuery";
 
 export const permissionApi = api.injectEndpoints({
   endpoints: (builder) => ({
     createPermission: builder.mutation<
-      CreatePermissionResponse,
+      PermissionMutationResponse,
       CreatePermissionRequest
     >({
       query: (permission) => ({
@@ -27,8 +25,8 @@ export const permissionApi = api.injectEndpoints({
     }),
 
     updatePermission: builder.mutation<
-      UpdatePermissionResponse,
-      Permission
+      PermissionMutationResponse,
+      UpdatePermissionRequest
     >({
       query: (data) => ({
         url: "/permissions",
@@ -39,8 +37,8 @@ export const permissionApi = api.injectEndpoints({
     }),
 
     deletePermission: builder.mutation<
-      DeletePermissionResponse,
-      number
+      PermissionMutationResponse,
+      PermissionIdRequest
     >({
       query: (permissionId) => ({
         url: `/permissions/${permissionId}`,
@@ -57,9 +55,9 @@ export const permissionApi = api.injectEndpoints({
         const { params: queryParams } = buildSpringQuery({
           params,
           filterFields: ["module", "name", "method"],
-          textSearchFields: ["module", "name"], // LIKE search
+          textSearchFields: ["module", "name"],
           defaultSort: "createdAt,desc",
-          sortableFields: ["createdAt", "updatedAt"],
+          sortableFields: ["createdAt", "updatedAt"]
         });
 
         return {
@@ -73,7 +71,7 @@ export const permissionApi = api.injectEndpoints({
 
     fetchPermissionById: builder.query<
       FetchPermissionByIdResponse,
-      FetchPermissionByIdRequest
+      PermissionIdRequest
     >({
       query: (permissionId) => ({
         url: `/permissions/${permissionId}`,

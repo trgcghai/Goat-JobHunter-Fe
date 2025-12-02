@@ -2,22 +2,20 @@ import { api } from "@/services/api";
 import { buildSpringQuery } from "@/utils/buildSpringQuery";
 import {
   CreateRecruiterRequest,
-  CreateRecruiterResponse,
-  DeleteRecruiterRequest,
-  DeleteRecruiterResponse, FetchCurrentRecruiterResponse,
-  FetchRecruiterByIdRequest,
+  FetchCurrentRecruiterResponse,
   FetchRecruiterByIdResponse,
   FetchRecruitersRequest,
   FetchRecruitersResponse,
-  UpdateRecruiterRequest,
-  UpdateRecruiterResponse
+  RecruiterIdRequest,
+  RecruiterMutationResponse,
+  UpdateRecruiterRequest
 } from "./recruiterType";
 
 export const recruiterApi = api.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
     createRecruiter: builder.mutation<
-      CreateRecruiterResponse,
+      RecruiterMutationResponse,
       CreateRecruiterRequest
     >({
       query: (data) => ({
@@ -29,7 +27,7 @@ export const recruiterApi = api.injectEndpoints({
     }),
 
     updateRecruiter: builder.mutation<
-      UpdateRecruiterResponse,
+      RecruiterMutationResponse,
       UpdateRecruiterRequest
     >({
       query: (data) => ({
@@ -41,18 +39,16 @@ export const recruiterApi = api.injectEndpoints({
     }),
 
     deleteRecruiter: builder.mutation<
-      DeleteRecruiterResponse,
-      DeleteRecruiterRequest
+      RecruiterMutationResponse,
+      RecruiterIdRequest
     >({
       query: (recruiterId) => ({
         url: `/recruiters/${recruiterId}`,
         method: "DELETE"
       }),
       invalidatesTags: ["Recruiter"]
-
     }),
 
-    // For Admin - Fetch all recruiters (enabled & disabled)
     fetchRecruiters: builder.query<
       FetchRecruitersResponse,
       FetchRecruitersRequest
@@ -61,7 +57,7 @@ export const recruiterApi = api.injectEndpoints({
         const { params: queryParams } = buildSpringQuery({
           params,
           filterFields: ["fullName", "address", "enabled"],
-          textSearchFields: ["fullName", "address"], // Dùng LIKE search
+          textSearchFields: ["fullName", "address"],
           defaultSort: "createdAt,desc",
           sortableFields: ["fullName", "createdAt", "updatedAt"]
         });
@@ -75,7 +71,6 @@ export const recruiterApi = api.injectEndpoints({
       providesTags: ["Recruiter"]
     }),
 
-    // For Client - Fetch only enabled recruiters
     fetchAvailableRecruiters: builder.query<
       FetchRecruitersResponse,
       Omit<FetchRecruitersRequest, "enabled">
@@ -84,7 +79,7 @@ export const recruiterApi = api.injectEndpoints({
         const { params: queryParams } = buildSpringQuery({
           params: {
             ...params,
-            enabled: true // Force enabled = true
+            enabled: true
           },
           filterFields: ["fullName", "address", "enabled"],
           textSearchFields: ["fullName", "address"],
@@ -103,7 +98,7 @@ export const recruiterApi = api.injectEndpoints({
 
     fetchRecruiterById: builder.query<
       FetchRecruiterByIdResponse,
-      FetchRecruiterByIdRequest
+      RecruiterIdRequest
     >({
       query: (recruiterId) => ({
         url: `/recruiters/${recruiterId}`,
