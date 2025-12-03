@@ -8,56 +8,57 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/useUser";
 import { useEffect } from "react";
 import { ROLE } from "@/constants/constant";
+import { NotificationPopup, UserPopup } from "@/app/(main)/components";
 
 const AdminTabs: SidebarTab[] = [
   {
     id: "dashboard",
     label: "Tổng quan",
     url: "/dashboard",
-    icon: <Shield className="w-4 h-4" />,
+    icon: <Shield className="w-4 h-4" />
   },
   {
     id: "blog",
     label: "Bài viết",
     url: "/admin/blog",
-    icon: <FileText className="w-4 h-4" />,
+    icon: <FileText className="w-4 h-4" />
   },
   {
     id: "user",
     label: "Người dùng",
     url: "/admin/user",
-    icon: <Users className="w-4 h-4" />,
+    icon: <Users className="w-4 h-4" />
   },
   {
     id: "role",
     label: "Vai trò",
     url: "/admin/role",
-    icon: <Shield className="w-4 h-4" />,
+    icon: <Shield className="w-4 h-4" />
   },
   {
     id: "permission",
     label: "Quyền hạn",
     url: "/admin/permission",
-    icon: <Lock className="w-4 h-4" />,
+    icon: <Lock className="w-4 h-4" />
   },
   {
     id: "career",
     label: "Quản lý ngành nghề",
     url: "/admin/career",
-    icon: <GraduationCap className="w-4 h-4" />,
+    icon: <GraduationCap className="w-4 h-4" />
   },
   {
     id: "skill",
     label: "Quản lý kỹ năng",
     url: "/admin/skill",
-    icon: <Wrench className="w-4 h-4" />,
+    icon: <Wrench className="w-4 h-4" />
   },
   {
     id: "chat",
     label: "Trợ lý AI",
     url: "/chat",
     type: "external",
-    icon: <MessageCircleCode className="w-4 h-4" />,
+    icon: <MessageCircleCode className="w-4 h-4" />
   }
 ];
 
@@ -80,9 +81,15 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
     <div className="flex min-h-screen bg-background">
       <Sidebar tabs={AdminTabs} />
 
-      <main className="flex-1 ml-64 p-6">
-        <div className="space-y-6">{children}</div>
-      </main>
+      <div className="flex-1 ml-64">
+        <div className="bg-sidebar px-4 py-2 border-b border-sidebar-border flex items-center justify-end gap-4">
+          <NotificationPopup />
+          <UserPopup />
+        </div>
+        <div className="space-y-6 p-6">
+          {children}
+        </div>
+      </div>
 
       <AIChatPopup />
     </div>

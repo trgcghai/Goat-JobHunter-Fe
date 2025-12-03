@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { AIChatPopup } from "@/components/common/AIChatPopup";
 import { ROLE } from "@/constants/constant";
+import { NotificationPopup, UserPopup } from "@/app/(main)/components";
 
 const RecruiterTabs: SidebarTab[] = [
   {
@@ -67,9 +68,15 @@ const RecruiterLayout = ({ children }: { children: React.ReactNode }) => {
     <div className="flex min-h-screen bg-background">
       <Sidebar tabs={RecruiterTabs} />
 
-      <main className="flex-1 ml-64 p-6">
-        <div className="space-y-6">{children}</div>
-      </main>
+      <div className="flex-1 ml-64">
+        <div className="bg-sidebar px-4 py-2 border-b border-sidebar-border flex items-center justify-end gap-4">
+          <NotificationPopup />
+          <UserPopup />
+        </div>
+        <div className="space-y-6 p-6">
+          {children}
+        </div>
+      </div>
 
       <AIChatPopup />
     </div>
