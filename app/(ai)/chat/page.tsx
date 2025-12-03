@@ -6,61 +6,63 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAIChat } from "@/hooks/useAIChat";
+import { Message } from "@/types/model";
 
 export default function AIChatPage() {
   const {
     inputMessage,
     setInputMessage,
-    messages,
     isLoading,
     messagesEndRef,
-    parseMarkdown,
-    sendMessage,
+    parseMarkdown
   } = useAIChat();
 
   const handleKeyDown = async (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      await sendMessage();
     }
   };
+
+  const handleSendMessage = async () => {
+    console.log("Send message:", inputMessage);
+  };
+
+  const messages: Message[] = [];
 
   return (
     <div className="h-full flex flex-col bg-gray-100">
       <ScrollArea className="flex-1 overflow-y-auto px-6 py-0 pt-4">
         {messages.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center">
-            <div className="w-full max-w-3xl space-y-8">
-              <div className="text-center space-y-2">
-                <h1 className="text-5xl font-light text-primary bg-clip-text">
-                  Chào bạn!
-                </h1>
-                <p className="text-muted-foreground text-sm">
-                  Tôi là trợ lý AI thông minh của &#34;Goat Tìm Kiếm Việc
-                  Làm&#34;, rất vui được hỗ trợ bạn.
-                </p>
-              </div>
+          <div className="h-full w-full flex items-center justify-center mt-52">
+            <div className="text-center space-y-2">
+              <h1 className="text-5xl font-semibold text-primary bg-clip-text">
+                Chào bạn!
+              </h1>
+              <p className="text-muted-foreground text-sm">
+                Tôi là trợ lý AI thông minh của &#34;Goat Tìm Kiếm Việc
+                Làm&#34;, rất vui được hỗ trợ bạn.
+              </p>
             </div>
           </div>
         ) : (
           <div className="max-w-4xl mx-auto space-y-4">
             {messages.map((message) => (
               <div
-                key={message.id}
+                key={message.messageId}
                 className={cn(
                   "flex",
-                  message.role === "user" ? "justify-end" : "justify-start"
+                  message.role === "User" ? "justify-end" : "justify-start"
                 )}
               >
                 <div
                   className={cn(
                     "max-w-[80%] rounded-xl px-4 py-2 prose prose-sm",
-                    message.role === "user"
+                    message.role === "User"
                       ? "bg-primary text-white prose-invert"
                       : "bg-muted"
                   )}
                   dangerouslySetInnerHTML={{
-                    __html: parseMarkdown(message.content),
+                    __html: parseMarkdown(message.content)
                   }}
                 />
               </div>
@@ -84,7 +86,8 @@ export default function AIChatPage() {
 
       <div className="border-t py-4 bg-background">
         <div className="max-w-4xl mx-auto">
-          <div className="flex items-center gap-3 bg-card rounded-2xl border border-border shadow-lg p-2 transition-all hover:shadow-xl focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
+          <div
+            className="flex items-center gap-3 bg-card rounded-2xl border border-border shadow-lg p-2 transition-all hover:shadow-xl focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
             <Input
               placeholder="Nhập câu hỏi của bạn..."
               value={inputMessage}
@@ -97,7 +100,7 @@ export default function AIChatPage() {
               size="icon"
               variant="ghost"
               className="h-10 w-10 rounded-xl shrink-0"
-              onClick={() => sendMessage()}
+              onClick={handleSendMessage}
               disabled={isLoading || !inputMessage.trim()}
             >
               {isLoading ? (

@@ -225,3 +225,20 @@ export type NotificationType = {
   };
   createdAt: string;
 };
+
+export type Conversation = {
+  conversationId: number;
+  title: string
+  pinned: boolean;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+  updatedBy: string;
+}
+
+export type Message = {
+  messageId: number;
+  role: "User" | "Ai";
+  content: string;
+  createdAt: string;
+}

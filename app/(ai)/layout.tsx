@@ -1,25 +1,22 @@
-import type { Metadata } from "next";
+"use client";
+
 import { AIChatSidebar } from "./components/AIChatSidebar";
 import { AIChatHeader } from "./components/AIChatHeader";
-
-export const metadata: Metadata = {
-  title: "AI Chat - GOAT",
-  description: "Chat với trợ lý AI của GOAT",
-};
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 export default function AIChatLayout({
-  children,
+ children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <div className="h-screen flex">
+    <SidebarProvider defaultOpen={false}>
       <AIChatSidebar />
 
       <div className="flex-1 flex flex-col">
         <AIChatHeader />
         <main className="flex-1 overflow-hidden">{children}</main>
       </div>
-    </div>
+    </SidebarProvider>
   );
 }

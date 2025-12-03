@@ -60,7 +60,8 @@ export const api = createApi({
     "Subscriber",
     "Notifications",
     "SavedJob",
-    "Comment"
+    "Comment",
+    "Conversations"
   ],
   endpoints: (builder) => ({
     ping: builder.query<string, void>({
@@ -77,14 +78,6 @@ export const api = createApi({
       })
     }),
 
-    aiChat: builder.mutation<string, string>({
-      query: (message: string) => ({
-        url: "/ai/chat",
-        method: "POST",
-        data: { message }
-      })
-    }),
-
     backup: builder.query({
       query: () => ({
         url: "/admin/backup",
@@ -97,6 +90,5 @@ export const api = createApi({
 export const {
   usePingQuery,
   useClearCookiesQuery,
-  useAiChatMutation,
   useBackupQuery,
 } = api;
