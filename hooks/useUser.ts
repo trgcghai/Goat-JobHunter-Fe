@@ -21,7 +21,6 @@ import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { toast } from "sonner";
 import { useUpdateRecruiterMutation } from "@/services/recruiter/recruiterApi";
-import { ApplicantFormData } from "@/app/(main)/profile/components/ProfileInfo/schema";
 
 export function useUser() {
   const router = useRouter();

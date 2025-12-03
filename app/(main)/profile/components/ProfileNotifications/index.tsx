@@ -10,7 +10,7 @@ import {
   EmptyHeader,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { useGetUsersNotificationsQuery, useMarkNotificationsAsSeenMutation } from "@/services/user/userApi";
+import { useGetUsersNotificationsQuery, useMarkNotificationsAsSeenMutation } from "@/services/notification/notificationApi";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 

@@ -12,10 +12,6 @@ import type {
   GetFollowedRecruitersResponse,
   GetSavedJobsResponse,
   JobIdsRequest,
-  LatestNotificationsResponse,
-  MarkNotificationsAsSeenResponse,
-  NotificationPaginationRequest,
-  NotificationPaginationResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
   SaveJobsResponse,
@@ -191,49 +187,6 @@ export const userApi = api.injectEndpoints({
       invalidatesTags: ["User"]
     }),
 
-    // Notification APIs
-    getUsersNotifications: builder.query<
-      NotificationPaginationResponse,
-      NotificationPaginationRequest
-    >({
-      query: (params) => {
-        const { params: queryParams } = buildSpringQuery({
-          params,
-          filterFields: [],
-          textSearchFields: [],
-          nestedArrayFields: {},
-          defaultSort: "createdAt,desc"
-        });
-
-        return {
-          url: "/users/me/notifications",
-          method: "GET",
-          params: queryParams
-        };
-      },
-      providesTags: ["Notifications"]
-    }),
-
-    getLatestNotifications: builder.query<LatestNotificationsResponse, void>({
-      query: () => ({
-        url: "/users/me/notifications/latest",
-        method: "GET"
-      }),
-      providesTags: ["Notifications"]
-    }),
-
-    markNotificationsAsSeen: builder.mutation<
-      MarkNotificationsAsSeenResponse,
-      number[]
-    >({
-      query: (data) => ({
-        url: "/users/me/notifications",
-        method: "PUT",
-        data
-      }),
-      invalidatesTags: ["Notifications"]
-    }),
-
     // User Status APIs
     activateUsers: builder.mutation<UserStatusResponse, UserIdsRequest>({
       query: (data) => ({
@@ -251,8 +204,8 @@ export const userApi = api.injectEndpoints({
         data
       }),
       invalidatesTags: ["User", "Recruiter", "Applicant"]
-    })
-  })
+    }),
+  }),
 });
 
 export const {
@@ -268,9 +221,6 @@ export const {
   useCheckRecruitersFollowedQuery,
   useFollowRecruitersMutation,
   useUnfollowRecruitersMutation,
-  useGetUsersNotificationsQuery,
-  useGetLatestNotificationsQuery,
-  useMarkNotificationsAsSeenMutation,
   useActivateUsersMutation,
   useDeactivateUsersMutation
 } = userApi;

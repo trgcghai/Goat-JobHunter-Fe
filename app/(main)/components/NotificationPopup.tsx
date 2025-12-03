@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { useGetLatestNotificationsQuery, useMarkNotificationsAsSeenMutation } from "@/services/user/userApi";
+import { useGetLatestNotificationsQuery, useMarkNotificationsAsSeenMutation } from "@/services/notification/notificationApi";
 import { Bell, BellRing, CheckCheck } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";

@@ -90,8 +90,13 @@ export const api = createApi({
         url: "/admin/backup",
         method: "GET"
       })
-    })
+    }),
   })
 });
 
-export const { usePingQuery, useClearCookiesQuery, useAiChatMutation, useBackupQuery } = api;
+export const {
+  usePingQuery,
+  useClearCookiesQuery,
+  useAiChatMutation,
+  useBackupQuery,
+} = api;

@@ -2,7 +2,6 @@ import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type {
   FullUser,
   Job,
-  NotificationType,
   Recruiter,
   User
 } from "@/types/model";
@@ -48,11 +47,6 @@ export type FetchUsersRequest = {
   enabled?: boolean;
 };
 
-export type NotificationPaginationRequest = {
-  page?: number;
-  size?: number;
-};
-
 // Response Types
 export type UserMutationResponse = IBackendRes<User>;
 
@@ -90,18 +84,6 @@ export type CheckRecruitersFollowedResponse = IBackendRes<
     result: boolean;
   }[]
 >;
-
-// Notification Responses
-export type NotificationPaginationResponse = IBackendRes<
-  IModelPaginate<NotificationType>
->;
-
-export type LatestNotificationsResponse = IBackendRes<NotificationType[]>;
-
-export type MarkNotificationsAsSeenResponse = IBackendRes<{
-  userId: number;
-  seenNotificationIds: number[];
-}>;
 
 // User Status Responses
 export type UserStatusResponse = IBackendRes<
