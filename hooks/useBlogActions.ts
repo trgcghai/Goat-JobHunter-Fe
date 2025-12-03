@@ -3,7 +3,7 @@ import {
   useEnableBlogsMutation,
   useDisableBlogsMutation,
   useCreateBlogMutation,
-  useUpdateBlogMutation,
+  useUpdateBlogMutation, useLikeBlogMutation
 } from "@/services/blog/blogApi";
 import { useCallback } from "react";
 import { toast } from "sonner";
@@ -18,6 +18,7 @@ const useBlogActions = () => {
   const [disableBlogs, { isLoading: isDisabling }] = useDisableBlogsMutation();
   const [createBlog, { isLoading: isCreating }] = useCreateBlogMutation();
   const [updateBlog, { isLoading: isUpdating }] = useUpdateBlogMutation();
+  const [toggleLike, { isLoading: isTogglingLike }] = useLikeBlogMutation();
 
   // Delete multiple blogs
   const handleDeleteBlogs = useCallback(
@@ -155,7 +156,7 @@ const useBlogActions = () => {
         toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
         return;
       }
-      
+
       try {
         const response = await updateBlog({
           ...data,
@@ -175,6 +176,47 @@ const useBlogActions = () => {
     [isSignedIn, updateBlog, user]
   );
 
+  const handleLikeBlog = useCallback(
+    async (blogId: number) => {
+      if (!isSignedIn || !user) {
+        toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
+        return;
+      }
+
+      try {
+        await toggleLike({
+          blogId,
+          liked: true
+        });
+      } catch (error) {
+        console.error("Failed to like blog:", error);
+        toast.error("Không thể thích bài viết. Vui lòng thử lại sau.");
+        throw error;
+      }
+    }, [isSignedIn, toggleLike, user]
+  );
+
+  const handleUnlikeBlog = useCallback(
+    async (blogId: number) => {
+      if (!isSignedIn || !user) {
+        toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
+        return;
+      }
+
+      try {
+
+        await toggleLike({
+          blogId,
+          liked: false
+        });
+      } catch (error) {
+        console.error("Failed to like blog:", error);
+        toast.error("Không thể thích bài viết. Vui lòng thử lại sau.");
+        throw error;
+      }
+    }, [isSignedIn, toggleLike, user]
+  );
+
   return {
     isDeleting,
     isEnabling,
@@ -187,6 +229,7 @@ const useBlogActions = () => {
       isDisabling ||
       isCreating ||
       isUpdating ||
+      isTogglingLike,
 
     handleDeleteBlogs,
     handleEnableBlogs,
@@ -194,6 +237,8 @@ const useBlogActions = () => {
     handleToggleBlogStatus,
     handleCreateBlog,
     handleUpdateBlog,
+    handleLikeBlog,
+    handleUnlikeBlog
   };
 };
 

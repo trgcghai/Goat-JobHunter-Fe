@@ -45,7 +45,7 @@ export type FetchTagsRequest = {
 
 // Like
 export type LikeBlogRequest = {
-  blog: Blog;
+  blogId: number;
   liked: boolean;
 };
 

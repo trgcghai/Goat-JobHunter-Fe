@@ -20,22 +20,26 @@ import { ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { toast } from "sonner";
 
 const DetailBlogPage = () => {
   const params = useParams<{ id: string }>();
   const {
     blog,
+    isLiked,
     isLoading,
     isError,
     author,
+
     isLoadingComments,
     isLoadCommentsFailed,
     comments,
     totalComments,
+
     handleComment,
     handleReply,
-    handleDelete
+    handleDelete,
+    handleToggleLike,
+    handleShare
   } = useDetailBlog(
     params.id
   );
@@ -67,19 +71,7 @@ const DetailBlogPage = () => {
     );
   }
 
-  const handleShare = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.toString());
-      toast.success(`Đã sao chép liên kết bài viết`);
-    } catch (err) {
-      console.error("Không thể copy:", err);
-      toast.error("Sao chép liên kết thất bại. Vui lòng thử lại.");
-    }
-  };
 
-  const handleLike = () => {
-    toast.info("Tính năng thích bài viết đang được phát triển.");
-  };
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -163,7 +155,8 @@ const DetailBlogPage = () => {
         <BlogActions
           totalLikes={blog.activity?.totalLikes}
           totalComments={blog.activity?.totalComments}
-          onLike={handleLike}
+          isLiked={isLiked}
+          onLike={handleToggleLike}
           onShare={handleShare}
         />
       </div>
