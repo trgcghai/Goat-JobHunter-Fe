@@ -19,49 +19,21 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { useGetLatestNotificationsQuery, useMarkNotificationsAsSeenMutation } from "@/services/notification/notificationApi";
+import { useGetLatestNotificationsQuery } from "@/services/notification/notificationApi";
 import { Bell, BellRing, CheckCheck } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
-import { toast } from "sonner";
+import useNotificationActions from "@/hooks/useNotificationActions";
 
 export default function NotificationPopup() {
   const { data, isLoading, isError, isSuccess, refetch } =
     useGetLatestNotificationsQuery();
-
-  const [markAsRead] = useMarkNotificationsAsSeenMutation();
-
   const notifications = useMemo(() => data?.data || [], [data]);
-
   const unreadCount = notifications.filter((n) => !n.seen).length;
 
-  const handleMarkAsRead = async (id: number) => {
-    console.log("mark as read for ", id);
-    try {
-      await markAsRead([id]).unwrap();
-      toast.success("Đã đánh dấu là đã đọc");
-    } catch (error) {
-      console.log(error);
-      toast.error("Đánh dấu đã đọc thất bại. Vui lòng thử lại sau");
-    }
-  };
+  const { handleMarkAllAsRead, handleMarkAsRead } = useNotificationActions();
 
-  const handleMarkAllAsRead = async () => {
-
-    if (!unreadCount) return;
-
-    const unreadNotificationIds = notifications
-      .filter((n) => !n.seen)
-      .map((n) => n.notificationId);
-
-    try {
-      await markAsRead(unreadNotificationIds).unwrap();
-      toast.success("Đã đánh dấu là đã đọc");
-    } catch (error) {
-      console.log(error);
-      toast.error("Đánh dấu đã đọc thất bại. Vui lòng thử lại sau");
-    }
-  };
+  console.log(notifications);
 
   return (
     <Popover>
@@ -107,7 +79,7 @@ export default function NotificationPopup() {
                   variant="ghost"
                   size="sm"
                   className="text-xs text-primary hover:text-primary/80 rounded-xl"
-                  onClick={handleMarkAllAsRead}
+                  onClick={() => handleMarkAllAsRead(notifications.filter(n => !n.seen).map(n => n.notificationId))}
                 >
                   <CheckCheck className="h-4 w-4 mr-1" />
                   Đánh dấu tất cả đã đọc

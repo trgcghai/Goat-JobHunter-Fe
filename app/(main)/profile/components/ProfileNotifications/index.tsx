@@ -10,16 +10,16 @@ import {
   EmptyHeader,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { useGetUsersNotificationsQuery, useMarkNotificationsAsSeenMutation } from "@/services/notification/notificationApi";
+import { useGetUsersNotificationsQuery } from "@/services/notification/notificationApi";
 import { useMemo, useState } from "react";
-import { toast } from "sonner";
+import useNotificationActions from "@/hooks/useNotificationActions";
 
 export default function ProfileNotifications() {
   const [currentPage, setCurrentPage] = useState(1);
   const { data, isLoading, isError, refetch } = useGetUsersNotificationsQuery({
     page: currentPage,
   });
-  const [markAsRead] = useMarkNotificationsAsSeenMutation();
+  const { handleMarkAsRead } = useNotificationActions();
 
   const notifications = useMemo(() => data?.data?.result || [], [data]);
   const meta = useMemo(() => data?.data?.meta, [data]);
@@ -39,17 +39,6 @@ export default function ProfileNotifications() {
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage((prev) => prev - 1);
-    }
-  };
-
-  const handleMarkAsRead = async (id: number) => {
-    console.log("mark as read for ", id);
-    try {
-      await markAsRead([id]).unwrap();
-      toast.success("Đã đánh dấu là đã đọc");
-    } catch (error) {
-      console.log(error);
-      toast.error("Đánh dấu đã đọc thất bại. Vui lòng thử lại sau");
     }
   };
 

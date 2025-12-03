@@ -197,22 +197,31 @@ export type NotificationType = {
   seen: boolean;
   blog: {
     blogId: string;
+    title: string;
   };
   actor: {
     userId: string;
+    fullName: string;
+    username: string;
+    avatar: string;
   };
   recipient: {
     userId: string;
+    fullName: string;
+    username: string;
+    avatar: string;
   };
   comment?: {
     commentId: string;
+    comment: string;
   };
   reply?: {
     commentId: string;
+    comment: string;
   };
   repliedOnComment?: {
     commentId: string;
+    comment: string;
   };
-
-  createdAt?: string;
+  createdAt: string;
 };
