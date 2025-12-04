@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 interface RejectDialogProps {
   open: boolean;
@@ -24,6 +25,19 @@ const DisableBlogsDialog = ({
 }: RejectDialogProps) => {
 
   const [reason, setReason] = useState<string>("");
+
+  const handleConfirm = (e:  React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+
+    e.preventDefault();
+
+    if (!reason.trim()) {
+      toast.error("Vui lòng nhập lý do ẩn bài viết.");
+      return;
+    }
+
+    onConfirm(reason);
+    setReason("");
+  }
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -50,7 +64,7 @@ const DisableBlogsDialog = ({
             Hủy
           </AlertDialogCancel>
           <AlertDialogAction
-            onClick={() => onConfirm(reason)}
+            onClick={(e) => handleConfirm(e)}
             className={`rounded-xl bg-orange-600 text-white hover:bg-orange-700`}
           >
             Xác nhận
