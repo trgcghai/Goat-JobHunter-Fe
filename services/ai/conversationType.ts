@@ -1,4 +1,4 @@
-import { IBackendRes } from "@/types/api";
+import { IBackendRes, IModelPaginate } from "@/types/api";
 import { Conversation } from "@/types/model";
 
 export type GetConversationsParams = {
@@ -16,7 +16,7 @@ export type ConversationIdsRequest = {
   conversationIds: number[];
 }
 
-export type GetConversationsResponse = IBackendRes<Conversation[]>
+export type GetConversationsResponse = IBackendRes<IModelPaginate<Conversation>>
 
 export type ConversationResponse = IBackendRes<Conversation>;
 

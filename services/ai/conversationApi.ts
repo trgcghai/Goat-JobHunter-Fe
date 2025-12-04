@@ -25,7 +25,7 @@ export const conversationApi = api.injectEndpoints({
         method: "GET",
         params,
       }),
-      providesTags: ["Conversations"]
+      providesTags:  ["Conversations"]
     }),
 
     // Get conversation by ID
@@ -42,7 +42,7 @@ export const conversationApi = api.injectEndpoints({
         url: "/conversations",
         method: "POST"
       }),
-      invalidatesTags: [{ type: "Conversations", id: "LIST" }]
+      invalidatesTags: ["Conversations"]
     }),
 
     // Update conversation
