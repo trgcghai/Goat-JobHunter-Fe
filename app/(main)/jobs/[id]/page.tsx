@@ -28,9 +28,10 @@ import { useParams } from "next/navigation";
 import { useUser } from "@/hooks/useUser";
 import RecruiterInfo from "@/app/(main)/jobs/[id]/components/RecruiterInfo";
 import ErrorMessage from "@/components/common/ErrorMessage";
+import { HasApplicant } from "@/components/common/HasRole";
 
 export default function JobDetailPage() {
-  const params = useParams<{ id: string }>()
+  const params = useParams<{ id: string }>();
 
   const { user } = useUser();
   const { handleToggleSaveJob } = useJobActions();
@@ -140,14 +141,16 @@ export default function JobDetailPage() {
               <div className="lg:col-span-1">
                 <Card className="p-6 h-full">
                   <div className="space-y-3">
-                    <Button
-                      onClick={handleOpenCVDialog}
-                      disabled={!job.active}
-                      className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-base rounded-xl"
-                    >
-                      <Send className="w-5 h-5" />
-                      {!job.active ? "Đã Đóng" : "Ứng Tuyển Ngay"}
-                    </Button>
+                    <HasApplicant user={user!}>
+                      <Button
+                        onClick={handleOpenCVDialog}
+                        disabled={!job.active}
+                        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-base rounded-xl"
+                      >
+                        <Send className="w-5 h-5" />
+                        {!job.active ? "Đã Đóng" : "Ứng Tuyển Ngay"}
+                      </Button>
+                    </HasApplicant>
 
                     <Button
                       onClick={(e) =>
