@@ -7,6 +7,7 @@ import {
 import { useCheckSavedJobsQuery } from "@/services/user/userApi";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { useFetchRecruiterByIdQuery } from "@/services/recruiter/recruiterApi";
 
 const useDetailJob = (id: string) => {
   const { user, isSignedIn } = useUser();
@@ -17,6 +18,16 @@ const useDetailJob = (id: string) => {
   });
 
   const job = useMemo(() => data?.data, [data]);
+
+  const {
+    data: recruiterData,
+    isLoading: isLoadingRecruiter,
+    isError: isErrorRecruiter
+  } = useFetchRecruiterByIdQuery(job?.recruiter.userId || -1, {
+    skip: !job || !job.recruiter || !job.recruiter.userId
+  });
+
+  const recruiter = useMemo(() => recruiterData?.data, [recruiterData]);
 
   const { data: checkSavedJobData, isSuccess: isCheckSavedSuccess } =
     useCheckSavedJobsQuery(
@@ -112,6 +123,11 @@ const useDetailJob = (id: string) => {
     isError,
     isSuccess,
 
+    // recruiter
+    recruiter,
+    isLoadingRecruiter,
+    isErrorRecruiter,
+
     relatedJobs,
     savedJobs,
     isRelatedJobsLoading,
@@ -120,7 +136,7 @@ const useDetailJob = (id: string) => {
     numberOfApplications,
 
     // handlers and functions
-    handleOpenCVDialog,
+    handleOpenCVDialog
   };
 };
 

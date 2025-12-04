@@ -1,7 +1,7 @@
 import { Job } from "@/types/model";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { formatDate } from "@/utils/formatDate";
-import { Calendar, Clock, DollarSign, MapPin, Users } from "lucide-react";
+import { BriefcaseBusiness, Calendar, Clock, DollarSign, MapPin, Users } from "lucide-react";
 
 function JobInfoGrid({ job }: { job: Job }) {
   const infoItems = [
@@ -31,9 +31,9 @@ function JobInfoGrid({ job }: { job: Job }) {
       value: formatDate(job.endDate),
     },
     {
-      icon: Calendar,
-      label: "Ngày đăng",
-      value: job.startDate ? formatDate(job.startDate) : "",
+      icon: BriefcaseBusiness,
+      label: "Ngành nghề",
+      value: job.career.name || "Chưa cung cấp",
     },
   ];
 

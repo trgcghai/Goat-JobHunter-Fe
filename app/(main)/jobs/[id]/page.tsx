@@ -26,9 +26,12 @@ import { BookmarkPlus, ChevronLeft, Send } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useUser } from "@/hooks/useUser";
+import RecruiterInfo from "@/app/(main)/jobs/[id]/components/RecruiterInfo";
+import ErrorMessage from "@/components/common/ErrorMessage";
 
 export default function JobDetailPage() {
-  const params = useParams<{ id: string }>();
+  const params = useParams<{ id: string }>()
+
   const { user } = useUser();
   const { handleToggleSaveJob } = useJobActions();
   const {
@@ -40,6 +43,10 @@ export default function JobDetailPage() {
     isLoading,
     isError,
     isSuccess,
+
+    recruiter,
+    isLoadingRecruiter,
+    isErrorRecruiter,
 
     relatedJobs,
     savedJobs,
@@ -91,10 +98,12 @@ export default function JobDetailPage() {
                 <Card className="mb-8 py-0 h-full">
                   <JobHeader job={job} />
 
+                  {recruiter && !isLoadingRecruiter && !isErrorRecruiter ? <RecruiterInfo recruiter={recruiter} /> :
+                    <ErrorMessage message={"Có lỗi xảy ra khi tải thông tin nhà tuyển dụng."} />}
+
                   <CardContent className="px-6 pb-6">
                     <Separator className="mb-4" />
                     <JobInfoGrid job={job} />
-
                     <Separator className="mb-4" />
 
                     <div>
