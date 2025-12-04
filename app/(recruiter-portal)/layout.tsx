@@ -66,7 +66,7 @@ const RecruiterLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="flex min-h-screen bg-background">
-      <Sidebar tabs={RecruiterTabs} />
+      <Sidebar tabs={RecruiterTabs} logoHref={"/"} />
 
       <div className="flex-1 ml-64">
         <div className="bg-sidebar px-4 py-2 border-b border-sidebar-border flex items-center justify-end gap-4">

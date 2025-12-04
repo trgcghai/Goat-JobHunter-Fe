@@ -17,16 +17,17 @@ export interface SidebarTab {
 
 interface SidebarProps {
   tabs: SidebarTab[];
+  logoHref: string;
 }
 
-export default function Sidebar({ tabs }: SidebarProps) {
+export default function Sidebar({ tabs, logoHref }: SidebarProps) {
   const pathname = usePathname();
   const { signOut } = useUser();
 
   return (
     <div className="fixed z-50 left-0 top-0 h-screen w-64 bg-sidebar border-r border-sidebar-border p-6 space-y-8">
       <div className="flex items-center gap-2">
-        <Link href="/dashboard" className="flex items-center gap-2">
+        <Link href={logoHref} className="flex items-center gap-2">
           <Image
             src="/logo.png"
             alt="GOAT Logo"
