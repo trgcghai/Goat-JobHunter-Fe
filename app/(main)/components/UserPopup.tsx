@@ -14,7 +14,7 @@ import { LogOut, Shield, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { HasAdmin } from "@/components/common/HasRole";
+import { HasAdmin, HasRecruiter } from "@/components/common/HasRole";
 
 export default function UserPopup() {
   const { user, signOut, isSigningOut, isSignedIn } = useUser();
@@ -106,6 +106,18 @@ export default function UserPopup() {
             </Link>
           </DropdownMenuItem>
         </HasAdmin>
+
+        <HasRecruiter user={user}>
+          <DropdownMenuItem asChild>
+            <Link
+              href="/recruiter-portal"
+              className="flex items-center cursor-pointer rounded-xl"
+            >
+              <Shield className="mr-2 h-4 w-4" />
+              <span>Bảng Điều Khiển</span>
+            </Link>
+          </DropdownMenuItem>
+        </HasRecruiter>
 
         <DropdownMenuSeparator />
 
