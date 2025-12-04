@@ -15,10 +15,16 @@ import { Grid3x3, List, Loader2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useCheckSavedJobsQuery } from "@/services/user/userApi";
 import { useUser } from "@/hooks/useUser";
+import { useSearchParams } from "next/navigation";
 
 export default function JobsPage() {
   const [viewMode, setViewMode] = useState<"list" | "grid">("grid");
   const itemsPerPage = viewMode === "grid" ? 9 : 10;
+
+  const searchParams = useSearchParams();
+  const initLevel = useMemo(() => searchParams.get("level") ? [searchParams.get("level") as string] : [], [searchParams]);
+  const initWorkingType = useMemo(() => searchParams.get("workingType") ? [searchParams.get("workingType") as string] : [], [searchParams]);
+
   const { user, isSignedIn } = useUser();
   const {
     jobs,
@@ -48,8 +54,8 @@ export default function JobsPage() {
     initialFilters: {
       location: [],
       skills: [],
-      level: [],
-      workingType: []
+      level: initLevel,
+      workingType: initWorkingType
     }
   });
 

@@ -4,6 +4,7 @@ import JobGridCard from "@/app/(main)/jobs/components/JobGridCard";
 import JobListCard from "@/app/(main)/jobs/components/JobListCard";
 import useJobActions from "@/hooks/useJobActions";
 import { Job } from "@/types/model";
+import { useRouter } from "next/navigation";
 
 interface JobCardProps {
   job: Job;
@@ -20,6 +21,21 @@ export default function JobCard({
   onLevelClick,
   onWorkingTypeClick,
 }: JobCardProps) {
+
+  const router = useRouter()
+
+  const handleLevelClick = (level: string) => {
+    const params = new URLSearchParams();
+    params.set("level", level);
+    router.push(`/jobs?${params.toString()}`);
+  };
+
+  const handleWorkingTypeClick = (workingType: string) => {
+    const params = new URLSearchParams();
+    params.set("workingType", workingType);
+    router.push(`/jobs?${params.toString()}`);
+  };
+
   const { handleToggleSaveJob } = useJobActions();
 
   const handleSaveJob = async (e: React.MouseEvent) => {
@@ -35,8 +51,8 @@ export default function JobCard({
         job={job}
         isSaved={isSaved}
         handleSaveJob={handleSaveJob}
-        onLevelClick={onLevelClick}
-        onWorkingTypeClick={onWorkingTypeClick}
+        onLevelClick={onLevelClick ? onLevelClick : handleLevelClick}
+        onWorkingTypeClick={onWorkingTypeClick ? onWorkingTypeClick : handleWorkingTypeClick}
       />
     );
   }
@@ -47,8 +63,8 @@ export default function JobCard({
       job={job}
       isSaved={isSaved}
       handleSaveJob={handleSaveJob}
-      onLevelClick={onLevelClick}
-      onWorkingTypeClick={onWorkingTypeClick}
+      onLevelClick={onLevelClick ? onLevelClick : handleLevelClick}
+      onWorkingTypeClick={onWorkingTypeClick ? onWorkingTypeClick : handleWorkingTypeClick}
     />
   );
 }
