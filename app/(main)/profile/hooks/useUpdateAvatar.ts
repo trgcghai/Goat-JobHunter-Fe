@@ -53,8 +53,8 @@ const useUpdateAvatar = (type: "applicant" | "recruiter") => {
       }
 
       // Step 1: Upload image
-      const uploadToast = toast.loading("Đang tải ảnh lên...", {
-        description: "Vui lòng đợi trong giây lát"
+      const upload = toast.loading("Đang tải ảnh lên...", {
+        duration: 2000
       });
 
       let avatarUrl: string;
@@ -70,19 +70,23 @@ const useUpdateAvatar = (type: "applicant" | "recruiter") => {
 
         avatarUrl = uploadResponse.data.url;
         toast.success("Tải ảnh lên thành công!", {
-          id: uploadToast
+          id: upload,
+          duration: 2000
         });
 
       } catch (uploadError) {
         console.error("Error uploading image:", uploadError);
         toast.error("Không thể tải ảnh lên. Vui lòng thử lại", {
-          id: uploadToast
+          id: upload,
+          duration: 3000
         });
         return;
       }
 
       // Step 2: Update user avatar
-      toast.loading("Đang cập nhật ảnh đại diện...");
+      const loading = toast.loading("Đang cập nhật ảnh đại diện...", {
+        duration: 2000
+      });
 
       try {
         if (!user?.userId) {
@@ -99,12 +103,18 @@ const useUpdateAvatar = (type: "applicant" | "recruiter") => {
           });
         }
 
-        toast.success("Cập nhật ảnh đại diện thành công!");
+        toast.success("Cập nhật ảnh đại diện thành công!", {
+          id: loading,
+          duration: 2000
+        });
 
         handleRemoveImage();
       } catch (updateError) {
         console.error("Error updating avatar:", updateError);
-        toast.error("Không thể cập nhật ảnh đại diện. Vui lòng thử lại sau");
+        toast.error("Không thể cập nhật ảnh đại diện. Vui lòng thử lại sau", {
+          id: loading,
+          duration: 2000
+        });
       }
     } catch (error) {
       console.error("Unexpected error:", error);
