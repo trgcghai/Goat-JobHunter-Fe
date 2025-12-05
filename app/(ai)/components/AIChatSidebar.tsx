@@ -67,7 +67,7 @@ export function AIChatSidebar() {
           >
             <Menu className="w-5 h-5" />
           </Button>
-          {open && (
+          {open && user && isSignedIn && (
             <Button
               variant="ghost"
               size="icon"
@@ -97,7 +97,7 @@ export function AIChatSidebar() {
 
       <SidebarContent className="px-2">
         <SidebarGroup>
-          {open ? (
+          {open && (
             <div className="space-y-2">
               {isLoading && <LoaderSpin />}
               {isError && <ErrorMessage
@@ -122,7 +122,8 @@ export function AIChatSidebar() {
                 isLoading={isPinning || isUnpinning}
               />
             </div>
-          ) : (
+          )}
+          {user && isSignedIn &&
             <div className="flex flex-col items-center gap-2">
               <Button
                 variant="ghost"
@@ -133,7 +134,7 @@ export function AIChatSidebar() {
                 <SquarePen className="w-5 h-5" />
               </Button>
             </div>
-          )}
+          }
         </SidebarGroup>
       </SidebarContent>
 
