@@ -111,8 +111,8 @@ export const userColumns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       const enabled = row.getValue("enabled") as boolean;
       return (
-        <Badge variant={enabled ? "default" : "secondary"}>
-          {enabled ? "Đã kích hoạt" : "Chưa kích hoạt"}
+        <Badge variant={enabled ? "default" : "destructive"}>
+          {enabled ? "Đã kích hoạt" : "Đang vô hiệu hóa"}
         </Badge>
       );
     }

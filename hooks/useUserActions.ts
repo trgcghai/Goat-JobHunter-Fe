@@ -15,7 +15,7 @@ export default function useUserActions() {
       return;
     }
     try {
-      await activateMutate(userIds).unwrap();
+      await activateMutate({ userIds }).unwrap();
       toast.success("Kích hoạt người dùng thành công.");
     } catch (error) {
       console.error(error);
@@ -29,7 +29,7 @@ export default function useUserActions() {
       return;
     }
     try {
-      await deactivateMutate(userIds).unwrap();
+      await deactivateMutate({ userIds }).unwrap();
       toast.success("Vô hiệu hóa người dùng thành công.");
     } catch (error) {
       console.error(error);
