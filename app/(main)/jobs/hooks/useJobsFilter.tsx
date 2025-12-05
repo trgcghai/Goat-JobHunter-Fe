@@ -2,6 +2,7 @@ import { useFetchJobsAvailableQuery } from "@/services/job/jobApi";
 import { useGetSkillsQuery } from "@/services/skill/skillApi";
 import { debounce } from "lodash";
 import { useCallback, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export interface JobFilters {
   location?: string[];
@@ -22,6 +23,8 @@ export const useJobsFilter = (options?: UseJobsFilterOptions) => {
     itemsPerPage = 10,
     initialFilters = {},
   } = options || {};
+
+  const router = useRouter()
 
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [filters, setFilters] = useState<JobFilters>(initialFilters);
@@ -123,10 +126,17 @@ export const useJobsFilter = (options?: UseJobsFilterOptions) => {
   };
 
   const resetFilters = () => {
-    setFilters(initialFilters);
+    setFilters({
+      level: [],
+      skills: [],
+      location: [],
+      workingType: [],
+    });
     setCurrentPage(1);
     setSkillInputValue("");
     setDebouncedSkillInput("");
+
+    router.push("/jobs")
   };
 
   // Pagination handlers

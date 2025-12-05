@@ -28,12 +28,20 @@ export default function JobCard({
     const params = new URLSearchParams();
     params.set("level", level);
     router.push(`/jobs?${params.toString()}`);
+
+    if (onLevelClick) {
+      onLevelClick(level);
+    }
   };
 
   const handleWorkingTypeClick = (workingType: string) => {
     const params = new URLSearchParams();
     params.set("workingType", workingType);
     router.push(`/jobs?${params.toString()}`);
+
+    if (onWorkingTypeClick) {
+      onWorkingTypeClick(workingType);
+    }
   };
 
   const { handleToggleSaveJob } = useJobActions();
@@ -52,7 +60,7 @@ export default function JobCard({
         isSaved={isSaved}
         handleSaveJob={handleSaveJob}
         onLevelClick={onLevelClick ? onLevelClick : handleLevelClick}
-        onWorkingTypeClick={onWorkingTypeClick ? onWorkingTypeClick : handleWorkingTypeClick}
+        onWorkingTypeClick={handleWorkingTypeClick}
       />
     );
   }
