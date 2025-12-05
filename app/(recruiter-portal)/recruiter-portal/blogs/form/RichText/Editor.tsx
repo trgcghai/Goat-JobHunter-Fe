@@ -7,54 +7,66 @@ interface RichTextEditorProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  allowImage?: boolean;
 }
 
 export default function RichTextEditor({
   value,
   onChange,
   placeholder = "Nhập nội dung...",
+  allowImage = true,
 }: RichTextEditorProps) {
   const quillRef = useRef<ReactQuill>(null);
   const [showImageModal, setShowImageModal] = useState(false);
 
   const imageHandler = useCallback(() => {
+    if (!allowImage) return;
     setShowImageModal(true);
-  }, []);
+  }, [allowImage]);
 
-  const modules = useMemo(
-    () => ({
+  const modules = useMemo(() => {
+    const toolbarContainer = [
+      [{ header: [1, 2, 3, 4, 5, false] }],
+      ["bold", "italic", "underline", "strike"],
+      [{ color: [] }, { background: [] }],
+      [{ align: [] }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["clean"],
+      ["link"],
+    ];
+
+    if (allowImage) {
+      toolbarContainer.push(["image"]);
+    }
+
+    return {
       toolbar: {
-        container: [
-          [{ header: [1, 2, 3, 4, 5, false] }],
-          ["bold", "italic", "underline", "strike"],
-          [{ color: [] }, { background: [] }],
-          [{ align: [] }],
-          [{ list: "ordered" }, { list: "bullet" }],
-          ["clean"],
-          ["link"],
-          ["image"],
-        ],
-        handlers: {
-          image: imageHandler,
-        },
+        container: toolbarContainer,
+        handlers: allowImage ? { image: imageHandler } : {},
       },
-    }),
-    [imageHandler],
-  );
+    };
+  }, [allowImage, imageHandler]);
 
-  const formats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "color",
-    "background",
-    "align",
-    "list",
-    "image",
-    "link",
-  ];
+  const formats = useMemo(() => {
+    const baseFormats = [
+      "header",
+      "bold",
+      "italic",
+      "underline",
+      "strike",
+      "color",
+      "background",
+      "align",
+      "list",
+      "link",
+    ];
+
+    if (allowImage) {
+      baseFormats.push("image");
+    }
+
+    return baseFormats;
+  }, [allowImage]);
 
   const handleInsertImage = useCallback(() => {
     const editor = quillRef.current?.getEditor();
@@ -79,11 +91,13 @@ export default function RichTextEditor({
         />
       </div>
 
-      <ImageInsertModal
-        open={showImageModal}
-        getEditor={handleInsertImage}
-        onCancel={() => setShowImageModal(false)}
-      />
+      {allowImage && (
+        <ImageInsertModal
+          open={showImageModal}
+          getEditor={handleInsertImage}
+          onCancel={() => setShowImageModal(false)}
+        />
+      )}
     </>
   );
 }
