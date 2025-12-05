@@ -1,6 +1,7 @@
 "use client";
 
-import ApplicationActionsCell from "@/app/(recruiter-portal)/recruiter-portal/applications/components/ApplicationActionsCell";
+import ApplicationActionsCell
+  from "@/app/(recruiter-portal)/recruiter-portal/applications/components/ApplicationActionsCell";
 import { DataTableColumnHeader } from "@/components/dataTable/DataTableColumnHeader";
 import { Badge } from "@/components/ui/badge";
 import { Application } from "@/types/model";
@@ -8,6 +9,7 @@ import { formatDate } from "@/utils/formatDate";
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { capitalize } from "lodash";
+import { ApplicationStatus } from "@/types/enum";
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -27,23 +29,51 @@ export const applicationColumns: ColumnDef<Application>[] = [
     id: "select",
     enableSorting: false,
     enableHiding: false,
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
+
+    header: ({ table }) => {
+      const rows = table.getRowModel().rows;
+
+      // Chỉ lấy rows pending
+      const pendingRows = rows.filter(
+        (r) => r.original.status === ApplicationStatus.PENDING
+      );
+
+      // Kiểm tra pending rows có đang được chọn hết không,
+      // nếu table hiện tại không có pending rows thì select all sẽ không được chọn
+      const allPendingSelected =
+        pendingRows.length > 0 &&
+        pendingRows.every((r) => r.getIsSelected());
+
+      // custom toggle chỉ áp dụng cho pending rows
+      const toggle = (checked: boolean) => {
+        pendingRows.forEach((row) => row.toggleSelected(checked));
+      };
+
+      return (
+        <Checkbox
+          checked={allPendingSelected}
+          onCheckedChange={(value) => toggle(!!value)}
+          aria-label="Select all"
+        />
+      );
+    },
+
+    cell: ({ row }) => {
+      const disabled = row.original.status !== ApplicationStatus.PENDING;
+
+      return (
+        <Checkbox
+          disabled={disabled}
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => {
+            // Không cho chọn nếu không pending
+            if (!disabled) row.toggleSelected(!!value);
+          }}
+          aria-label="Select row"
+          className={"cursor-pointer"}
+        />
+      );
+    },
   },
   {
     accessorKey: "user.fullName",
