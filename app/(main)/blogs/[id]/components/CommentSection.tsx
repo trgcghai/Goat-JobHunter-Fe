@@ -4,13 +4,13 @@ import CommentItem from "@/app/(main)/blogs/[id]/components/CommentItem";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, User } from "lucide-react";
+import { Send } from "lucide-react";
 import { useState } from "react";
 import LoaderSpin from "@/components/common/LoaderSpin";
 import ErrorMessage from "@/components/common/ErrorMessage";
 import { NestedComment } from "@/app/(main)/blogs/[id]/components/utils/formatComments";
 import { useUser } from "@/hooks/useUser";
-import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface CommentSectionProps {
   totalComments: number;
@@ -33,9 +33,6 @@ export default function CommentSection({
 }: CommentSectionProps) {
   const { user } = useUser();
   const [comment, setComment] = useState("");
-  const [imageError, setImageError] = useState(false);
-
-  const hasAvatar = user?.avatar && !imageError;
 
   const handleComment = async () => {
     await onComment(comment);
@@ -66,28 +63,17 @@ export default function CommentSection({
 
       <div className="mb-8">
         <div className="flex gap-4">
-          {hasAvatar ? (
-            <div className="h-10 w-10 rounded-full overflow-hidden bg-muted flex items-center justify-center">
-              <Image
-                src={user.avatar}
-                alt={user.fullName || "User"}
-                width={40}
-                height={40}
-                className="h-full w-full object-cover"
-                onError={() => setImageError(true)}
-              />
-            </div>
-          ) : (
-            <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
-              <User className="h-5 w-5 text-muted-foreground" />
-            </div>
-          )}
+          <Avatar className="h-12 w-12 flex-shrink-0 border-2">
+            <AvatarImage src={user?.avatar || "/placeholder.svg"} alt="Current User" />
+            <AvatarFallback>{user?.fullName?.charAt(0) || user?.username?.charAt(0) || user?.contact.email.charAt(0) || "U"}</AvatarFallback>
+          </Avatar>
           <div className="flex-1 flex gap-2">
             <Textarea
               placeholder="Viết bình luận của bạn..."
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              className="min-h-20 rounded-xl"
+              className="min-h-20 rounded-xl resize-none"
+              rows={3}
             />
             <Button
               className="rounded-xl"
@@ -100,7 +86,7 @@ export default function CommentSection({
         </div>
       </div>
 
-      <div className="space-y-6 pr-6">
+      <div className="space-y-6">
         {initialComments.map((comment) => (
           <CommentItem
             key={comment.commentId}

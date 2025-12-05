@@ -13,7 +13,7 @@ import ConfirmDialog from "@/components/common/ConfirmDialog";
 interface CommentItemProps {
   comment: NestedComment;
   onReply: (replyTo: number, comment: string) => void;
-  onDelete: (commentId: number) => void
+  onDelete: (commentId: number) => void;
 }
 
 export default function CommentItem({ comment, onReply, onDelete }: CommentItemProps) {
@@ -22,9 +22,12 @@ export default function CommentItem({ comment, onReply, onDelete }: CommentItemP
   const [replyContent, setReplyContent] = useState("");
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  // Calculate margin based on level (max 3 levels)
-  const marginClass = useMemo(() => comment.level > 0 ? "ml-14" : "", [comment.level]);
-  const showReplyButton = useMemo(() => comment.level < 2, [comment.level]); // Only show reply for levels 0 and 1
+  // Calculate margin based on level (max 3 levels: 0, 1, 2)
+  const marginClass = useMemo(() => {
+    if (comment.level === 0) return "";
+    if (comment.level <= 2) return "ml-14";
+    return ""; // Level 3+ has no margin
+  }, [comment.level]);
 
   const author = useMemo(() => {
     return comment.commentedBy.fullName || comment.commentedBy.username || "Người dùng ẩn danh";
@@ -44,7 +47,7 @@ export default function CommentItem({ comment, onReply, onDelete }: CommentItemP
     <>
       <div className={`space-y-4 ${marginClass}`}>
         <div className="flex gap-4">
-          <Avatar className="h-10 w-10 flex-shrink-0">
+          <Avatar className="h-12 w-12 flex-shrink-0 border-2">
             <AvatarImage
               src={comment.commentedBy.avatar || "/placeholder.svg"}
               alt={author} />
@@ -71,35 +74,32 @@ export default function CommentItem({ comment, onReply, onDelete }: CommentItemP
               <p className="text-foreground break-words">{comment.comment}</p>
             </div>
 
-            {showReplyButton && (
-              <div className="flex items-center justify-between gap-4 mt-2 ml-4">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-xs text-muted-foreground hover:text-primary"
-                  onClick={() => setIsReplying(!isReplying)}
-                >
-                  <CornerDownRight className="h-3 w-3 mr-1" />
-                  Trả lời
-                </Button>
-
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={`text-xs text-destructive hover:text-destructive ${user && user?.userId === comment.commentedBy.userId ? "block" : "hidden"}`}
-                  onClick={() => setIsDeleteOpen(true)}
-                >
-                  <Trash2 className={"h-3 w-3"} />
-                </Button>
-              </div>
-            )}
+            <div className="flex items-center justify-between gap-4 mt-2 ml-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-xs text-muted-foreground hover:text-primary"
+                onClick={() => setIsReplying(!isReplying)}
+              >
+                <CornerDownRight className="h-3 w-3 mr-1" />
+                Trả lời
+              </Button>
+              <Button
+              variant="ghost"
+              size="sm"
+              className={`text-xs text-destructive hover:text-destructive ${user && user?.userId === comment.commentedBy.userId ? "block" : "hidden"}`}
+              onClick={() => setIsDeleteOpen(true)}
+            >
+              <Trash2 className={"h-3 w-3"} />
+            </Button>
+            </div>
 
             {isReplying && (
               <div className="mt-4 ml-4">
                 <div className="mb-4 flex items-center justify-between bg-primary/5 p-3 rounded-lg">
-                              <span className="text-sm text-muted-foreground">
-                                  Đang trả lời {author || "bình luận này"}
-                              </span>
+                  <span className="text-sm text-muted-foreground">
+                    Đang trả lời {author || "bình luận này"}
+                  </span>
                   <Button
                     variant="ghost"
                     size="icon"
@@ -113,9 +113,9 @@ export default function CommentItem({ comment, onReply, onDelete }: CommentItemP
                   </Button>
                 </div>
                 <div className="flex gap-4">
-                  <Avatar className="h-8 w-8 flex-shrink-0">
-                    <AvatarImage src="/placeholder.svg" alt="Current User" />
-                    <AvatarFallback>U</AvatarFallback>
+                  <Avatar className="h-12 w-12 flex-shrink-0 border-2">
+                    <AvatarImage src={user?.avatar || "/placeholder.svg"} alt="Current User" />
+                    <AvatarFallback>{user?.fullName?.charAt(0) || user?.username?.charAt(0) || user?.contact.email.charAt(0) || "U"}</AvatarFallback>
                   </Avatar>
                   <div className="flex-1 flex gap-2">
                     <Textarea
