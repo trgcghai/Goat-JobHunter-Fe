@@ -1,14 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAiChatMutation } from "@/services/ai/conversationApi";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
-
-export interface Message {
-  id: string;
-  content: string;
-  role: "user" | "assistant";
-  timestamp: number;
-}
+import { toast } from "sonner";
+import { MessageType } from "@/types/model";
 
 marked.setOptions({
   breaks: true,
@@ -18,12 +13,48 @@ marked.setOptions({
 export function useAIChat() {
   const [inputMessage, setInputMessage] = useState("");
   const [chat, { isLoading }] = useAiChatMutation();
+  const [messages, setMessages] = useState<MessageType[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
+
+  const handleChat = async () => {
+    try {
+      if (!inputMessage.trim()) {
+        toast.error("Vui lòng nhập tin nhắn.");
+        return;
+      }
+
+      setMessages(prevMessages => [
+        ...prevMessages,
+        {
+          messageId: new Date().getDate() + Math.floor(Math.random() * 1000000),
+          content: inputMessage,
+          role: "User",
+          createdAt: new Date().toISOString()
+        }
+      ]);
+
+      const result = await chat(inputMessage).unwrap();
+
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          messageId: new Date().getDate() + Math.floor(Math.random() * 1000000),
+          content: result,
+          role: "Ai",
+          createdAt: new Date().toISOString()
+        }
+      ]);
+
+    } catch (error) {
+      console.error("Error during AI chat:", error);
+      return;
+    }
+  };
 
 
   const parseMarkdown = (content: string) => {
@@ -35,8 +66,13 @@ export function useAIChat() {
   return {
     inputMessage,
     setInputMessage,
-    isLoading,
+
     messagesEndRef,
-    parseMarkdown
+    parseMarkdown,
+
+    isLoading,
+    handleChat,
+
+    messages
   };
 }

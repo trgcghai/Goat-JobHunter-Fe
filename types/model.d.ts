@@ -236,7 +236,7 @@ export type Conversation = {
   updatedBy: string;
 }
 
-export type Message = {
+export type MessageType = {
   messageId: number;
   role: "User" | "Ai";
   content: string;

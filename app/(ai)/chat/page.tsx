@@ -6,28 +6,27 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAIChat } from "@/hooks/useAIChat";
-import { Message } from "@/types/model";
 
 export default function AIChatPage() {
   const {
     inputMessage,
     setInputMessage,
-    isLoading,
+
     messagesEndRef,
-    parseMarkdown
+    parseMarkdown,
+
+    isLoading,
+    handleChat,
+
+    messages
   } = useAIChat();
 
   const handleKeyDown = async (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
+      await handleChat()
     }
   };
-
-  const handleSendMessage = async () => {
-    console.log("Send message:", inputMessage);
-  };
-
-  const messages: Message[] = [];
 
   return (
     <div className="h-full flex flex-col bg-gray-100">
@@ -84,10 +83,10 @@ export default function AIChatPage() {
         )}
       </ScrollArea>
 
-      <div className="border-t py-4 bg-background">
+      <div className="py-4">
         <div className="max-w-4xl mx-auto">
           <div
-            className="flex items-center gap-3 bg-card rounded-2xl border border-border shadow-lg p-2 transition-all hover:shadow-xl focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
+            className="flex items-center gap-3 bg-card rounded-2xl border border-border p-1 transition-all hover:shadow-xl focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 shadow-lg">
             <Input
               placeholder="Nhập câu hỏi của bạn..."
               value={inputMessage}
@@ -100,7 +99,7 @@ export default function AIChatPage() {
               size="icon"
               variant="ghost"
               className="h-10 w-10 rounded-xl shrink-0"
-              onClick={handleSendMessage}
+              onClick={handleChat}
               disabled={isLoading || !inputMessage.trim()}
             >
               {isLoading ? (

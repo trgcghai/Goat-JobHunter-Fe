@@ -18,6 +18,13 @@ import ErrorMessage from "@/components/common/ErrorMessage";
 import { useUser } from "@/hooks/useUser";
 import { useConversationActions } from "@/hooks/useConversationActions";
 import ConversationList from "@/app/(ai)/components/ConversationList";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+} from "@/components/ui/empty";
+import Link from "next/link";
 
 export function AIChatSidebar() {
   const { open, setOpen } = useSidebar();
@@ -42,8 +49,6 @@ export function AIChatSidebar() {
       conv.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [conversations, searchQuery]);
-
-  console.log(filteredConversations);
 
   const pinnedConversations = filteredConversations.filter((conv) => conv.pinned);
   const unpinnedConversations = filteredConversations.filter((conv) => !conv.pinned);
@@ -135,7 +140,26 @@ export function AIChatSidebar() {
               </Button>
             </div>
           }
+
         </SidebarGroup>
+
+        {open && (!user || !isSignedIn) && (
+          <Empty>
+            <EmptyHeader>
+              <EmptyDescription>
+                Vui lòng đăng nhập để xem lịch sử trò chuyện
+              </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+              <Link href={"/signin"}>
+                <Button variant={"default"} className={"rounded-xl text-xs"} size={"sm"}>
+                  Đăng nhập
+                </Button>
+              </Link>
+            </EmptyContent>
+          </Empty>
+        )}
+
       </SidebarContent>
 
       <SidebarFooter />
