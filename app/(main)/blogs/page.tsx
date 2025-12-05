@@ -12,8 +12,16 @@ import {
 } from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Loader2 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo } from "react";
 
 export default function BlogPage() {
+
+  const searchParams = useSearchParams()
+  const tagsFromUrl = useMemo(
+    () => (searchParams.get("tags") ? [searchParams.get("tags") as string] : []),
+    [searchParams]
+  );
   const {
     blogs,
     isLoading,
@@ -36,12 +44,19 @@ export default function BlogPage() {
     itemsPerPage: 10,
     initialFilters: {
       title: "",
-      tags: [],
+      tags: tagsFromUrl
     },
   });
 
+  // Sync filters with URL params
+  useEffect(() => {
+    if (tagsFromUrl.length > 0 && JSON.stringify(filters.tags) !== JSON.stringify(tagsFromUrl)) {
+      handleFilterChange({ tags: tagsFromUrl });
+    }
+  }, [tagsFromUrl, filters.tags, handleFilterChange]);
+
   return (
-    <>
+    <div>
       <div className="mb-8">
         <BlogFilter
           filters={filters}
@@ -132,6 +147,6 @@ export default function BlogPage() {
           )}
         </>
       )}
-    </>
+    </div>
   );
 }

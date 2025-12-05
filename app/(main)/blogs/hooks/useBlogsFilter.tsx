@@ -1,11 +1,10 @@
 import { useFetchAvailableBlogsQuery } from "@/services/blog/blogApi";
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export interface BlogFilters {
   title?: string;
   tags?: string[];
-  status?: string;
-  authorId?: string;
 }
 
 export interface UseBlogsFilterOptions {
@@ -20,6 +19,8 @@ export const useBlogsFilter = (options?: UseBlogsFilterOptions) => {
     itemsPerPage = 10,
     initialFilters = {},
   } = options || {};
+
+  const router = useRouter()
 
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [filters, setFilters] = useState<BlogFilters>(initialFilters);
@@ -38,14 +39,6 @@ export const useBlogsFilter = (options?: UseBlogsFilterOptions) => {
 
     if (filters.tags && filters.tags.length > 0) {
       params.tags = filters.tags; // API accepts string[]
-    }
-
-    if (filters.status) {
-      params.status = filters.status;
-    }
-
-    if (filters.authorId) {
-      params.authorId = filters.authorId;
     }
 
     return params;
@@ -79,8 +72,12 @@ export const useBlogsFilter = (options?: UseBlogsFilterOptions) => {
   };
 
   const resetFilters = () => {
-    setFilters(initialFilters);
+    setFilters({
+      title: "",
+      tags: [],
+    });
     setCurrentPage(1);
+    router.push("/blogs")
   };
 
   // Pagination handlers

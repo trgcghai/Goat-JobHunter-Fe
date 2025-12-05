@@ -70,9 +70,7 @@ export const blogApi = api.injectEndpoints({
           params,
           filterFields: ["title", "content", "authorId"],
           textSearchFields: ["title", "content"],
-          nestedArrayFields: {
-            tags: "tags.name"
-          },
+          arrayFields: ["tags"],
           defaultSort: "createdAt,desc",
           sortableFields: ["title", "createdAt", "updatedAt"]
         });
@@ -97,9 +95,7 @@ export const blogApi = api.injectEndpoints({
           params: modifiedParams,
           filterFields: ["title", "content", "authorId"],
           textSearchFields: ["title", "content"],
-          nestedArrayFields: {
-            tags: "tags.name"
-          },
+          arrayFields: ["tags"],
           defaultSort: "activity.totalReads,desc",
           sortableFields: [
             "title",
@@ -159,6 +155,7 @@ export const blogApi = api.injectEndpoints({
           params,
           filterFields: ["title", "draft"],
           textSearchFields: ["title"],
+          arrayFields: ["tags"],
           defaultSort: "createdAt,updatedAt,desc"
         });
 

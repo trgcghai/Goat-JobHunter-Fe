@@ -7,6 +7,7 @@ interface BuildQueryOptions {
   textSearchFields?: string[]; // Các field dùng LIKE search
   nestedFields?: Record<string, string>; // Map field -> nested path, vd: { jobTitle: "job.title" }
   nestedArrayFields?: Record<string, string>; // Map field -> nested path cho array, vd: { skills: "skills.name" }
+  arrayFields?: string[]; // Các field là array không phải object nested
   defaultSort?: string; // Default sort, vd: "updatedAt,desc"
   sortableFields?: string[]; // Các field có thể sort
 }
@@ -111,6 +112,29 @@ export const buildSpringQuery = (
       const normalizedValue =
         typeof value === "boolean" ? (value ? "true" : "false") : value;
       filterParts.push(sfEqual(nestedPath, normalizedValue as string | number).toString());
+    }
+
+    delete clone[field];
+  }
+
+  // 4. Xử lý array fields không nested
+  const { arrayFields = [] } = options;
+
+  for (const field of arrayFields) {
+    const value = clone[field];
+
+    if (value === undefined || value === null || value === "") {
+      continue;
+    }
+
+    if (Array.isArray(value) && value.length > 0) {
+      filterParts.push(sfIn(field, value).toString());
+    } else if (typeof value === "string") {
+      // Single value - có thể là comma-separated string
+      const values = value.split(",").map(v => v.trim()).filter(Boolean);
+      if (values.length > 0) {
+        filterParts.push(sfIn(field, values).toString());
+      }
     }
 
     delete clone[field];
