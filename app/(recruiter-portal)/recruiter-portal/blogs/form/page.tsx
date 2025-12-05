@@ -63,10 +63,15 @@ export default function BlogFormPage() {
       form.setValue("content", blog.content);
       form.setValue("tags", blog.tags);
       form.setValue("draft", blog.draft || false);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setBannerUrl(blog.banner || "");
     }
   }, [form, blog]);
+
+  useEffect(() => {
+    if (blog && blog.banner) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setBannerUrl(blog.banner);
+    }
+  }, [blog]);
 
   const handleUploadBanner = async (): Promise<string> => {
     if (!selectedFile) return bannerUrl;

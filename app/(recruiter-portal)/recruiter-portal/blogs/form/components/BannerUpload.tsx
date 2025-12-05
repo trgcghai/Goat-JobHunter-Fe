@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dropzone,
   DropzoneEmptyState,
@@ -24,6 +24,11 @@ export default function BannerUpload({
 }: BannerUploadProps) {
   const [preview, setPreview] = useState<string | null>(value || null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (value) setPreview(value);
+  }, [value]);
 
   const handleDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
