@@ -9,6 +9,7 @@ import { useMemo, useState } from "react";
 import { NestedComment } from "@/app/(main)/blogs/[id]/components/utils/formatComments";
 import { useUser } from "@/hooks/useUser";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
+import CommentInput from "@/app/(main)/blogs/[id]/components/CommentInput";
 
 interface CommentItemProps {
   comment: NestedComment;
@@ -85,13 +86,13 @@ export default function CommentItem({ comment, onReply, onDelete }: CommentItemP
                 Trả lời
               </Button>
               <Button
-              variant="ghost"
-              size="sm"
-              className={`text-xs text-destructive hover:text-destructive ${user && user?.userId === comment.commentedBy.userId ? "block" : "hidden"}`}
-              onClick={() => setIsDeleteOpen(true)}
-            >
-              <Trash2 className={"h-3 w-3"} />
-            </Button>
+                variant="ghost"
+                size="sm"
+                className={`text-xs text-destructive hover:text-destructive ${user && user?.userId === comment.commentedBy.userId ? "block" : "hidden"}`}
+                onClick={() => setIsDeleteOpen(true)}
+              >
+                <Trash2 className={"h-3 w-3"} />
+              </Button>
             </div>
 
             {isReplying && (
@@ -112,27 +113,12 @@ export default function CommentItem({ comment, onReply, onDelete }: CommentItemP
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
-                <div className="flex gap-4">
-                  <Avatar className="h-12 w-12 flex-shrink-0 border-2">
-                    <AvatarImage src={user?.avatar || "/placeholder.svg"} alt="Current User" />
-                    <AvatarFallback>{user?.fullName?.charAt(0) || user?.username?.charAt(0) || user?.contact.email.charAt(0) || "U"}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 flex gap-2">
-                    <Textarea
-                      placeholder="Viết câu trả lời..."
-                      value={replyContent}
-                      onChange={(e) => setReplyContent(e.target.value)}
-                      className="min-h-20 rounded-xl"
-                      autoFocus />
-                    <Button
-                      className="rounded-xl"
-                      onClick={handleReply}
-                      disabled={!replyContent.trim()}
-                    >
-                      <Send className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
+                <CommentInput
+                  user={user}
+                  value={replyContent}
+                  onChange={setReplyContent}
+                  onSubmit={handleReply}
+                />
               </div>
             )}
           </div>
