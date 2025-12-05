@@ -118,7 +118,7 @@ export default function ProfileInfo() {
               </Label>
               <Input
                 id="dob"
-                value={formatDate(user?.dob) || "Chưa cập nhật"}
+                value={user?.dob ? formatDate(user?.dob) : "Chưa cập nhật"}
                 disabled
                 className="rounded-xl text-gray-800"
               />

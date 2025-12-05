@@ -28,9 +28,13 @@ const useSubscriberActions = (data?: UseSubscriberActionsProps) => {
     async (email: string, name: string, skillIds: number[]) => {
       try {
 
-        if (!email || !name) {
+        if (!email) {
           toast.error("Có lỗi xảy ra. Vui lòng đăng nhập lại.");
           return;
+        }
+
+        if (!name) {
+          toast.error("Vui lòng cập nhật họ và tên trước khi đăng ký.")
         }
 
         // user already has a subscriber, so we just need to update it
