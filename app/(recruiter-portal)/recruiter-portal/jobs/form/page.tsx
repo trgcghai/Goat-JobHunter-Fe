@@ -3,7 +3,7 @@
 import JobForm from "@/app/(recruiter-portal)/recruiter-portal/jobs/form/components/JobForm";
 import {
   JobFormData,
-  jobSchema,
+  jobSchema
 } from "@/app/(recruiter-portal)/recruiter-portal/jobs/form/components/schema";
 import LoaderSpin from "@/components/common/LoaderSpin";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { Level, WorkingType } from "@/types/enum";
 
 export default function JobFormPage() {
   const router = useRouter();
@@ -28,6 +29,7 @@ export default function JobFormPage() {
   const jobId = searchParams.get("jobId");
 
   const [inputValue, setInputValue] = useState<string>("");
+  const [isFormReady, setIsFormReady] = useState(false);
   const [debouncedInputValue, setDebouncedInputValue] = useState<string>("");
 
   const { handleCreateJob, handleUpdateJob, isCreating, isUpdating } =
@@ -37,9 +39,11 @@ export default function JobFormPage() {
   const {
     data: jobData,
     isLoading: isLoadingJob,
-    isError,
+    isFetching: isFetchingJob,
+    isSuccess,
+    isError
   } = useFetchJobByIdQuery(jobId!, {
-    skip: !jobId,
+    skip: !jobId
   });
 
   // Fetch skills from API
@@ -47,17 +51,17 @@ export default function JobFormPage() {
     {
       page: 1,
       size: 20,
-      name: debouncedInputValue,
+      name: debouncedInputValue
     },
     {
-      skip: !debouncedInputValue || debouncedInputValue.length < 2,
-    },
+      skip: !debouncedInputValue || debouncedInputValue.length < 2
+    }
   );
 
   // Fetch careers for career select options
   const { data: careersData } = useFetchCareersQuery({
     page: 1,
-    size: 100, // Lấy 100 ngành nghề
+    size: 100 // Lấy 100 ngành nghề
   });
 
   const job = useMemo(() => jobData?.data, [jobData]);
@@ -65,41 +69,52 @@ export default function JobFormPage() {
   const form = useForm<JobFormData>({
     resolver: zodResolver(jobSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      location: "",
-      salary: 0,
-      quantity: 1,
-      level: "",
-      workingType: "",
-      startDate: "",
-      endDate: "",
-      skills: [],
-      career: "",
-    },
+      title: job ? job.title : "",
+      description: job ? job.description : "",
+      location: job ? job.location : "",
+      salary: job ? job.salary : 0,
+      quantity: job ? job.quantity : 1,
+      level: job ? (job.level as Level) : Level.INTERN,
+      workingType: job ? (job.workingType as WorkingType) : WorkingType.FULLTIME,
+      startDate: job ? job.startDate.slice(0, 10) : "",
+      endDate: job ? job.endDate.slice(0, 10) : "",
+      skills: job ? job.skills.map((skill) => ({
+        skillId: skill.skillId,
+        name: skill.name
+      })) : [],
+      career: job && job.career ? String(job.career.careerId) : ""
+    }
   });
 
   useEffect(() => {
-    if (job) {
-      form.setValue("title", job.title);
-      form.setValue("description", job.description);
-      form.setValue("location", job.location);
-      form.setValue("salary", job.salary);
-      form.setValue("quantity", job.quantity);
-      form.setValue("level", job.level);
-      form.setValue("workingType", job.workingType);
-      form.setValue("startDate", job.startDate.slice(0, 10));
-      form.setValue("endDate", job.endDate.slice(0, 10));
-      form.setValue(
-        "skills",
-        job.skills.map((skill) => ({
-          skillId: skill.skillId,
-          name: skill.name,
-        })),
-      );
-      form.setValue("career", String(job.career?.careerId || ""));
+    // Chỉ khi:
+    // - Đang tạo mới (không có jobId) → sẵn sàng ngay
+    // - Hoặc đang edit và đã fetch xong job (có data hoặc lỗi)
+    if (!jobId || (jobId && (isSuccess || isError))) {
+      setIsFormReady(true);
     }
-  }, [form, job]);
+  }, [jobId, isSuccess, isError]);
+
+  useEffect(() => {
+    if (job && isSuccess) {
+      form.reset({
+        title: job.title,
+        description: job.description,
+        location: job.location,
+        salary: job.salary,
+        quantity: job.quantity,
+        level: job.level as Level,
+        workingType: job.workingType as WorkingType,
+        startDate: job.startDate.slice(0, 10),
+        endDate: job.endDate.slice(0, 10),
+        skills: job.skills.map((skill) => ({
+          skillId: skill.skillId,
+          name: skill.name
+        })),
+        career: job.career ? job.career.careerId.toString() : ""
+      });
+    }
+  }, [form, job, isSuccess]);
 
   // Convert API skills to options
   const skillOptions = useMemo<Option[]>(() => {
@@ -113,7 +128,7 @@ export default function JobFormPage() {
       .filter((skill) => !selectedSkillIds.includes(skill.skillId))
       .map((skill) => ({
         label: skill.name,
-        value: skill.skillId.toString(),
+        value: skill.skillId.toString()
       }));
   }, [skillsData, debouncedInputValue, form]);
 
@@ -121,7 +136,7 @@ export default function JobFormPage() {
     return (
       careersData?.data?.result.map((career) => ({
         label: career.name || "",
-        value: String(career.careerId), // Convert ID sang string cho Select value
+        value: String(career.careerId) // Convert ID sang string cho Select value
       })) || []
     );
   }, [careersData]);
@@ -132,7 +147,7 @@ export default function JobFormPage() {
     debounce((value: string) => {
       setDebouncedInputValue(value);
     }, 500),
-    [],
+    []
   );
 
   const handleInputValueChange = (value: string) => {
@@ -141,11 +156,9 @@ export default function JobFormPage() {
   };
 
   const onSubmit = async (data: JobFormData) => {
-    console.log("Submitted data: ", data);
-
     const submitData = {
       ...data,
-      skillIds: data.skills.map((skill) => skill.skillId),
+      skillIds: data.skills.map((skill) => skill.skillId)
     };
 
     if (job) {
@@ -158,7 +171,7 @@ export default function JobFormPage() {
     router.push("/recruiter-portal/jobs");
   };
 
-  if (isLoadingJob) {
+  if (isLoadingJob || isFetchingJob) {
     return <LoaderSpin />;
   }
 
@@ -204,18 +217,22 @@ export default function JobFormPage() {
         </p>
       </div>
 
-      <JobForm
-        form={form}
-        onSubmit={onSubmit}
-        skillOptions={skillOptions}
-        careerOptions={careerOptions}
-        inputValue={inputValue}
-        handleInputValueChange={handleInputValueChange}
-        isFetchingSkills={isFetchingSkills}
-        isCreating={isCreating}
-        isUpdating={isUpdating}
-        isEditMode={!!job}
-      />
+      {!isFormReady && <LoaderSpin />}
+
+      {isFormReady &&
+        <JobForm
+          form={form}
+          onSubmit={onSubmit}
+          skillOptions={skillOptions}
+          careerOptions={careerOptions}
+          inputValue={inputValue}
+          handleInputValueChange={handleInputValueChange}
+          isFetchingSkills={isFetchingSkills}
+          isCreating={isCreating}
+          isUpdating={isUpdating}
+          isEditMode={!!job}
+        />
+      }
     </div>
   );
 }

@@ -33,8 +33,6 @@ export default function NotificationPopup() {
 
   const { handleMarkAllAsRead, handleMarkAsRead } = useNotificationActions();
 
-  console.log(notifications);
-
   return (
     <Popover>
       <PopoverTrigger asChild>

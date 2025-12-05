@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Level, WorkingType } from "@/types/enum";
 
 export const jobSchema = z
   .object({
@@ -25,8 +26,8 @@ export const jobSchema = z
         error: "Số lượng phải là số",
       })
       .min(1, "Số lượng phải lớn hơn 0"),
-    level: z.string().min(1, "Cấp độ không được để trống"),
-    workingType: z.string().min(1, "Hình thức làm việc không được để trống"),
+    level: z.union([z.enum(Level), z.string()]),
+    workingType: z.union([z.enum(WorkingType), z.string()]),
     startDate: z.string().min(1, "Ngày bắt đầu không được để trống"),
     endDate: z.string().min(1, "Ngày kết thúc không được để trống"),
     skills: z

@@ -130,7 +130,6 @@ const JobForm = ({
                       <Select
                         value={field.value}
                         onValueChange={field.onChange}
-                        defaultValue={field.value}
                       >
                         <FormControl>
                           <SelectTrigger className="rounded-xl w-full">
@@ -263,7 +262,6 @@ const JobForm = ({
                   <Select
                     onValueChange={field.onChange}
                     value={field.value}
-                    defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger className="rounded-xl w-full">
