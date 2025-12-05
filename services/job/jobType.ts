@@ -57,6 +57,7 @@ export type FetchSuitableApplicantsRequest = {
   page?: number;
   size?: number;
   fullName?: string;
+  email?: string;
 };
 
 // Response Types

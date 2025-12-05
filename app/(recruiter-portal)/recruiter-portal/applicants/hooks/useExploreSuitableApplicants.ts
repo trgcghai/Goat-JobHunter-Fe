@@ -4,8 +4,9 @@ import { useAppDispatch } from "@/lib/hooks";
 import { clearJobId, setJobId } from "@/lib/features/sendMailSlice";
 
 export interface SuitableApplicantsFilters {
-  jobId: number;
+  jobId?: number;
   fullName?: string;
+  email?: string;
 }
 
 const useExploreSuitableApplicants = () => {
@@ -13,7 +14,8 @@ const useExploreSuitableApplicants = () => {
   const [size, setSize] = useState(10);
   const [filters, setFilters] = useState<SuitableApplicantsFilters>({
     jobId: 0,
-    fullName: ""
+    fullName: "",
+    email: "",
   });
   const dispatch = useAppDispatch();
 
@@ -35,6 +37,7 @@ const useExploreSuitableApplicants = () => {
 
     if (filters.jobId) params.jobId = filters.jobId;
     if (filters.fullName) params.fullName = filters.fullName;
+    if (filters.email) params.email = filters.email;
 
     return params;
   }, [page, size, filters]);
@@ -45,7 +48,7 @@ const useExploreSuitableApplicants = () => {
     isFetching,
     error,
     isError
-  } = useFetchApplicantsSuitableForJobQuery(queryParams, { skip: !filters.jobId });
+  } = useFetchApplicantsSuitableForJobQuery(queryParams);
 
   const applicants = data?.data?.result || [];
   const meta = data?.data?.meta || {
@@ -69,14 +72,16 @@ const useExploreSuitableApplicants = () => {
     if (filters.jobId && !filters.fullName) {
       setFilters({
         jobId: 0,
-        fullName: ""
+        fullName: "",
+        email: "",
       })
       return;
     }
 
     setFilters((prev) => ({
       ...prev,
-      fullName: ""
+      fullName: "",
+      email: "",
     }));
     setPage(1);
   };

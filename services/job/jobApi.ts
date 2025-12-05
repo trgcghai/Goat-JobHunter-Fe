@@ -255,8 +255,9 @@ export const jobApi = api.injectEndpoints({
       query: ({ jobId, ...params }) => {
         const { params: queryParams } = buildSpringQuery({
           params,
-          filterFields: ["fullName"],
-          textSearchFields: ["fullName"]
+          filterFields: ["fullName", "email"],
+          textSearchFields: ["fullName", "email"],
+          defaultSort: "createdAt,desc",
         });
 
         return {

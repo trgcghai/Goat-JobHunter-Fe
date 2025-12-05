@@ -28,6 +28,7 @@ const SuitableApplicantFilter = ({
                                    onResetFilters
                                  }: SuitableApplicantFilterProps) => {
   const [fullName, setFullName] = useState(filters.fullName || "");
+  const [email, setEmail] = useState(filters.email || "");
 
   const { jobs } = useJobManagement({ initialSize: 200 });
 
@@ -36,6 +37,15 @@ const SuitableApplicantFilter = ({
   const debouncedFullName = useCallback(
     debounce((value: string) => {
       onFilterChange({ fullName: value });
+    }, 500),
+    []
+  );
+
+  // Debounce search for applicant email
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedEmail = useCallback(
+    debounce((value: string) => {
+      onFilterChange({ email: value });
     }, 500),
     []
   );
@@ -52,9 +62,15 @@ const SuitableApplicantFilter = ({
     debouncedFullName(value);
   };
 
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setEmail(value);
+    debouncedEmail(value);
+  };
+
   return (
     <div className="space-y-4 mb-6">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         <div className="relative">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
@@ -62,6 +78,16 @@ const SuitableApplicantFilter = ({
             className="pl-9 rounded-xl"
             value={fullName}
             onChange={handleFullNameChange}
+          />
+        </div>
+
+        <div className="relative">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Tìm theo tên email ứng viên..."
+            className="pl-9 rounded-xl"
+            value={email}
+            onChange={handleEmailChange}
           />
         </div>
 
