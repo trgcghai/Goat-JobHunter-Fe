@@ -7,7 +7,7 @@ import { useBlogConfirmDialog } from "@/app/(recruiter-portal)/recruiter-portal/
 import useBlogActions from "@/hooks/useBlogActions";
 import { useUser } from "@/hooks/useUser";
 import DisableBlogsDialog from "@/components/management/blogs/DisableBlogsDialog";
-import { HasAdmin } from "@/components/common/HasRole";
+import { HasAdmin, HasRecruiter } from "@/components/common/HasRole";
 
 interface BlogActionsProps {
   selectedCount: number;
@@ -15,9 +15,9 @@ interface BlogActionsProps {
 }
 
 export default function BlogActions({
-  selectedCount,
-  selectedIds
-}: BlogActionsProps) {
+                                      selectedCount,
+                                      selectedIds
+                                    }: BlogActionsProps) {
   const {
     handleDeleteBlogs,
     handleDisableBlogs,
@@ -73,15 +73,17 @@ export default function BlogActions({
               Ẩn
             </Button>
           </HasAdmin>
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={() => openDialog("delete", selectedIds)}
-            className="gap-2 rounded-xl"
-          >
-            <Trash2 className="h-4 w-4" />
-            Xóa
-          </Button>
+          <HasRecruiter user={user}>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => openDialog("delete", selectedIds)}
+              className="gap-2 rounded-xl"
+            >
+              <Trash2 className="h-4 w-4" />
+              Xóa
+            </Button>
+          </HasRecruiter>
         </div>
       </div>
 
