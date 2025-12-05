@@ -1,9 +1,9 @@
 import React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
 import { User } from "@/types/model";
+import CommentAvatar from "@/app/(main)/blogs/[id]/components/utils/CommentAvatar";
 
 interface Props {
   user: User | null;
@@ -20,10 +20,11 @@ const CommentInput = ({
 }: Props) => {
   return (
     <div className="flex gap-4">
-      <Avatar className="h-12 w-12 flex-shrink-0 border-2">
-        <AvatarImage src={user?.avatar || "/placeholder.svg"} alt="Current User" />
-        <AvatarFallback>{user?.fullName?.charAt(0) || user?.username?.charAt(0) || user?.contact.email.charAt(0) || "U"}</AvatarFallback>
-      </Avatar>
+      <CommentAvatar
+        src={user?.avatar || "/placeholder.svg"}
+        alt={"Current User"}
+        fallback={user?.fullName?.charAt(0) || user?.username?.charAt(0) || user?.contact.email.charAt(0)}
+      />
       <div className="flex-1 flex gap-2">
         <Textarea
           placeholder="Viết bình luận của bạn..."

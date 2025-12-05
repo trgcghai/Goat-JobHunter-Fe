@@ -1,15 +1,14 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { formatDateTime } from "@/utils/formatDate";
-import { CornerDownRight, Send, Trash2, X } from "lucide-react";
+import { CornerDownRight, Trash2, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { NestedComment } from "@/app/(main)/blogs/[id]/components/utils/formatComments";
 import { useUser } from "@/hooks/useUser";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import CommentInput from "@/app/(main)/blogs/[id]/components/CommentInput";
+import CommentAvatar from "@/app/(main)/blogs/[id]/components/utils/CommentAvatar";
 
 interface CommentItemProps {
   comment: NestedComment;
@@ -48,14 +47,12 @@ export default function CommentItem({ comment, onReply, onDelete }: CommentItemP
     <>
       <div className={`space-y-4 ${marginClass}`}>
         <div className="flex gap-4">
-          <Avatar className="h-12 w-12 flex-shrink-0 border-2">
-            <AvatarImage
-              src={comment.commentedBy.avatar || "/placeholder.svg"}
-              alt={author} />
-            <AvatarFallback>
-              {author.charAt(0).toUpperCase() || "U"}
-            </AvatarFallback>
-          </Avatar>
+          <CommentAvatar
+            className={"h-12 w-12 flex-shrink-0 border-2"}
+            src={comment.commentedBy.avatar || "/placeholder.svg"}
+            alt={author}
+            fallback={author.charAt(0).toUpperCase()}
+          />
           <div className="flex-1 min-w-0">
             <div className="bg-gray-100 rounded-xl p-4">
               <div className="flex items-center justify-between mb-2">
