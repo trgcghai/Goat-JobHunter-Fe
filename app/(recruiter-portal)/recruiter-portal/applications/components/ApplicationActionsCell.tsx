@@ -8,6 +8,7 @@ import ResumePreviewDialog from "@/components/common/ResumePreivewDialog";
 import EmailDialog, {
   EmailDialogMode
 } from "@/components/common/EmailDialog";
+import { ApplicationStatus } from "@/types/enum";
 
 interface ApplicationActionsCellProps {
   application: Application;
@@ -24,7 +25,7 @@ const ApplicationActionsCell = ({ application }: ApplicationActionsCellProps) =>
       interviewDate: data.interviewDate,
       interviewType: data.interviewType,
       location: data.location,
-      note: data.notes || "",
+      note: data.notes || ""
     });
     setMode(null);
   };
@@ -32,14 +33,14 @@ const ApplicationActionsCell = ({ application }: ApplicationActionsCellProps) =>
   const onRejectSubmit = async (data: RejectFormData) => {
     await handleRejectApplications({
       applicationIds: [application.applicationId],
-      reason: data.reason,
+      reason: data.reason
     });
     setMode(null);
   };
 
   const isProcessed = useMemo(
     () =>
-      application.status === "ACCEPTED" || application.status === "REJECTED",
+      application.status === ApplicationStatus.ACCEPTED || application.status === ApplicationStatus.REJECTED,
     [application.status]
   );
 
@@ -56,27 +57,31 @@ const ApplicationActionsCell = ({ application }: ApplicationActionsCellProps) =>
         <FileText className="w-4 h-4" />
       </Button>
 
-      <Button
-        variant="outline"
-        size="icon"
-        className="rounded-xl text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200"
-        title="Chấp nhận"
-        onClick={() => setMode("accept")}
-        disabled={isProcessed || isRejecting || isAccepting}
-      >
-        <Check className="w-4 h-4" />
-      </Button>
-
-      <Button
-        variant="outline"
-        size="icon"
-        className="rounded-xl text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/20"
-        title="Từ chối"
-        onClick={() => setMode("reject")}
-        disabled={isProcessed || isRejecting || isAccepting}
-      >
-        <X className="w-4 h-4" />
-      </Button>
+      {/* only show reject and accept button when the application is not processed */}
+      {!isProcessed &&
+        <>
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-xl text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200"
+            title="Chấp nhận"
+            onClick={() => setMode("accept")}
+            disabled={isProcessed || isRejecting || isAccepting}
+          >
+            <Check className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-xl text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/20"
+            title="Từ chối"
+            onClick={() => setMode("reject")}
+            disabled={isProcessed || isRejecting || isAccepting}
+          >
+            <X className="w-4 h-4" />
+          </Button>
+        </>
+      }
 
       <EmailDialog
         open={!!mode}
