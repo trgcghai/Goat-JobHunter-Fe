@@ -4,27 +4,42 @@ import UpdateAvatarDialog from "@/app/(main)/profile/components/UpdateAvatarDial
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/hooks/useUser";
-import { Camera, Mail, User as UserIcon } from "lucide-react";
-import { useState } from "react";
+import { Camera, Eye, EyeOff, Mail, User as UserIcon } from "lucide-react";
+import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from "@/components/ui/tooltip";
+import { useFetchCurrentApplicantQuery } from "@/services/applicant/applicantApi";
+import { HasApplicant } from "@/components/common/HasRole";
 
 interface ProfileHeaderProps {
   fullPage?: boolean;
   type: "applicant" | "recruiter";
 }
 
-export default function ProfileHeader({ fullPage = false, type}: ProfileHeaderProps) {
+export default function ProfileHeader({ fullPage = false, type }: ProfileHeaderProps) {
   const [imageError, setImageError] = useState(false);
   const [isAvatarDialogOpen, setIsAvatarDialogOpen] = useState(false);
   const { user } = useUser();
   const hasAvatar = user?.avatar && !imageError;
+
+  const { data } = useFetchCurrentApplicantQuery(undefined, {
+    skip: type !== "applicant"
+  });
+
+  const applicant = useMemo(() => data?.data, [data]);
 
   return (
     <div className="border-b border-border bg-card">
       <div className={cn(!fullPage && "mx-auto max-w-7xl px-4 sm:px-6 lg:px-8", "py-8")}>
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
           <div className="relative group">
-            <div className="h-36 w-36 rounded-full border-4 border-primary/10 overflow-hidden bg-muted flex items-center justify-center">
+            <div
+              className="h-36 w-36 rounded-full border-4 border-primary/10 overflow-hidden bg-muted flex items-center justify-center">
               {hasAvatar ? (
                 <Avatar className="h-full w-full">
                   <AvatarImage
@@ -61,6 +76,31 @@ export default function ProfileHeader({ fullPage = false, type}: ProfileHeaderPr
               <h1 className="text-3xl font-bold text-foreground">
                 {user?.fullName || user?.contact.email}
               </h1>
+
+              <HasApplicant user={user}>
+                {applicant &&
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="flex items-center gap-2 py-1 rounded-full">
+                          {applicant.availableStatus ? (
+                            <Eye className="h-5 w-5 text-green-600" />
+                          ) : (
+                            <EyeOff className="h-5 w-5 text-destructive" />
+                          )}
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>
+                          {applicant.availableStatus
+                            ? "Hồ sơ của bạn đang công khai, có thể tìm thấy bởi các nhà tuyển dụng"
+                            : "Hồ sơ của bạn đang ẩn, không thể tìm thấy bởi các nhà tuyển dụng"}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                }
+              </HasApplicant>
             </div>
 
             <div className="text-sm space-y-1">

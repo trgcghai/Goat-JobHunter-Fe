@@ -16,6 +16,13 @@ import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FetchCurrentApplicantDto } from "@/types/dto";
 import { useEffect } from "react";
+import { Switch } from "@/components/ui/switch";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface ApplicantFormProps {
   open: boolean;
@@ -40,7 +47,8 @@ const ApplicantForm = ({ open, onOpenChange, profile }: ApplicantFormProps) => {
       phone: "",
       level: Level.INTERN,
       address: "",
-      education: Education.SCHOOL
+      education: Education.SCHOOL,
+      availableStatus: true
     }
   });
 
@@ -54,7 +62,8 @@ const ApplicantForm = ({ open, onOpenChange, profile }: ApplicantFormProps) => {
       dob: profile?.dob ? new Date(profile.dob) : new Date(),
       gender: profile?.gender || Gender.NAM,
       education: profile?.education || Education.SCHOOL,
-      level: profile?.level || Level.INTERN
+      level: profile?.level || Level.INTERN,
+      availableStatus: profile?.availableStatus ?? true
     });
   }, [profile, form]);
 
@@ -65,8 +74,7 @@ const ApplicantForm = ({ open, onOpenChange, profile }: ApplicantFormProps) => {
       );
       return;
     }
-
-    handleUpdateApplicant(profile.userId, {
+    await handleUpdateApplicant(profile.userId, {
       fullName: data.fullName,
       username: data.username,
       dob: data.dob.toISOString(),
@@ -77,7 +85,8 @@ const ApplicantForm = ({ open, onOpenChange, profile }: ApplicantFormProps) => {
       },
       address: data.address,
       education: data.education,
-      level: data.level
+      level: data.level,
+      availableStatus: data.availableStatus
     });
 
     onOpenChange(false);
@@ -205,6 +214,8 @@ const ApplicantForm = ({ open, onOpenChange, profile }: ApplicantFormProps) => {
                 )}
               />
 
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
               <FormField
                 control={form.control}
                 name="gender"
@@ -217,7 +228,7 @@ const ApplicantForm = ({ open, onOpenChange, profile }: ApplicantFormProps) => {
                         value={field.value}
                         onValueChange={field.onChange}
                         defaultValue="comfortable"
-                        className="space-y-2"
+                        className="flex flex-row"
                       >
                         {Object.entries(Gender).map(([key, value]) => {
                           return (
@@ -235,6 +246,43 @@ const ApplicantForm = ({ open, onOpenChange, profile }: ApplicantFormProps) => {
                   </FormItem>
                 )}
               />
+
+                <FormField
+                  control={form.control}
+                  name="availableStatus"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Trạng thái tài khoản</FormLabel>
+                      <FormControl>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className="flex items-center gap-2">
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                                <Label className="cursor-pointer">
+                                  {field.value ? "Công khai hồ sơ" : "Ẩn hồ sơ"}
+                                </Label>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent align={"start"}>
+                              <p>
+                                {field.value
+                                  ? "Hồ sơ của bạn có thể được tìm thấy bởi nhà tuyển dụng"
+                                  : "Hồ sơ của bạn sẽ bị ẩn khỏi nhà tuyển dụng"}
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormField
@@ -297,7 +345,7 @@ const ApplicantForm = ({ open, onOpenChange, profile }: ApplicantFormProps) => {
 
             </div>
 
-            <div className="flex gap-3 pt-4 justify-end items-center border-t">
+            <div className="flex gap-3 pt-4 justify-end items-center">
               <Button
                 type="button"
                 variant="outline"

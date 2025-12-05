@@ -15,6 +15,7 @@ const applicantSchema = z.object({
   address: z.string().min(1, "Địa chỉ không được để trống").optional().or(z.literal("")),
   education: z.enum(Education).optional(),
   level: z.enum(Level).optional(),
+  availableStatus: z.boolean().optional()
 });
 
 type ApplicantFormData = z.infer<typeof applicantSchema>;

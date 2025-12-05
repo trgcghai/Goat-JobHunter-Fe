@@ -281,7 +281,7 @@ export function useUser() {
         // Chỉ thêm các field không undefined/null
         for (const key in data) {
           const value = data[key as keyof Applicant];
-          if (value) {
+          if (value != undefined) {
             updatedData[key] = value;
           }
         }
