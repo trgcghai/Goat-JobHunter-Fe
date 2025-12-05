@@ -5,11 +5,11 @@ import {
   useCreateJobMutation,
   useDeactivateJobsMutation,
   useDeleteJobMutation,
-  useUpdateJobMutation,
+  useUpdateJobMutation
 } from "@/services/job/jobApi";
 import {
   useSaveJobsMutation,
-  useUnsaveJobsMutation,
+  useUnsaveJobsMutation
 } from "@/services/user/userApi";
 import { Job } from "@/types/model";
 import { useCallback } from "react";
@@ -40,7 +40,7 @@ const useJobActions = () => {
     }
 
     await unsaveJobs({
-      jobIds: [job.jobId],
+      jobIds: [job.jobId]
     });
 
     if (isUnsaveSuccess) {
@@ -67,17 +67,17 @@ const useJobActions = () => {
 
     if (isSaved) {
       await unsaveJobs({
-        jobIds: [job.jobId],
+        jobIds: [job.jobId]
       });
     } else {
       await saveJobs({
-        jobIds: [job.jobId],
+        jobIds: [job.jobId]
       });
     }
 
     if (isSaveSuccess || isUnsaveSuccess) {
       toast.success(
-        isSaved ? "Đã bỏ lưu công việc." : "Đã lưu công việc thành công.",
+        isSaved ? "Đã bỏ lưu công việc." : "Đã lưu công việc thành công."
       );
     }
 
@@ -108,12 +108,12 @@ const useJobActions = () => {
           salary: jobData.salary,
           startDate: jobData.startDate,
           title: jobData.title,
-          workingType: jobData.workingType,
+          workingType: jobData.workingType
         }).unwrap();
 
         if (response.data) {
           toast.success("Tạo công việc thành công!", {
-            description: `Đã tạo công việc: ${jobData.title}`,
+            description: `Đã tạo công việc: ${jobData.title}`
           });
           return response.data;
         }
@@ -123,7 +123,7 @@ const useJobActions = () => {
         throw error;
       }
     },
-    [createJob, user],
+    [createJob, user]
   );
 
   // Delete job
@@ -142,7 +142,7 @@ const useJobActions = () => {
         throw error;
       }
     },
-    [deleteJob],
+    [deleteJob]
   );
 
   // Update existing job
@@ -167,12 +167,12 @@ const useJobActions = () => {
           salary: jobData.salary,
           startDate: jobData.startDate,
           title: jobData.title,
-          workingType: jobData.workingType,
+          workingType: jobData.workingType
         }).unwrap();
 
         if (response.data) {
           toast.success("Cập nhật công việc thành công!", {
-            description: `Đã cập nhật: ${jobData.title}`,
+            description: `Đã cập nhật: ${jobData.title}`
           });
           return response.data;
         }
@@ -182,7 +182,7 @@ const useJobActions = () => {
         throw error;
       }
     },
-    [updateJob, user],
+    [updateJob, user]
   );
 
   const handleToggleStatus = useCallback(async (jobId: number, isActive: boolean) => {
@@ -192,11 +192,11 @@ const useJobActions = () => {
       } else {
         const result = await activateJob({ jobIds: [jobId] }).unwrap();
 
-        const failedByEndDatePassed = result?.data?.filter(item => item.status === "failed" && item.message.includes("End date has passed"))
+        const failedByEndDatePassed = result?.data?.filter(item => item.status === "fail" && item.message.includes("End date has passed"));
 
         if (failedByEndDatePassed && failedByEndDatePassed.length > 0) {
           toast.error(
-            `Không thể đăng tuyển lại các công việc đã quá hạn kết thúc. Nếu muốn tiếp tục đăng tuyển, vui lòng cập nhật lại ngày kết thúc.`,
+            `Không thể đăng tuyển lại các công việc đã quá hạn kết thúc. Nếu muốn tiếp tục đăng tuyển, vui lòng cập nhật lại ngày kết thúc.`
           );
         }
       }
@@ -204,22 +204,36 @@ const useJobActions = () => {
     } catch (error) {
       console.error("Failed to toggle job status:", error);
       toast.error(
-        "Không thể thay đổi trạng thái công việc. Vui lòng thử lại sau.",
+        "Không thể thay đổi trạng thái công việc. Vui lòng thử lại sau."
       );
       throw error;
     }
   }, [activateJob, deactivateJob]);
 
   const handleActivateJobs = useCallback(async (jobIds: number[]) => {
-      try {
-        await activateJob({ jobIds }).unwrap();
-      } catch (error) {
-        console.error("Failed to toggle job status:", error);
+    try {
+
+
+
+      const result = await activateJob({ jobIds }).unwrap();
+
+      console.log(result);
+
+      const failedByEndDatePassed = result?.data?.filter(item => item.status === "fail" && item.message.includes("End date has passed"));
+
+      if (failedByEndDatePassed && failedByEndDatePassed.length > 0) {
         toast.error(
-          "Không thể thay đổi trạng thái công việc. Vui lòng thử lại sau.",
+          `Không thể đăng tuyển lại các công việc đã quá hạn kết thúc. Nếu muốn tiếp tục đăng tuyển, vui lòng cập nhật lại ngày kết thúc.`
         );
-        throw error;
       }
+
+    } catch (error) {
+      console.error("Failed to toggle job status:", error);
+      toast.error(
+        "Không thể thay đổi trạng thái công việc. Vui lòng thử lại sau."
+      );
+      throw error;
+    }
   }, [activateJob]);
 
   const handleDeactivateJobs = useCallback(async (jobIds: number[]) => {
@@ -228,7 +242,7 @@ const useJobActions = () => {
     } catch (error) {
       console.error("Failed to toggle job status:", error);
       toast.error(
-        "Không thể thay đổi trạng thái công việc. Vui lòng thử lại sau.",
+        "Không thể thay đổi trạng thái công việc. Vui lòng thử lại sau."
       );
       throw error;
     }
@@ -248,7 +262,7 @@ const useJobActions = () => {
     handleDeleteJob,
     handleToggleStatus,
     handleActivateJobs,
-    handleDeactivateJobs,
+    handleDeactivateJobs
   };
 };
 
