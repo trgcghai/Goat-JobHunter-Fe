@@ -7,7 +7,6 @@ import {
 import useDetailBlog from "@/app/(main)/blogs/[id]/hooks/useDetailBlog";
 import ErrorMessage from "@/components/common/ErrorMessage";
 import LoaderSpin from "@/components/common/LoaderSpin";
-import MarkdownDisplay from "@/components/common/MarkdownDisplay";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Empty,
@@ -20,6 +19,7 @@ import { ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import RichTextPreview from "@/components/RichText/Preview";
 
 const DetailBlogPage = () => {
   const params = useParams<{ id: string }>();
@@ -142,7 +142,7 @@ const DetailBlogPage = () => {
 
         <div className="prose prose-lg max-w-none">
           {blog.content ? (
-            <MarkdownDisplay content={blog.content} />
+            <RichTextPreview content={blog.content} />
           ) : (
             <p className="text-foreground leading-relaxed">
               Bài viết này hiện chưa có nội dung.

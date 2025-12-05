@@ -1,6 +1,5 @@
 "use client";
 
-import MarkdownDisplay from "@/components/common/MarkdownDisplay";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Recruiter } from "@/types/model";
@@ -8,6 +7,7 @@ import { Heart, Mail, MapPin, Phone, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import RichTextPreview from "@/components/RichText/Preview";
 
 interface RecruiterGridCardProps {
   recruiter: Recruiter;
@@ -78,7 +78,7 @@ const RecruiterGridCard = ({
 
         <CardContent className="flex-1 px-6 pt-2 pb-2">
           {recruiter.description ? (
-            <MarkdownDisplay
+            <RichTextPreview
               content={recruiter.description || ""}
               className="text-sm text-foreground line-clamp-2"
             />

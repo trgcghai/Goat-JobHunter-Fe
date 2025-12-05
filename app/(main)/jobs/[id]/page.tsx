@@ -9,7 +9,6 @@ import {
 import ResumeDialog from "@/app/(main)/jobs/[id]/components/ResumeDialog";
 import useDetailJob from "@/app/(main)/jobs/[id]/hooks/useDetailJob";
 import LoaderSpin from "@/components/common/LoaderSpin";
-import MarkdownDisplay from "@/components/common/MarkdownDisplay";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -29,6 +28,7 @@ import { useUser } from "@/hooks/useUser";
 import RecruiterInfo from "@/app/(main)/jobs/[id]/components/RecruiterInfo";
 import ErrorMessage from "@/components/common/ErrorMessage";
 import { HasApplicant } from "@/components/common/HasRole";
+import RichTextPreview from "@/components/RichText/Preview";
 
 export default function JobDetailPage() {
   const params = useParams<{ id: string }>();
@@ -111,7 +111,7 @@ export default function JobDetailPage() {
                       <h2 className="text-xl font-bold text-foreground mb-4 capitalize">
                         Mô Tả Công Việc
                       </h2>
-                      <MarkdownDisplay
+                      <RichTextPreview
                         content={job.description}
                         className="prose max-w-none mb-4"
                       />

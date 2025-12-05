@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDate } from "@/utils/formatDate";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import MarkdownDisplay from "@/components/common/MarkdownDisplay";
+import RichTextPreview from "@/components/RichText/Preview";
 
 const PreviewDetailBlogPage = () => {
   const params = useParams<{ id: string }>();
@@ -106,7 +106,7 @@ const PreviewDetailBlogPage = () => {
 
         <div className="prose prose-lg max-w-none">
           {blog.content ? (
-            <MarkdownDisplay content={blog.content} />
+            <RichTextPreview content={blog.content} />
           ) : (
             <p className="text-foreground leading-relaxed">
               Bài viết này hiện chưa có nội dung.

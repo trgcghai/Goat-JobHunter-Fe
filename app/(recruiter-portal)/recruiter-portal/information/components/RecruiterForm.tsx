@@ -14,7 +14,6 @@ import {
   FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { useUser } from "@/hooks/useUser";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
@@ -26,6 +25,7 @@ import {
 import { toast } from "sonner";
 import { FetchCurrentRecruiterDto } from "@/types/dto";
 import { useEffect } from "react";
+import RichTextEditor from "@/components/RichText/Editor";
 
 interface RecruiterFormProps {
   open: boolean;
@@ -198,11 +198,11 @@ function RecruiterForm({ open, onOpenChange, profile }: RecruiterFormProps) {
                     <FormItem>
                       <FormLabel>Mô tả công ty</FormLabel>
                       <FormControl>
-                        <Textarea
+                        <RichTextEditor
                           {...field}
-                          disabled={isUpdatingRecruiter}
-                          className="rounded-xl min-h-[150px] resize-none"
-                          placeholder="Nhập mô tả về công ty..."
+                          value={field.value!}
+                          onChange={field.onChange}
+                          placeholder={"Nhập mô tả về công ty..."}
                         />
                       </FormControl>
                       <FormMessage />

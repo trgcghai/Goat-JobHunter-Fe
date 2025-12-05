@@ -13,6 +13,8 @@ import { useFetchCurrentRecruiterQuery } from "@/services/recruiter/recruiterApi
 import { formatDate } from "@/utils/formatDate";
 import LoaderSpin from "@/components/common/LoaderSpin";
 import ErrorMessage from "@/components/common/ErrorMessage";
+import { Separator } from "@/components/ui/separator";
+import RichTextPreview from "@/components/RichText/Preview";
 
 const RecruiterInformation = () => {
   useGetMyAccountQuery();
@@ -27,7 +29,7 @@ const RecruiterInformation = () => {
   }
 
   if (isError || !user) {
-    return <ErrorMessage message={"Có lỗi xảy ra khi tải thông tin người dùng. Vui lòng thử lại sau"} />
+    return <ErrorMessage message={"Có lỗi xảy ra khi tải thông tin người dùng. Vui lòng thử lại sau"} />;
   }
 
   return (
@@ -124,17 +126,6 @@ const RecruiterInformation = () => {
           </div>
 
           <div className="space-y-2">
-            <Label className="capitalize" htmlFor="description">
-              Mô Tả Công Ty
-            </Label>
-            <Textarea
-              id="description"
-              value={user.description || "Chưa cập nhật"}
-              disabled
-              className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm min-h-[100px] resize-none" />
-          </div>
-
-          <div className="space-y-2">
             <Label className="capitalize" htmlFor="address">
               Ngày tham gia
             </Label>
@@ -143,6 +134,23 @@ const RecruiterInformation = () => {
               value={user.createdAt ? formatDate(new Date(user.createdAt).toISOString()) : "Chưa cập nhật"}
               disabled
               className="rounded-xl text-gray-800" />
+          </div>
+
+          <div className="space-y- mt-8">
+            <Label className="uppercase text-lg font-semibold" htmlFor="description">
+              Giới thiệu về công ty
+            </Label>
+            <Separator className={"my-4"} />
+            {user.description ?
+              <RichTextPreview content={user.description} />
+              :
+              <Textarea
+                id="description"
+                value={"Chưa cập nhật"}
+                disabled
+                className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm min-h-[100px] resize-none"
+              />
+            }
           </div>
         </CardContent>
       </Card>

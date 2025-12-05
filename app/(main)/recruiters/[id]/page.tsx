@@ -8,7 +8,6 @@ import {
 import useDetailRecruiter from "@/app/(main)/recruiters/[id]/hooks/useDetailRecruiter";
 import ErrorMessage from "@/components/common/ErrorMessage";
 import LoaderSpin from "@/components/common/LoaderSpin";
-import MarkdownDisplay from "@/components/common/MarkdownDisplay";
 import { Card } from "@/components/ui/card";
 import {
   Empty,
@@ -20,6 +19,7 @@ import { Separator } from "@/components/ui/separator";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import RichTextPreview from "@/components/RichText/Preview";
 
 export default function RecruiterDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -82,9 +82,9 @@ export default function RecruiterDetailPage() {
                 <h2 className="text-xl font-bold text-foreground mb-4 capitalize">
                   Mô tả
                 </h2>
-                {recruiter.description ? <MarkdownDisplay
+                {recruiter.description ? <RichTextPreview
                     content={recruiter.description}
-                    className="prose max-w-none rounded text-sm text-foreground line-clamp-2 mb-4"
+                    className="prose max-w-none rounded mb-4"
                   /> :
                   <p className="text-sm text-muted-foreground">Nhà tuyển dụng chưa cung cấp thông tin mô tả.</p>}
               </div>
