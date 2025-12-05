@@ -9,7 +9,6 @@ import ErrorMessage from "@/components/common/ErrorMessage";
 import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDate } from "@/utils/formatDate";
-import { BlogActions } from "@/app/(main)/blogs/[id]/components";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import MarkdownDisplay from "@/components/common/MarkdownDisplay";
@@ -73,8 +72,8 @@ const PreviewDetailBlogPage = () => {
               key={index}
               className="text-xs font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full"
             >
-                              {tag}
-                          </span>
+                {tag}
+            </span>
           ))}
         </div>
 
@@ -114,14 +113,6 @@ const PreviewDetailBlogPage = () => {
             </p>
           )}
         </div>
-      </div>
-
-      <div className="mb-6">
-        <BlogActions
-          initialLikes={blog.activity?.totalLikes}
-          totalComments={blog.activity?.totalComments}
-          onShare={() => {
-          }} />
       </div>
     </main>
   );

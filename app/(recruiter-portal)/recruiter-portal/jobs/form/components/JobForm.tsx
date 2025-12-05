@@ -8,7 +8,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import MultipleSelector, { Option } from "@/components/ui/MultipleSelector";
@@ -17,12 +17,12 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { LEVEL_OPTIONS, WORKING_TYPE_OPTIONS } from "@/constants/constant";
 import { Loader2 } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
+import RichTextEditor from "@/components/RichText/Editor";
 
 interface JobFormProps {
   form: UseFormReturn<JobFormData>;
@@ -38,17 +38,17 @@ interface JobFormProps {
 }
 
 const JobForm = ({
-  form,
-  onSubmit,
-  skillOptions,
-  careerOptions,
-  inputValue,
-  handleInputValueChange,
-  isFetchingSkills,
-  isCreating,
-  isUpdating,
-  isEditMode,
-}: JobFormProps) => {
+                   form,
+                   onSubmit,
+                   skillOptions,
+                   careerOptions,
+                   inputValue,
+                   handleInputValueChange,
+                   isFetchingSkills,
+                   isCreating,
+                   isUpdating,
+                   isEditMode
+                 }: JobFormProps) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -82,10 +82,11 @@ const JobForm = ({
                 <FormItem>
                   <FormLabel required>Mô tả công việc</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Mô tả chi tiết về công việc, yêu cầu, quyền lợi..."
-                      className="rounded-xl min-h-[150px]"
+                    <RichTextEditor
                       {...field}
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder={"Mô tả chi tiết về công việc, yêu cầu, quyền lợi..."}
                     />
                   </FormControl>
                   <FormDescription>Tối thiểu 50 ký tự</FormDescription>
@@ -292,14 +293,14 @@ const JobForm = ({
                       options={skillOptions}
                       value={field.value.map((skill) => ({
                         label: skill.name,
-                        value: skill.skillId.toString(),
+                        value: skill.skillId.toString()
                       }))}
                       onChange={(selectedOptions: Option[]) => {
                         field.onChange(
                           selectedOptions.map((opt) => ({
                             skillId: opt.value,
-                            name: opt.label,
-                          })),
+                            name: opt.label
+                          }))
                         );
                       }}
                       inputValue={inputValue}
@@ -327,7 +328,7 @@ const JobForm = ({
                       maxSelected={10}
                       onMaxSelected={(maxLimit) => {
                         console.log(
-                          `Chỉ có thể chọn tối đa ${maxLimit} kỹ năng`,
+                          `Chỉ có thể chọn tối đa ${maxLimit} kỹ năng`
                         );
                       }}
                     />

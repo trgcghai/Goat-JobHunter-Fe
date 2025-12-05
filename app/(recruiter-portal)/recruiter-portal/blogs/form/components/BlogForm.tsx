@@ -19,7 +19,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
-import RichTextEditor from "@/app/(recruiter-portal)/recruiter-portal/blogs/form/RichText/Editor";
+import RichTextEditor from "@/components/RichText/Editor";
 import React from "react";
 import { toast } from "sonner";
 

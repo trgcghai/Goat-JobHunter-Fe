@@ -113,7 +113,7 @@ export default function JobDetailPage() {
                       </h2>
                       <MarkdownDisplay
                         content={job.description}
-                        className="prose max-w-none rounded text-sm text-foreground line-clamp-2 mb-4"
+                        className="prose max-w-none mb-4"
                       />
                     </div>
 

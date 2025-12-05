@@ -1,4 +1,3 @@
-import MarkdownDisplay from "@/components/common/MarkdownDisplay";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -99,10 +98,6 @@ const JobGridCard = ({
               {job.startDate && <span>{formatDate(job.startDate)}</span>}
             </div>
           </div>
-          <MarkdownDisplay
-            content={job.description}
-            className="prose max-w-none rounded text-sm text-foreground line-clamp-2 mb-4"
-          />
         </CardContent>
         <CardFooter className="mt-auto">
           {job.skills && job.skills.length > 0 && (
