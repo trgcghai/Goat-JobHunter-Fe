@@ -48,3 +48,10 @@ export enum BlogActionType {
   REJECT = "REJECT",
   ACCEPT = "ACCEPT"
 }
+
+export enum NotificationTypeEnum {
+  LIKE = "LIKE",
+  COMMENT = "COMMENT",
+  REPLY = "REPLY",
+  FOLLOW = "FOLLOW"
+}

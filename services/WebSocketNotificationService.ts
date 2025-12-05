@@ -6,7 +6,7 @@ import { store } from "@/lib/store";
 import { NotificationType } from "@/types/model";
 import { toast } from "sonner";
 import { notificationApi } from "@/services/notification/notificationApi";
-import { truncate } from "lodash";
+import { getNotificationContent } from "@/utils/getNotificationContent";
 
 export class WebSocketNotificationService {
   private client: Client | null = null;
@@ -86,16 +86,8 @@ export class WebSocketNotificationService {
 
   private showToast(notification: NotificationType) {
 
-    const sender = notification.actor.fullName || notification.actor.username || "Người dùng ẩn danh";
-    const blog =  notification.blog.title || " của bạn";
-    const content = notification?.repliedOnComment?.comment || notification?.comment?.comment;
+    const { message } = getNotificationContent(notification, { maxLength: 50 });
+    toast.success(message);
 
-    const messages = {
-      COMMENT: `${sender} đã bình luận về bài viết của bạn: ${truncate(content)}`,
-      REPLY: `${sender} đã trả lời bình luận của bạn về bài viết ${blog}: ${truncate(content)}`,
-      LIKE: `${sender} đã thích bài viết của bạn: ${truncate(blog)}`
-    };
-
-    toast.success(messages[notification.type as keyof typeof messages] ? messages[notification.type as keyof typeof messages] : "Thông báo mới")
   }
 }

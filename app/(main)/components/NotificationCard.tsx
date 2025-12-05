@@ -4,10 +4,10 @@ import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { NotificationType } from "@/types/model";
 import { formatDateTime } from "@/utils/formatDate";
-import { Bell, CheckCheck, Heart, MessageCircle } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
-import { truncate } from "lodash";
+import { CheckCheck } from "lucide-react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
+import { getNotificationContent } from "@/utils/getNotificationContent";
 
 interface NotificationCardProps {
   notification: NotificationType;
@@ -22,38 +22,10 @@ const NotificationCard = ({
 }: NotificationCardProps) => {
 
   const sender = useMemo(() => notification.actor.fullName || notification.actor.username || "Người dùng ẩn danh", [notification.actor]);
-  const blog = useMemo(() => notification.blog.title || " của bạn", [notification.blog]);
-  const content = useMemo(() => notification?.repliedOnComment?.comment || notification?.comment?.comment, [notification]);
 
-  const getNotificationContent = useCallback(
-    (notification: NotificationType) => {
-      switch (notification.type) {
-        case "LIKE":
-          return {
-            icon: <Heart className="h-5 w-5 text-red-500" />,
-            message: `${sender} đã thích bài viết của bạn: ${truncate(blog, { length: variant === "compact" ? 30 : 80 })}`
-          };
-        case "COMMENT":
-          return {
-            icon: <MessageCircle className="h-5 w-5 text-blue-500" />,
-            message: `${sender} đã bình luận về bài viết của bạn: ${truncate(content, { length: variant === "compact" ? 30 : 80 })}`
-          };
-        case "REPLY":
-          return {
-            icon: <MessageCircle className="h-5 w-5 text-green-500" />,
-            message: `${sender} đã trả lời bình luận của bạn về bài viết ${blog}: ${truncate(content, { length: variant === "compact" ? 30 : 80 })}`
-          };
-        default:
-          return {
-            icon: <Bell className="h-5 w-5 text-primary" />,
-            message: "Bạn có thông báo mới"
-          };
-      }
-    },
-    [blog, content, sender, variant]
-  );
-
-  const { icon, message } = getNotificationContent(notification);
+  const { icon, message } = getNotificationContent(notification, {
+    maxLength: variant === "compact" ? 30 : 80
+  });
 
   const [imageError, setImageError] = useState(false);
 

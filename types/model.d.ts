@@ -2,7 +2,7 @@ import {
   ApplicationStatus,
   Education,
   Gender,
-  Level,
+  Level, NotificationTypeEnum,
   WorkingType
 } from "@/types/enum";
 
@@ -193,7 +193,7 @@ export type CommentType = {
 
 export type NotificationType = {
   notificationId: number;
-  type: "LIKE" | "COMMENT" | "REPLY";
+  type: NotificationTypeEnum;
   seen: boolean;
   blog: {
     blogId: string;

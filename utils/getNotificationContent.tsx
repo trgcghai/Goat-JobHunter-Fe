@@ -1,0 +1,47 @@
+import { Heart, MessageCircle, BellRing, Bell } from "lucide-react";
+import { NotificationType } from "@/types/model";
+import { NotificationTypeEnum } from "@/types/enum";
+import { truncate } from "lodash";
+
+interface NotificationContentOptions {
+  maxLength?: number;
+}
+
+export const getNotificationContent = (
+  notification: NotificationType,
+  options: NotificationContentOptions = {}
+) => {
+  const { maxLength = 80 } = options;
+
+  const sender = notification.actor.fullName || notification.actor.username || "Người dùng ẩn danh";
+  const blog = notification.blog?.title || "";
+  const content = notification?.repliedOnComment?.comment || notification?.comment?.comment;
+
+  switch (notification.type) {
+    case NotificationTypeEnum.LIKE:
+      return {
+        icon: <Heart className="h-5 w-5 text-red-500" />,
+        message: `${sender} đã thích bài viết của bạn: ${truncate(blog, { length: maxLength })}`
+      };
+    case NotificationTypeEnum.COMMENT:
+      return {
+        icon: <MessageCircle className="h-5 w-5 text-blue-500" />,
+        message: `${sender} đã bình luận về bài viết của bạn: ${truncate(content, { length: maxLength })}`
+      };
+    case NotificationTypeEnum.REPLY:
+      return {
+        icon: <MessageCircle className="h-5 w-5 text-green-500" />,
+        message: `${sender} đã trả lời bình luận của bạn về bài viết ${blog}: ${truncate(content, { length: maxLength })}`
+      };
+    case NotificationTypeEnum.FOLLOW:
+      return {
+        icon: <BellRing className="h-5 w-5 text-primary" />,
+        message: `${sender} đã theo dõi bạn.`
+      };
+    default:
+      return {
+        icon: <Bell className="h-5 w-5 text-primary" />,
+        message: "Bạn có thông báo mới"
+      };
+  }
+};
