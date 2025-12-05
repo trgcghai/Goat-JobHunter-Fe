@@ -7,6 +7,29 @@ import { Job } from "@/types/model";
 import { Ban, CheckCircle, Edit, FileText, Loader2, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useJobConfirmDialog } from "@/app/(recruiter-portal)/recruiter-portal/jobs/hooks/useJobConfirmDialog";
+import { ReactNode } from "react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger
+} from "@/components/ui/tooltip";
+
+const TooltipExpiredWrapper = ({ isExpired, children }: { isExpired: boolean, children: ReactNode }) => {
+  if (!isExpired) return children;
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div>
+          {children}
+        </div>
+      </TooltipTrigger>
+      <TooltipContent side={"bottom"} align={"center"}>
+        <p>Không thể kích hoạt vì đã quá hạn. Vui lòng cập nhật lại ngày kết thúc</p>
+      </TooltipContent>
+    </Tooltip>
+  );
+};
 
 const JobActionsCell = ({ job }: { job: Job }) => {
   const {
@@ -14,7 +37,7 @@ const JobActionsCell = ({ job }: { job: Job }) => {
     handleDeleteJob,
     isActivating,
     isDeactivating,
-    isDeleting,
+    isDeleting
   } = useJobActions();
 
   const { actionType, dialogConfig, openDialog, closeDialog, handleConfirm, isLoading } =
@@ -28,10 +51,10 @@ const JobActionsCell = ({ job }: { job: Job }) => {
       },
       isActivating,
       isDeactivating,
-      isDeleting,
+      isDeleting
     });
 
-  const isExprired = job.endDate ? new Date(job.endDate) < new Date() : false;
+  const isExpired = job.endDate ? new Date(job.endDate) < new Date() : false;
 
   return (
     <div className="flex items-center gap-2">
@@ -60,16 +83,18 @@ const JobActionsCell = ({ job }: { job: Job }) => {
         </Button>
       ) : (
         // Button: Đăng tuyển lại (khi đang inactive)
-        <Button
-          variant="outline"
-          size="icon"
-          disabled={isActivating || isDeactivating || isExprired || isDeleting}
-          className="rounded-xl text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200"
-          onClick={() => openDialog("activate", [job.jobId], job.title)}
-          title={isExprired ? "Không thể đăng tuyển lại vì quá hạn" : "Đăng tuyển lại"}
-        >
-          <CheckCircle className="w-4 h-4" />
-        </Button>
+        <TooltipExpiredWrapper isExpired={isExpired}>
+          <Button
+            variant="outline"
+            size="icon"
+            disabled={isActivating || isDeactivating || isExpired || isDeleting}
+            className="rounded-xl text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200"
+            onClick={() => openDialog("activate", [job.jobId], job.title)}
+            title="Đăng tuyển lại"
+          >
+            <CheckCircle className="w-4 h-4" />
+          </Button>
+        </TooltipExpiredWrapper>
       )}
 
       <Link href={`/recruiter-portal/jobs/form?jobId=${job.jobId}`}>
