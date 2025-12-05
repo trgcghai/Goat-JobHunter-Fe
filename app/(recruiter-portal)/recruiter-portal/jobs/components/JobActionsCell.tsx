@@ -31,6 +31,8 @@ const JobActionsCell = ({ job }: { job: Job }) => {
       isDeleting,
     });
 
+  const isExprired = job.endDate ? new Date(job.endDate) < new Date() : false;
+
   return (
     <div className="flex items-center gap-2">
       <Link href={`/jobs/${job.jobId}`}>
@@ -44,30 +46,31 @@ const JobActionsCell = ({ job }: { job: Job }) => {
         </Button>
       </Link>
 
-      <Button
-        variant="outline"
-        size="icon"
-        disabled={isActivating || isDeactivating}
-        className={`rounded-xl ${
-          job.active
-            ? "text-orange-500 hover:text-orange-600 hover:bg-orange-50 border-orange-200"
-            : "text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200"
-        }`}
-        onClick={() =>
-          openDialog(
-            job.active ? "deactivate" : "activate",
-            [job.jobId],
-            job.title
-          )
-        }
-        title={job.active ? "Ngừng tuyển" : "Đăng tuyển lại"}
-      >
-        {job.active ? (
+      {job.active ? (
+        // Button: Ngừng tuyển (khi đang active)
+        <Button
+          variant="outline"
+          size="icon"
+          disabled={isDeactivating || isActivating || isDeleting}
+          className="rounded-xl text-orange-500 hover:text-orange-600 hover:bg-orange-50 border-orange-200"
+          onClick={() => openDialog("deactivate", [job.jobId], job.title)}
+          title="Ngừng tuyển"
+        >
           <Ban className="w-4 h-4" />
-        ) : (
+        </Button>
+      ) : (
+        // Button: Đăng tuyển lại (khi đang inactive)
+        <Button
+          variant="outline"
+          size="icon"
+          disabled={isActivating || isDeactivating || isExprired || isDeleting}
+          className="rounded-xl text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200"
+          onClick={() => openDialog("activate", [job.jobId], job.title)}
+          title={isExprired ? "Không thể đăng tuyển lại vì quá hạn" : "Đăng tuyển lại"}
+        >
           <CheckCircle className="w-4 h-4" />
-        )}
-      </Button>
+        </Button>
+      )}
 
       <Link href={`/recruiter-portal/jobs/form?jobId=${job.jobId}`}>
         <Button

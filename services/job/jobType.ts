@@ -71,6 +71,7 @@ export type ToggleJobActiveResponse = IBackendRes<
     jobId: number;
     active: boolean;
     status: "success" | "failed";
+    message: string;
   }[]
 >;
 

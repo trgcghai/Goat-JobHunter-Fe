@@ -40,7 +40,7 @@ export const useJobManagement = ({ initialPage = 1, initialSize = 10 }: UseJobMa
     if (filters.level && filters.level.length > 0) params.level = filters.level;
     if (filters.workingType && filters.workingType.length > 0)
       params.workingType = filters.workingType;
-    if (filters.active) params.active = filters.active;
+    if (filters.active != undefined) params.active = filters.active;
 
     return params;
   }, [page, size, filters]);

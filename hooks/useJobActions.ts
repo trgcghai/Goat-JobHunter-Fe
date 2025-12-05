@@ -190,8 +190,17 @@ const useJobActions = () => {
       if (isActive) {
         await deactivateJob({ jobIds: [jobId] }).unwrap();
       } else {
-        await activateJob({ jobIds: [jobId] }).unwrap();
+        const result = await activateJob({ jobIds: [jobId] }).unwrap();
+
+        const failedByEndDatePassed = result?.data?.filter(item => item.status === "failed" && item.message.includes("End date has passed"))
+
+        if (failedByEndDatePassed && failedByEndDatePassed.length > 0) {
+          toast.error(
+            `Không thể đăng tuyển lại các công việc đã quá hạn kết thúc. Nếu muốn tiếp tục đăng tuyển, vui lòng cập nhật lại ngày kết thúc.`,
+          );
+        }
       }
+
     } catch (error) {
       console.error("Failed to toggle job status:", error);
       toast.error(
