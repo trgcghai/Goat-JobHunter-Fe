@@ -1,7 +1,16 @@
 "use client";
 
 import Sidebar, { SidebarTab } from "@/components/common/Sidebar";
-import { FileText, GraduationCap, Lock, MessageCircleCode, Shield, Users, Wrench } from "lucide-react";
+import {
+  BriefcaseBusiness,
+  FileText,
+  GraduationCap,
+  Lock,
+  MessageCircleCode,
+  Shield,
+  Users,
+  Wrench
+} from "lucide-react";
 import { AIChatPopup } from "@/components/common/AIChatPopup";
 import { useGetMyAccountQuery } from "@/services/auth/authApi";
 import { useRouter } from "next/navigation";
@@ -22,6 +31,12 @@ const AdminTabs: SidebarTab[] = [
     label: "Bài viết",
     url: "/admin/blog",
     icon: <FileText className="w-4 h-4" />
+  },
+  {
+    id: "job",
+    label: "Việc làm",
+    url: "/admin/job",
+    icon: <BriefcaseBusiness className="w-4 h-4" />
   },
   {
     id: "user",
