@@ -20,7 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Sparkles } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 import RichTextEditor from "@/components/RichText/Editor";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useGenerateDescriptionMutation, useGenerateTagsMutation } from "@/services/api";
 
@@ -36,7 +36,9 @@ interface BlogFormProps {
   isUploading: boolean;
 }
 
-const MAX_AI_CALLS = 3;
+const COOLDOWN_DURATION = 60; // seconds
+const DESCRIPTION_KEY = "blog_description_cooldown";
+const TAGS_KEY = "blog_tags_cooldown";
 
 const BlogForm = ({
   form,
@@ -51,11 +53,66 @@ const BlogForm = ({
 }: BlogFormProps) => {
   const isSubmitting = isCreating || isUpdating || isUploading;
 
-  const [descriptionCalls, setDescriptionCalls] = useState(0);
-  const [tagsCalls, setTagsCalls] = useState(0);
+  const [descriptionCooldown, setDescriptionCooldown] = useState(0);
+  const [tagsCooldown, setTagsCooldown] = useState(0);
 
   const [generateDescription, { isLoading: isGeneratingDescription }] = useGenerateDescriptionMutation();
   const [generateTags, { isLoading: isGeneratingTags }] = useGenerateTagsMutation();
+
+  // Check cooldown on mount and set up intervals
+  useEffect(() => {
+    const checkCooldown = (key: string, setCooldown: (value: number) => void) => {
+      const storedTime = localStorage.getItem(key);
+      if (storedTime) {
+        const elapsed = Math.floor((Date.now() - parseInt(storedTime)) / 1000);
+        const remaining = COOLDOWN_DURATION - elapsed;
+        if (remaining > 0) {
+          setCooldown(remaining);
+        } else {
+          localStorage.removeItem(key);
+        }
+      }
+    };
+
+    checkCooldown(DESCRIPTION_KEY, setDescriptionCooldown);
+    checkCooldown(TAGS_KEY, setTagsCooldown);
+  }, []);
+
+  // Countdown timer for description
+  useEffect(() => {
+    if (descriptionCooldown <= 0) return;
+
+    const timer = setInterval(() => {
+      setDescriptionCooldown((prev) => {
+        const newValue = prev - 1;
+        if (newValue <= 0) {
+          localStorage.removeItem(DESCRIPTION_KEY);
+          return 0;
+        }
+        return newValue;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [descriptionCooldown]);
+
+  // Countdown timer for tags
+  useEffect(() => {
+    if (tagsCooldown <= 0) return;
+
+    const timer = setInterval(() => {
+      setTagsCooldown((prev) => {
+        const newValue = prev - 1;
+        if (newValue <= 0) {
+          localStorage.removeItem(TAGS_KEY);
+          return 0;
+        }
+        return newValue;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [tagsCooldown]);
 
   const handleGenerateDescription = async () => {
     const content = form.getValues("content");
@@ -65,8 +122,8 @@ const BlogForm = ({
       return;
     }
 
-    if (descriptionCalls >= MAX_AI_CALLS) {
-      toast.error(`Bạn đã sử dụng hết ${MAX_AI_CALLS} lần tạo mô tả AI`);
+    if (descriptionCooldown > 0) {
+      toast.error(`Vui lòng đợi ${descriptionCooldown}s trước khi tạo lại`);
       return;
     }
 
@@ -74,8 +131,11 @@ const BlogForm = ({
       const result = await generateDescription(content).unwrap();
       if (result) {
         form.setValue("description", result);
-        setDescriptionCalls(prev => prev + 1);
         toast.success("Tạo mô tả AI thành công");
+
+        // Set cooldown
+        localStorage.setItem(DESCRIPTION_KEY, Date.now().toString());
+        setDescriptionCooldown(COOLDOWN_DURATION);
       }
     } catch (error) {
       toast.error("Không thể tạo mô tả AI. Vui lòng thử lại.");
@@ -91,8 +151,8 @@ const BlogForm = ({
       return;
     }
 
-    if (tagsCalls >= MAX_AI_CALLS) {
-      toast.error(`Bạn đã sử dụng hết ${MAX_AI_CALLS} lần tạo thẻ AI`);
+    if (tagsCooldown > 0) {
+      toast.error(`Vui lòng đợi ${tagsCooldown}s trước khi tạo lại`);
       return;
     }
 
@@ -100,8 +160,11 @@ const BlogForm = ({
       const result = await generateTags(content).unwrap();
       if (result.data && Array.isArray(result.data)) {
         form.setValue("tags", result.data);
-        setTagsCalls(prev => prev + 1);
         toast.success("Tạo thẻ AI thành công");
+
+        // Set cooldown
+        localStorage.setItem(TAGS_KEY, Date.now().toString());
+        setTagsCooldown(COOLDOWN_DURATION);
       }
     } catch (error) {
       toast.error("Không thể tạo thẻ AI. Vui lòng thử lại.");
@@ -179,14 +242,16 @@ const BlogForm = ({
                       size="sm"
                       className="rounded-xl"
                       onClick={handleGenerateDescription}
-                      disabled={isGeneratingDescription || descriptionCalls >= MAX_AI_CALLS}
+                      disabled={isGeneratingDescription || descriptionCooldown > 0}
                     >
                       {isGeneratingDescription ? (
                         <Loader2 className="h-4 w-4 animate-spin mr-2" />
                       ) : (
                         <Sparkles className="h-4 w-4 mr-2" />
                       )}
-                      Tạo AI ({descriptionCalls}/{MAX_AI_CALLS})
+                      {descriptionCooldown > 0
+                        ? `Đợi ${descriptionCooldown}s`
+                        : "Tạo AI"}
                     </Button>
                   </div>
                   <FormControl>
@@ -216,14 +281,16 @@ const BlogForm = ({
                       size="sm"
                       className="rounded-xl"
                       onClick={handleGenerateTags}
-                      disabled={isGeneratingTags || tagsCalls >= MAX_AI_CALLS}
+                      disabled={isGeneratingTags || tagsCooldown > 0}
                     >
                       {isGeneratingTags ? (
                         <Loader2 className="h-4 w-4 animate-spin mr-2" />
                       ) : (
                         <Sparkles className="h-4 w-4 mr-2" />
                       )}
-                      Tạo AI ({tagsCalls}/{MAX_AI_CALLS})
+                      {tagsCooldown > 0
+                        ? `Đợi ${tagsCooldown}s`
+                        : "Tạo AI"}
                     </Button>
                   </div>
                   <FormControl>
