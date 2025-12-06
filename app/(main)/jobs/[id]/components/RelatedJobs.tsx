@@ -9,6 +9,7 @@ import {
   EmptyHeader,
   EmptyTitle
 } from "@/components/ui/empty";
+import CustomPagination from "@/components/common/CustomPagination";
 
 interface RelatedJobsProps {
   jobs: Job[];
@@ -18,9 +19,17 @@ interface RelatedJobsProps {
     jobId: number;
     result: boolean;
   }[];
+  meta: {
+    page: number;
+    pageSize: number;
+    pages: number;
+    total: number;
+  },
+  page: number;
+  setPage: (page: number) => void;
 }
 
-function RelatedJobs({ jobs, isLoading, isError, savedJobs }: RelatedJobsProps) {
+function RelatedJobs({ jobs, isLoading, isError, savedJobs, meta, page, setPage }: RelatedJobsProps) {
   return (
     <Card className="p-6">
       <h3 className="text-xl font-bold text-foreground">Việc Làm Liên Quan</h3>
@@ -40,15 +49,27 @@ function RelatedJobs({ jobs, isLoading, isError, savedJobs }: RelatedJobsProps) 
         </Empty>
       }
 
-      <div className="flex flex-col gap-2">
+      <div className="grid grid-cols-3 gap-4">
         {jobs && jobs.map((relatedJob) => (
           <JobCard
             key={relatedJob.jobId}
             job={relatedJob}
-            viewMode="list"
+            viewMode="grid"
             isSaved={savedJobs.find(j => j.jobId === relatedJob.jobId)?.result || false}
           />
         ))}
+      </div>
+
+      <div className={"mt-4"}>
+        <CustomPagination
+          currentPage={page}
+          totalPages={meta?.pages}
+          onPageChange={setPage}
+          onNextPage={() => setPage(page + 1)}
+          onPreviousPage={() => setPage(page - 1)}
+          hasNextPage={page < meta?.pages}
+          hasPreviousPage={page > 1}
+        />
       </div>
     </Card>
   );

@@ -50,9 +50,12 @@ export default function JobDetailPage() {
     isErrorRecruiter,
 
     relatedJobs,
+    relatedJobMeta,
     savedJobs,
     isRelatedJobsLoading,
     isRelatedJobsError,
+    page,
+    setPage,
 
     numberOfApplications,
 
@@ -99,8 +102,9 @@ export default function JobDetailPage() {
                 <Card className="mb-8 py-0 h-full">
                   <JobHeader job={job} />
 
-                  {recruiter && !isLoadingRecruiter && !isErrorRecruiter ? <RecruiterInfo recruiter={recruiter} /> :
-                    <ErrorMessage message={"Có lỗi xảy ra khi tải thông tin nhà tuyển dụng."} />}
+                  {isErrorRecruiter && <ErrorMessage message={"Có lỗi xảy ra khi tải thông tin nhà tuyển dụng."} />}
+                  {recruiter && !isLoadingRecruiter && !isErrorRecruiter && <RecruiterInfo recruiter={recruiter} />}
+                  {isLoadingRecruiter && <LoaderSpin />}
 
                   <CardContent className="px-6 pb-6">
                     <Separator className="mb-4" />
@@ -178,6 +182,9 @@ export default function JobDetailPage() {
               isLoading={isRelatedJobsLoading}
               isError={isRelatedJobsError}
               savedJobs={savedJobs}
+              meta={relatedJobMeta!}
+              page={page}
+              setPage={setPage}
             />
           </>
         )}

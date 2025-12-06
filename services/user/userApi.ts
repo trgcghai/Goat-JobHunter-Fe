@@ -86,7 +86,7 @@ export const userApi = api.injectEndpoints({
       providesTags: (result) =>
         result?.data
           ? [
-              ...result.data.map((job) => ({
+              ...result.data.result.map((job) => ({
                 type: "SavedJob" as const,
                 id: job.jobId
               })),

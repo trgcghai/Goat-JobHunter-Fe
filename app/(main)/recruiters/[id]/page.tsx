@@ -27,9 +27,15 @@ export default function RecruiterDetailPage() {
     recruiter,
     isRecruiterLoading,
     isRecruiterError,
+
     recruiterJobs,
     isJobsLoading,
+    meta,
+    page,
+    setPage,
+
     savedJobs,
+
     isFollowed
   } = useDetailRecruiter(id);
 
@@ -99,7 +105,7 @@ export default function RecruiterDetailPage() {
             <LoaderSpin />
           </div>
         ) : recruiterJobs.length > 0 ? (
-          <RecruiterJobs recruiterJobs={recruiterJobs} savedJobs={savedJobs} />
+          <RecruiterJobs recruiterJobs={recruiterJobs} savedJobs={savedJobs} meta={meta!} page={page} setPage={setPage} />
         ) : (
           <div className="mt-12">
             <Empty>

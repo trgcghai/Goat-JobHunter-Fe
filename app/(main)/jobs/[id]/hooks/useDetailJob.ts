@@ -12,6 +12,7 @@ import { useFetchRecruiterByIdQuery } from "@/services/recruiter/recruiterApi";
 const useDetailJob = (id: string) => {
   const { user, isSignedIn } = useUser();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [page, setPage] = useState(1);
 
   const { data, isLoading, isError, isSuccess } = useFetchJobByIdQuery(id, {
     skip: !id // Skip if id is not available
@@ -55,8 +56,8 @@ const useDetailJob = (id: string) => {
   } = useFetchRelatedJobsQuery(
     {
       skills: job?.skills.map((skill) => skill.skillId) || [],
-      page: 1,
-      size: 10
+      page,
+      size: 9
     },
     { skip: !id || !job || !job.skills }
   );
@@ -67,6 +68,11 @@ const useDetailJob = (id: string) => {
         (job) => job.jobId.toString() != id
       ),
     [id, relatedJobsData?.data?.result]
+  );
+
+  const relatedJobMeta = useMemo(
+    () => relatedJobsData?.data?.meta,
+    [relatedJobsData?.data?.meta]
   );
 
   const { data: checkSavedJobsData } =
@@ -129,9 +135,12 @@ const useDetailJob = (id: string) => {
     isErrorRecruiter,
 
     relatedJobs,
+    relatedJobMeta,
     savedJobs,
     isRelatedJobsLoading,
     isRelatedJobsError,
+    page,
+    setPage,
 
     numberOfApplications,
 

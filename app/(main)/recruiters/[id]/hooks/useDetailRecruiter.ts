@@ -7,10 +7,11 @@ import {
   useCheckRecruitersFollowedQuery,
   useCheckSavedJobsQuery
 } from "@/services/user/userApi";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 const useDetailRecruiter = (id: string) => {
   const { user, isSignedIn } = useUser();
+  const [page, setPage] = useState(1);
 
   const {
     data: recruiterResp,
@@ -27,7 +28,7 @@ const useDetailRecruiter = (id: string) => {
     isLoading: isJobsLoading,
     isError: isJobsError
   } = useFetchJobsByRecruiterQuery(
-    { page: 1, size: 10, recruiterId: Number(id) },
+    { page, size: 9, recruiterId: Number(id) },
     { skip: !Number(id) }
   );
 
@@ -35,6 +36,8 @@ const useDetailRecruiter = (id: string) => {
     () => jobsResp?.data?.result || [],
     [jobsResp]
   );
+
+  const meta = useMemo(() => jobsResp?.data?.meta, [jobsResp]);
 
   const { data: checkSavedJobsData, isSuccess: isCheckSavedSuccess } =
     useCheckSavedJobsQuery(
@@ -82,6 +85,9 @@ const useDetailRecruiter = (id: string) => {
     recruiterJobs,
     isJobsLoading,
     isJobsError,
+    meta,
+    page,
+    setPage,
 
     // Saved jobs
     savedJobs,

@@ -59,7 +59,7 @@ export type UpdatePasswordResponse = IBackendRes<User>;
 export type ResetPasswordResponse = IBackendRes<unknown>;
 
 // Saved Jobs Responses
-export type GetSavedJobsResponse = IBackendRes<Job[]>;
+export type GetSavedJobsResponse = IBackendRes<IModelPaginate<Job>>;
 
 export type SaveJobsResponse = {
   userId: number;
