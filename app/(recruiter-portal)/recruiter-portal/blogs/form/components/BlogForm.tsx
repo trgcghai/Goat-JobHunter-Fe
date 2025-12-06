@@ -17,11 +17,12 @@ import { Input } from "@/components/ui/input";
 import MultipleSelector, { Option } from "@/components/ui/MultipleSelector";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2 } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 import RichTextEditor from "@/components/RichText/Editor";
-import React from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
+import { useGenerateDescriptionMutation, useGenerateTagsMutation } from "@/services/api";
 
 interface BlogFormProps {
   form: UseFormReturn<BlogFormData>;
@@ -35,6 +36,8 @@ interface BlogFormProps {
   isUploading: boolean;
 }
 
+const MAX_AI_CALLS = 3;
+
 const BlogForm = ({
   form,
   onSubmit,
@@ -44,9 +47,67 @@ const BlogForm = ({
   bannerUrl,
   onBannerChange,
   onFileSelect,
-  isUploading,
+  isUploading
 }: BlogFormProps) => {
   const isSubmitting = isCreating || isUpdating || isUploading;
+
+  const [descriptionCalls, setDescriptionCalls] = useState(0);
+  const [tagsCalls, setTagsCalls] = useState(0);
+
+  const [generateDescription, { isLoading: isGeneratingDescription }] = useGenerateDescriptionMutation();
+  const [generateTags, { isLoading: isGeneratingTags }] = useGenerateTagsMutation();
+
+  const handleGenerateDescription = async () => {
+    const content = form.getValues("content");
+
+    if (!content || content.trim().length < 50) {
+      toast.error("Vui lòng nhập nội dung bài viết trước (tối thiểu 50 ký tự)");
+      return;
+    }
+
+    if (descriptionCalls >= MAX_AI_CALLS) {
+      toast.error(`Bạn đã sử dụng hết ${MAX_AI_CALLS} lần tạo mô tả AI`);
+      return;
+    }
+
+    try {
+      const result = await generateDescription(content).unwrap();
+      if (result) {
+        form.setValue("description", result);
+        setDescriptionCalls(prev => prev + 1);
+        toast.success("Tạo mô tả AI thành công");
+      }
+    } catch (error) {
+      toast.error("Không thể tạo mô tả AI. Vui lòng thử lại.");
+      console.error(error);
+    }
+  };
+
+  const handleGenerateTags = async () => {
+    const content = form.getValues("content");
+
+    if (!content || content.trim().length < 50) {
+      toast.error("Vui lòng nhập nội dung bài viết trước (tối thiểu 50 ký tự)");
+      return;
+    }
+
+    if (tagsCalls >= MAX_AI_CALLS) {
+      toast.error(`Bạn đã sử dụng hết ${MAX_AI_CALLS} lần tạo thẻ AI`);
+      return;
+    }
+
+    try {
+      const result = await generateTags(content).unwrap();
+      if (result.data && Array.isArray(result.data)) {
+        form.setValue("tags", result.data);
+        setTagsCalls(prev => prev + 1);
+        toast.success("Tạo thẻ AI thành công");
+      }
+    } catch (error) {
+      toast.error("Không thể tạo thẻ AI. Vui lòng thử lại.");
+      console.error(error);
+    }
+  };
 
   return (
     <Form {...form}>
@@ -93,16 +154,12 @@ const BlogForm = ({
 
             <FormField
               control={form.control}
-              name="description"
+              name="content"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required>Mô tả ngắn</FormLabel>
+                  <FormLabel required>Nội dung bài viết</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Tóm tắt nội dung bài viết..."
-                      className="rounded-xl min-h-[100px]"
-                      {...field}
-                    />
+                    <RichTextEditor {...field} value={field.value!} onChange={field.onChange} />
                   </FormControl>
                   <FormDescription>Tối thiểu 50 ký tự</FormDescription>
                   <FormMessage />
@@ -112,14 +169,36 @@ const BlogForm = ({
 
             <FormField
               control={form.control}
-              name="content"
+              name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required>Nội dung bài viết</FormLabel>
+                  <div className="flex items-center justify-between">
+                    <FormLabel>Mô tả ngắn</FormLabel>
+                    <Button
+                      type="button"
+                      size="sm"
+                      className="rounded-xl"
+                      onClick={handleGenerateDescription}
+                      disabled={isGeneratingDescription || descriptionCalls >= MAX_AI_CALLS}
+                    >
+                      {isGeneratingDescription ? (
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      ) : (
+                        <Sparkles className="h-4 w-4 mr-2" />
+                      )}
+                      Tạo AI ({descriptionCalls}/{MAX_AI_CALLS})
+                    </Button>
+                  </div>
                   <FormControl>
-                    <RichTextEditor {...field} value={field.value} onChange={field.onChange} />
+                    <Textarea
+                      placeholder="Tóm tắt nội dung bài viết..."
+                      className="rounded-xl min-h-[100px]"
+                      {...field}
+                    />
                   </FormControl>
-                  <FormDescription>Tối thiểu 50 ký tự</FormDescription>
+                  <FormDescription>
+                    Không bắt buộc. Nếu bỏ trống, hệ thống sẽ tự động tạo mô tả.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -130,14 +209,30 @@ const BlogForm = ({
               name="tags"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required>Thẻ (Tags)</FormLabel>
+                  <div className="flex items-center justify-between">
+                    <FormLabel>Thẻ (Tags)</FormLabel>
+                    <Button
+                      type="button"
+                      size="sm"
+                      className="rounded-xl"
+                      onClick={handleGenerateTags}
+                      disabled={isGeneratingTags || tagsCalls >= MAX_AI_CALLS}
+                    >
+                      {isGeneratingTags ? (
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      ) : (
+                        <Sparkles className="h-4 w-4 mr-2" />
+                      )}
+                      Tạo AI ({tagsCalls}/{MAX_AI_CALLS})
+                    </Button>
+                  </div>
                   <FormControl>
                     <MultipleSelector
                       options={[]}
-                      value={field.value.map((tag) => ({
+                      value={field.value?.map((tag) => ({
                         label: tag,
                         value: tag
-                      }))}
+                      })) || []}
                       onChange={(selectedOptions: Option[]) => {
                         field.onChange(selectedOptions.map((opt) => opt.value));
                       }}
@@ -157,7 +252,7 @@ const BlogForm = ({
                     />
                   </FormControl>
                   <FormDescription>
-                    Chọn 1-10 thẻ. Nhập ít nhất 2 ký tự để tạo thẻ
+                    Không bắt buộc. Nếu bỏ trống, hệ thống sẽ tự động tạo thẻ.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -181,7 +276,8 @@ const BlogForm = ({
                           <RadioGroupItem value="false" />
                         </FormControl>
                         <FormLabel className="font-normal cursor-pointer">
-                          Công khai - <span className="text-muted-foreground">Bài viết sẽ được hiển thị ngay lập tức</span>
+                          Công khai - <span
+                          className="text-muted-foreground">Bài viết sẽ được hiển thị ngay lập tức</span>
                         </FormLabel>
                       </FormItem>
                       <FormItem className="flex items-center space-x-3 space-y-0">

@@ -8,12 +8,13 @@ export const blogSchema = z
       .min(10, "Tiêu đề phải có ít nhất 10 ký tự"),
     description: z
       .string()
-      .min(1, "Mô tả không được để trống")
-      .min(50, "Mô tả phải có ít nhất 50 ký tự"),
+      .min(50, "Mô tả phải có ít nhất 50 ký tự")
+      .optional()
+      .or(z.literal("")),
     content: z
       .string()
       .min(1, "Nội dung không được để trống")
-      .min(50, "Nội dung phải có ít nhất 50 ký tự"),
+      .min(100, "Nội dung phải có ít nhất 100 ký tự"),
     tags: z
       .array(z
         .string()
@@ -21,7 +22,9 @@ export const blogSchema = z
         .max(255, "Độ dài thẻ đối đa 255 ký tự")
       )
       .min(1, "Phải chọn ít nhất 1 thẻ")
-      .max(10, "Chỉ được chọn tối đa 10 thẻ"),
+      .max(10, "Chỉ được chọn tối đa 10 thẻ")
+      .optional()
+      .or(z.array(z.string()).length(0)),
     draft: z
       .boolean("Trạng thái bản nháp không hợp lệ")
   });

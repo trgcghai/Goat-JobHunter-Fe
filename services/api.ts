@@ -1,6 +1,7 @@
 import axiosInstance from "@/services/axios";
 import { BaseQueryFn, createApi } from "@reduxjs/toolkit/query/react";
 import { AxiosError, AxiosRequestConfig } from "axios";
+import { IBackendRes } from "@/types/api";
 
 const axiosBaseQuery =
   (
@@ -84,6 +85,22 @@ export const api = createApi({
         method: "GET"
       })
     }),
+
+    generateDescription: builder.mutation<string, string>({
+      query: (content: string) => ({
+        url: "/ai/generate/blogs/description",
+        method: "POST",
+        data: { content }
+      })
+    }),
+
+    generateTags: builder.mutation<IBackendRes<string[]>, string>({
+      query: (content: string) => ({
+        url: "/ai/generate/blogs/tags",
+        method: "POST",
+        data: { content }
+      })
+    })
   })
 });
 
@@ -91,4 +108,6 @@ export const {
   usePingQuery,
   useClearCookiesQuery,
   useBackupQuery,
+  useGenerateDescriptionMutation,
+  useGenerateTagsMutation
 } = api;
