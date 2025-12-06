@@ -29,6 +29,8 @@ import RecruiterInfo from "@/app/(main)/jobs/[id]/components/RecruiterInfo";
 import ErrorMessage from "@/components/common/ErrorMessage";
 import { HasApplicant } from "@/components/common/HasRole";
 import RichTextPreview from "@/components/RichText/Preview";
+import { useCountApplicationsByJobAndApplicantQuery } from "@/services/application/applicationApi";
+import { useMemo } from "react";
 
 export default function JobDetailPage() {
   const params = useParams<{ id: string }>();
@@ -61,6 +63,17 @@ export default function JobDetailPage() {
 
     handleOpenCVDialog
   } = useDetailJob(params.id);
+
+  const { data } = useCountApplicationsByJobAndApplicantQuery({
+    applicantId: user?.userId || -1,
+    jobId: job?.jobId || -1
+  }, {
+    skip: !user || !job
+  });
+
+  const count = useMemo(() => data?.data?.submittedApplications || 0, [data]);
+
+  const isCanApply = useMemo(() => count < 3, [count]);
 
   if (isLoading) {
     return <LoaderSpin />;
@@ -146,14 +159,20 @@ export default function JobDetailPage() {
                 <Card className="p-6 h-full">
                   <div className="space-y-3">
                     <HasApplicant user={user!}>
-                      <Button
-                        onClick={handleOpenCVDialog}
-                        disabled={!job.active}
-                        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-base rounded-xl"
-                      >
-                        <Send className="w-5 h-5" />
-                        {!job.active ? "Đã Đóng" : "Ứng Tuyển Ngay"}
-                      </Button>
+                      <div className={"flex items-center justify-end text-sm text-primary"}>
+                        Số lượng đã nộp: {count}/3
+                      </div>
+                      <div
+                        title={!isCanApply ? "Bạn đã đạt giới hạn ứng tuyển cho công việc này." : (!job.active ? "Công việc đã đóng, không thể ứng tuyển." : "")}>
+                        <Button
+                          onClick={handleOpenCVDialog}
+                          disabled={!job.active || !isCanApply}
+                          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-base rounded-xl"
+                        >
+                          <Send className="w-5 h-5" />
+                          {!job.active ? "Đã Đóng" : "Ứng Tuyển Ngay"}
+                        </Button>
+                      </div>
                     </HasApplicant>
 
                     <Button
@@ -170,10 +189,15 @@ export default function JobDetailPage() {
                       {isSaved ? "Bỏ Lưu Công Việc" : "Lưu Công Việc"}
                     </Button>
                   </div>
-                  <JobInfoSidebar
-                    job={job}
-                    numberOfApplications={numberOfApplications}
-                  />
+                  <JobInfoSidebar job={job} />
+                  <Separator />
+                  <div
+                    className="flex justify-between items-center bg-primary/10 px-4 py-2 mt-4 border border-primary rounded-xl">
+                    <span className="text-primary">Tổng đơn đã nộp:</span>
+                    <span className="text-primary font-semibold">
+                      {numberOfApplications}
+                    </span>
+                  </div>
                 </Card>
               </div>
             </div>

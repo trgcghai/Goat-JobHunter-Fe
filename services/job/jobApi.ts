@@ -257,6 +257,9 @@ export const jobApi = api.injectEndpoints({
           params,
           filterFields: ["fullName", "email"],
           textSearchFields: ["fullName", "email"],
+          nestedFields: {
+            email: "contact.email"
+          },
           defaultSort: "createdAt,desc",
         });
 

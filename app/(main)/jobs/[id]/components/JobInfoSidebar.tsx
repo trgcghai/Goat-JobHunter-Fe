@@ -1,5 +1,4 @@
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { Job } from "@/types/model";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { capitalize } from "lodash";
@@ -7,10 +6,9 @@ import { Building2 } from "lucide-react";
 
 interface JobInfoSidebarProps {
   job: Job;
-  numberOfApplications: number;
 }
 
-function JobInfoSidebar({ job, numberOfApplications }: JobInfoSidebarProps) {
+function JobInfoSidebar({ job }: JobInfoSidebarProps) {
   const infoItems = [
     {
       label: "Cấp độ",
@@ -50,13 +48,6 @@ function JobInfoSidebar({ job, numberOfApplications }: JobInfoSidebarProps) {
               </span>
             </div>
           ))}
-        </div>
-        <Separator className="my-4" />
-        <div className="flex justify-between items-center bg-primary/10 px-4 py-2 mt-4 border border-primary rounded-xl">
-          <span className="text-primary">Số lượng đơn đã nộp:</span>
-          <span className="text-primary font-semibold">
-            {numberOfApplications}
-          </span>
         </div>
       </div>
     </div>

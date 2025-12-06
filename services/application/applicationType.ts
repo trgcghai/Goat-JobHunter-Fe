@@ -44,9 +44,16 @@ export type FetchApplicationsByApplicantRequest = {
   applicantId?: number;
 };
 
+export type CountApplicationsRequest = {
+  applicantId: number;
+  jobId: number;
+}
+
 // Response Types
 export type ApplicationMutationResponse = IBackendRes<Application>;
 
 export type FetchApplicationsResponse = IBackendRes<IModelPaginate<Application>>;
 
 export type FetchApplicationByIdResponse = IBackendRes<Application>;
+
+export type CountApplicationsResponse = IBackendRes<{ submittedApplications: number }>;

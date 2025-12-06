@@ -32,8 +32,9 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import { IBackendError } from "@/types/api";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 const ACCEPTED_FILE_TYPES = {
   "application/pdf": [".pdf"],
   "application/msword": [".doc"],
@@ -118,9 +119,7 @@ export default function ResumeDialog({
       }
 
       // Step 1: Upload file
-      const uploadToast = toast.loading("Đang tải lên CV...", {
-        description: "Vui lòng đợi trong giây lát",
-      });
+      const uploadToast = toast.loading("Đang tải lên CV...");
 
       let resumeUrl: string;
       try {
@@ -142,9 +141,7 @@ export default function ResumeDialog({
       }
 
       // Step 2: Create application
-      const applicationToast = toast.loading("Đang gửi đơn ứng tuyển...", {
-        description: "Vui lòng đợi trong giây lát",
-      });
+      const applicationToast = toast.loading("Đang gửi đơn ứng tuyển...");
 
       try {
         await createApplication({
@@ -156,7 +153,6 @@ export default function ResumeDialog({
 
         toast.success("Ứng tuyển thành công!", {
           id: applicationToast,
-          description: `Bạn đã ứng tuyển vào vị trí ${job.title}`,
           duration: 5000,
         });
 
@@ -166,16 +162,21 @@ export default function ResumeDialog({
         setUploadedFile(null);
       } catch (applicationError) {
         console.error("Error creating application:", applicationError);
-        toast.error("Không thể gửi đơn ứng tuyển", {
+
+        if ((applicationError as IBackendError).data.message.includes("maximum of 3 applications")) {
+          toast.error("Bạn đã đạt đến giới hạn 3 đơn ứng tuyển cho công việc này.", {
+            id: applicationToast,
+          });
+          return;
+        }
+
+        toast.error("Không thể gửi đơn ứng tuyển. Vui lòng thử lại sau", {
           id: applicationToast,
-          description: "Vui lòng thử lại sau",
         });
       }
     } catch (error) {
       console.error("Unexpected error:", error);
-      toast.error("Có lỗi xảy ra", {
-        description: "Vui lòng thử lại sau",
-      });
+      toast.error("Có lỗi xảy ra. Vui lòng thử lại sau");
     }
   };
 

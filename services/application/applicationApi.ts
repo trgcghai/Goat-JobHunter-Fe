@@ -3,7 +3,7 @@ import { buildSpringQuery } from "@/utils/buildSpringQuery";
 import {
   AcceptApplicationStatusRequest,
   ApplicationIdRequest,
-  ApplicationMutationResponse,
+  ApplicationMutationResponse, CountApplicationsRequest, CountApplicationsResponse,
   CreateApplicationRequest,
   FetchApplicationByIdResponse,
   FetchApplicationsByApplicantRequest,
@@ -167,6 +167,15 @@ export const applicationApi = api.injectEndpoints({
         };
       },
       providesTags: ["Application"]
+    }),
+
+    countApplicationsByJobAndApplicant: builder.query<CountApplicationsResponse, CountApplicationsRequest>({
+      query: ({ jobId, applicantId }) => ({
+        url: `/applications/count`,
+        method: "GET",
+        params: { jobId, applicantId }
+      }),
+      providesTags: ["Application"]
     })
   })
 });
@@ -180,5 +189,6 @@ export const {
   useFetchApplicationsQuery,
   useFetchApplicationsByRecruiterQuery,
   useFetchApplicationsByCurrentApplicantQuery,
-  useFetchApplicationsByApplicantQuery
+  useFetchApplicationsByApplicantQuery,
+  useCountApplicationsByJobAndApplicantQuery
 } = applicationApi;

@@ -14,3 +14,13 @@ export type IModelPaginate<T> = {
   };
   result: T[];
 };
+
+export type IBackendError = {
+  data: {
+    data: null;
+    error: string;
+    message: string;
+    statusCode: number | string;
+  },
+  status: number;
+}
