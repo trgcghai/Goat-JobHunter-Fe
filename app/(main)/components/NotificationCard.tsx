@@ -1,26 +1,26 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { NotificationType } from "@/types/model";
 import { formatDateTime } from "@/utils/formatDate";
-import { CheckCheck } from "lucide-react";
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import { getNotificationContent } from "@/utils/getNotificationContent";
+import { NotificationTypeEnum } from "@/types/enum";
+import { useRouter } from "next/navigation";
 
 interface NotificationCardProps {
   notification: NotificationType;
-  markAsRead: (id: number) => void;
+  markAsRead: (id: number) => Promise<void>;
   variant?: "default" | "compact";
 }
 
 const NotificationCard = ({
-  notification,
-  markAsRead,
-  variant = "default"
-}: NotificationCardProps) => {
-
+                            notification,
+                            markAsRead,
+                            variant = "default"
+                          }: NotificationCardProps) => {
+  const router = useRouter();
   const sender = useMemo(() => notification.actor.fullName || notification.actor.username || "Người dùng ẩn danh", [notification.actor]);
 
   const { icon, message } = getNotificationContent(notification, {
@@ -31,14 +31,27 @@ const NotificationCard = ({
 
   const hasAvatar = notification.actor.avatar && !imageError;
 
+  const url = useMemo(() => {
+    const isLink = [NotificationTypeEnum.REPLY, NotificationTypeEnum.COMMENT, NotificationTypeEnum.LIKE].includes(notification.type);
+    if (isLink) {
+      return `/blogs/${notification.blog.blogId}`;
+    }
+    return "#";
+  }, [notification]);
+
+  const handleClick = async () => {
+    await markAsRead(notification.notificationId!);
+    router.push(url);
+  };
+
   if (variant === "compact") {
     return (
       <div
         className={cn(
-          "px-4 py-3 hover:bg-accent/50 transition-colors group cursor-pointer",
+          "px-4 py-3 hover:bg-accent/50 transition-colors group cursor-pointer group",
           !notification.seen && "bg-primary/5"
         )}
-        onClick={() => markAsRead(notification.notificationId!)}
+        onClick={handleClick}
       >
         <div className="flex gap-3">
           {hasAvatar ? (
@@ -75,29 +88,13 @@ const NotificationCard = ({
                 {message}
               </p>
               {!notification.seen && (
-                <span className="h-2 w-2 rounded-full bg-primary shrink-0 mt-1" />
+                <span className="h-2 w-2 rounded-full bg-primary shrink-0 mt-1 inline group-hover:hidden" />
               )}
             </div>
             <p className="text-xs text-muted-foreground">
               {formatDateTime(notification.createdAt)}
             </p>
           </div>
-        </div>
-        <div className="flex items-center justify-end gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          {!notification.seen && (
-            <Button
-              size="sm"
-              className="h-7 text-xs rounded-xl"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                markAsRead(notification.notificationId!);
-              }}
-            >
-              <CheckCheck className="h-3 w-3 mr-1" />
-              Đã đọc
-            </Button>
-          )}
         </div>
       </div>
     );
@@ -109,7 +106,7 @@ const NotificationCard = ({
         "p-4 cursor-pointer hover:shadow-md transition-shadow group",
         !notification.seen && "bg-primary/5 border-primary/30"
       )}
-      onClick={() => markAsRead(notification.notificationId!)}
+      onClick={handleClick}
     >
       <div className="flex items-start gap-4">
         {hasAvatar ? (
@@ -154,21 +151,6 @@ const NotificationCard = ({
           </p>
         </div>
       </div>
-      {!notification.seen &&
-        <div className="flex items-center justify-end gap-2 mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button
-            size="sm"
-            className="h-7 text-xs rounded-xl"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              markAsRead(notification.notificationId!);
-            }}
-          >
-            <CheckCheck className="h-3 w-3 mr-1" />
-            Đã đọc
-          </Button>
-        </div>}
     </Card>
   );
 };
