@@ -52,7 +52,7 @@ export const blogApi = api.injectEndpoints({
           params,
           filterFields: ["title", "draft", "enabled"],
           textSearchFields: ["title"],
-          defaultSort: "createdAt,updatedAt,desc"
+          defaultSort: "createdAt,desc"
         });
 
         return {

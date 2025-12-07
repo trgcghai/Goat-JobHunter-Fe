@@ -129,7 +129,25 @@ export const jobColumns: ColumnDef<Job>[] = [
   }
 ];
 
-export const recruiterJobColumns: ColumnDef<Job>[] = jobColumns;
+export const recruiterJobColumns: ColumnDef<Job>[] = [
+  ...jobColumns.slice(0, 5),
+  {
+    accessorKey: "enabled",
+    enableSorting: false,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Ẩn / Hiện" />
+    ),
+    cell: ({ row }) => {
+      const enabled = row.original.enabled;
+      return (
+        <Badge variant={enabled ? "default" : "destructive"}>
+          {enabled ? "Đang hiển thị" : "Đang ẩn"}
+        </Badge>
+      );
+    }
+  },
+  ...jobColumns.slice(5)
+];
 
 export const adminJobColumns: ColumnDef<Job>[] = [
   ...jobColumns.slice(0, 1),

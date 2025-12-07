@@ -64,7 +64,7 @@ export const jobApi = api.injectEndpoints({
           nestedArrayFields: {
             skills: "skills.name"
           },
-          defaultSort: "updatedAt,desc",
+          defaultSort: "createdAt,desc",
           sortableFields: ["title", "salary", "createdAt", "updatedAt"]
         });
 
@@ -109,7 +109,7 @@ export const jobApi = api.injectEndpoints({
           nestedArrayFields: {
             skills: "skills.skillId"
           },
-          defaultSort: "updatedAt,desc",
+          defaultSort: "createdAt,desc",
           sortableFields: ["title", "salary", "createdAt", "updatedAt"]
         });
 
@@ -142,7 +142,7 @@ export const jobApi = api.injectEndpoints({
           nestedArrayFields: {
             skills: "skills.skillId"
           },
-          defaultSort: "updatedAt,desc",
+          defaultSort: "createdAt,desc",
           sortableFields: ["updatedAt", "createdAt"]
         });
 
@@ -174,7 +174,7 @@ export const jobApi = api.injectEndpoints({
           nestedArrayFields: {
             skills: "skills.name"
           },
-          defaultSort: "updatedAt,desc",
+          defaultSort: "createdAt,desc",
           sortableFields: ["title", "salary", "createdAt", "updatedAt"]
         });
         return {
@@ -205,7 +205,7 @@ export const jobApi = api.injectEndpoints({
           nestedArrayFields: {
             skills: "skills.name"
           },
-          defaultSort: "updatedAt,desc",
+          defaultSort: "createdAt,desc",
           sortableFields: ["title", "salary", "createdAt", "updatedAt"]
         });
 
