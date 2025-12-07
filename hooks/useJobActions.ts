@@ -16,6 +16,7 @@ import {
 import { Job } from "@/types/model";
 import { useCallback } from "react";
 import { toast } from "sonner";
+import { JobActionType } from "@/types/enum";
 
 const useJobActions = () => {
   const { user, isSignedIn } = useUser();
@@ -266,7 +267,7 @@ const useJobActions = () => {
   const handleEnableJobs = useCallback(
     async (jobIds: number[]) => {
       try {
-        await enableJobs({ jobIds, reason: "", mode: "accept" }).unwrap();
+        await enableJobs({ jobIds, reason: "", mode: JobActionType.ACCEPT }).unwrap();
         toast.success(
           `Đã hiển thị ${jobIds.length} công việc thành công.`
         );
@@ -282,7 +283,7 @@ const useJobActions = () => {
   const handleDisableJobs = useCallback(
     async (jobIds: number[], reason?: string) => {
       try {
-        await disableJobs({ jobIds, reason, mode: "reject" }).unwrap();
+        await disableJobs({ jobIds, reason, mode: JobActionType.REJECT }).unwrap();
         toast.success(`Đã ẩn ${jobIds.length} công việc.`);
       } catch (error) {
         console.error("Failed to disable jobs:", error);

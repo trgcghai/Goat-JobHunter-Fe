@@ -154,7 +154,6 @@ export const adminJobColumns: ColumnDef<Job>[] = [
       <DataTableColumnHeader column={column} title="Ẩn / Hiện" />
     ),
     cell: ({ row }) => {
-      console.log(row);
       const enabled = row.original.enabled;
       return (
         <Badge variant={enabled ? "default" : "destructive"}>

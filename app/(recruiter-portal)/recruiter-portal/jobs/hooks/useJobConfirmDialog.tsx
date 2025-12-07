@@ -1,12 +1,14 @@
 import { useMemo, useState } from "react";
 
-export type JobActionType = "activate" | "deactivate" | "delete" | null;
+export type JobActionType = "activate" | "deactivate" | "delete" | "enable" | "disable" | null;
 
 interface UseJobConfirmDialogProps {
-  onConfirm: (actionType: JobActionType, ids: number[]) => Promise<void>;
+  onConfirm: (actionType: JobActionType, ids: number[], reason?: string) => Promise<void>;
   isActivating?: boolean;
   isDeactivating?: boolean;
   isDeleting?: boolean;
+  isEnabling?: boolean;
+  isDisabling?: boolean;
 }
 
 export const useJobConfirmDialog = ({
@@ -14,6 +16,8 @@ export const useJobConfirmDialog = ({
   isActivating = false,
   isDeactivating = false,
   isDeleting = false,
+  isEnabling = false,
+  isDisabling = false,
 }: UseJobConfirmDialogProps) => {
   const [actionType, setActionType] = useState<JobActionType>(null);
   const [targetIds, setTargetIds] = useState<number[]>([]);
@@ -35,9 +39,9 @@ export const useJobConfirmDialog = ({
     setTargetTitle("");
   };
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (reason?: string) => {
     try {
-      await onConfirm(actionType, targetIds);
+      await onConfirm(actionType, targetIds, reason);
       closeDialog();
     } catch (error) {
       console.error("Action failed", error);
@@ -108,6 +112,25 @@ export const useJobConfirmDialog = ({
       };
     }
 
+    if (actionType === "enable") {
+      return {
+        title: "Hiển thị công việc?",
+        description: targetTitle ? (
+          <>
+            Công việc{" "}
+            <span className="font-bold text-foreground">
+              &quot;{targetTitle}&quot;
+            </span>{" "}
+            sẽ hiển thị công khai trở lại.
+          </>
+        ) : (
+          <>{count} công việc sẽ hiển thị công khai trở lại.</>
+        ),
+        confirmText: "Hiển thị",
+        confirmBtnClass: "bg-green-600 text-white hover:bg-green-700",
+      };
+    }
+
     return { title: "", description: null };
   }, [actionType, targetIds.length, targetTitle]);
 
@@ -117,6 +140,6 @@ export const useJobConfirmDialog = ({
     openDialog,
     closeDialog,
     handleConfirm,
-    isLoading: isActivating || isDeactivating || isDeleting,
+    isLoading: isActivating || isDeactivating || isDeleting || isEnabling || isDisabling,
   };
 };

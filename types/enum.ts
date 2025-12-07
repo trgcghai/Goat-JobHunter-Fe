@@ -49,6 +49,11 @@ export enum BlogActionType {
   ACCEPT = "ACCEPT"
 }
 
+export enum JobActionType {
+  REJECT = "REJECT",
+  ACCEPT = "ACCEPT"
+}
+
 export enum NotificationTypeEnum {
   LIKE = "LIKE",
   COMMENT = "COMMENT",

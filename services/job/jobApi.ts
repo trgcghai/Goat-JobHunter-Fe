@@ -13,7 +13,9 @@ import {
   JobIdRequest,
   JobIdsRequest,
   JobMutationResponse,
-  ToggleJobActiveResponse, ToggleJobEnabledRequest, ToggleJobEnabledResponse,
+  ToggleJobActiveResponse,
+  ToggleJobEnabledRequest,
+  ToggleJobEnabledResponse,
   UpdateJobRequest
 } from "./jobType";
 
@@ -237,7 +239,7 @@ export const jobApi = api.injectEndpoints({
     enabledJobs: builder.mutation<ToggleJobEnabledResponse, ToggleJobEnabledRequest>({
       query: (data) => ({
         url: "/jobs/enabled",
-        method: "PATCH",
+        method: "PUT",
         data
       }),
       invalidatesTags: ["Job"]
@@ -246,7 +248,7 @@ export const jobApi = api.injectEndpoints({
     disabledJobs: builder.mutation<ToggleJobEnabledResponse, ToggleJobEnabledRequest>({
       query: (data) => ({
         url: "/jobs/disabled",
-        method: "PATCH",
+        method: "PUT",
         data
       }),
       invalidatesTags: ["Job"]
@@ -280,7 +282,7 @@ export const jobApi = api.injectEndpoints({
           nestedFields: {
             email: "contact.email"
           },
-          defaultSort: "createdAt,desc",
+          defaultSort: "createdAt,desc"
         });
 
         return {

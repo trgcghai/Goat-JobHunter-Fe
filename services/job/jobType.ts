@@ -1,5 +1,6 @@
 import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type { Applicant, Job } from "@/types/model";
+import { JobActionType } from "@/types/enum";
 
 // Base Request Types
 export type JobIdRequest = string;
@@ -10,7 +11,7 @@ export type JobIdsRequest = {
 
 export type ToggleJobEnabledRequest = JobIdsRequest & {
   reason?: string;
-  mode: "delete" | "reject" | "accept";
+  mode: JobActionType;
 };
 
 // Base Job Content
