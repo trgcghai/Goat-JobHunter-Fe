@@ -114,7 +114,7 @@ export default function RecruiterJobFilter({
             }
             onValueChange={(value) => {
               const activeState =
-                value === "all" ? null : value === "active" ? true : false;
+                value === "all" ? null : value === "active";
               onFilterChange({ active: activeState });
             }}
           >

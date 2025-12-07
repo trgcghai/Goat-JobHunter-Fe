@@ -5,12 +5,12 @@ import { Job } from "@/types/model";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import ErrorMessage from "@/components/common/ErrorMessage";
 import LoaderSpin from "@/components/common/LoaderSpin";
-import BlogActions from "@/components/management/blogs/BlogActions";
 import { DataTablePagination } from "@/components/dataTable/DataTablePagination";
 import { useJobAdminManagement } from "@/app/(admin)/admin/job/hooks/useJobAdminManagement";
 import JobsTable from "@/components/management/jobs/JobsTable";
 import { adminJobColumns } from "@/components/management/jobs/JobColumnConfig";
 import AdminJobFilter from "@/components/management/jobs/admin/AdminJobFilter";
+import JobActions from "@/components/management/jobs/JobActions";
 
 const AdminJobPage = () => {
   const {
@@ -54,7 +54,7 @@ const AdminJobPage = () => {
             </div>
           ) : (
             <>
-              <BlogActions
+              <JobActions
                 selectedCount={selectedItems.length}
                 selectedIds={selectedItems.map(j => j.jobId)}
               />

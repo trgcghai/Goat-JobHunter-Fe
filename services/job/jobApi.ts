@@ -56,7 +56,8 @@ export const jobApi = api.injectEndpoints({
             "salary",
             "active",
             "level",
-            "workingType"
+            "workingType",
+            "enabled"
           ],
           textSearchFields: ["title", "location"],
           nestedArrayFields: {
@@ -91,7 +92,8 @@ export const jobApi = api.injectEndpoints({
         const { params: queryParams } = buildSpringQuery({
           params: {
             ...params,
-            active: true
+            active: true,
+            enabled: true
           },
           filterFields: [
             "title",
@@ -99,7 +101,8 @@ export const jobApi = api.injectEndpoints({
             "salary",
             "active",
             "level",
-            "workingType"
+            "workingType",
+            "enabled"
           ],
           textSearchFields: ["title", "location"],
           nestedArrayFields: {
