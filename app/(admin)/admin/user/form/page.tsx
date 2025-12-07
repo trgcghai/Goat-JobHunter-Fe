@@ -98,8 +98,6 @@ const UserFormPage = () => {
     console.log(data);
     try {
       if (userId) {
-        toast.success("Cập nhật người dùng thành công!");
-
         switch (data.role) {
           case ROLE.APPLICANT:
             await handleUpdateApplicant(Number(userId), {
@@ -129,7 +127,7 @@ const UserFormPage = () => {
           default:
             break;
         }
-
+        toast.success("Cập nhật người dùng thành công!");
       } else {
         toast.success("Thêm người dùng thành công!");
       }
