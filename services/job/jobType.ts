@@ -8,6 +8,11 @@ export type JobIdsRequest = {
   jobIds: number[];
 };
 
+export type ToggleJobEnabledRequest = JobIdsRequest & {
+  reason?: string;
+  mode: "delete" | "reject" | "accept";
+};
+
 // Base Job Content
 type JobContent = {
   title: string;
@@ -75,6 +80,8 @@ export type ToggleJobActiveResponse = IBackendRes<
     message: string;
   }[]
 >;
+
+export type ToggleJobEnabledResponse = IBackendRes<{ jobId: number, enabled: boolean }[]>
 
 export type JobApplicationCountResponse = IBackendRes<
   {

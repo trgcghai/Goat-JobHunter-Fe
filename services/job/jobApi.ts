@@ -13,12 +13,11 @@ import {
   JobIdRequest,
   JobIdsRequest,
   JobMutationResponse,
-  ToggleJobActiveResponse,
+  ToggleJobActiveResponse, ToggleJobEnabledRequest, ToggleJobEnabledResponse,
   UpdateJobRequest
 } from "./jobType";
 
 export const jobApi = api.injectEndpoints({
-  overrideExisting: true,
   endpoints: (builder) => ({
     createJob: builder.mutation<JobMutationResponse, CreateJobRequest>({
       query: (job) => ({
@@ -235,6 +234,24 @@ export const jobApi = api.injectEndpoints({
       invalidatesTags: ["Job"]
     }),
 
+    enabledJobs: builder.mutation<ToggleJobEnabledResponse, ToggleJobEnabledRequest>({
+      query: (data) => ({
+        url: "/jobs/enabled",
+        method: "PATCH",
+        data
+      }),
+      invalidatesTags: ["Job"]
+    }),
+
+    disabledJobs: builder.mutation<ToggleJobEnabledResponse, ToggleJobEnabledRequest>({
+      query: (data) => ({
+        url: "/jobs/disabled",
+        method: "PATCH",
+        data
+      }),
+      invalidatesTags: ["Job"]
+    }),
+
     countApplications: builder.query<
       JobApplicationCountResponse,
       JobIdsRequest
@@ -289,6 +306,8 @@ export const {
   useFetchJobsByCurrentRecruiterQuery,
   useActivateJobsMutation,
   useDeactivateJobsMutation,
+  useEnabledJobsMutation,
+  useDisabledJobsMutation,
   useCountApplicationsQuery,
   useFetchApplicantsSuitableForJobQuery
 } = jobApi;
