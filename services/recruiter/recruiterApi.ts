@@ -35,7 +35,7 @@ export const recruiterApi = api.injectEndpoints({
         method: "PUT",
         data
       }),
-      invalidatesTags: ["Recruiter", "Account"]
+      invalidatesTags: ["Recruiter", "Account", "User"]
     }),
 
     deleteRecruiter: builder.mutation<

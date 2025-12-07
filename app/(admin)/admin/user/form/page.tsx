@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -8,7 +8,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,28 +16,28 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { ROLE } from "@/constants/constant";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { User } from "@/types/model";
 import Link from "next/link";
+import { useFetchUserByIdQuery } from "@/services/user/userApi";
+import LoaderSpin from "@/components/common/LoaderSpin";
+import { useUser } from "@/hooks/useUser";
 
 const userFormSchema = z.object({
   email: z.string().email("Email không hợp lệ"),
-  role: z.enum(ROLE, {
-    error: "Vui lòng chọn loại người dùng",
-  }),
+  role: z.enum(ROLE),
   fullName: z.string().optional(),
   username: z.string().optional(),
-  phoneNumber: z.string().optional(),
-  address: z.string().optional(),
+  phone: z.string().optional(),
+  address: z.string().optional()
 });
 
 type UserFormData = z.infer<typeof userFormSchema>;
@@ -46,8 +46,21 @@ const UserFormPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const userId = searchParams.get("userId");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isFetching, setIsFetching] = useState(false);
+  const [isFormReady, setIsFormReady] = useState(false);
+  const { isUpdatingApplicant, isUpdatingRecruiter, handleUpdateApplicant, handleUpdateRecruiter } = useUser();
+  const isLoading = useMemo(() => isUpdatingApplicant || isUpdatingRecruiter, [isUpdatingApplicant, isUpdatingRecruiter]);
+
+  const {
+    data: userData,
+    isLoading: isLoadingUser,
+    isFetching: isFetchingUser,
+    isSuccess,
+    isError
+  } = useFetchUserByIdQuery(Number(userId), {
+    skip: !userId
+  });
+
+  const user = useMemo(() => userData?.data, [userData]);
 
   const form = useForm<UserFormData>({
     resolver: zodResolver(userFormSchema),
@@ -56,65 +69,68 @@ const UserFormPage = () => {
       role: ROLE.APPLICANT,
       fullName: "",
       username: "",
-      phoneNumber: "",
-      address: "",
-    },
+      phone: "",
+      address: ""
+    }
   });
 
   useEffect(() => {
-    if (userId) {
-      fetchUser(userId);
+    if (!userId || (userId && (isSuccess || isError))) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsFormReady(true);
     }
-  }, [userId]);
+  }, [userId, isSuccess, isError]);
 
-  const fetchUser = async (id: string) => {
-    setIsFetching(true);
-    try {
-      // TODO: Call API to get user details
-      // const response = await getUserById(id);
-      // const user: User = response.data;
-
-      // Mock data for demonstration
-      const user: User = {
-        userId: parseInt(id),
-        email: "user@example.com",
-        role: { name: ROLE.APPLICANT },
-        fullName: "John Doe",
-        username: "johndoe",
-        contact: {
-          phoneNumber: "0123456789",
-          address: "123 Main St",
-        },
-      } as any;
-
+  useEffect(() => {
+    if (user && isSuccess) {
       form.reset({
-        email: user.contact.email,
-        role: user.role.name as any,
+        email: user.contact?.email || "",
+        role: user.role?.name as typeof ROLE.APPLICANT | typeof ROLE.HR | typeof ROLE.SUPER_ADMIN,
         fullName: user.fullName || "",
         username: user.username || "",
-        phoneNumber: user.contact.phone || "",
-        address: user.address || "",
+        phone: user.contact?.phone || "",
+        address: user.address || ""
       });
-    } catch (error) {
-      console.error("Failed to fetch user:", error);
-      toast.error("Không thể tải thông tin người dùng");
-      router.push("/admin/user");
-    } finally {
-      setIsFetching(false);
     }
-  };
+  }, [form, user, isSuccess]);
 
   const handleSubmit = async (data: UserFormData) => {
-    setIsLoading(true);
     console.log(data);
     try {
       if (userId) {
-        // TODO: Call API to update user
-        // await updateUser(userId, data);
         toast.success("Cập nhật người dùng thành công!");
+
+        switch (data.role) {
+          case ROLE.APPLICANT:
+            await handleUpdateApplicant(Number(userId), {
+              fullName: data.fullName,
+              username: data.username,
+              address: data.address,
+              contact: {
+                phone: data.phone || "",
+                email: data.email
+              }
+            });
+            break;
+          case ROLE.HR:
+            await handleUpdateRecruiter(Number(userId), {
+              fullName: data.fullName,
+              username: data.username,
+              address: data.address,
+              contact: {
+                phone: data.phone || "",
+                email: data.email
+              }
+            });
+            break;
+          case ROLE.SUPER_ADMIN:
+            // Handle SUPER_ADMIN update if needed
+            break;
+          default:
+            break;
+        }
+
       } else {
-        // TODO: Call API to create user
-        // await createUser(data);
         toast.success("Thêm người dùng thành công!");
       }
       router.push("/admin/user");
@@ -125,67 +141,80 @@ const UserFormPage = () => {
           ? "Không thể cập nhật người dùng"
           : "Không thể thêm người dùng"
       );
-    } finally {
-      setIsLoading(false);
     }
   };
 
-  if (isFetching) {
+  if (isLoadingUser || isFetchingUser) {
+    return <LoaderSpin />;
+  }
+
+  if (isError) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+      <div className="space-y-4 max-w-7xl mx-auto">
+        <Link href="/admin/user">
+          <Button variant="link" className="rounded-xl p-0">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Quay lại
+          </Button>
+        </Link>
+        <Card className="p-6">
+          <div className="text-center">
+            <p className="text-lg font-medium text-destructive">
+              Không tìm thấy người dùng
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              Người dùng không tồn tại hoặc đã bị xóa
+            </p>
+          </div>
+        </Card>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-7xl mx-auto">
       <div className="space-y-2">
-        <Link href="/recruiter-portal/jobs">
+        <Link href="/admin/user">
           <Button variant="link" className="rounded-xl mb-4 p-0">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Quay lại
           </Button>
         </Link>
         <h1 className="text-2xl font-bold">
-          {userId ? "Chỉnh sửa người dùng" : "Thêm người dùng mới"}
+          {user ? "Chỉnh sửa người dùng" : "Tạo tài khoản người dùng"}
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
-          {userId
+          {user
             ? "Cập nhật thông tin người dùng"
-            : "Điền thông tin để tạo người dùng mới"}
+            : "Nhập thông tin của bạn bên dưới để tạo tài khoản người dùng."}
         </p>
       </div>
 
-      <Card>
-        <CardHeader>
-          <h1 className="text-base font-semibold">
-            Thông tin người dùng
-          </h1>
-          {!userId && <p className={"text-muted-foreground text-sm"}>
-            Các thông tin này sẽ được gửi về email của người dùng cùng với mật khẩu mặc định để đăng nhập
-          </p>}
-        </CardHeader>
+      {!isFormReady && <LoaderSpin />}
 
-        <CardContent>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(handleSubmit)}
-              className="space-y-6"
-            >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {isFormReady && (
+        <Card>
+          <CardContent className="pt-6">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(handleSubmit)}
+                className="space-y-6"
+              >
                 <FormField
                   control={form.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel required>Email</FormLabel>
+                      <FormLabel required className="capitalize">
+                        Email
+                      </FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="email@example.com"
-                          {...field}
-                          disabled={isLoading || !!userId}
+                          type="email"
+                          placeholder="user@example.com"
                           className="rounded-xl"
+                          disabled={isLoading || !!userId}
+                          {...field}
                         />
                       </FormControl>
                       <FormMessage />
@@ -198,20 +227,20 @@ const UserFormPage = () => {
                   name="role"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel required>Loại người dùng</FormLabel>
+                      <FormLabel required>Vai trò</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         value={field.value}
-                        disabled={isLoading}
+                        disabled={isLoading || !!userId}
                       >
                         <FormControl>
                           <SelectTrigger className="rounded-xl w-full">
-                            <SelectValue placeholder="Chọn loại người dùng" />
+                            <SelectValue placeholder="Chọn vai trò" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent className="rounded-xl">
                           <SelectItem value={ROLE.APPLICANT}>
-                            Người dùng
+                            Ứng viên
                           </SelectItem>
                           <SelectItem value={ROLE.HR}>
                             Nhà tuyển dụng
@@ -226,97 +255,101 @@ const UserFormPage = () => {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="fullName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Họ và tên</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Nguyễn Văn A"
-                          {...field}
-                          disabled={isLoading}
-                          className="rounded-xl"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="fullName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="capitalize">
+                          Họ và tên
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="text"
+                            placeholder="Nguyễn Văn A"
+                            className="rounded-xl"
+                            disabled={isLoading}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="username"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Tên đăng nhập</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="username"
-                          {...field}
-                          disabled={isLoading}
-                          className="rounded-xl"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    control={form.control}
+                    name="username"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="capitalize">
+                          Tên hiển thị
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="text"
+                            placeholder="nguyenvana"
+                            className="rounded-xl"
+                            disabled={isLoading}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="phoneNumber"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Số điện thoại</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="0123456789"
-                          {...field}
-                          disabled={isLoading}
-                          className="rounded-xl"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="capitalize">
+                          Số điện thoại
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="tel"
+                            placeholder="0123456789"
+                            className="rounded-xl"
+                            maxLength={10}
+                            disabled={isLoading}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="address"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Địa chỉ</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="123 Đường ABC, Quận XYZ"
-                          {...field}
-                          disabled={isLoading}
-                          className="rounded-xl"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+                  <FormField
+                    control={form.control}
+                    name="address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="capitalize">
+                          Địa chỉ
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="text"
+                            placeholder="123 Đường ABC, Quận 1"
+                            className="rounded-xl"
+                            disabled={isLoading}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-              <div className="flex justify-end gap-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => router.push("/admin/user")}
-                  disabled={isLoading}
-                  className="rounded-xl"
-                >
-                  Hủy
-                </Button>
                 <Button
                   type="submit"
+                  className="rounded-xl w-full"
                   disabled={isLoading}
-                  className="rounded-xl"
                 >
                   {isLoading ? (
                     <>
@@ -326,14 +359,14 @@ const UserFormPage = () => {
                   ) : userId ? (
                     "Cập nhật"
                   ) : (
-                    "Thêm người dùng"
+                    "Tạo tài khoản"
                   )}
                 </Button>
-              </div>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

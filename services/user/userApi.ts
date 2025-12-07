@@ -48,6 +48,14 @@ export const userApi = api.injectEndpoints({
       providesTags: ["User"]
     }),
 
+    fetchUserById: builder.query({
+      query: (userId: number) => ({
+        url: `/users/${userId}`,
+        method: "GET"
+      }),
+      providesTags: (result, error, userId) => [{ type: "User", id: userId }]
+    }),
+
     fetchUserByEmail: builder.mutation<FetchUserByEmailResponse, void>({
       query: () => ({
         url: "/users",
@@ -86,12 +94,12 @@ export const userApi = api.injectEndpoints({
       providesTags: (result) =>
         result?.data
           ? [
-              ...result.data.result.map((job) => ({
-                type: "SavedJob" as const,
-                id: job.jobId
-              })),
-              { type: "SavedJob", id: "LIST" }
-            ]
+            ...result.data.result.map((job) => ({
+              type: "SavedJob" as const,
+              id: job.jobId
+            })),
+            { type: "SavedJob", id: "LIST" }
+          ]
           : [{ type: "SavedJob", id: "LIST" }]
     }),
 
@@ -107,9 +115,9 @@ export const userApi = api.injectEndpoints({
       providesTags: (_, __, arg) =>
         arg.jobIds
           ? arg.jobIds.map((jobId) => ({
-              type: "SavedJob" as const,
-              id: jobId
-            }))
+            type: "SavedJob" as const,
+            id: jobId
+          }))
           : []
     }),
 
@@ -204,12 +212,13 @@ export const userApi = api.injectEndpoints({
         data
       }),
       invalidatesTags: ["User", "Recruiter", "Applicant"]
-    }),
-  }),
+    })
+  })
 });
 
 export const {
   useFetchUsersQuery,
+  useFetchUserByIdQuery,
   useFetchUserByEmailMutation,
   useUpdatePasswordMutation,
   useResetPasswordMutation,

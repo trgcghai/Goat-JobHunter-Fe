@@ -35,7 +35,7 @@ export const applicantApi = api.injectEndpoints({
         method: "PUT",
         data
       }),
-      invalidatesTags: ["Applicant", "Account"]
+      invalidatesTags: ["Applicant", "Account", "User"]
     }),
 
     deleteApplicant: builder.mutation<
