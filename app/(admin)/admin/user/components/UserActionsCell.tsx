@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import type { User } from "@/types/model";
 import {
   BriefcaseBusiness,
-  CheckCircle,
+  CheckCircle, Edit,
   FileUser,
   XCircle
 } from "lucide-react";
@@ -15,6 +15,7 @@ import JobListDialog from "@/app/(admin)/admin/user/components/JobListDialog";
 import { useState } from "react";
 import ApplicationListDialog from "@/app/(admin)/admin/user/components/ApplicationListDialog";
 import { HasApplicant, HasRecruiter } from "@/components/common/HasRole";
+import Link from "next/link";
 
 interface UserActionsCellProps {
   user: User;
@@ -53,6 +54,38 @@ export function UserActionsCell({ user }: UserActionsCellProps) {
 
   return (
     <div className={"flex gap-2 items-center"}>
+      <Link href={`/admin/user/form?userId=${user.userId}`}>
+        <Button
+          variant="outline"
+          size="icon"
+          className="rounded-xl"
+          title="Chỉnh sửa thông tin người dùng"
+        >
+          <Edit className="h-4 w-4" />
+        </Button>
+      </Link>
+      <HasApplicant user={user}>
+        <Button
+          variant="outline"
+          size="icon"
+          className="rounded-xl"
+          title={"Xem các đơn ứng tuyển của người dùng này"}
+          onClick={() => setIsApplicationListOpen(true)}
+        >
+          <FileUser className="h-4 w-4" />
+        </Button>
+      </HasApplicant>
+      <HasRecruiter user={user}>
+        <Button
+          variant="outline"
+          size="icon"
+          className="rounded-xl"
+          title={"Xem các công việc của người dùng này"}
+          onClick={() => setIsJobListOpen(true)}
+        >
+          <BriefcaseBusiness className="h-4 w-4" />
+        </Button>
+      </HasRecruiter>
       {user.enabled ? (
         <Button
           variant="outline"
@@ -74,28 +107,6 @@ export function UserActionsCell({ user }: UserActionsCellProps) {
           <CheckCircle className="h-4 w-4" />
         </Button>
       )}
-      <HasApplicant user={user}>
-        <Button
-          variant="outline"
-          size="icon"
-          className="rounded-xl"
-          title={"Xem các đơn ứng tuyển của người dùng này"}
-          onClick={() => setIsApplicationListOpen(true)}
-        >
-          <FileUser className="h-4 w-4" />
-        </Button>
-      </HasApplicant>
-      <HasRecruiter user={user}>
-        <Button
-          variant="outline"
-          size="icon"
-          className="rounded-xl"
-          title={"Xem các công việc của người dùng này"}
-          onClick={() => setIsJobListOpen(true)}
-        >
-          <BriefcaseBusiness  className="h-4 w-4" />
-        </Button>
-      </HasRecruiter>
 
       <ConfirmDialog
         open={!!actionType}
