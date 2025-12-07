@@ -28,6 +28,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import Image from "next/image";
 
 export function LoginForm({
   className,
@@ -87,6 +88,15 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6 w-md", className)} {...props}>
       <Card>
         <CardHeader>
+          <Link href="/" className="flex items-center gap-2 mb-4">
+            <Image
+              src="/logo.png"
+              alt="GOAT Logo"
+              className=""
+              width={120}
+              height={80}
+            />
+          </Link>
           <CardTitle>Đăng nhập vào tài khoản của bạn</CardTitle>
           <CardDescription>
             Nhập email của bạn bên dưới để đăng nhập vào tài khoản của bạn.

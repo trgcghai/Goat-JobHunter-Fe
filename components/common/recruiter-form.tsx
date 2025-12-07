@@ -34,6 +34,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import Image from "next/image";
 
 interface RecruiterFormProps extends React.ComponentProps<"div"> {
   signUpType: SignUpType;
@@ -97,6 +98,15 @@ export function RecruiterForm({
     <div className={cn("flex flex-col gap-6 w-2xl", className)} {...props}>
       <Card>
         <CardHeader>
+          <Link href="/" className="flex items-center gap-2 mb-4">
+            <Image
+              src="/logo.png"
+              alt="GOAT Logo"
+              className=""
+              width={120}
+              height={80}
+            />
+          </Link>
           <CardTitle>Tạo tài khoản Nhà tuyển dụng</CardTitle>
           <CardDescription>
             Nhập thông tin của bạn bên dưới để tạo tài khoản nhà tuyển dụng.

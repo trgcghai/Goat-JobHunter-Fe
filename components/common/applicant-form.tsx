@@ -33,6 +33,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import Image from "next/image";
 
 interface ApplicantFormProps extends React.ComponentProps<"div"> {
   signUpType: SignUpType;
@@ -85,6 +86,15 @@ export function ApplicantForm({
     >
       <Card>
         <CardHeader>
+          <Link href="/" className="flex items-center gap-2 mb-4">
+            <Image
+              src="/logo.png"
+              alt="GOAT Logo"
+              className=""
+              width={120}
+              height={80}
+            />
+          </Link>
           <CardTitle>Tạo tài khoản mới</CardTitle>
           <CardDescription>
             Nhập thông tin của bạn bên dưới để tạo tài khoản mới.
