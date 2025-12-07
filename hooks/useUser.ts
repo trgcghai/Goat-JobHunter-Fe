@@ -15,7 +15,7 @@ import {
   SignInRequest,
   VerifyCodeRequest
 } from "@/services/auth/authType";
-import { useCreateUserMutation, useUpdatePasswordMutation } from "@/services/user/userApi";
+import { useCreateUserMutation, useResetPasswordMutation, useUpdatePasswordMutation } from "@/services/user/userApi";
 import { Applicant, Recruiter, User } from "@/types/model";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
@@ -41,6 +41,7 @@ export function useUser() {
     useResendCodeMutation();
   const [updatePasswordMutation, { isLoading: isUpdatingPassword }] =
     useUpdatePasswordMutation();
+  const [resetPassword, { isLoading: isReseting }] = useResetPasswordMutation();
   const [updateApplicant, { isLoading: isUpdatingApplicant }] = useUpdateApplicantMutation();
   const [updateRecruiter, { isLoading: isUpdatingRecruiter }] = useUpdateRecruiterMutation();
   const [createUserMutation, { isLoading: isCreatingUser }] =
@@ -289,32 +290,33 @@ export function useUser() {
   /**
    * Reset password (for forgotten password)
    */
-  const resetPassword = useCallback(async () => {
-    // try {
-    //   const response = await resetPasswordMutation(params).unwrap();
+  const handleResetPassword = useCallback(async ({ email, newPassword }: { email: string, newPassword: string }) => {
+    try {
+      const response = await resetPassword({
+        email,
+        newPassword
+      }).unwrap();
 
-    //   if (response.statusCode === 200) {
-    //     toast.success("Đặt lại mật khẩu thành công!");
-    //     return { success: true };
-    //   }
+      if (response.statusCode === 200) {
+        toast.success("Đặt lại mật khẩu thành công!");
+        return { success: true };
+      }
 
-    //   toast.error("Email không tồn tại!");
-    //   return { success: false, error: "Email not found" };
-    // } catch (error) {
-    //   console.error("error reset password:", error);
+      toast.error("Email không tồn tại!");
+      return { success: false, error: "Email not found" };
+    } catch (error) {
+      console.error("error reset password:", error);
 
-    //   // @ts-expect-error ts-ignore
-    //   if (error.status === 404) {
-    //     toast.error("Email không tồn tại!");
-    //     return { success: false, error: "Email not found" };
-    //   }
+      // @ts-expect-error ts-ignore
+      if (error.status === 404) {
+        toast.error("Email không tồn tại!");
+        return { success: false, error: "Email not found" };
+      }
 
-    //   toast.error("Đặt lại mật khẩu thất bại!");
-    //   return { success: false };
-    // }
-    console.log("Đặt lại mật khẩu");
-    return { success: false };
-  }, []);
+      toast.error("Đặt lại mật khẩu thất bại!");
+      return { success: false };
+    }
+  }, [resetPassword]);
 
   /**
    * Update applicant information
@@ -341,7 +343,7 @@ export function useUser() {
         // @ts-expect-error Không cần check kỹ lưỡng kiểu dữ liệu ở đây
         const response = await updateApplicant({
           userId,
-          ...updatedData,
+          ...updatedData
         });
 
         if (response.error) {
@@ -386,13 +388,13 @@ export function useUser() {
 
         console.log("check updatedData:", {
           userId,
-          ...updatedData,
+          ...updatedData
         });
 
         // @ts-expect-error Không cần check kỹ lưỡng kiểu dữ liệu ở đây
         const response = await updateRecruiter({
           userId,
-          ...updatedData,
+          ...updatedData
         });
 
         if (response.error) {
@@ -427,7 +429,7 @@ export function useUser() {
     verifyCode,
     resendCode,
     updatePassword,
-    resetPassword,
+    handleResetPassword,
 
     // Loading states
     isSigningIn,
@@ -435,6 +437,7 @@ export function useUser() {
     isSigningOut,
     isVerifying,
     isResending,
+    isReseting,
     isUpdatingPassword,
 
     // Update applicant
