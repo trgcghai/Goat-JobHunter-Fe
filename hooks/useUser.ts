@@ -15,7 +15,7 @@ import {
   SignInRequest,
   VerifyCodeRequest
 } from "@/services/auth/authType";
-import { useUpdatePasswordMutation } from "@/services/user/userApi";
+import { useCreateUserMutation, useUpdatePasswordMutation } from "@/services/user/userApi";
 import { Applicant, Recruiter, User } from "@/types/model";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
@@ -43,6 +43,53 @@ export function useUser() {
     useUpdatePasswordMutation();
   const [updateApplicant, { isLoading: isUpdatingApplicant }] = useUpdateApplicantMutation();
   const [updateRecruiter, { isLoading: isUpdatingRecruiter }] = useUpdateRecruiterMutation();
+  const [createUserMutation, { isLoading: isCreatingUser }] =
+    useCreateUserMutation();
+
+  /**
+   * Create new user action (admin only)
+   */
+  const handleCreateUser = useCallback(
+    async (data: {
+      email: string;
+      role: string;
+      fullName?: string;
+      username?: string;
+      phone?: string;
+      address?: string;
+    }) => {
+      try {
+        const response = await createUserMutation({
+          email: data.email,
+          role: data.role,
+          fullName: data.fullName,
+          username: data.username,
+          phone: data.phone,
+          address: data.address
+        }).unwrap();
+
+        if (response.statusCode === 201 || response.statusCode === 200) {
+          toast.success("Tạo người dùng thành công!");
+          return { success: true, data: response.data };
+        }
+
+        toast.error("Tạo người dùng thất bại!");
+        return { success: false };
+      } catch (error) {
+        console.error("Failed to create user:", error);
+
+        // @ts-expect-error Handle API error
+        if (error.status === 409) {
+          toast.error("Email đã tồn tại trong hệ thống!");
+          return { success: false, error: "Email already exists" };
+        }
+
+        toast.error("Tạo người dùng thất bại!");
+        return { success: false };
+      }
+    },
+    [createUserMutation]
+  );
 
   /**
    * Sign in user
@@ -396,6 +443,10 @@ export function useUser() {
 
     // Update recruiter
     handleUpdateRecruiter,
-    isUpdatingRecruiter
+    isUpdatingRecruiter,
+
+    // Create user (admin)
+    handleCreateUser,
+    isCreatingUser
   };
 }

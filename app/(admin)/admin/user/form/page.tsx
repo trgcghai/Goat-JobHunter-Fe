@@ -47,8 +47,15 @@ const UserFormPage = () => {
   const searchParams = useSearchParams();
   const userId = searchParams.get("userId");
   const [isFormReady, setIsFormReady] = useState(false);
-  const { isUpdatingApplicant, isUpdatingRecruiter, handleUpdateApplicant, handleUpdateRecruiter } = useUser();
-  const isLoading = useMemo(() => isUpdatingApplicant || isUpdatingRecruiter, [isUpdatingApplicant, isUpdatingRecruiter]);
+  const {
+    isUpdatingApplicant,
+    isUpdatingRecruiter,
+    isCreatingUser,
+    handleCreateUser,
+    handleUpdateApplicant,
+    handleUpdateRecruiter
+  } = useUser();
+  const isLoading = useMemo(() => isUpdatingApplicant || isUpdatingRecruiter || isCreatingUser, [isUpdatingApplicant, isUpdatingRecruiter, isCreatingUser]);
 
   const {
     data: userData,
@@ -129,6 +136,17 @@ const UserFormPage = () => {
         }
         toast.success("Cập nhật người dùng thành công!");
       } else {
+
+        // Create new user
+        await handleCreateUser({
+          email: data.email,
+          role: data.role,
+          fullName: data.fullName,
+          username: data.username,
+          phone: data.phone,
+          address: data.address
+        });
+
         toast.success("Thêm người dùng thành công!");
       }
       router.push("/admin/user");

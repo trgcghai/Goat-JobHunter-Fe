@@ -6,6 +6,16 @@ import type {
   User
 } from "@/types/model";
 
+// Create Request Types
+export type CreateUserRequest = {
+  email: string;
+  role: string;
+  fullName?: string;
+  phone?: string;
+  address?: string;
+  username?: string;
+};
+
 // Base Request Types
 export type UserIdsRequest = {
   userIds: number[];

@@ -1,9 +1,9 @@
 import { api } from "@/services/api";
 import { buildSpringQuery } from "@/utils/buildSpringQuery";
-import type {
+import {
   CheckRecruitersFollowedResponse,
   CheckSavedJobsRequest,
-  CheckSavedJobsResponse,
+  CheckSavedJobsResponse, CreateUserRequest,
   FetchUserByEmailResponse,
   FetchUsersRequest,
   FetchUsersResponse,
@@ -17,7 +17,7 @@ import type {
   SaveJobsResponse,
   UpdatePasswordRequest,
   UpdatePasswordResponse,
-  UserIdsRequest,
+  UserIdsRequest, UserMutationResponse,
   UserStatusResponse
 } from "./userType";
 
@@ -56,11 +56,21 @@ export const userApi = api.injectEndpoints({
       providesTags: (result, error, userId) => [{ type: "User", id: userId }]
     }),
 
-    fetchUserByEmail: builder.mutation<FetchUserByEmailResponse, void>({
+    fetchUserByEmail: builder.query<FetchUserByEmailResponse, void>({
       query: () => ({
+        url: "/users/me",
+        method: "GET"
+      }),
+      providesTags: ["User"]
+    }),
+
+    createUser: builder.mutation<UserMutationResponse, CreateUserRequest>({
+      query: (data) => ({
         url: "/users",
-        method: "POST"
-      })
+        method: "POST",
+        data
+      }),
+      invalidatesTags: ["User"]
     }),
 
     updatePassword: builder.mutation<
@@ -219,7 +229,8 @@ export const userApi = api.injectEndpoints({
 export const {
   useFetchUsersQuery,
   useFetchUserByIdQuery,
-  useFetchUserByEmailMutation,
+  useFetchUserByEmailQuery,
+  useCreateUserMutation,
   useUpdatePasswordMutation,
   useResetPasswordMutation,
   useGetSavedJobsQuery,
