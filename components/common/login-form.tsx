@@ -55,8 +55,6 @@ export function LoginForm({
     try {
       const result = await signIn(data);
 
-      console.log(result.user);
-
       if (result.success) {
 
         console.log(result.user);
@@ -102,7 +100,7 @@ export function LoginForm({
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required>Email</FormLabel>
+                    <FormLabel className={"text-base"} required>Email</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="you@example.com"
@@ -119,7 +117,10 @@ export function LoginForm({
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required>Mật khẩu</FormLabel>
+                    <div className={"flex items-center justify-between"}>
+                      <FormLabel className={"text-base"} required>Mật khẩu</FormLabel>
+                      <Link href={"/reset-password"} className={"text-muted-foreground text-sm hover:underline hover:text-primary"}>Quên mật khẩu ?</Link>
+                    </div>
                     <FormControl>
                       <Input
                         type="password"

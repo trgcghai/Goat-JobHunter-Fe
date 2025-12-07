@@ -64,6 +64,7 @@ export type Job = {
   startDate: string;
   endDate: string;
   active: boolean;
+  enabled: boolean;
   level: Level;
   quantity: number;
   salary: number;

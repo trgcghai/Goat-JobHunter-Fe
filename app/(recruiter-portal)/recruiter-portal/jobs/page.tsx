@@ -1,7 +1,8 @@
 "use client";
 
-import JobsTable from "@/app/(recruiter-portal)/recruiter-portal/jobs/components/JobsTable";
-import RecruiterJobFilter from "@/app/(recruiter-portal)/recruiter-portal/jobs/components/RecruiterJobFilter";
+// import JobsTable from "@/app/(recruiter-portal)/recruiter-portal/jobs/components/JobsTable";
+// import RecruiterJobFilter from "@/app/(recruiter-portal)/recruiter-portal/jobs/components/RecruiterJobFilter";
+// import JobActions from "@/app/(recruiter-portal)/recruiter-portal/jobs/components/JobActions";
 import { useJobManagement } from "@/app/(recruiter-portal)/recruiter-portal/jobs/hooks/useJobManagement";
 import { DataTablePagination } from "@/components/dataTable/DataTablePagination";
 import LoaderSpin from "@/components/common/LoaderSpin";
@@ -11,8 +12,11 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Job } from "@/types/model";
-import JobActions from "@/app/(recruiter-portal)/recruiter-portal/jobs/components/JobActions";
 import ErrorMessage from "@/components/common/ErrorMessage";
+import RecruiterJobFilter from "@/components/management/jobs/recruiter/RecruiterJobFilter";
+import JobActions from "@/components/management/jobs/JobActions";
+import JobsTable from "@/components/management/jobs/JobsTable";
+import { recruiterJobColumns } from "@/components/management/jobs/JobColumnConfig";
 
 const RecruiterJobPage = () => {
   const {
@@ -68,7 +72,7 @@ const RecruiterJobPage = () => {
                 selectedIds={selectedItems.map(j => j.jobId)}
               />
 
-              <JobsTable jobs={jobs} onSelectionChange={setSelectedItems} />
+              <JobsTable jobs={jobs} onSelectionChange={setSelectedItems} columns={recruiterJobColumns} />
 
               <DataTablePagination
                 currentPage={page}

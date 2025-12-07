@@ -58,7 +58,7 @@ const baseColumnConfig: ColumnDef<Blog>[] = [
     accessorKey: "draft",
     enableSorting: false,
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Loại" />
+      <DataTableColumnHeader column={column} title="Trạng thái" />
     ),
     cell: ({ row }) => {
       const isDraft = row.original.draft;
@@ -73,7 +73,7 @@ const baseColumnConfig: ColumnDef<Blog>[] = [
     accessorKey: "enabled",
     enableSorting: false,
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Trạng thái" />
+      <DataTableColumnHeader column={column} title="Ẩn / Hiện" />
     ),
     cell: ({ row }) => {
       const enabled = row.original.enabled;

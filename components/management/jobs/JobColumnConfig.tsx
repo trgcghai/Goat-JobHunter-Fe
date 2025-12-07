@@ -1,4 +1,3 @@
-import JobActionsCell from "@/app/(recruiter-portal)/recruiter-portal/jobs/components/JobActionsCell";
 import { DataTableColumnHeader } from "@/components/dataTable/DataTableColumnHeader";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -7,6 +6,7 @@ import { formatDate } from "@/utils/formatDate";
 import { ColumnDef } from "@tanstack/react-table";
 import { capitalize } from "lodash";
 import Link from "next/link";
+import JobActionsCell from "@/components/management/jobs/JobActionsCell";
 
 export const jobColumns: ColumnDef<Job>[] = [
   {
@@ -29,7 +29,7 @@ export const jobColumns: ColumnDef<Job>[] = [
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
       />
-    ),
+    )
   },
   {
     accessorKey: "title",
@@ -46,7 +46,7 @@ export const jobColumns: ColumnDef<Job>[] = [
         </Link>
       </div>
     ),
-    enableSorting: false,
+    enableSorting: false
   },
   {
     accessorKey: "level",
@@ -61,7 +61,7 @@ export const jobColumns: ColumnDef<Job>[] = [
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
-    enableSorting: false,
+    enableSorting: false
   },
   {
     accessorKey: "workingType",
@@ -76,7 +76,7 @@ export const jobColumns: ColumnDef<Job>[] = [
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
-    enableSorting: false,
+    enableSorting: false
   },
   {
     accessorKey: "active",
@@ -96,7 +96,7 @@ export const jobColumns: ColumnDef<Job>[] = [
     enableSorting: false,
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
-    },
+    }
   },
   {
     accessorKey: "startDate",
@@ -106,7 +106,7 @@ export const jobColumns: ColumnDef<Job>[] = [
     cell: ({ row }) => {
       const startDate = row.getValue("startDate") as string;
       return <div>{formatDate(startDate)}</div>;
-    },
+    }
   },
   {
     accessorKey: "endDate",
@@ -116,7 +116,7 @@ export const jobColumns: ColumnDef<Job>[] = [
     cell: ({ row }) => {
       const endDate = row.getValue("endDate") as string;
       return <div>{formatDate(endDate)}</div>;
-    },
+    }
   },
   {
     id: "actions",
@@ -125,8 +125,43 @@ export const jobColumns: ColumnDef<Job>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Thao tác" />
     ),
-    cell: ({ row }) => <JobActionsCell job={row.original} />,
-  },
+    cell: ({ row }) => <JobActionsCell job={row.original} />
+  }
 ];
 
-export const recruiterJobColumns = jobColumns;
+export const recruiterJobColumns: ColumnDef<Job>[] = jobColumns;
+
+export const adminJobColumns: ColumnDef<Job>[] = [
+  ...jobColumns.slice(0, 1),
+  {
+    accessorKey: "authorName",
+    enableSorting: false,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Nhà tuyển dụng" />
+    ),
+    cell: ({ row }) => {
+      return <div>
+        <div className="font-medium">{row.original.recruiter.fullName || "Chưa cung cấp"}</div>
+        <div className="text-xs text-muted-foreground">UserID: {row.original.recruiter.userId}</div>
+      </div>;
+    }
+  },
+  ...jobColumns.slice(1, 5),
+  {
+    accessorKey: "enabled",
+    enableSorting: false,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Ẩn / Hiện" />
+    ),
+    cell: ({ row }) => {
+      console.log(row);
+      const enabled = row.original.enabled;
+      return (
+        <Badge variant={enabled ? "default" : "destructive"}>
+          {enabled ? "Đang hiển thị" : "Đang ẩn"}
+        </Badge>
+      );
+    }
+  },
+  ...jobColumns.slice(5)
+];
