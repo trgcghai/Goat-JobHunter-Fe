@@ -60,3 +60,8 @@ export enum NotificationTypeEnum {
   REPLY = "REPLY",
   FOLLOW = "FOLLOW"
 }
+
+export enum MessageTypeRole {
+  User = "User",
+  AI = "AI"
+}

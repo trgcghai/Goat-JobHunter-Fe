@@ -9,23 +9,28 @@ import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState } from "react";
 import { useAIChat } from "@/hooks/useAIChat";
+import { MessageTypeRole } from "@/types/enum";
 
 export function AIChatPopup() {
   const [isOpen, setIsOpen] = useState(false);
   const {
     inputMessage,
     setInputMessage,
+
     messages,
+
     isLoading,
     messagesEndRef,
+
     parseMarkdown,
-    sendMessage,
+
+    handleChat
   } = useAIChat();
 
   const handleKeyDown = async (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      await sendMessage();
+      await handleChat();
     }
   };
 
@@ -79,10 +84,10 @@ export function AIChatPopup() {
               <div className="space-y-4 h-full">
                 {messages.map((message) => (
                   <div
-                    key={message.id}
+                    key={message.messageId}
                     className={cn(
                       "flex",
-                      message.role === "user"
+                      message.role === MessageTypeRole.User
                         ? "justify-end"
                         : "justify-start"
                     )}
@@ -90,12 +95,12 @@ export function AIChatPopup() {
                     <div
                       className={cn(
                         "max-w-[80%] rounded-xl px-4 py-2 text-sm prose prose-sm",
-                        message.role === "user"
+                        message.role === MessageTypeRole.User
                           ? "bg-primary text-white prose-invert"
                           : "bg-white border"
                       )}
                       dangerouslySetInnerHTML={{
-                        __html: parseMarkdown(message.content),
+                        __html: parseMarkdown(message.content)
                       }}
                     />
                   </div>
@@ -129,7 +134,7 @@ export function AIChatPopup() {
               <Button
                 size="icon"
                 className="rounded-xl"
-                onClick={() => sendMessage()}
+                onClick={handleChat}
                 disabled={isLoading || !inputMessage.trim()}
               >
                 {isLoading ? (

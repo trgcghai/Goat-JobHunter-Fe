@@ -4,6 +4,7 @@ import DOMPurify from "dompurify";
 import { marked } from "marked";
 import { toast } from "sonner";
 import { MessageType } from "@/types/model";
+import { MessageTypeRole } from "@/types/enum";
 
 marked.setOptions({
   breaks: true,
@@ -33,7 +34,7 @@ export function useAIChat() {
         {
           messageId: new Date().getDate() + Math.floor(Math.random() * 1000000),
           content: inputMessage,
-          role: "User",
+          role: MessageTypeRole.User,
           createdAt: new Date().toISOString()
         }
       ]);
@@ -45,10 +46,12 @@ export function useAIChat() {
         {
           messageId: new Date().getDate() + Math.floor(Math.random() * 1000000),
           content: result,
-          role: "Ai",
+          role: MessageTypeRole.AI,
           createdAt: new Date().toISOString()
         }
       ]);
+
+      setInputMessage("")
 
     } catch (error) {
       console.error("Error during AI chat:", error);

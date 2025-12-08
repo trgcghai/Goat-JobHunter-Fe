@@ -2,7 +2,7 @@ import {
   ApplicationStatus,
   Education,
   Gender,
-  Level, NotificationTypeEnum,
+  Level, MessageTypeRole, NotificationTypeEnum,
   WorkingType
 } from "@/types/enum";
 
@@ -240,7 +240,7 @@ export type Conversation = {
 
 export type MessageType = {
   messageId: number;
-  role: "User" | "Ai";
+  role: MessageTypeRole;
   content: string;
   createdAt: string;
 }
