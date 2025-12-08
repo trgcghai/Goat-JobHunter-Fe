@@ -22,7 +22,7 @@ export function useAIChat() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
-  const handleChat = async () => {
+  const handleChat = async (conversationId?: number) => {
     try {
       if (!inputMessage.trim()) {
         toast.error("Vui lòng nhập tin nhắn.");
@@ -39,7 +39,13 @@ export function useAIChat() {
         }
       ]);
 
-      const result = await chat(inputMessage).unwrap();
+      let result: string;
+      if (conversationId) {
+        result = await chat({ message: inputMessage, conversationId }).unwrap();
+      } else {
+        result = await chat({ message: inputMessage }).unwrap();
+      }
+
 
       setMessages((prevMessages) => [
         ...prevMessages,
@@ -51,7 +57,7 @@ export function useAIChat() {
         }
       ]);
 
-      setInputMessage("")
+      setInputMessage("");
 
     } catch (error) {
       console.error("Error during AI chat:", error);

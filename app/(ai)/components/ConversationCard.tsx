@@ -144,7 +144,7 @@ const ConversationCard = ({
           </>
         }
         confirmText="Xóa"
-        confirmBtnClass="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+        confirmBtnClass="bg-destructive text-destructive-foreground hover:bg-destructive/90 text-white"
         onConfirm={handleConfirmDelete}
       />
     </>

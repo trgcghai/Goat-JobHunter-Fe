@@ -62,6 +62,6 @@ export enum NotificationTypeEnum {
 }
 
 export enum MessageTypeRole {
-  User = "User",
+  User = "USER",
   AI = "AI"
 }

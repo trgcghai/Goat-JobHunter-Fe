@@ -1,6 +1,6 @@
 "use client";
 
-import { Send, Loader2 } from "lucide-react";
+import { Loader2, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -9,6 +9,7 @@ import { useAIChat } from "@/hooks/useAIChat";
 import { useParams } from "next/navigation";
 import { useGetConversationMessagesQuery } from "@/services/ai/conversationApi";
 import { useEffect } from "react";
+import { MessageTypeRole } from "@/types/enum";
 
 export default function ConversationPage() {
   const params = useParams();
@@ -38,7 +39,7 @@ export default function ConversationPage() {
   const handleKeyDown = async (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      await handleChat();
+      await handleChat(conversationId);
     }
   };
 
@@ -58,13 +59,13 @@ export default function ConversationPage() {
                 key={message.messageId}
                 className={cn(
                   "flex",
-                  message.role === "User" ? "justify-end" : "justify-start"
+                  message.role === MessageTypeRole.User ? "justify-end" : "justify-start"
                 )}
               >
                 <div
                   className={cn(
                     "max-w-[80%] rounded-xl px-4 py-2 prose prose-sm",
-                    message.role === "User"
+                    message.role === MessageTypeRole.User
                       ? "bg-primary text-white prose-invert"
                       : "bg-muted"
                   )}
@@ -106,7 +107,7 @@ export default function ConversationPage() {
               size="icon"
               variant="ghost"
               className="h-10 w-10 rounded-xl shrink-0"
-              onClick={handleChat}
+              onClick={() => handleChat(conversationId)}
               disabled={isLoading || !inputMessage.trim()}
             >
               {isLoading ? (

@@ -9,14 +9,14 @@ import {
 } from "@/services/ai/conversationType";
 
 export const conversationApi = api.injectEndpoints({
-  overrideExisting: true,
   endpoints: (builder) => ({
-    aiChat: builder.mutation<string, string>({
-      query: (message: string) => ({
+    aiChat: builder.mutation<string, { message: string, conversationId?: number }>({
+      query: ({ message, conversationId }) => ({
         url: "/ai/chat",
         method: "POST",
-        data: { message }
-      })
+        data: { message, conversationId }
+      }),
+      invalidatesTags: (result, error, { conversationId }) => [{ type: "Conversations", id: conversationId || "LIST" }, "Message"]
     }),
     // Get all conversations with filter
     getConversations: builder.query<GetConversationsResponse, GetConversationsParams>({
@@ -100,7 +100,7 @@ export const conversationApi = api.injectEndpoints({
         url: `/conversations/${id}/messages`,
         method: "GET"
       }),
-      providesTags: (result, error, id) => [{ type: "Conversations", id }]
+      providesTags: (result, error, id) => [{ type: "Conversations", id }, "Message"]
     })
   })
 });
