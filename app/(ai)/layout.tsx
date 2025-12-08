@@ -28,9 +28,9 @@ export default function AIChatLayout({
     <SidebarProvider defaultOpen={false}>
       <AIChatSidebar />
 
-      <div className="flex-1 flex flex-col">
+      <div className="flex flex-col flex-1 h-screen overflow-hidden">
         <AIChatHeader />
-        <main className="flex-1 overflow-hidden">{children}</main>
+        <main className="flex-1 overflow-hidden bg-gray-100">{children}</main>
       </div>
     </SidebarProvider>
   );
