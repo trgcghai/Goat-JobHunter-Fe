@@ -10,6 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface RenameConversationDialogProps {
   open: boolean;
@@ -34,7 +35,13 @@ const RenameConversationDialog = ({
   }, [open, currentTitle]);
 
   const handleConfirm = () => {
-    if (newTitle.trim() && newTitle !== currentTitle) {
+
+    if (!newTitle.trim()) {
+      toast.error("Tên cuộc trò chuyện không được để trống.");
+      return;
+    }
+
+    if (newTitle !== currentTitle) {
       onConfirm(newTitle.trim());
     }
     onOpenChange(false);
