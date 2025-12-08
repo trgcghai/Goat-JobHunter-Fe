@@ -10,6 +10,7 @@ import { useParams } from "next/navigation";
 import { useGetConversationMessagesQuery } from "@/services/ai/conversationApi";
 import { useEffect } from "react";
 import { MessageTypeRole } from "@/types/enum";
+import ErrorMessage from "@/components/common/ErrorMessage";
 
 export default function ConversationPage() {
   const params = useParams();
@@ -26,7 +27,7 @@ export default function ConversationPage() {
     setMessages
   } = useAIChat();
 
-  const { data } = useGetConversationMessagesQuery(conversationId, {
+  const { data, isError } = useGetConversationMessagesQuery(conversationId, {
     skip: !conversationId
   });
 
@@ -36,12 +37,45 @@ export default function ConversationPage() {
     }
   }, [data, setMessages]);
 
+  // Xử lý tin nhắn pending TRƯỚC khi load messages từ API
+  useEffect(() => {
+    const pendingMessage = sessionStorage.getItem('pendingMessage');
+    if (pendingMessage && conversationId) {
+      sessionStorage.removeItem('pendingMessage');
+      setInputMessage(pendingMessage);
+    }
+  }, [conversationId, setInputMessage]);
+
+// Load messages từ API SAU khi đã set pending message
+  useEffect(() => {
+    if (data?.data?.result) {
+      setMessages(data.data.result);
+    }
+  }, [data, setMessages]);
+
+// Tự động gửi tin nhắn SAU khi đã có inputMessage và messages
+  useEffect(() => {
+    if (inputMessage && messages.length === 0 && conversationId && !isLoading) {
+      const timer = setTimeout(() => {
+        handleChat(conversationId);
+      }, 300);
+
+      return () => clearTimeout(timer);
+    }
+  }, [inputMessage, messages.length, conversationId, isLoading, handleChat]);
+
   const handleKeyDown = async (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       await handleChat(conversationId);
     }
   };
+
+  if (isError) {
+    return <div className={"p-4"}>
+      <ErrorMessage message={"Không thể tải tin nhắn cuộc trò chuyện."} variant={"card"} />
+    </div>;
+  }
 
   return (
     <div className="h-full flex flex-col bg-gray-100">
