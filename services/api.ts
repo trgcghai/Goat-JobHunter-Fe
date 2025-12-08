@@ -101,7 +101,14 @@ export const api = createApi({
         method: "POST",
         data: { content }
       })
-    })
+    }),
+
+    getUuid: builder.query<string, void>({
+      query: () => ({
+        url: "/uuid",
+        method: "GET"
+      })
+    }),
   })
 });
 
@@ -110,5 +117,6 @@ export const {
   useClearCookiesQuery,
   useBackupQuery,
   useGenerateDescriptionMutation,
-  useGenerateTagsMutation
+  useGenerateTagsMutation,
+  useGetUuidQuery,
 } = api;
