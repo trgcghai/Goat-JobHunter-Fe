@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
+import RenameConversationDialog from "@/app/(ai)/components/RenameConversationDialog";
 
 interface ConversationCardProps {
   conv: Conversation;
@@ -26,13 +27,18 @@ const ConversationCard = ({
   handleDelete,
   isLoading
 }: ConversationCardProps) => {
-
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showRenameDialog, setShowRenameDialog] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const handleConfirmDelete = () => {
     handleDelete(conv.conversationId);
     setShowDeleteDialog(false);
+    setIsPopoverOpen(false);
+  };
+
+  const handleConfirmRename = (newTitle: string) => {
+    handleRename(conv.conversationId, newTitle);
     setIsPopoverOpen(false);
   };
 
@@ -70,7 +76,8 @@ const ConversationCard = ({
               className="w-full justify-start gap-2 h-8 px-2"
               onClick={(e) => {
                 e.preventDefault();
-                handleRename(conv.conversationId, "");
+                setShowRenameDialog(true);
+                setIsPopoverOpen(false);
               }}
             >
               <Pencil className="w-4 h-4" />
@@ -84,6 +91,7 @@ const ConversationCard = ({
               onClick={(e) => {
                 e.preventDefault();
                 handleTogglePin(conv.conversationId, conv.pinned);
+                setIsPopoverOpen(false);
               }}
             >
               {conv.pinned ? (
@@ -107,7 +115,7 @@ const ConversationCard = ({
               className="w-full justify-start gap-2 h-8 px-2 text-destructive hover:text-destructive hover:bg-destructive/10"
               onClick={(e) => {
                 e.preventDefault();
-                handleDelete(conv.conversationId);
+                setShowDeleteDialog(true);
               }}
             >
               <Trash2 className="w-4 h-4" />
@@ -116,18 +124,29 @@ const ConversationCard = ({
           </PopoverContent>
         </Popover>
       </div>
+
+      <RenameConversationDialog
+        open={showRenameDialog}
+        onOpenChange={setShowRenameDialog}
+        currentTitle={conv.title}
+        onConfirm={handleConfirmRename}
+      />
+
       <ConfirmDialog
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
         title="Xác nhận xóa"
-        description={<>
-          Bạn có chắc chắn muốn xóa cuộc trò chuyện <strong>&quot;{conv.title}&quot;</strong>?
-          <br />
-          Hành động này không thể hoàn tác.
-        </>}
+        description={
+          <>
+            Bạn có chắc chắn muốn xóa cuộc trò chuyện <strong>&quot;{conv.title}&quot;</strong>?
+            <br />
+            Hành động này không thể hoàn tác.
+          </>
+        }
         confirmText="Xóa"
         confirmBtnClass="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-        onConfirm={handleConfirmDelete} />
+        onConfirm={handleConfirmDelete}
+      />
     </>
   );
 };
