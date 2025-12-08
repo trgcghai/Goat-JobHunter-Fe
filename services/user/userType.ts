@@ -1,5 +1,6 @@
 import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type {
+  Blog,
   FullUser,
   Job,
   Recruiter,
@@ -79,6 +80,21 @@ export type SaveJobsResponse = {
 export type CheckSavedJobsResponse = IBackendRes<
   {
     jobId: number;
+    result: boolean;
+  }[]
+>;
+
+// Liked Blogs Responses
+export type GetLikedBlogsResponse = IBackendRes<IModelPaginate<Blog>>;
+
+export type LikedBlogsResponse = {
+  userId: number;
+  likedBlogs: Blog[];
+};
+
+export type CheckLikedBlogsResponse = IBackendRes<
+  {
+    blogId: number;
     result: boolean;
   }[]
 >;

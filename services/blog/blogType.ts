@@ -15,9 +15,9 @@ export type BlogIdsRequest = {
 type BlogContent = {
   title: string;
   banner: string;
-  description: string;
+  description?: string;
   content: string;
-  tags: string[];
+  tags?: string[];
   draft: boolean;
 };
 
@@ -41,12 +41,6 @@ export type FetchBlogsRequest = {
 
 export type FetchTagsRequest = {
   keyword?: string;
-};
-
-// Like
-export type LikeBlogRequest = {
-  blogId: number;
-  liked: boolean;
 };
 
 // Response Types

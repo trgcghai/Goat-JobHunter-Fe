@@ -10,13 +10,13 @@ import LoaderSpin from "@/components/common/LoaderSpin";
 import ErrorMessage from "@/components/common/ErrorMessage";
 import { NestedComment } from "@/app/(main)/blogs/[id]/components/utils/formatComments";
 import { useUser } from "@/hooks/useUser";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import CommentInput from "@/app/(main)/blogs/[id]/components/CommentInput";
 
 interface CommentSectionProps {
   totalComments: number;
   initialComments: NestedComment[];
   isLoading: boolean;
+  isCommenting: boolean;
   isError: boolean;
   onComment: (comment: string) => void;
   onReply: (replyTo: number, comment: string) => void;
@@ -27,6 +27,7 @@ export default function CommentSection({
   totalComments,
   initialComments,
   isLoading,
+  isCommenting,
   isError,
   onComment,
   onReply,
@@ -68,6 +69,7 @@ export default function CommentSection({
           value={comment}
           onChange={setComment}
           onSubmit={handleComment}
+          isCommenting={isCommenting}
         />
       </div>
 
@@ -78,6 +80,7 @@ export default function CommentSection({
             comment={comment}
             onReply={onReply}
             onDelete={onDelete}
+            isCommenting={isCommenting}
           />
         ))}
       </div>

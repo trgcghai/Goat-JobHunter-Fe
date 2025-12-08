@@ -1,12 +1,15 @@
-import { useCheckLikedBlogQuery, useFetchBlogByIdQuery, useGetCommentsByBlogIdQuery } from "@/services/blog/blogApi";
+import { useFetchBlogByIdQuery, useGetCommentsByBlogIdQuery } from "@/services/blog/blogApi";
 import { useFetchRecruiterByIdQuery } from "@/services/recruiter/recruiterApi";
+import { useCheckLikedBlogsQuery } from "@/services/user/userApi";
 import { useMemo } from "react";
 import { formatCommentsToNested, NestedComment } from "@/app/(main)/blogs/[id]/components/utils/formatComments";
 import useCommentActions from "@/hooks/useCommentActions";
 import { toast } from "sonner";
 import useBlogActions from "@/hooks/useBlogActions";
+import { useUser } from "@/hooks/useUser";
 
 const useDetailBlog = (blogId: string) => {
+  const { isSignedIn, user } = useUser();
   const { handleCommentBlog, handleReplyComment, handleDeleteComment, isCommenting } = useCommentActions();
   const { handleUnlikeBlog, handleLikeBlog } = useBlogActions();
 
@@ -15,7 +18,6 @@ const useDetailBlog = (blogId: string) => {
     skip: !blogId
   });
 
-  // memoized blog data
   const blog = useMemo(() => data?.data, [data]);
 
   // fetch author details
@@ -26,10 +28,9 @@ const useDetailBlog = (blogId: string) => {
     }
   );
 
-  // memoized author data
   const author = useMemo(() => authorData?.data, [authorData]);
 
-  // fetch comments for the blog
+  // fetch comments
   const {
     data: commentsData,
     isLoading: isLoadingComments,
@@ -38,7 +39,6 @@ const useDetailBlog = (blogId: string) => {
     skip: !blogId
   });
 
-  // memoized and formatted comments
   const { comments, totalComments }: {
     comments: NestedComment[];
     totalComments: number;
@@ -48,7 +48,6 @@ const useDetailBlog = (blogId: string) => {
       totalComments: 0
     };
 
-    // Handle both array and single object response
     const rawComments = Array.isArray(commentsData.data)
       ? commentsData.data
       : [commentsData.data];
@@ -59,13 +58,18 @@ const useDetailBlog = (blogId: string) => {
     };
   }, [commentsData]);
 
-  // check if the blog is liked by the current user
-  const { data: likedData } = useCheckLikedBlogQuery(Number(blogId), {
-    skip: !blogId
-  });
+  // check liked status
+  const { data: likedData } = useCheckLikedBlogsQuery(
+    { blogIds: [Number(blogId)] },
+    {
+      skip: !blogId || !isSignedIn || !user
+    }
+  );
 
-  // memoized liked status
-  const isLiked = useMemo(() => likedData?.data || false, [likedData]);
+  const isLiked = useMemo(() => {
+    if (!likedData?.data) return false;
+    return likedData.data.find(item => item.blogId === Number(blogId))?.result || false;
+  }, [likedData, blogId]);
 
   // action handlers
   const handleComment = async (comment: string) => {
@@ -99,9 +103,8 @@ const useDetailBlog = (blogId: string) => {
   };
 
   const handleToggleLike = async () => {
-
-    if (!isLiked && !likedData) {
-      toast.error("Không thể thực hiện thao tác. Vui lòng thử lại sau.");
+    if (!isSignedIn || !user) {
+      toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
       return;
     }
 
@@ -113,20 +116,17 @@ const useDetailBlog = (blogId: string) => {
   };
 
   return {
-    // blog data
     blog,
     isLiked,
     isLoading,
     isError,
     author,
 
-    // comments
     comments,
     totalComments,
     isLoadingComments,
     isLoadCommentsFailed,
 
-    // actions
     handleComment,
     handleReply,
     handleDelete,

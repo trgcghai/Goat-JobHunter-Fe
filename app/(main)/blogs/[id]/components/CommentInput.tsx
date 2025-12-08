@@ -10,13 +10,15 @@ interface Props {
   value: string;
   onChange: (value: string) => void;
   onSubmit: () => void;
+  isCommenting: boolean;
 }
 
 const CommentInput = ({
   user,
   value: comment,
   onChange: setComment,
-  onSubmit: handleComment
+  onSubmit: handleComment,
+  isCommenting,
 }: Props) => {
   return (
     <div className="flex gap-4">
@@ -32,11 +34,12 @@ const CommentInput = ({
           onChange={(e) => setComment(e.target.value)}
           className="min-h-20 rounded-xl resize-none"
           rows={3}
+          disabled={isCommenting}
         />
         <Button
           className="rounded-xl"
           onClick={handleComment}
-          disabled={!comment.trim()}
+          disabled={!comment.trim() || isCommenting}
         >
           <Send className="h-4 w-4" />
         </Button>

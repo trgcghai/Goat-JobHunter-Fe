@@ -3,13 +3,14 @@ import {
   useEnableBlogsMutation,
   useDisableBlogsMutation,
   useCreateBlogMutation,
-  useUpdateBlogMutation, useLikeBlogMutation
+  useUpdateBlogMutation
 } from "@/services/blog/blogApi";
 import { useCallback } from "react";
 import { toast } from "sonner";
 import { BlogActionType } from "@/types/enum";
 import { BlogFormData } from "@/app/(recruiter-portal)/recruiter-portal/blogs/form/components/schema";
 import { useUser } from "@/hooks/useUser";
+import { useLikeBlogsMutation, useUnlikeBlogsMutation } from "@/services/user/userApi";
 
 const useBlogActions = () => {
   const { isSignedIn, user } = useUser();
@@ -18,7 +19,9 @@ const useBlogActions = () => {
   const [disableBlogs, { isLoading: isDisabling }] = useDisableBlogsMutation();
   const [createBlog, { isLoading: isCreating }] = useCreateBlogMutation();
   const [updateBlog, { isLoading: isUpdating }] = useUpdateBlogMutation();
-  const [toggleLike, { isLoading: isTogglingLike }] = useLikeBlogMutation();
+  const [likeBlogs, { isLoading: isLiking }] = useLikeBlogsMutation();
+  const [unlikeBlogs, { isLoading: isUnliking }] = useUnlikeBlogsMutation();
+
 
   // Delete multiple blogs
   const handleDeleteBlogs = useCallback(
@@ -184,16 +187,14 @@ const useBlogActions = () => {
       }
 
       try {
-        await toggleLike({
-          blogId,
-          liked: true
-        });
+        await likeBlogs({ blogIds: [blogId] }).unwrap();
       } catch (error) {
         console.error("Failed to like blog:", error);
         toast.error("Không thể thích bài viết. Vui lòng thử lại sau.");
         throw error;
       }
-    }, [isSignedIn, toggleLike, user]
+    },
+    [isSignedIn, likeBlogs, user]
   );
 
   const handleUnlikeBlog = useCallback(
@@ -204,17 +205,14 @@ const useBlogActions = () => {
       }
 
       try {
-
-        await toggleLike({
-          blogId,
-          liked: false
-        });
+        await unlikeBlogs({ blogIds: [blogId] }).unwrap();
       } catch (error) {
-        console.error("Failed to like blog:", error);
-        toast.error("Không thể thích bài viết. Vui lòng thử lại sau.");
+        console.error("Failed to unlike blog:", error);
+        toast.error("Không thể bỏ thích bài viết. Vui lòng thử lại sau.");
         throw error;
       }
-    }, [isSignedIn, toggleLike, user]
+    },
+    [isSignedIn, unlikeBlogs, user]
   );
 
   return {
@@ -229,7 +227,8 @@ const useBlogActions = () => {
       isDisabling ||
       isCreating ||
       isUpdating ||
-      isTogglingLike,
+      isLiking ||
+      isUnliking,
 
     handleDeleteBlogs,
     handleEnableBlogs,

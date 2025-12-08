@@ -21,7 +21,7 @@ const NotificationCard = ({
                             variant = "default"
                           }: NotificationCardProps) => {
   const router = useRouter();
-  const sender = useMemo(() => notification.actor.fullName || notification.actor.username || "Người dùng ẩn danh", [notification.actor]);
+  const sender = useMemo(() => notification.lastActor.fullName || notification.lastActor.username || "Người dùng ẩn danh", [notification.lastActor]);
 
   const { icon, message } = getNotificationContent(notification, {
     maxLength: variant === "compact" ? 30 : 80
@@ -29,7 +29,7 @@ const NotificationCard = ({
 
   const [imageError, setImageError] = useState(false);
 
-  const hasAvatar = notification.actor.avatar && !imageError;
+  const hasAvatar = notification.lastActor.avatar && !imageError;
 
   const url = useMemo(() => {
     const isLink = [NotificationTypeEnum.REPLY, NotificationTypeEnum.COMMENT, NotificationTypeEnum.LIKE].includes(notification.type);
@@ -58,7 +58,7 @@ const NotificationCard = ({
             <div className="relative h-[72px] w-[72px]">
               <div className="h-16 w-16 rounded-full bg-muted overflow-hidden flex items-center justify-center">
                 <Image
-                  src={notification.actor.avatar}
+                  src={notification.lastActor.avatar}
                   alt={sender}
                   width={64}
                   height={64}
@@ -113,7 +113,7 @@ const NotificationCard = ({
           <div className="relative h-[72px] w-[72px]">
             <div className="h-16 w-16 rounded-full bg-muted overflow-hidden flex items-center justify-center">
               <Image
-                src={notification.actor.avatar}
+                src={notification.lastActor.avatar}
                 alt={sender}
                 width={64}
                 height={64}

@@ -5,16 +5,15 @@ import {
   BlogIdsRequest,
   BlogMutationResponse,
   BlogStatusResponse,
-  CreateBlogRequest, CreateCommentRequest,
+  CreateBlogRequest,
+  CreateCommentRequest,
   FetchBlogByIdResponse,
   FetchBlogsRequest,
   FetchBlogsResponse,
   FetchTagsRequest,
   FetchTagsResponse, GetCommentsResponse,
-  LikeBlogRequest,
   UpdateBlogRequest
 } from "./blogType";
-import { IBackendRes } from "@/types/api";
 
 export const blogApi = api.injectEndpoints({
   overrideExisting: true,
@@ -124,23 +123,6 @@ export const blogApi = api.injectEndpoints({
       providesTags: ["Blog"]
     }),
 
-    likeBlog: builder.mutation<BlogMutationResponse, LikeBlogRequest>({
-      query: ({ blogId, liked }) => ({
-        url: "/blogs/liked-blogs",
-        method: "PUT",
-        data: { blogId, liked }
-      }),
-      invalidatesTags: ["Blog"]
-    }),
-
-    checkLikedBlog: builder.query<IBackendRes<boolean>, number>({
-      query: (blogId) => ({
-        url: `/blogs/liked-blogs/${blogId}`,
-        method: "GET"
-      }),
-      providesTags: ["Blog"]
-    }),
-
     fetchTags: builder.query<FetchTagsResponse, FetchTagsRequest>({
       query: (params) => ({
         url: "/blogs/tags",
@@ -228,14 +210,15 @@ export const {
   useCreateBlogMutation,
   useUpdateBlogMutation,
   useDeleteBlogMutation,
+
   useFetchBlogsQuery,
   useFetchAvailableBlogsQuery,
   useFetchPopularBlogsQuery,
   useFetchBlogByIdQuery,
-  useLikeBlogMutation,
-  useCheckLikedBlogQuery,
+
   useFetchTagsQuery,
   useFetchBlogsByCurrentRecruiterQuery,
+
   useEnableBlogsMutation,
   useDisableBlogsMutation,
 

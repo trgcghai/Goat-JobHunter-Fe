@@ -200,12 +200,13 @@ export type NotificationType = {
     blogId: string;
     title: string;
   };
-  actor: {
+  lastActor: {
     userId: string;
     fullName: string;
     username: string;
     avatar: string;
   };
+  actorCount: number;
   recipient: {
     userId: string;
     fullName: string;

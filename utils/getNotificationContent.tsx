@@ -13,7 +13,8 @@ export const getNotificationContent = (
 ) => {
   const { maxLength = 80 } = options;
 
-  const sender = notification.actor.fullName || notification.actor.username || "Người dùng ẩn danh";
+  const sender = notification.lastActor.fullName || notification.lastActor.username || "Người dùng ẩn danh";
+  const senderPostfix = notification.actorCount > 1 ? ` và ${notification.actorCount - 1} người khác` : "";
   const blog = notification.blog?.title || "";
   const content = notification?.repliedOnComment?.comment || notification?.comment?.comment;
 
@@ -21,22 +22,22 @@ export const getNotificationContent = (
     case NotificationTypeEnum.LIKE:
       return {
         icon: <Heart className="h-5 w-5 text-red-500" />,
-        message: `${sender} đã thích bài viết của bạn: ${truncate(blog, { length: maxLength })}`
+        message: `${sender}${senderPostfix} đã thích bài viết của bạn: ${truncate(blog, { length: maxLength })}`
       };
     case NotificationTypeEnum.COMMENT:
       return {
         icon: <MessageCircle className="h-5 w-5 text-blue-500" />,
-        message: `${sender} đã bình luận về bài viết của bạn: ${truncate(content, { length: maxLength })}`
+        message: `${sender}${senderPostfix} đã bình luận về bài viết của bạn: ${truncate(blog, { length: maxLength })}`
       };
     case NotificationTypeEnum.REPLY:
       return {
         icon: <MessageCircle className="h-5 w-5 text-green-500" />,
-        message: `${sender} đã trả lời bình luận của bạn về bài viết ${blog}: ${truncate(content, { length: maxLength })}`
+        message: `${sender}${senderPostfix} đã trả lời bình luận của bạn về bài viết ${blog}: ${truncate(content, { length: maxLength })}`
       };
     case NotificationTypeEnum.FOLLOW:
       return {
         icon: <BellRing className="h-5 w-5 text-primary" />,
-        message: `${sender} đã theo dõi bạn.`
+        message: `${sender}${senderPostfix} đã theo dõi bạn.`
       };
     default:
       return {

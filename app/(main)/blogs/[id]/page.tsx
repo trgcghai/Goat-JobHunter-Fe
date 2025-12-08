@@ -39,7 +39,9 @@ const DetailBlogPage = () => {
     handleReply,
     handleDelete,
     handleToggleLike,
-    handleShare
+    handleShare,
+
+    isCommenting
   } = useDetailBlog(
     params.id
   );
@@ -164,6 +166,7 @@ const DetailBlogPage = () => {
       <CommentSection
         initialComments={comments}
         isLoading={isLoadingComments}
+        isCommenting={isCommenting}
         isError={isLoadCommentsFailed}
         totalComments={totalComments}
         onComment={handleComment}

@@ -1,6 +1,7 @@
 import { api } from "@/services/api";
 import { buildSpringQuery } from "@/utils/buildSpringQuery";
 import {
+  CheckLikedBlogsResponse,
   CheckRecruitersFollowedResponse,
   CheckSavedJobsRequest,
   CheckSavedJobsResponse, CreateUserRequest,
@@ -9,9 +10,9 @@ import {
   FetchUsersResponse,
   FollowRecruitersRequest,
   FollowRecruitersResponse,
-  GetFollowedRecruitersResponse,
+  GetFollowedRecruitersResponse, GetLikedBlogsResponse,
   GetSavedJobsResponse,
-  JobIdsRequest,
+  JobIdsRequest, LikedBlogsResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
   SaveJobsResponse,
@@ -20,6 +21,7 @@ import {
   UserIdsRequest, UserMutationResponse,
   UserStatusResponse
 } from "./userType";
+import { blogApi } from "@/services/blog/blogApi";
 
 export const userApi = api.injectEndpoints({
   overrideExisting: true,
@@ -161,6 +163,112 @@ export const userApi = api.injectEndpoints({
       ]
     }),
 
+    // Liked blogs APIs
+    getLikedBlogs: builder.query<GetLikedBlogsResponse, void>({
+      query: () => ({
+        url: "/users/me/liked-blogs",
+        method: "GET"
+      }),
+      providesTags: (result) =>
+        result?.data
+          ? [
+            ...result.data.result.map((blog) => ({
+              type: "LikedBlog" as const,
+              id: blog.blogId
+            })),
+            { type: "LikedBlog", id: "LIST" }
+          ]
+          : [{ type: "LikedBlog", id: "LIST" }]
+    }),
+
+    checkLikedBlogs: builder.query<
+      CheckLikedBlogsResponse,
+      { blogIds: number[] }
+    >({
+      query: (params) => ({
+        url: "/users/me/liked-blogs/contains",
+        method: "GET",
+        params: { blogIds: params.blogIds }
+      }),
+      providesTags: (_, __, arg) =>
+        arg.blogIds
+          ? arg.blogIds.map((blogId) => ({
+            type: "LikedBlog" as const,
+            id: blogId
+          }))
+          : []
+    }),
+
+    likeBlogs: builder.mutation<LikedBlogsResponse, { blogIds: number[] }>({
+      query: (data) => ({
+        url: "/users/me/liked-blogs",
+        method: "PUT",
+        data
+      }),
+      async onQueryStarted({ blogIds }, { dispatch, queryFulfilled }) {
+        // Optimistic update cho từng blog, tăng totalLikes lên 1
+        const patchResults = blogIds.map((blogId) =>
+          dispatch(
+            blogApi.util.updateQueryData("fetchBlogById", String(blogId), (draft) => {
+              if (draft?.data?.activity) {
+                draft.data.activity.totalLikes = (draft.data.activity.totalLikes || 0) + 1;
+              }
+            })
+          )
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          // Rollback nếu thất bại
+          patchResults.forEach((patchResult) => patchResult.undo());
+        }
+      },
+      invalidatesTags: (_, __, arg) => [
+        { type: "LikedBlog", id: "LIST" },
+        ...arg.blogIds.map((blogId) => ({
+          type: "LikedBlog" as const,
+          id: blogId
+        }))
+      ]
+    }),
+
+    unlikeBlogs: builder.mutation<LikedBlogsResponse, { blogIds: number[] }>({
+      query: (data) => ({
+        url: "/users/me/liked-blogs",
+        method: "DELETE",
+        data
+      }),
+      async onQueryStarted({ blogIds }, { dispatch, queryFulfilled }) {
+        // Optimistic update cho từng blog, giảm totalLikes xuống 1
+        const patchResults = blogIds.map((blogId) =>
+          dispatch(
+            blogApi.util.updateQueryData("fetchBlogById", String(blogId), (draft) => {
+              if (draft?.data && draft?.data?.activity) {
+                draft.data.activity.totalLikes = Math.max(
+                  (draft.data.activity.totalLikes || 0) - 1,
+                  0
+                );
+              }
+            })
+          )
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          // Rollback nếu thất bại
+          patchResults.forEach((patchResult) => patchResult.undo());
+        }
+      },
+      invalidatesTags: (_, __, arg) => [
+        { type: "LikedBlog", id: "LIST" },
+        ...arg.blogIds.map((blogId) => ({
+          type: "LikedBlog" as const,
+          id: blogId
+        }))
+      ]
+    }),
+
     // Follow Recruiters APIs
     getFollowedRecruiters: builder.query<GetFollowedRecruitersResponse, void>({
       query: () => ({
@@ -230,17 +338,26 @@ export const {
   useFetchUsersQuery,
   useFetchUserByIdQuery,
   useFetchUserByEmailQuery,
+
   useCreateUserMutation,
   useUpdatePasswordMutation,
   useResetPasswordMutation,
+
   useGetSavedJobsQuery,
   useCheckSavedJobsQuery,
   useSaveJobsMutation,
   useUnsaveJobsMutation,
+
+  useGetLikedBlogsQuery,
+  useCheckLikedBlogsQuery,
+  useLikeBlogsMutation,
+  useUnlikeBlogsMutation,
+
   useGetFollowedRecruitersQuery,
   useCheckRecruitersFollowedQuery,
   useFollowRecruitersMutation,
   useUnfollowRecruitersMutation,
+
   useActivateUsersMutation,
   useDeactivateUsersMutation
 } = userApi;

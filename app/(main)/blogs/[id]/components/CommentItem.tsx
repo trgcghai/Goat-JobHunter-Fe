@@ -14,9 +14,10 @@ interface CommentItemProps {
   comment: NestedComment;
   onReply: (replyTo: number, comment: string) => void;
   onDelete: (commentId: number) => void;
+  isCommenting: boolean
 }
 
-export default function CommentItem({ comment, onReply, onDelete }: CommentItemProps) {
+export default function CommentItem({ comment, onReply, onDelete, isCommenting }: CommentItemProps) {
   const { user } = useUser();
   const [isReplying, setIsReplying] = useState(false);
   const [replyContent, setReplyContent] = useState("");
@@ -115,6 +116,7 @@ export default function CommentItem({ comment, onReply, onDelete }: CommentItemP
                   value={replyContent}
                   onChange={setReplyContent}
                   onSubmit={handleReply}
+                  isCommenting={isCommenting}
                 />
               </div>
             )}
@@ -129,6 +131,7 @@ export default function CommentItem({ comment, onReply, onDelete }: CommentItemP
                 comment={reply}
                 onReply={onReply}
                 onDelete={onDelete}
+                isCommenting={isCommenting}
               />
             ))}
           </div>
