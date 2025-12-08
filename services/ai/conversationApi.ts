@@ -23,9 +23,9 @@ export const conversationApi = api.injectEndpoints({
       query: (params) => ({
         url: "/conversations",
         method: "GET",
-        params,
+        params
       }),
-      providesTags:  ["Conversations"]
+      providesTags: [{ type: "Conversations", id: "LIST" }]
     }),
 
     // Get conversation by ID

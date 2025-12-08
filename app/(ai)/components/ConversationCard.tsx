@@ -6,7 +6,7 @@ import Link from "next/link";
 import {
   Popover,
   PopoverContent,
-  PopoverTrigger,
+  PopoverTrigger
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 
@@ -26,13 +26,15 @@ const ConversationCard = ({
   isLoading
 }: ConversationCardProps) => {
   return (
-    <Link
-      href={`/chat/conversation/${conv.conversationId}`}
+    <div
       key={conv.conversationId}
       className="group relative flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-muted/80 transition-colors"
     >
-      <MessageSquare className="w-4 h-4 flex-shrink-0 text-muted-foreground" />
-      <span className="flex-1 truncate text-sm">{conv.title}</span>
+      <Link href={`/chat/conversation/${conv.conversationId}`} className={"flex items-center gap-2 flex-1 min-w-0"}>
+        {!conv.pinned && <MessageSquare className="w-4 h-4 flex-shrink-0 text-muted-foreground" />}
+        {conv.pinned && <Pin className="w-4 h-4 flex-shrink-0 text-muted-foreground" />}
+        <span className="flex-1 truncate text-sm">{conv.title}</span>
+      </Link>
       <Popover>
         <PopoverTrigger asChild>
           <Button
@@ -40,14 +42,13 @@ const ConversationCard = ({
             size="icon"
             className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
             disabled={isLoading}
-            onClick={(e) => e.preventDefault()}
           >
             <Ellipsis className="w-4 h-4" />
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-48 p-1"
-          align="end"
+          className="w-48 p-1 rounded-xl shadow-lg"
+          align="start"
           side="right"
           onClick={(e) => e.preventDefault()}
         >
@@ -102,7 +103,7 @@ const ConversationCard = ({
           </Button>
         </PopoverContent>
       </Popover>
-    </Link>
+    </div>
   );
 };
 
