@@ -5,10 +5,12 @@ import { Conversation } from "@/types/model";
 interface ConversationListProps {
   conversations: Conversation[];
   handleTogglePin: (conversationId: number, isPinned: boolean) => void;
+  handleRename: (conversationId: number, newName: string) => void;
+  handleDelete: (conversationId: number) => void;
   isLoading: boolean;
 }
 
-const ConversationList = ({ conversations, handleTogglePin, isLoading }: ConversationListProps) => {
+const ConversationList = ({ conversations, handleTogglePin, handleRename, handleDelete, isLoading }: ConversationListProps) => {
   return (
     <div className="space-y-2">
       {conversations.map((conv) => (
@@ -17,8 +19,8 @@ const ConversationList = ({ conversations, handleTogglePin, isLoading }: Convers
           conv={conv}
           isLoading={isLoading}
           handleTogglePin={handleTogglePin}
-          handleRename={() => {}}
-          handleDelete={() => {}}
+          handleRename={handleRename}
+          handleDelete={handleDelete}
         />
       ))}
     </div>

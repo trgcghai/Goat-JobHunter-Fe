@@ -39,8 +39,12 @@ export function AIChatSidebar() {
   const {
     isPinning,
     isUnpinning,
+    isDeleting,
+    isUpdating,
     handleCreateConversation,
-    handleTogglePin
+    handleTogglePin,
+    handleDeleteConversation,
+    handleUpdateConversation
   } = useConversationActions();
 
   const createConversation = async () => {
@@ -129,16 +133,20 @@ export function AIChatSidebar() {
                 <>
                   <ConversationList
                     conversations={pinnedConversations}
+                    isLoading={isPinning || isUnpinning || isDeleting || isUpdating}
                     handleTogglePin={handleTogglePin}
-                    isLoading={isPinning || isUnpinning}
+                    handleDelete={handleDeleteConversation}
+                    handleRename={handleUpdateConversation}
                   />
                   <Separator />
                 </>
               )}
               <ConversationList
                 conversations={unpinnedConversations}
+                isLoading={isPinning || isUnpinning || isDeleting || isUpdating}
                 handleTogglePin={handleTogglePin}
-                isLoading={isPinning || isUnpinning}
+                handleDelete={handleDeleteConversation}
+                handleRename={handleUpdateConversation}
               />
             </div>
           )}
