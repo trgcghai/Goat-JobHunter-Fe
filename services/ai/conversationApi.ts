@@ -5,7 +5,7 @@ import {
   ConversationResponse,
   ConversationUpdateRequest,
   GetConversationsParams,
-  GetConversationsResponse
+  GetConversationsResponse, GetMessageOfConversationResponse
 } from "@/services/ai/conversationType";
 
 export const conversationApi = api.injectEndpoints({
@@ -92,6 +92,15 @@ export const conversationApi = api.injectEndpoints({
         data: body
       }),
       invalidatesTags: [{ type: "Conversations", id: "LIST" }]
+    }),
+
+    // get message of a conversation by id
+    getConversationMessages: builder.query<GetMessageOfConversationResponse, number>({
+      query: (id) => ({
+        url: `/conversations/${id}/messages`,
+        method: "GET"
+      }),
+      providesTags: (result, error, id) => [{ type: "Conversations", id }]
     })
   })
 });
@@ -104,5 +113,7 @@ export const {
   useUpdateConversationMutation,
   usePinConversationsMutation,
   useUnpinConversationsMutation,
-  useDeleteConversationsMutation
+  useDeleteConversationsMutation,
+
+  useGetConversationMessagesQuery
 } = conversationApi;

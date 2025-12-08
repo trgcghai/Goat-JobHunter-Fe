@@ -1,5 +1,5 @@
 import { IBackendRes, IModelPaginate } from "@/types/api";
-import { Conversation } from "@/types/model";
+import { Conversation, MessageType } from "@/types/model";
 
 export type GetConversationsParams = {
   title?: string;
@@ -21,3 +21,5 @@ export type GetConversationsResponse = IBackendRes<IModelPaginate<Conversation>>
 export type ConversationResponse = IBackendRes<Conversation>;
 
 export type ConversationPinnedResponse = IBackendRes<{ conversationId: number, pinnned: boolean }[]>
+
+export type GetMessageOfConversationResponse = IBackendRes<IModelPaginate<MessageType>>

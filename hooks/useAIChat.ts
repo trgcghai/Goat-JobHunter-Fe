@@ -76,6 +76,7 @@ export function useAIChat() {
     isLoading,
     handleChat,
 
-    messages
+    messages,
+    setMessages
   };
 }

@@ -22,13 +22,15 @@ import {
   Empty,
   EmptyContent,
   EmptyDescription,
-  EmptyHeader,
+  EmptyHeader
 } from "@/components/ui/empty";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export function AIChatSidebar() {
   const { open, setOpen } = useSidebar();
   const { user, isSignedIn } = useUser();
+  const router = useRouter();
   const { data, isLoading, isError } = useGetConversationsQuery({}, {
     skip: !user || !isSignedIn || !open
   });
@@ -40,6 +42,18 @@ export function AIChatSidebar() {
     handleCreateConversation,
     handleTogglePin
   } = useConversationActions();
+
+  const createConversation = async () => {
+    try {
+      const result = await handleCreateConversation();
+
+      if (result?.data?.conversationId) {
+        router.push(`/chat/conversation/${result.data.conversationId}`);
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  };
 
   const conversations = useMemo(() => data?.data?.result || [], [data]);
 
@@ -76,7 +90,7 @@ export function AIChatSidebar() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={handleCreateConversation}
+              onClick={createConversation}
               className="rounded-lg ml-auto"
               title={"Tạo cuộc trò chuyện mới"}
             >
@@ -128,12 +142,12 @@ export function AIChatSidebar() {
               />
             </div>
           )}
-          {user && isSignedIn &&
+          {user && isSignedIn && !open &&
             <div className="flex flex-col items-center gap-2">
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={handleCreateConversation}
+                onClick={createConversation}
                 className="rounded-lg"
               >
                 <SquarePen className="w-5 h-5" />

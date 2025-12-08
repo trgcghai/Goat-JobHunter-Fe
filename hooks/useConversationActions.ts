@@ -21,6 +21,7 @@ export function useConversationActions() {
       return await createConversation().unwrap();
     } catch (error) {
       console.error(error);
+      toast.error("Không thể tạo cuộc trò chuyện mới");
       return;
     }
   };

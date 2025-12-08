@@ -1,40 +1,109 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
-import { Ellipsis, MessageSquare } from "lucide-react";
+import { Ellipsis, MessageSquare, Pin, PinOff, Pencil, Trash2 } from "lucide-react";
 import { Conversation } from "@/types/model";
+import Link from "next/link";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 
 interface ConversationCardProps {
   conv: Conversation;
   handleTogglePin: (conversationId: number, isPinned: boolean) => void;
+  handleRename: (conversationId: number) => void;
+  handleDelete: (conversationId: number) => void;
   isLoading: boolean;
 }
 
-const ConversationCard = ({ conv, handleTogglePin, isLoading }: ConversationCardProps) => {
-  const [isHovered, setIsHovered] = useState(false);
+const ConversationCard = ({
+  conv,
+  handleTogglePin,
+  handleRename,
+  handleDelete,
+  isLoading
+}: ConversationCardProps) => {
   return (
-    <div
+    <Link
+      href={`/chat/conversation/${conv.conversationId}`}
       key={conv.conversationId}
-      className="relative"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      className="group relative flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-muted/80 transition-colors"
     >
-      <Button
-        variant="ghost"
-        className={"w-full justify-start text-left truncate pr-10"}
-      >
-        <MessageSquare className="w-4 h-4 mr-1 flex-shrink-0" />
-        <span className="truncate">{conv.title}</span>
-      </Button>
-      <Button
-        variant="ghost"
-        size="icon"
-        className={`absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 ${isHovered ? "block" : "hidden"} `}
-        onClick={() => handleTogglePin(conv.conversationId, conv.pinned)}
-        disabled={isLoading}
-      >
-        <Ellipsis className="w-4 h-4 fill-current" />
-      </Button>
-    </div>
+      <MessageSquare className="w-4 h-4 flex-shrink-0 text-muted-foreground" />
+      <span className="flex-1 truncate text-sm">{conv.title}</span>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+            disabled={isLoading}
+            onClick={(e) => e.preventDefault()}
+          >
+            <Ellipsis className="w-4 h-4" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent
+          className="w-48 p-1"
+          align="end"
+          side="right"
+          onClick={(e) => e.preventDefault()}
+        >
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full justify-start gap-2 h-8 px-2"
+            onClick={(e) => {
+              e.preventDefault();
+              handleRename(conv.conversationId);
+            }}
+          >
+            <Pencil className="w-4 h-4" />
+            <span className="text-sm">Đổi tên</span>
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full justify-start gap-2 h-8 px-2"
+            onClick={(e) => {
+              e.preventDefault();
+              handleTogglePin(conv.conversationId, conv.pinned);
+            }}
+          >
+            {conv.pinned ? (
+              <>
+                <PinOff className="w-4 h-4" />
+                <span className="text-sm">Bỏ ghim</span>
+              </>
+            ) : (
+              <>
+                <Pin className="w-4 h-4" />
+                <span className="text-sm">Ghim</span>
+              </>
+            )}
+          </Button>
+
+          <Separator className="my-1" />
+
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full justify-start gap-2 h-8 px-2 text-destructive hover:text-destructive hover:bg-destructive/10"
+            onClick={(e) => {
+              e.preventDefault();
+              handleDelete(conv.conversationId);
+            }}
+          >
+            <Trash2 className="w-4 h-4" />
+            <span className="text-sm">Xóa</span>
+          </Button>
+        </PopoverContent>
+      </Popover>
+    </Link>
   );
 };
+
 export default ConversationCard;

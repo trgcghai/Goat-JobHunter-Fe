@@ -15,8 +15,10 @@ const ConversationList = ({ conversations, handleTogglePin, isLoading }: Convers
         <ConversationCard
           key={conv.conversationId}
           conv={conv}
-          handleTogglePin={handleTogglePin}
           isLoading={isLoading}
+          handleTogglePin={handleTogglePin}
+          handleRename={() => {}}
+          handleDelete={() => {}}
         />
       ))}
     </div>

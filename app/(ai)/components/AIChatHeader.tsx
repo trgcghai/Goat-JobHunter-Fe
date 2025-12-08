@@ -6,7 +6,7 @@ export function AIChatHeader() {
   return (
     <header className="h-14 bg-sidebar border-b border-sidebar-border flex items-center justify-between px-6">
       <div className="flex items-center justify-between gap-2 -ml-2">
-        <Link href="#" className="flex items-center gap-2">
+        <Link href="/chat" className="flex items-center gap-2">
           <Image
             src="/logo.png"
             alt="GOAT Logo"
