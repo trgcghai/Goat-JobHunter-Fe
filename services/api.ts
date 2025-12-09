@@ -26,7 +26,8 @@ const axiosBaseQuery =
           method,
           data,
           params,
-          headers
+          headers,
+          responseType: headers?.responseType || "json"
         });
         return { data: result.data };
       } catch (axiosError) {
@@ -84,7 +85,10 @@ export const api = createApi({
     backup: builder.query({
       query: () => ({
         url: "/admin/backup",
-        method: "GET"
+        method: "GET",
+        headers: {
+          responseType: "blob"
+        }
       })
     }),
 
