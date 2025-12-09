@@ -31,7 +31,17 @@ export default function Sidebar({ tabs, logoHref }: SidebarProps) {
 
   const handleBackup = async () => {
     try {
-      await backup({});
+      const res = await backup({ responseType: "blob" }).unwrap();
+
+      const blob = new Blob([res], { type: "application/octet-stream" });
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "backup.sql";
+      link.click();
+
+      window.URL.revokeObjectURL(url);
 
       toast.success("Sao lưu dữ liệu thành công!");
     } catch (err) {
