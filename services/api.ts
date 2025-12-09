@@ -116,7 +116,7 @@ export const api = createApi({
 export const {
   usePingQuery,
   useClearCookiesQuery,
-  useBackupQuery,
+  useLazyBackupQuery,
   useGenerateDescriptionMutation,
   useGenerateTagsMutation,
   useGetUuidQuery,

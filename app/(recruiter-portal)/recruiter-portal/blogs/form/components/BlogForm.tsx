@@ -41,16 +41,16 @@ const DESCRIPTION_KEY = "blog_description_cooldown";
 const TAGS_KEY = "blog_tags_cooldown";
 
 const BlogForm = ({
-  form,
-  onSubmit,
-  isCreating,
-  isUpdating,
-  isEditMode,
-  bannerUrl,
-  onBannerChange,
-  onFileSelect,
-  isUploading
-}: BlogFormProps) => {
+                    form,
+                    onSubmit,
+                    isCreating,
+                    isUpdating,
+                    isEditMode,
+                    bannerUrl,
+                    onBannerChange,
+                    onFileSelect,
+                    isUploading
+                  }: BlogFormProps) => {
   const isSubmitting = isCreating || isUpdating || isUploading;
 
   const [descriptionCooldown, setDescriptionCooldown] = useState(0);
@@ -237,7 +237,7 @@ const BlogForm = ({
                 <FormItem>
                   <div className="flex items-center justify-between">
                     <FormLabel>Mô tả ngắn</FormLabel>
-                    <Button
+                    {!isEditMode && <Button
                       type="button"
                       size="sm"
                       className="rounded-xl"
@@ -252,7 +252,7 @@ const BlogForm = ({
                       {descriptionCooldown > 0
                         ? `Đợi ${descriptionCooldown}s`
                         : "Tạo AI"}
-                    </Button>
+                    </Button>}
                   </div>
                   <FormControl>
                     <Textarea
@@ -276,7 +276,7 @@ const BlogForm = ({
                 <FormItem>
                   <div className="flex items-center justify-between">
                     <FormLabel>Thẻ (Tags)</FormLabel>
-                    <Button
+                    {!isEditMode && <Button
                       type="button"
                       size="sm"
                       className="rounded-xl"
@@ -291,7 +291,7 @@ const BlogForm = ({
                       {tagsCooldown > 0
                         ? `Đợi ${tagsCooldown}s`
                         : "Tạo AI"}
-                    </Button>
+                    </Button>}
                   </div>
                   <FormControl>
                     <MultipleSelector

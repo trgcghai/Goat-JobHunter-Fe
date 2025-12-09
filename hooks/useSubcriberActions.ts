@@ -35,6 +35,7 @@ const useSubscriberActions = (data?: UseSubscriberActionsProps) => {
 
         if (!name) {
           toast.error("Vui lòng cập nhật họ và tên trước khi đăng ký.")
+          return;
         }
 
         // user already has a subscriber, so we just need to update it

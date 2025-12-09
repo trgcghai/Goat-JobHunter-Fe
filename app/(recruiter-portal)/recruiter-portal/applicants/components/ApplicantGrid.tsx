@@ -30,6 +30,11 @@ const ApplicantGrid = ({ applicants }: ApplicantGridProps) => {
 
     console.log({ applicantIds: [selectedApplicant?.userId], jobId });
 
+    if (!jobId) {
+      toast.error("Vui lòng chọn một việc làm trước khi gửi email.");
+      return;
+    }
+
     if (!selectedApplicant?.userId || !jobId) {
       toast.error("Có lỗi xảy ra khi gửi mail. Vui lòng thử lại sau.");
       return

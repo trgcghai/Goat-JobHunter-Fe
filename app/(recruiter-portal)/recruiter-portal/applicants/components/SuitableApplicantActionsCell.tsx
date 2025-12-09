@@ -23,6 +23,11 @@ const SuitableApplicantActionsCell = ({ applicant }: SuitableApplicantActionsCel
 
     console.log({ applicantIds: applicant?.userId, jobId });
 
+    if (!jobId) {
+      toast.error("Vui lòng chọn một việc làm trước khi gửi email.");
+      return;
+    }
+
     if (!applicant?.userId || !jobId) {
       toast.error("Có lỗi xảy ra khi gửi mail. Vui lòng thử lại sau.");
       return
