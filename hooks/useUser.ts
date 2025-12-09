@@ -112,7 +112,7 @@ export function useUser() {
         }
         return { success: false };
       } catch (error) {
-        console.error("error sigin:", error);
+        console.error("error signin:", error);
 
         // @ts-expect-error ts-ignore
         if (error.status === 400 && error.data.message == "Account is locked") {

@@ -71,8 +71,6 @@ const JobActionsCell = ({ job }: { job: Job }) => {
     switch (user?.role.name) {
       case ROLE.SUPER_ADMIN:
         return `/admin/jobs/${job.jobId}`;
-      case ROLE.HR:
-        return `/recruiter-portal/jobs/${job.jobId}`;
       default:
         return `/jobs/${job.jobId}`;
     }

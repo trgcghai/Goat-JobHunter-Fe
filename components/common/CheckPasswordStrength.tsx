@@ -27,11 +27,11 @@ type CheckItem = {
 };
 
 const CHECK_ITEMS: CheckItem[] = [
-  { key: "length", label: "At least 8 characters" },
-  { key: "lowercase", label: "Lowercase letter" },
-  { key: "uppercase", label: "Uppercase letter" },
-  { key: "number", label: "Number" },
-  { key: "special", label: "Special character (!@#$%^&*)", colSpan: 2 },
+  { key: "length", label: "Phải có ít nhất 8 kí tự" },
+  { key: "lowercase", label: "Chứa kí tự thường" },
+  { key: "uppercase", label: "Chưa kí tự in hoa" },
+  { key: "number", label: "Chứa số" },
+  { key: "special", label: "Chứa kí tự đặc biệt", colSpan: 2 },
 ];
 
 interface CheckPasswordStrengthItemProps {
