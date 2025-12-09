@@ -2,10 +2,13 @@
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
-import { LogOut } from "lucide-react";
+import { LogOut, Database } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { HasAdmin } from "@/components/common/HasRole";
+import { useLazyBackupQuery } from "@/services/api";
+import LoaderSpin from "@/components/common/LoaderSpin";
 
 export interface SidebarTab {
   id: string;
@@ -22,7 +25,16 @@ interface SidebarProps {
 
 export default function Sidebar({ tabs, logoHref }: SidebarProps) {
   const pathname = usePathname();
-  const { signOut } = useUser();
+  const { signOut, user } = useUser();
+  const [backup, { isLoading }] = useLazyBackupQuery();
+
+  const handleBackup = async () => {
+    try {
+      await backup({});
+    } catch (err) {
+      console.error("Backup failed", err);
+    }
+  };
 
   return (
     <div className="fixed z-50 left-0 top-0 h-screen w-64 bg-sidebar border-r border-sidebar-border p-6 space-y-8">
@@ -45,7 +57,7 @@ export default function Sidebar({ tabs, logoHref }: SidebarProps) {
               <Button
                 variant={pathname?.includes(tab.id) ? "default" : "ghost"}
                 className={cn(
-                  "w-full flex items-center justify-start gap-3 px-4 py-3 rounded-xl transition-all",
+                  "w-full flex items-center justify-start gap-3 px-4 py-3 rounded-xl transition-all"
                 )}
               >
                 {tab.icon}
@@ -57,10 +69,28 @@ export default function Sidebar({ tabs, logoHref }: SidebarProps) {
       </nav>
 
       <div className="absolute bottom-6 left-6 right-6 space-y-2 pt-4">
+        <HasAdmin user={user}>
+          <Button
+            variant={"default"}
+            className="w-full rounded-xl mb-4 min-w-full"
+            onClick={handleBackup}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <LoaderSpin />
+            ) : (
+              <>
+                <Database className="w-5 h-5" />
+                <span className="font-medium">Backup</span>
+              </>
+            )}
+          </Button>
+        </HasAdmin>
         <Button
           variant={"destructive"}
           className="w-full rounded-xl"
           onClick={signOut}
+          disabled={isLoading}
         >
           <LogOut className="w-5 h-5" />
           <span className="font-medium">Đăng xuất</span>
