@@ -38,7 +38,7 @@ export default function Sidebar({ tabs, logoHref }: SidebarProps) {
 
       const link = document.createElement("a");
       link.href = url;
-      link.download = "backup.sql";
+      link.download = "backup.bak";
       link.click();
 
       window.URL.revokeObjectURL(url);
