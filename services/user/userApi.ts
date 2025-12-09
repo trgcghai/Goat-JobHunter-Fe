@@ -216,20 +216,29 @@ export const userApi = api.injectEndpoints({
             })
           )
         );
+
+        const patchResults2 = dispatch(
+          userApi.util.updateQueryData("checkLikedBlogs", { blogIds }, (draft) => {
+              if (draft) {
+                const blogStatus = draft?.data?.find((item) => blogIds.includes(item.blogId));
+                if (blogStatus) {
+                  blogStatus.result = true;
+                } else {
+                  draft?.data?.push(...blogIds.map((blogId) => ({ blogId, result: true })));
+                }
+              }
+            }
+          )
+        );
+
         try {
           await queryFulfilled;
         } catch {
           // Rollback nếu thất bại
           patchResults.forEach((patchResult) => patchResult.undo());
+          patchResults2.undo();
         }
       },
-      invalidatesTags: (_, __, arg) => [
-        { type: "LikedBlog", id: "LIST" },
-        ...arg.blogIds.map((blogId) => ({
-          type: "LikedBlog" as const,
-          id: blogId
-        }))
-      ]
     }),
 
     unlikeBlogs: builder.mutation<LikedBlogsResponse, { blogIds: number[] }>({
@@ -253,20 +262,28 @@ export const userApi = api.injectEndpoints({
           )
         );
 
+        const patchResults2 = dispatch(
+          userApi.util.updateQueryData("checkLikedBlogs", { blogIds }, (draft) => {
+              if (draft) {
+                const blogStatus = draft?.data?.find((item) => blogIds.includes(item.blogId));
+                if (blogStatus) {
+                  blogStatus.result = false;
+                } else {
+                  draft?.data?.push(...blogIds.map((blogId) => ({ blogId, result: false })));
+                }
+              }
+            }
+          )
+        );
+
         try {
           await queryFulfilled;
         } catch {
           // Rollback nếu thất bại
           patchResults.forEach((patchResult) => patchResult.undo());
+          patchResults2.undo();
         }
       },
-      invalidatesTags: (_, __, arg) => [
-        { type: "LikedBlog", id: "LIST" },
-        ...arg.blogIds.map((blogId) => ({
-          type: "LikedBlog" as const,
-          id: blogId
-        }))
-      ]
     }),
 
     // Follow Recruiters APIs

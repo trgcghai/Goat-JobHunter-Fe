@@ -221,6 +221,8 @@ const useBlogActions = () => {
     isDisabling,
     isCreating,
     isUpdating,
+    isLiking,
+    isUnliking,
     isLoading:
       isDeleting ||
       isEnabling ||
