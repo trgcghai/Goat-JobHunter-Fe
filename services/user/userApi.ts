@@ -209,7 +209,7 @@ export const userApi = api.injectEndpoints({
         // Optimistic update cho từng blog, tăng totalLikes lên 1
         const patchResults = blogIds.map((blogId) =>
           dispatch(
-            blogApi.util.updateQueryData("fetchBlogById", String(blogId), (draft) => {
+            blogApi.util.updateQueryData("fetchBlogByIdRead", String(blogId), (draft) => {
               if (draft?.data?.activity) {
                 draft.data.activity.totalLikes = (draft.data.activity.totalLikes || 0) + 1;
               }
@@ -242,7 +242,7 @@ export const userApi = api.injectEndpoints({
         // Optimistic update cho từng blog, giảm totalLikes xuống 1
         const patchResults = blogIds.map((blogId) =>
           dispatch(
-            blogApi.util.updateQueryData("fetchBlogById", String(blogId), (draft) => {
+            blogApi.util.updateQueryData("fetchBlogByIdRead", String(blogId), (draft) => {
               if (draft?.data && draft?.data?.activity) {
                 draft.data.activity.totalLikes = Math.max(
                   (draft.data.activity.totalLikes || 0) - 1,
