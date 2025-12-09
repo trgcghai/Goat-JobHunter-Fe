@@ -87,7 +87,7 @@ export default function EditPermissionDialog({ open, onOpenChange, permission }:
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="rounded-xl">
         <DialogHeader>
-          <DialogTitle>{permission ? "Edit Permission" : "Create Permission"}</DialogTitle>
+          <DialogTitle>{permission ? "Chỉnh sửa quyền" : "Tạo quyền mới"}</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -106,7 +106,7 @@ export default function EditPermissionDialog({ open, onOpenChange, permission }:
               <FormItem>
                 <FormLabel required>Module</FormLabel>
                 <FormControl>
-                  <Input {...field} className="rounded-xl" />
+                  <Input {...field} className="rounded-xl" disabled={!!permission} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -116,7 +116,7 @@ export default function EditPermissionDialog({ open, onOpenChange, permission }:
               <FormItem>
                 <FormLabel required>Method</FormLabel>
                 <FormControl>
-                  <Select value={field.value || "GET"} onValueChange={(v) => field.onChange(v)}>
+                  <Select disabled={!!permission} value={field.value || "GET"} onValueChange={(v) => field.onChange(v)}>
                     <SelectTrigger className="rounded-xl w-full">
                       <SelectValue />
                     </SelectTrigger>
@@ -133,7 +133,7 @@ export default function EditPermissionDialog({ open, onOpenChange, permission }:
               <FormItem>
                 <FormLabel required>API Path</FormLabel>
                 <FormControl>
-                  <Input {...field} className="rounded-xl" />
+                  <Input {...field} className="rounded-xl" disabled={!!permission} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
