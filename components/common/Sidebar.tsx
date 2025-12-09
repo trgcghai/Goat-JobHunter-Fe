@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 import { HasAdmin } from "@/components/common/HasRole";
 import { useLazyBackupQuery } from "@/services/api";
 import LoaderSpin from "@/components/common/LoaderSpin";
+import {toast} from "sonner"
 
 export interface SidebarTab {
   id: string;
@@ -31,7 +32,10 @@ export default function Sidebar({ tabs, logoHref }: SidebarProps) {
   const handleBackup = async () => {
     try {
       await backup({});
+
+      toast.success("Sao lưu dữ liệu thành công!");
     } catch (err) {
+      toast.error("Có lỗi xảy ra khi sao lưu dữ liệu. Vui lòng thử lại.");
       console.error("Backup failed", err);
     }
   };
