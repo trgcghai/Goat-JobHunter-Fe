@@ -86,7 +86,9 @@ export const api = createApi({
       query: () => ({
         url: "/admin/backup",
         method: "GET",
-        responseType: "blob"
+        headers: {
+          responseType: "blob"
+        }
       })
     }),
 

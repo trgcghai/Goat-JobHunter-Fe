@@ -31,7 +31,7 @@ export default function Sidebar({ tabs, logoHref }: SidebarProps) {
 
   const handleBackup = async () => {
     try {
-      const res = await backup({ responseType: "blob" }).unwrap();
+      const res = await backup({}).unwrap();
 
       const blob = new Blob([res], { type: "application/octet-stream" });
       const url = window.URL.createObjectURL(blob);

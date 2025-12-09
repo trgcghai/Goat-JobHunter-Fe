@@ -125,8 +125,9 @@ export const blogApi = api.injectEndpoints({
 
     fetchBlogByIdRead: builder.query<FetchBlogByIdResponse, BlogIdRequest>({
       query: (blogId) => ({
-        url: `/blogs/${blogId}?read=true`,
-        method: "GET"
+        url: `/blogs/${blogId}`,
+        method: "GET",
+        params: { read: true }
       }),
       providesTags: ["Blog"]
     }),
