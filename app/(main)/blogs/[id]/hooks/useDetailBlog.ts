@@ -1,4 +1,4 @@
-import { useFetchBlogByIdQuery, useGetCommentsByBlogIdQuery } from "@/services/blog/blogApi";
+import { useFetchBlogByIdReadQuery, useGetCommentsByBlogIdQuery } from "@/services/blog/blogApi";
 import { useFetchRecruiterByIdQuery } from "@/services/recruiter/recruiterApi";
 import { useCheckLikedBlogsQuery } from "@/services/user/userApi";
 import { useMemo } from "react";
@@ -14,7 +14,7 @@ const useDetailBlog = (blogId: string) => {
   const { handleUnlikeBlog, handleLikeBlog } = useBlogActions();
 
   // fetch blog details
-  const { data, isLoading, isError } = useFetchBlogByIdQuery(blogId, {
+  const { data, isLoading, isError } = useFetchBlogByIdReadQuery(blogId, {
     skip: !blogId
   });
 
