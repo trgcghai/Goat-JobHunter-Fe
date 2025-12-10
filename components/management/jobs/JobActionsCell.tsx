@@ -70,7 +70,7 @@ const JobActionsCell = ({ job }: { job: Job }) => {
   const detailLink = useMemo<string>(() => {
     switch (user?.role.name) {
       case ROLE.SUPER_ADMIN:
-        return `/admin/jobs/${job.jobId}`;
+        return `/jobs/${job.jobId}`;
       default:
         return `/jobs/${job.jobId}`;
     }
