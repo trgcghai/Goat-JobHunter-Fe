@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/empty";
 import { Blog } from "@/types/model";
 import { formatDate } from "@/utils/formatDate";
-import { ArrowRight, RefreshCcwIcon } from "lucide-react";
+import { ArrowRight, ImageIcon, RefreshCcwIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -60,13 +60,21 @@ export default function LatestBlogs({ blogs, isLoading }: LatestBlogsProps) {
               className="block h-full"
             >
               <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer py-0 pb-4 flex flex-col h-full">
-                <Image
-                  src={blog.banner || "/placeholder.svg"}
-                  alt={blog.title}
-                  className="h-40 w-full object-cover"
-                  width={400}
-                  height={160}
-                />
+                {
+                  blog.banner && blog.banner.trim() !== "" ? (
+                    <Image
+                      src={blog.banner || "/placeholder.svg"}
+                      alt={blog.title}
+                      className="h-40 w-full object-cover"
+                      width={400}
+                      height={160}
+                    />
+                  ) : (
+                    <div className="h-40 w-full bg-muted flex items-center justify-center">
+                      <ImageIcon className="h-16 w-16 text-muted-foreground" />
+                    </div>
+                  )
+                }
                 <CardHeader>
                   <div className="mb-2 flex flex-wrap gap-2">
                     {blog.tags?.slice(0, 2).map((tag, index) => (
