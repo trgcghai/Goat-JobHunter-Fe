@@ -39,12 +39,12 @@ const useSubscriberActions = (data?: UseSubscriberActionsProps) => {
         }
 
         // user already has a subscriber, so we just need to update it
-        if (data && data.subscriberId && data.skills.length == 0) {
+        if (data && data.subscriberId) {
           await updateSubscriber({
             subscriberId: data.subscriberId,
             name,
             email,
-            skillIds,
+            skillIds: [...data.skills.map(s => s.skillId), ...skillIds],
           }).unwrap();
 
           toast.success("Đăng ký thành công")
