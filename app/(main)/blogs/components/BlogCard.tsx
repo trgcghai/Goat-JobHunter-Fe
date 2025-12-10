@@ -3,25 +3,37 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Blog } from "@/types/model";
 import { formatDate } from "@/utils/formatDate";
-import { Eye, Heart } from "lucide-react";
+import { Eye, Heart, ImageIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 interface BlogCardProps {
   blog: Blog;
 }
 
 export default function BlogCard({ blog }: BlogCardProps) {
+
+  const [imageError, setImageError] = useState(false);
+  const hasValidBanner = blog.banner && blog.banner.trim() !== "";
+
   return (
     <Link href={`/blogs/${blog.blogId}`}>
       <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col py-0 pb-6">
-        <Image
-          src={blog.banner || "/placeholder.svg"}
-          alt={blog.title}
-          className="h-40 w-full object-cover"
-          width={400}
-          height={160}
-        />
+        {hasValidBanner && !imageError ? (
+          <Image
+            src={blog.banner}
+            alt={blog.title}
+            className="h-40 w-full object-cover"
+            width={400}
+            height={160}
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <div className="h-40 w-full bg-muted flex items-center justify-center">
+            <ImageIcon className="h-16 w-16 text-muted-foreground" />
+          </div>
+        )}
         <CardHeader className="shrink-0">
           <div className="mb-2 flex flex-wrap gap-2">
             {blog.tags?.slice(0, 2).map((tag, index) => (
