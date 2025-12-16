@@ -1,42 +1,45 @@
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import Link from "next/link";
+import { Tag } from "lucide-react";
 
-const popularTags = [
-  { name: "Deep Talk", count: 234, color: "blue" },
-  { name: "Trend Check", count: 189, color: "purple" },
-  { name: "AI For Good", count: 156, color: "pink" },
-  { name: "Tech Tips", count: 142, color: "green" },
-  { name: "Career", count: 128, color: "orange" },
-  { name: "Python", count: 98, color: "gray" },
-  { name: "JavaScript", count: 87, color: "yellow" },
-  { name: "Design", count: 76, color: "red" },
-]
+interface PopularTagsProps {
+  popularTags: [string, number][];
+}
 
-export function PopularTags() {
+export function PopularTags({
+  popularTags
+}: PopularTagsProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg font-semibold">
-          <Link href="/hub/tags">
-            Các tags phổ biến
-          </Link>
-        </CardTitle>
+        <div className="flex items-center gap-2">
+          <Tag className="h-5 w-5 text-primary" />
+          <h3 className="text-lg font-bold text-foreground">
+            Từ Khóa Nổi Bật
+          </h3>
+        </div>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-wrap gap-2">
-          {popularTags.map((tag) => (
-            <Badge
-              key={tag.name}
-              variant="secondary"
-              className="cursor-pointer hover:bg-pink-100 hover:text-pink-700 transition-colors px-3 py-1.5"
-            >
-              #{tag.name}
-              <span className="ml-1.5 text-xs text-muted-foreground">{tag.count}</span>
-            </Badge>
-          ))}
-        </div>
+        {popularTags.length > 0 ? (
+          <div className="flex flex-wrap gap-2">
+            {popularTags
+              .map((item) => item[0])
+              .map((tag) => (
+                <Link
+                  key={tag}
+                  href={`/blogs?tags=${encodeURIComponent(tag)}`}
+                  className="text-xs font-semibold text-primary bg-primary/10 px-3 py-1.5 rounded-full hover:bg-primary/20 transition-colors"
+                >
+                  {tag}
+                </Link>
+              ))}
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            Chưa có tag nào
+          </p>
+        )}
       </CardContent>
     </Card>
-  )
+  );
 }

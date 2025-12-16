@@ -5,9 +5,9 @@ import { Card } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ImageIcon, Video, Smile } from "lucide-react"
 import { useState } from "react"
-import { CreatePostDialog } from "@/app/(social-hub)/hub/fyp/component/CreatePostDialog";
+import { CreateBlogDialog } from "@/app/(social-hub)/hub/fyp/component/CreateBlogDialog";
 
-export function CreatePostTrigger() {
+export function CreateBlogTrigger() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   return (
@@ -43,7 +43,7 @@ export function CreatePostTrigger() {
         </div>
       </Card>
 
-      <CreatePostDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+      <CreateBlogDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
     </>
   )
 }

@@ -4,15 +4,15 @@ import { TrendingBlogCard } from "@/app/(main)/blogs/components";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   useFetchPopularBlogsQuery,
-  useFetchTagsQuery,
+  useFetchTagsQuery
 } from "@/services/blog/blogApi";
-import { Tag, TrendingUp } from "lucide-react";
-import Link from "next/link";
+import { TrendingUp } from "lucide-react";
 import { useMemo } from "react";
+import { PopularTags } from "@/app/(social-hub)/components/PopularTags";
 
 export default function BlogLayout({
-  children,
-}: {
+                                     children
+                                   }: {
   children: React.ReactNode;
 }) {
   const { data: tagsResponse } = useFetchTagsQuery({});
@@ -23,7 +23,7 @@ export default function BlogLayout({
 
   const { data: blogsResponse } = useFetchPopularBlogsQuery({
     page: 1,
-    size: 5,
+    size: 5
   });
 
   const trendingBlogs = useMemo(() => {
@@ -50,37 +50,7 @@ export default function BlogLayout({
 
             <div className="lg:col-span-1">
               <div className="sticky top-24 space-y-6">
-                <Card>
-                  <CardHeader>
-                    <div className="flex items-center gap-2">
-                      <Tag className="h-5 w-5 text-primary" />
-                      <h3 className="text-lg font-bold text-foreground">
-                        Từ Khóa Nổi Bật
-                      </h3>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    {popularTags.length > 0 ? (
-                      <div className="flex flex-wrap gap-2">
-                        {popularTags
-                          .map((item) => item[0])
-                          .map((tag) => (
-                            <Link
-                              key={tag}
-                              href={`/blogs?tags=${encodeURIComponent(tag)}`}
-                              className="text-xs font-semibold text-primary bg-primary/10 px-3 py-1.5 rounded-full hover:bg-primary/20 transition-colors"
-                            >
-                              {tag}
-                            </Link>
-                          ))}
-                      </div>
-                    ) : (
-                      <p className="text-sm text-muted-foreground">
-                        Chưa có tag nào
-                      </p>
-                    )}
-                  </CardContent>
-                </Card>
+                <PopularTags popularTags={popularTags} />
 
                 <Card>
                   <CardHeader>

@@ -10,12 +10,12 @@ import { Badge } from "@/components/ui/badge"
 import { ImageIcon, Video, Smile, MapPin, TagIcon, Sparkles } from "lucide-react"
 import { useState } from "react"
 
-interface CreatePostDialogProps {
+interface CreateBlogDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-export function CreatePostDialog({ open, onOpenChange }: CreatePostDialogProps) {
+export function CreateBlogDialog({ open, onOpenChange }: CreateBlogDialogProps) {
   const [content, setContent] = useState("")
   const [selectedChallenge, setSelectedChallenge] = useState<string | null>(null)
   const [selectedTags, setSelectedTags] = useState<string[]>([])

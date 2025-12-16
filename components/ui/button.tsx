@@ -56,6 +56,7 @@ function Button({
       className={cn(
         buttonVariants({ variant, size, className }),
         capitalize && "capitalize",
+        "rounded-xl"
       )}
       {...props}
     />
