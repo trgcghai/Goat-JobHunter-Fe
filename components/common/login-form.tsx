@@ -58,7 +58,6 @@ export function LoginForm({
 
       if (result.success) {
 
-        console.log(result.user);
 
         switch (result.user?.role.name) {
           case "SUPER_ADMIN":
