@@ -1,5 +1,5 @@
 import { IBackendRes } from "@/types/api";
-import { Applicant, Recruiter, User } from "@/types/model";
+import { Applicant, Recruiter } from "@/types/model";
 import { LoginResponseDto } from "@/types/dto";
 
 // Base Types

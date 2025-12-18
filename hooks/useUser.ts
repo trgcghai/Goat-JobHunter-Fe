@@ -2,16 +2,13 @@ import { clearUser, setUser, useAuthSlice } from "@/lib/features/authSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import { useUpdateApplicantMutation } from "@/services/applicant/applicantApi";
 import {
-  useApplicantSignupMutation,
   useLogoutMutation,
-  useRecruiterSignupMutation,
   useResendCodeMutation,
   useSigninMutation,
+  useUserSignUpMutation,
   useVerifyCodeMutation
 } from "@/services/auth/authApi";
 import {
-  ApplicantSignUpRequest,
-  RecruiterSignUpRequest,
   SignInRequest,
   VerifyCodeRequest
 } from "@/services/auth/authType";
@@ -21,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { toast } from "sonner";
 import { useUpdateRecruiterMutation } from "@/services/recruiter/recruiterApi";
+import { TUserSignUpSchema } from "@/app/(auth)/components/schemas";
 
 export function useUser() {
   const router = useRouter();
@@ -30,10 +28,7 @@ export function useUser() {
 
   // API mutations
   const [signinMutation, { isLoading: isSigningIn }] = useSigninMutation();
-  const [applicantSignupMutation, { isLoading: isApplicantSigningUp }] =
-    useApplicantSignupMutation();
-  const [recruiterSignupMutation, { isLoading: isRecruiterSigningUp }] =
-    useRecruiterSignupMutation();
+  const [userSignUpMutation, { isLoading: isSigningUp }] = useUserSignUpMutation();
   const [logoutMutation, { isLoading: isSigningOut }] = useLogoutMutation();
   const [verifyCodeMutation, { isLoading: isVerifying }] =
     useVerifyCodeMutation();
@@ -143,47 +138,25 @@ export function useUser() {
   );
 
   /**
-   * Sign up new applicant
+   * Sign up new user (applicant or recruiter)
    */
-  const applicantSignUp = useCallback(
-    async (params: ApplicantSignUpRequest) => {
+  const userSignUp = useCallback(
+    async (params: TUserSignUpSchema) => {
       try {
-        const response = await applicantSignupMutation(params).unwrap();
+        const response = await userSignUpMutation(params).unwrap();
 
         if (response.statusCode === 201) {
           toast.success("Đăng ký thành công!");
-          return { success: true };
+          return { success: true, type: params.type };
         }
         return { success: false };
       } catch (error) {
-        console.error("error sign up applicant:", error);
+        console.error("error sign up:", error);
         toast.error("Đăng ký thất bại!");
         return { success: false };
       }
     },
-    [applicantSignupMutation]
-  );
-
-  /**
-   * Sign up new recruiter
-   */
-  const recruiterSignUp = useCallback(
-    async (params: RecruiterSignUpRequest) => {
-      try {
-        const response = await recruiterSignupMutation(params).unwrap();
-
-        if (response.statusCode === 201) {
-          toast.success("Đăng ký thành công!");
-          return { success: true };
-        }
-        return { success: false };
-      } catch (error) {
-        console.error("error sign up applicant:", error);
-        toast.error("Đăng ký thất bại!");
-        return { success: false };
-      }
-    },
-    [recruiterSignupMutation]
+    [userSignUpMutation]
   );
 
   /**
@@ -426,8 +399,7 @@ export function useUser() {
 
     // Auth methods
     signIn,
-    applicantSignUp,
-    recruiterSignUp,
+    userSignUp,
     signOut,
     verifyCode,
     resendCode,
@@ -436,7 +408,7 @@ export function useUser() {
 
     // Loading states
     isSigningIn,
-    isSigningUp: isApplicantSigningUp || isRecruiterSigningUp,
+    isSigningUp,
     isSigningOut,
     isVerifying,
     isResending,
