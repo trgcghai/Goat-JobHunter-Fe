@@ -105,15 +105,6 @@ export default function Header() {
               <>
                 <NotificationPopup />
                 <UserPopup />
-                <Button
-                  variant={"destructive"}
-                  className="rounded-xl"
-                  onClick={signOut}
-                  disabled={isSigningOut}
-                >
-                  <LogOut className="w-5 h-5" />
-                  <span className="font-medium">Đăng xuất</span>
-                </Button>
               </>
             )}
           </div>
