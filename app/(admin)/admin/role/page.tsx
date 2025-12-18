@@ -50,7 +50,6 @@ const AdminRolePage = () => {
       <CreateRoleDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} />;
     </div>
   )
-    ;
 };
 
 export default AdminRolePage;

@@ -1,9 +1,9 @@
 import { useAppSelector } from "@/lib/hooks";
-import type { User } from "@/types/model";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { LoginResponseDto } from "@/types/dto";
 
 interface AuthState {
-  user: User | null;
+  user: LoginResponseDto | null;
   roles: string[];
   isAuthenticated: boolean;
 }
@@ -20,7 +20,7 @@ const authSlice = createSlice({
   reducers: {
     setUser: (
       state,
-      action: PayloadAction<Partial<{ user: User; roles: string[] }>>,
+      action: PayloadAction<Partial<{ user: LoginResponseDto; roles: string[] }>>,
     ) => {
       const { user, roles } = action.payload;
       if (user) {

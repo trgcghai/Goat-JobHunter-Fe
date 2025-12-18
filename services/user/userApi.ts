@@ -5,7 +5,6 @@ import {
   CheckRecruitersFollowedResponse,
   CheckSavedJobsRequest,
   CheckSavedJobsResponse, CreateUserRequest,
-  FetchUserByEmailResponse,
   FetchUsersRequest,
   FetchUsersResponse,
   FollowRecruitersRequest,
@@ -56,14 +55,6 @@ export const userApi = api.injectEndpoints({
         method: "GET"
       }),
       providesTags: (result, error, userId) => [{ type: "User", id: userId }]
-    }),
-
-    fetchUserByEmail: builder.query<FetchUserByEmailResponse, void>({
-      query: () => ({
-        url: "/users/me",
-        method: "GET"
-      }),
-      providesTags: ["User"]
     }),
 
     createUser: builder.mutation<UserMutationResponse, CreateUserRequest>({
@@ -354,7 +345,6 @@ export const userApi = api.injectEndpoints({
 export const {
   useFetchUsersQuery,
   useFetchUserByIdQuery,
-  useFetchUserByEmailQuery,
 
   useCreateUserMutation,
   useUpdatePasswordMutation,

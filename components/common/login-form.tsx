@@ -2,7 +2,7 @@
 
 import {
   SignInSchema,
-  type TSignInSchema,
+  type TSignInSchema
 } from "@/app/(auth)/components/schemas";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,7 +10,7 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card";
 import { FieldDescription } from "@/components/ui/field";
 import {
@@ -19,7 +19,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useUser } from "@/hooks/useUser";
@@ -41,15 +41,15 @@ export function LoginForm({
     resolver: zodResolver(SignInSchema),
     defaultValues: {
       email: "",
-      password: "",
-    },
+      password: ""
+    }
   });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { isSubmitting },
+    formState: { isSubmitting }
   } = signInForm;
 
   const onSubmit = async (data: TSignInSchema) => {
@@ -58,6 +58,7 @@ export function LoginForm({
 
       if (result.success) {
 
+        console.log(result);
 
         switch (result.user?.role.name) {
           case "SUPER_ADMIN":
@@ -67,14 +68,14 @@ export function LoginForm({
             router.push("/recruiter-portal");
             return;
           default:
-            router.push("/")
+            router.push("/");
         }
       } else {
         // xử lý lỗi cụ thể
         if (result.error === "Bad credentials") {
           setError("root", {
             type: "manual",
-            message: "Email hoặc mật khẩu không đúng",
+            message: "Email hoặc mật khẩu không đúng"
           });
         }
       }
@@ -128,7 +129,9 @@ export function LoginForm({
                   <FormItem>
                     <div className={"flex items-center justify-between"}>
                       <FormLabel className={"text-base"} required>Mật khẩu</FormLabel>
-                      <Link href={"/reset-password"} className={"text-muted-foreground text-sm hover:underline hover:text-primary"}>Quên mật khẩu ?</Link>
+                      <Link href={"/reset-password"}
+                            className={"text-muted-foreground text-sm hover:underline hover:text-primary"}>Quên mật khẩu
+                        ?</Link>
                     </div>
                     <FormControl>
                       <Input

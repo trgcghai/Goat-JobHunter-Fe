@@ -1,4 +1,4 @@
-import { Contact } from "@/types/model";
+import { Contact, Role } from "@/types/model";
 import { Education, Gender, Level } from "@/types/enum";
 
 export type FetchCurrentRecruiterDto = {
@@ -34,4 +34,19 @@ export type FetchCurrentApplicantDto = {
   availableStatus: boolean,
   education: Education,
   level: Level
+}
+
+export type LoginResponseDto = {
+  accountId: number;
+  email: string;
+  phone: string;
+  address: string;
+  dob: string;
+  gender: Gender
+  fullName: string;
+  username: string;
+  avatar: string;
+  type: string;
+  enabled: boolean;
+  role: Role;
 }
