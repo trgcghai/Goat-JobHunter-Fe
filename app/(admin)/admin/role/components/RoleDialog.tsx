@@ -15,10 +15,13 @@ import {
   FormMessage
 } from "@/components/ui/form";
 import UseRoleAndPermissionActions from "@/hooks/useRoleAndPermissionActions";
+import type { Role } from "@/types/model";
+import { useEffect } from "react";
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  role?: Role;
 }
 
 const roleSchema = z.object({
@@ -28,8 +31,8 @@ const roleSchema = z.object({
 
 export type RoleFormValues = z.infer<typeof roleSchema>;
 
-export default function CreateRoleDialog({ open, onOpenChange }: Props) {
-  const { handleCreateRole, isCreating } = UseRoleAndPermissionActions();
+export default function RoleDialog({ open, onOpenChange, role }: Props) {
+  const { handleCreateRole, handleUpdateRole, isCreating, isUpdating } = UseRoleAndPermissionActions();
 
   const form = useForm<RoleFormValues>({
     resolver: zodResolver(roleSchema),
@@ -39,9 +42,31 @@ export default function CreateRoleDialog({ open, onOpenChange }: Props) {
     }
   });
 
+  useEffect(() => {
+    if (role) {
+      form.reset({
+        name: role.name,
+        description: role.description || ""
+      });
+    } else {
+      form.reset({
+        name: "",
+        description: ""
+      });
+    }
+  }, [role, form]);
+
   const onSubmit = async (data: RoleFormValues) => {
     try {
-      await handleCreateRole(data);
+      if (role) {
+        await handleUpdateRole({
+          ...role,
+          ...data,
+          roleId: role.roleId,
+        });
+      } else {
+        await handleCreateRole(data);
+      }
       form.reset();
       onOpenChange(false);
     } catch (error) {
@@ -53,7 +78,7 @@ export default function CreateRoleDialog({ open, onOpenChange }: Props) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="rounded-xl">
         <DialogHeader>
-          <DialogTitle>Tạo vai trò mới</DialogTitle>
+          <DialogTitle>{role ? "Chỉnh sửa vai trò" : "Tạo vai trò mới"}</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -90,8 +115,8 @@ export default function CreateRoleDialog({ open, onOpenChange }: Props) {
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="rounded-xl">
                 Hủy
               </Button>
-              <Button type="submit" className="rounded-xl" disabled={isCreating}>
-                {isCreating ? "Đang tạo..." : "Tạo vai trò"}
+              <Button type="submit" className="rounded-xl" disabled={isCreating || isUpdating}>
+                {isCreating || isUpdating ? "Đang lưu..." : role ? "Cập nhật" : "Tạo vai trò"}
               </Button>
             </DialogFooter>
           </form>
