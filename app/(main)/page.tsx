@@ -63,6 +63,8 @@ export default function Home() {
   const savedJobs = useMemo(() => checkSavedJobsData?.data || [], [checkSavedJobsData]);
   const followedRecruiters = useMemo(() => checkFollowedData?.data || [], [checkFollowedData]);
 
+  console.log(user);
+
   return (
     <>
       <HeroSection />

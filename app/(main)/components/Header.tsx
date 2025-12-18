@@ -10,6 +10,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
+import { LogOut } from "lucide-react";
 
 const NAV_LINKS = [
   { href: "/", label: "Trang Chủ" },
@@ -20,7 +21,7 @@ const NAV_LINKS = [
 ] as const;
 
 export default function Header() {
-  const { isSignedIn } = useUser();
+  const { isSignedIn, isSigningOut, signOut } = useUser();
   const pathname = usePathname();
 
   const isActive = (href: string) => {
@@ -104,6 +105,15 @@ export default function Header() {
               <>
                 <NotificationPopup />
                 <UserPopup />
+                <Button
+                  variant={"destructive"}
+                  className="rounded-xl"
+                  onClick={signOut}
+                  disabled={isSigningOut}
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span className="font-medium">Đăng xuất</span>
+                </Button>
               </>
             )}
           </div>

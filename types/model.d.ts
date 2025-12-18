@@ -1,42 +1,58 @@
 import {
-  ApplicationStatus,
+  ApplicationStatus, CompanySize,
   Education,
   Gender,
   Level, MessageTypeRole, NotificationTypeEnum,
   WorkingType
 } from "@/types/enum";
 
-export type User = {
-  userId: number;
-  contact: {
-    phone?: string;
-    email: string;
-  };
+export type Account = {
+  accountId: number;
+  username: string;
+  email: string
+  password: string;
+  avatar: string;
+  enabled: boolean;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
+
+  role: Role;
+}
+
+export type User = Account & {
   address: string;
+  phone: string;
   dob: string;
   fullName: string;
   gender: Gender;
-  username: string;
-  type: string;
-  avatar: string;
-  enabled: boolean;
-  role: Role;
-};
+  coverPhoto: string;
+  headline: string;
+  bio: string;
+}
 
 export type Recruiter = User & {
-  description: string;
-  address: string;
-  website: string;
+  position: string;
+  company: Company;
 };
 
 export type Applicant = User & {
   availableStatus: boolean;
   education: Education;
   level: Level;
-  resumeUrl: string;
 };
 
-export type FullUser = Applicant & Recruiter;
+export type Company = Account & {
+  name: string;
+  description: string;
+  logo: string;
+  website: string;
+  address: string;
+  phone: string;
+  size: CompanySize;
+  verified: boolean;
+}
 
 export type Skill = {
   skillId: number;

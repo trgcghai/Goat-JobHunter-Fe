@@ -26,6 +26,15 @@ export enum Education {
   ENGINEER = "ENGINEER",
 }
 
+export enum CompanySize {
+  STARTUP = "Khởi nghiệp",
+  SMALL = "Nhỏ",
+  MEDIUM = "Vừa",
+  LARGE = "Lớn",
+  ENTERPRISE = "Tập đoàn",
+}
+
+
 export enum ApplicationStatus {
   PENDING = "PENDING",
   ACCEPTED = "ACCEPTED",

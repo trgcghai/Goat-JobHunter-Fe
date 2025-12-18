@@ -41,10 +41,6 @@ export const authApi = api.injectEndpoints({
       }),
     }),
 
-    refreshToken: builder.query<RefreshTokenResponse, void>({
-      query: () => ({ url: "/auth/refresh", method: "GET" }),
-    }),
-
     logout: builder.mutation<LogoutResponse, void>({
       query: () => ({ url: "/auth/logout", method: "POST" }),
     }),
@@ -71,7 +67,7 @@ export const authApi = api.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
           // Dispatch action to save user data to slice
-          dispatch(setUser({ user: data?.data?.user as User }));
+          dispatch(setUser({ user: data?.data }));
         } catch (error) {
           console.error("Failed to fetch account:", error);
         }
@@ -84,7 +80,6 @@ export const {
   useApplicantSignupMutation,
   useRecruiterSignupMutation,
   useSigninMutation,
-  useRefreshTokenQuery,
   useLogoutMutation,
   useVerifyCodeMutation,
   useResendCodeMutation,

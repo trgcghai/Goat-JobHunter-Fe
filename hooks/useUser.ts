@@ -105,10 +105,13 @@ export function useUser() {
         }
 
         if (response.statusCode === 200) {
-          dispatch(setUser({ user: response?.data?.user as User }));
+
+          console.log(response);
+
+          dispatch(setUser({ user: response?.data }));
 
           toast.success("Đăng nhập thành công!");
-          return { success: true, user: response?.data?.user };
+          return { success: true, user: response?.data };
         }
         return { success: false };
       } catch (error) {

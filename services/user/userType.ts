@@ -1,7 +1,6 @@
 import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type {
   Blog,
-  FullUser,
   Job,
   Recruiter,
   User
@@ -62,8 +61,6 @@ export type FetchUsersRequest = {
 export type UserMutationResponse = IBackendRes<User>;
 
 export type FetchUsersResponse = IBackendRes<IModelPaginate<User>>;
-
-export type FetchUserByEmailResponse = IBackendRes<FullUser>;
 
 export type UpdatePasswordResponse = IBackendRes<User>;
 

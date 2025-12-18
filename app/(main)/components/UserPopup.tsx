@@ -77,7 +77,7 @@ export default function UserPopup() {
                 {user?.fullName ? user.fullName : "Người Dùng"}
               </p>
               <p className="text-xs leading-none text-muted-foreground truncate">
-                {user?.contact.email}
+                {user?.email}
               </p>
             </div>
           </div>
