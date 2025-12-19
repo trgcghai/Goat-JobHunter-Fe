@@ -10,6 +10,7 @@ import type {
   VerifyCodeRequest,
   VerifyCodeResponse,
 } from "./authType";
+import { ApplicantResponse, RecruiterResponse, UserResponse } from "@/types/dto";
 
 export const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -27,6 +28,15 @@ export const authApi = api.injectEndpoints({
         method: "POST",
         data: { email, password },
       }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          // Dispatch action to save user data to slice
+          dispatch(setUser({ user: data?.data }));
+        } catch (error) {
+          console.error("Failed to sign in:", error);
+        }
+      },
     }),
 
     logout: builder.mutation<LogoutResponse, void>({
@@ -55,7 +65,7 @@ export const authApi = api.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
           // Dispatch action to save user data to slice
-          dispatch(setUser({ user: data?.data }));
+          dispatch(setUser({ user: data?.data as (UserResponse | ApplicantResponse | RecruiterResponse) }));
         } catch (error) {
           console.error("Failed to fetch account:", error);
         }

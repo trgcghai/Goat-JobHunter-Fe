@@ -1,4 +1,4 @@
-import { clearUser, setUser, useAuthSlice } from "@/lib/features/authSlice";
+import { clearUser, useAuthSlice } from "@/lib/features/authSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import { useUpdateApplicantMutation } from "@/services/applicant/applicantApi";
 import {
@@ -13,7 +13,7 @@ import {
   VerifyCodeRequest
 } from "@/services/auth/authType";
 import { useCreateUserMutation, useResetPasswordMutation, useUpdatePasswordMutation } from "@/services/user/userApi";
-import { Applicant, Recruiter, User } from "@/types/model";
+import { Applicant, Recruiter } from "@/types/model";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { toast } from "sonner";
@@ -100,14 +100,10 @@ export function useUser() {
         }
 
         if (response.statusCode === 200) {
-
-          console.log(response);
-
-          dispatch(setUser({ user: response?.data }));
-
           toast.success("Đăng nhập thành công!");
           return { success: true, user: response?.data };
         }
+
         return { success: false };
       } catch (error) {
         console.error("error signin:", error);
@@ -134,7 +130,7 @@ export function useUser() {
         return { success: false };
       }
     },
-    [dispatch, signinMutation, router]
+    [signinMutation, router]
   );
 
   /**
@@ -327,18 +323,13 @@ export function useUser() {
           return;
         }
 
-        // Update Redux state
-        if (response.data?.data) {
-          dispatch(setUser({ user: response.data.data }));
-        }
-
         toast.success("Cập nhật thông tin thành công!");
       } catch (error) {
         console.error("Failed to update applicant:", error);
         toast.error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
       }
     },
-    [updateApplicant, dispatch]
+    [updateApplicant]
   );
 
   /**
@@ -379,18 +370,13 @@ export function useUser() {
           return;
         }
 
-        // Update Redux state
-        if (response.data?.data) {
-          dispatch(setUser({ user: response.data.data }));
-        }
-
         toast.success("Cập nhật thông tin thành công!");
       } catch (error) {
         console.error("Failed to update recruiter:", error);
         toast.error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
       }
     },
-    [updateRecruiter, dispatch]
+    [updateRecruiter]
   );
 
 
