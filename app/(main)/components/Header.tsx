@@ -16,6 +16,7 @@ const NAV_LINKS = [
   { href: "/", label: "Trang Chủ" },
   { href: "/jobs", label: "Việc Làm" },
   { href: "/recruiters", label: "Nhà Tuyển Dụng" },
+  { href: "/companies", label: "Công Ty" },
   { href: "/blogs", label: "Blog" },
   { href: "/hub", label: "Story hub" }
 ] as const;

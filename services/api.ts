@@ -44,7 +44,7 @@ const axiosBaseQuery =
 export const api = createApi({
   reducerPath: "api",
   baseQuery: axiosBaseQuery({
-    baseUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1"
+    baseUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1"
   }),
   tagTypes: [
     "User",
@@ -52,6 +52,7 @@ export const api = createApi({
     "Application",
     "Blog",
     "Recruiter",
+    "Company",
     "Applicant",
     "Account",
     "Contact",

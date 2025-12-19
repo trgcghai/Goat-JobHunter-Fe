@@ -47,6 +47,7 @@ export type Company = Account & {
   name: string;
   description: string;
   logo: string;
+  coverPhoto: string;
   website: string;
   address: string;
   phone: string;
