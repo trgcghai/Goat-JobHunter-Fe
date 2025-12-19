@@ -7,6 +7,7 @@ import {
   FetchApplicantsResponse,
   UpdateApplicantRequest
 } from "./applicantType";
+import { setUser } from "@/lib/features/authSlice";
 
 export const applicantApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -35,7 +36,16 @@ export const applicantApi = api.injectEndpoints({
         method: "PUT",
         data
       }),
-      invalidatesTags: ["Applicant", "Account", "User"]
+      invalidatesTags: ["Applicant", "Account", "User"],
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          // Dispatch action to save user data to slice
+          dispatch(setUser({ user: data?.data }));
+        } catch (error) {
+          console.error("Failed to fetch account:", error);
+        }
+      },
     }),
 
     deleteApplicant: builder.mutation<

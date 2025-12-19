@@ -1,26 +1,24 @@
-import { clearUser, setUser, useAuthSlice } from "@/lib/features/authSlice";
+import { clearUser, useAuthSlice } from "@/lib/features/authSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import { useUpdateApplicantMutation } from "@/services/applicant/applicantApi";
 import {
-  useApplicantSignupMutation,
   useLogoutMutation,
-  useRecruiterSignupMutation,
   useResendCodeMutation,
   useSigninMutation,
+  useUserSignUpMutation,
   useVerifyCodeMutation
 } from "@/services/auth/authApi";
 import {
-  ApplicantSignUpRequest,
-  RecruiterSignUpRequest,
   SignInRequest,
   VerifyCodeRequest
 } from "@/services/auth/authType";
 import { useCreateUserMutation, useResetPasswordMutation, useUpdatePasswordMutation } from "@/services/user/userApi";
-import { Applicant, Recruiter, User } from "@/types/model";
+import { Applicant, Recruiter } from "@/types/model";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { toast } from "sonner";
 import { useUpdateRecruiterMutation } from "@/services/recruiter/recruiterApi";
+import { TUserSignUpSchema } from "@/app/(auth)/components/schemas";
 
 export function useUser() {
   const router = useRouter();
@@ -30,10 +28,7 @@ export function useUser() {
 
   // API mutations
   const [signinMutation, { isLoading: isSigningIn }] = useSigninMutation();
-  const [applicantSignupMutation, { isLoading: isApplicantSigningUp }] =
-    useApplicantSignupMutation();
-  const [recruiterSignupMutation, { isLoading: isRecruiterSigningUp }] =
-    useRecruiterSignupMutation();
+  const [userSignUpMutation, { isLoading: isSigningUp }] = useUserSignUpMutation();
   const [logoutMutation, { isLoading: isSigningOut }] = useLogoutMutation();
   const [verifyCodeMutation, { isLoading: isVerifying }] =
     useVerifyCodeMutation();
@@ -105,14 +100,10 @@ export function useUser() {
         }
 
         if (response.statusCode === 200) {
-
-          console.log(response);
-
-          dispatch(setUser({ user: response?.data }));
-
           toast.success("Đăng nhập thành công!");
           return { success: true, user: response?.data };
         }
+
         return { success: false };
       } catch (error) {
         console.error("error signin:", error);
@@ -139,51 +130,29 @@ export function useUser() {
         return { success: false };
       }
     },
-    [dispatch, signinMutation, router]
+    [signinMutation, router]
   );
 
   /**
-   * Sign up new applicant
+   * Sign up new user (applicant or recruiter)
    */
-  const applicantSignUp = useCallback(
-    async (params: ApplicantSignUpRequest) => {
+  const userSignUp = useCallback(
+    async (params: TUserSignUpSchema) => {
       try {
-        const response = await applicantSignupMutation(params).unwrap();
+        const response = await userSignUpMutation(params).unwrap();
 
         if (response.statusCode === 201) {
           toast.success("Đăng ký thành công!");
-          return { success: true };
+          return { success: true, type: params.type };
         }
         return { success: false };
       } catch (error) {
-        console.error("error sign up applicant:", error);
+        console.error("error sign up:", error);
         toast.error("Đăng ký thất bại!");
         return { success: false };
       }
     },
-    [applicantSignupMutation]
-  );
-
-  /**
-   * Sign up new recruiter
-   */
-  const recruiterSignUp = useCallback(
-    async (params: RecruiterSignUpRequest) => {
-      try {
-        const response = await recruiterSignupMutation(params).unwrap();
-
-        if (response.statusCode === 201) {
-          toast.success("Đăng ký thành công!");
-          return { success: true };
-        }
-        return { success: false };
-      } catch (error) {
-        console.error("error sign up applicant:", error);
-        toast.error("Đăng ký thất bại!");
-        return { success: false };
-      }
-    },
-    [recruiterSignupMutation]
+    [userSignUpMutation]
   );
 
   /**
@@ -325,7 +294,7 @@ export function useUser() {
    * Update applicant information
    */
   const handleUpdateApplicant = useCallback(
-    async (userId: number, data: Partial<Applicant>) => {
+    async (accountId: number, data: Partial<Applicant>) => {
       try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const updatedData: Record<string, any> = {};
@@ -345,17 +314,13 @@ export function useUser() {
 
         // @ts-expect-error Không cần check kỹ lưỡng kiểu dữ liệu ở đây
         const response = await updateApplicant({
-          userId,
+          accountId,
           ...updatedData
         });
 
         if (response.error) {
-          throw new Error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
-        }
-
-        // Update Redux state
-        if (response.data?.data) {
-          dispatch(setUser({ user: response.data.data as User }));
+          toast.error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
+          return;
         }
 
         toast.success("Cập nhật thông tin thành công!");
@@ -364,14 +329,14 @@ export function useUser() {
         toast.error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
       }
     },
-    [updateApplicant, dispatch]
+    [updateApplicant]
   );
 
   /**
    * Update recruiter information
    */
   const handleUpdateRecruiter = useCallback(
-    async (userId: number, data: Partial<Recruiter>) => {
+    async (accountId: number, data: Partial<Recruiter>) => {
       try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const updatedData: Record<string, any> = {};
@@ -390,23 +355,19 @@ export function useUser() {
         }
 
         console.log("check updatedData:", {
-          userId,
+          accountId,
           ...updatedData
         });
 
         // @ts-expect-error Không cần check kỹ lưỡng kiểu dữ liệu ở đây
         const response = await updateRecruiter({
-          userId,
+          accountId,
           ...updatedData
         });
 
         if (response.error) {
-          throw new Error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
-        }
-
-        // Update Redux state
-        if (response.data?.data) {
-          dispatch(setUser({ user: response.data.data as User }));
+          toast.error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
+          return;
         }
 
         toast.success("Cập nhật thông tin thành công!");
@@ -415,7 +376,7 @@ export function useUser() {
         toast.error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
       }
     },
-    [updateRecruiter, dispatch]
+    [updateRecruiter]
   );
 
 
@@ -426,8 +387,7 @@ export function useUser() {
 
     // Auth methods
     signIn,
-    applicantSignUp,
-    recruiterSignUp,
+    userSignUp,
     signOut,
     verifyCode,
     resendCode,
@@ -436,7 +396,7 @@ export function useUser() {
 
     // Loading states
     isSigningIn,
-    isSigningUp: isApplicantSigningUp || isRecruiterSigningUp,
+    isSigningUp,
     isSigningOut,
     isVerifying,
     isResending,

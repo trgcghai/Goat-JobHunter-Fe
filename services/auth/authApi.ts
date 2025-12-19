@@ -1,36 +1,25 @@
 import { setUser } from "@/lib/features/authSlice";
 import { api } from "@/services/api";
-import { User } from "@/types/model";
 import type {
-  ApplicantSignUpRequest,
   FetchAccountResponse,
   LogoutResponse,
-  RecruiterSignUpRequest,
-  RefreshTokenResponse,
   ResendCodeRequest,
   ResendCodeResponse,
   SignInRequest,
   SignInResponse,
-  SignUpResponse,
   VerifyCodeRequest,
   VerifyCodeResponse,
 } from "./authType";
+import { ApplicantResponse, RecruiterResponse, UserResponse } from "@/types/dto";
 
 export const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    applicantSignup: builder.mutation<SignUpResponse, ApplicantSignUpRequest>({
+    userSignUp: builder.mutation({
       query: (args) => ({
-        url: "/auth/register/applicant",
+        url: "/auth/register/users",
         method: "POST",
         data: args,
-      }),
-    }),
-    recruiterSignup: builder.mutation<SignUpResponse, RecruiterSignUpRequest>({
-      query: (args) => ({
-        url: "/auth/register/recruiter",
-        method: "POST",
-        data: args,
-      }),
+      })
     }),
 
     signin: builder.mutation<SignInResponse, SignInRequest>({
@@ -39,6 +28,15 @@ export const authApi = api.injectEndpoints({
         method: "POST",
         data: { email, password },
       }),
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          // Dispatch action to save user data to slice
+          dispatch(setUser({ user: data?.data }));
+        } catch (error) {
+          console.error("Failed to sign in:", error);
+        }
+      },
     }),
 
     logout: builder.mutation<LogoutResponse, void>({
@@ -61,13 +59,13 @@ export const authApi = api.injectEndpoints({
     }),
 
     getMyAccount: builder.query<FetchAccountResponse, void>({
-      query: () => ({ url: "/auth/account", method: "GET" }),
+      query: () => ({ url: "/auth/account/users", method: "GET" }),
       providesTags: ["Account", "Applicant", "Recruiter"],
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
           // Dispatch action to save user data to slice
-          dispatch(setUser({ user: data?.data }));
+          dispatch(setUser({ user: data?.data as (UserResponse | ApplicantResponse | RecruiterResponse) }));
         } catch (error) {
           console.error("Failed to fetch account:", error);
         }
@@ -77,8 +75,7 @@ export const authApi = api.injectEndpoints({
 });
 
 export const {
-  useApplicantSignupMutation,
-  useRecruiterSignupMutation,
+  useUserSignUpMutation,
   useSigninMutation,
   useLogoutMutation,
   useVerifyCodeMutation,
