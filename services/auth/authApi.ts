@@ -49,7 +49,7 @@ export const authApi = api.injectEndpoints({
     }),
 
     getMyAccount: builder.query<FetchAccountResponse, void>({
-      query: () => ({ url: "/auth/account", method: "GET" }),
+      query: () => ({ url: "/auth/account/users", method: "GET" }),
       providesTags: ["Account", "Applicant", "Recruiter"],
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {

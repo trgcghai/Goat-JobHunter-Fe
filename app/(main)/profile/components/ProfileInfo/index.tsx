@@ -7,24 +7,20 @@ import { Label } from "@/components/ui/label";
 import { getRevertGenderKeyValue } from "@/utils/getRevertEnumKeyValue";
 import { capitalize } from "lodash";
 import { Edit2 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import ApplicantForm from "@/app/(main)/profile/components/ProfileInfo/ApplicantForm";
-import { useFetchCurrentApplicantQuery } from "@/services/applicant/applicantApi";
-import LoaderSpin from "@/components/common/LoaderSpin";
 import ErrorMessage from "@/components/common/ErrorMessage";
 import { formatDate } from "@/utils/formatDate";
+import { useUser } from "@/hooks/useUser";
+import { ApplicantResponse } from "@/types/dto";
 
 export default function ProfileInfo() {
   const [showModal, setShowModal] = useState(false);
-  const { data, isLoading, isError } = useFetchCurrentApplicantQuery();
-  const user = useMemo(() => data?.data, [data?.data]);
 
-  if (isLoading) {
-    return <LoaderSpin />;
-  }
+  const { user } = useUser();
 
-  if (isError || !user) {
-    return <ErrorMessage message={"Có lỗi xảy ra khi tải thông tin người dùng. Vui lòng thử lại sau"} />;
+  if (!user) {
+    return <ErrorMessage message={"Không tìm thấy thông tin người dùng."} />;
   }
 
   return (
@@ -77,7 +73,7 @@ export default function ProfileInfo() {
               <Input
                 id="email"
                 type="email"
-                value={user?.contact.email || "Chưa cập nhật"}
+                value={user?.email || "Chưa cập nhật"}
                 disabled
                 className="rounded-xl text-gray-800"
               />
@@ -88,7 +84,7 @@ export default function ProfileInfo() {
               </Label>
               <Input
                 id="phone"
-                value={user?.contact?.phone || "Chưa cập nhật"}
+                value={user?.phone || "Chưa cập nhật"}
                 disabled
                 className="rounded-xl text-gray-800"
               />
@@ -134,7 +130,7 @@ export default function ProfileInfo() {
               type="text"
               value={
                 user?.address
-                  ? capitalize(user?.address)
+                  ? user?.address
                   : "Chưa cập nhật"
               }
               disabled
@@ -149,7 +145,7 @@ export default function ProfileInfo() {
               </Label>
               <Input
                 id="level"
-                value={user?.level ? capitalize(user?.level) : "Chưa cập nhật"}
+                value={(user as ApplicantResponse)?.level ? capitalize((user as ApplicantResponse)?.level) : "Chưa cập nhật"}
                 disabled
                 className="rounded-xl text-gray-800"
               />
@@ -162,8 +158,8 @@ export default function ProfileInfo() {
                 id="education"
                 type="text"
                 value={
-                  user?.education
-                    ? capitalize(user.education)
+                  (user as ApplicantResponse)?.education
+                    ? capitalize((user as ApplicantResponse).education)
                     : "Chưa cập nhật"
                 }
                 disabled
@@ -173,7 +169,7 @@ export default function ProfileInfo() {
           </div>
         </div>
       </Card>
-      <ApplicantForm open={showModal} onOpenChange={setShowModal} profile={user} />;
+      <ApplicantForm open={showModal} onOpenChange={setShowModal} profile={user as ApplicantResponse} />
     </>
   );
 }

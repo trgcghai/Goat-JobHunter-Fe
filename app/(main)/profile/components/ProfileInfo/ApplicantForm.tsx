@@ -14,7 +14,7 @@ import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FetchCurrentApplicantDto } from "@/types/dto";
+import { ApplicantResponse, FetchCurrentApplicantDto } from "@/types/dto";
 import { useEffect } from "react";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -27,7 +27,7 @@ import {
 interface ApplicantFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  profile: FetchCurrentApplicantDto
+  profile: ApplicantResponse
 }
 
 const ApplicantForm = ({ open, onOpenChange, profile }: ApplicantFormProps) => {
@@ -56,8 +56,8 @@ const ApplicantForm = ({ open, onOpenChange, profile }: ApplicantFormProps) => {
     form.reset({
       fullName: profile?.fullName || "",
       username: profile?.username || "",
-      email: profile?.contact.email || "",
-      phone: profile?.contact?.phone || "",
+      email: profile.email || "",
+      phone: profile?.phone || "",
       address: profile?.address || "",
       dob: profile?.dob ? new Date(profile.dob) : new Date(),
       gender: profile?.gender || Gender.NAM,
@@ -68,21 +68,19 @@ const ApplicantForm = ({ open, onOpenChange, profile }: ApplicantFormProps) => {
   }, [profile, form]);
 
   const onSubmit = async (data: ApplicantFormData) => {
-    if (!profile?.userId) {
+    if (!profile?.accountId) {
       toast.error(
         "Không thể cập nhật thông tin ứng viên. Vui lòng thử lại sau."
       );
       return;
     }
-    await handleUpdateApplicant(profile.userId, {
+    await handleUpdateApplicant(profile.accountId, {
       fullName: data.fullName,
       username: data.username,
       dob: data.dob.toISOString(),
       gender: data.gender,
-      contact: {
-        email: data.email,
-        phone: data.phone
-      },
+      email: data.email,
+      phone: data.phone,
       address: data.address,
       education: data.education,
       level: data.level,

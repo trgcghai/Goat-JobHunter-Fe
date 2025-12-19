@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/hooks/useUser";
 import { Camera, Eye, EyeOff, Mail, User as UserIcon } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import {
   Tooltip,
@@ -13,7 +13,6 @@ import {
   TooltipProvider,
   TooltipTrigger
 } from "@/components/ui/tooltip";
-import { useFetchCurrentApplicantQuery } from "@/services/applicant/applicantApi";
 import { HasApplicant } from "@/components/common/HasRole";
 
 interface ProfileHeaderProps {
@@ -27,12 +26,6 @@ export default function ProfileHeader({ fullPage = false, type }: ProfileHeaderP
   const { user } = useUser();
   const hasAvatar = user?.avatar && !imageError;
 
-  const { data } = useFetchCurrentApplicantQuery(undefined, {
-    skip: type !== "applicant"
-  });
-
-  const applicant = useMemo(() => data?.data, [data]);
-
   return (
     <div className="border-b border-border bg-card">
       <div className={cn(!fullPage && "mx-auto max-w-7xl px-4 sm:px-6 lg:px-8", "py-8")}>
@@ -44,12 +37,12 @@ export default function ProfileHeader({ fullPage = false, type }: ProfileHeaderP
                 <Avatar className="h-full w-full">
                   <AvatarImage
                     src={user?.avatar}
-                    alt={user?.fullName || user?.contact.email}
+                    alt={user?.fullName || user?.email}
                     onError={() => setImageError(true)}
                     className="aspect-square object-cover"
                   />
                   <AvatarFallback className="text-2xl font-semibold">
-                    {(user?.fullName || user?.contact.email)
+                    {(user?.fullName || user?.email)
                       .split(" ")
                       .map((n) => n[0])
                       .join("")
@@ -74,16 +67,16 @@ export default function ProfileHeader({ fullPage = false, type }: ProfileHeaderP
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-3 mb-2">
               <h1 className="text-3xl font-bold text-foreground">
-                {user?.fullName || user?.contact.email}
+                {user?.fullName || user?.email}
               </h1>
 
               <HasApplicant user={user}>
-                {applicant &&
+                {user &&
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="flex items-center gap-2 py-1 rounded-full">
-                          {applicant.availableStatus ? (
+                          {user.availableStatus ? (
                             <Eye className="h-5 w-5 text-green-600" />
                           ) : (
                             <EyeOff className="h-5 w-5 text-destructive" />
@@ -92,7 +85,7 @@ export default function ProfileHeader({ fullPage = false, type }: ProfileHeaderP
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>
-                          {applicant.availableStatus
+                          {user.availableStatus
                             ? "Hồ sơ của bạn đang công khai, có thể tìm thấy bởi các nhà tuyển dụng"
                             : "Hồ sơ của bạn đang ẩn, không thể tìm thấy bởi các nhà tuyển dụng"}
                         </p>
@@ -110,10 +103,10 @@ export default function ProfileHeader({ fullPage = false, type }: ProfileHeaderP
                 </p>
               )}
 
-              {user?.contact.email && (
+              {user?.email && (
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Mail className="h-4 w-4 shrink-0" />
-                  <span className="truncate">{user?.contact.email}</span>
+                  <span className="truncate">{user.email}</span>
                 </div>
               )}
             </div>
