@@ -19,6 +19,8 @@ export default function ProfileInfo() {
 
   const { user } = useUser();
 
+  console.log("User in ProfileInfo:", user);
+
   if (!user) {
     return <ErrorMessage message={"Không tìm thấy thông tin người dùng."} />;
   }

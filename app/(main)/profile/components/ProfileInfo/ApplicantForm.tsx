@@ -14,7 +14,7 @@ import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ApplicantResponse, FetchCurrentApplicantDto } from "@/types/dto";
+import { ApplicantResponse, RecruiterResponse } from "@/types/dto";
 import { useEffect } from "react";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -27,7 +27,7 @@ import {
 interface ApplicantFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  profile: ApplicantResponse
+  profile: ApplicantResponse | RecruiterResponse
 }
 
 const ApplicantForm = ({ open, onOpenChange, profile }: ApplicantFormProps) => {
