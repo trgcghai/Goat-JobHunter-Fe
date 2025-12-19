@@ -20,7 +20,7 @@ const authSlice = createSlice({
   reducers: {
     setUser: (
       state,
-      action: PayloadAction<Partial<{ user: LoginResponseDto; roles: string[] }>>,
+      action: PayloadAction<Partial<{ user: LoginResponseDto | UserResponse | ApplicantResponse | RecruiterResponse; roles: string[] }>>,
     ) => {
       const { user, roles } = action.payload;
       if (user) {

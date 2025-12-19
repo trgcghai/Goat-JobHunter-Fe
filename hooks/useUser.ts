@@ -298,7 +298,7 @@ export function useUser() {
    * Update applicant information
    */
   const handleUpdateApplicant = useCallback(
-    async (userId: number, data: Partial<Applicant>) => {
+    async (accountId: number, data: Partial<Applicant>) => {
       try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const updatedData: Record<string, any> = {};
@@ -318,17 +318,18 @@ export function useUser() {
 
         // @ts-expect-error Không cần check kỹ lưỡng kiểu dữ liệu ở đây
         const response = await updateApplicant({
-          userId,
+          accountId,
           ...updatedData
         });
 
         if (response.error) {
-          throw new Error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
+          toast.error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
+          return;
         }
 
         // Update Redux state
         if (response.data?.data) {
-          dispatch(setUser({ user: response.data.data as User }));
+          dispatch(setUser({ user: response.data.data }));
         }
 
         toast.success("Cập nhật thông tin thành công!");
@@ -344,7 +345,7 @@ export function useUser() {
    * Update recruiter information
    */
   const handleUpdateRecruiter = useCallback(
-    async (userId: number, data: Partial<Recruiter>) => {
+    async (accountId: number, data: Partial<Recruiter>) => {
       try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const updatedData: Record<string, any> = {};
@@ -363,23 +364,24 @@ export function useUser() {
         }
 
         console.log("check updatedData:", {
-          userId,
+          accountId,
           ...updatedData
         });
 
         // @ts-expect-error Không cần check kỹ lưỡng kiểu dữ liệu ở đây
         const response = await updateRecruiter({
-          userId,
+          accountId,
           ...updatedData
         });
 
         if (response.error) {
-          throw new Error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
+          toast.error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
+          return;
         }
 
         // Update Redux state
         if (response.data?.data) {
-          dispatch(setUser({ user: response.data.data as User }));
+          dispatch(setUser({ user: response.data.data }));
         }
 
         toast.success("Cập nhật thông tin thành công!");
