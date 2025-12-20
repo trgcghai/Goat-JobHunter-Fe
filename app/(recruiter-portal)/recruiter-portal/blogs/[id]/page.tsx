@@ -55,16 +55,6 @@ const PreviewDetailBlogPage = () => {
         <ErrorMessage message="Có lỗi xảy ra khi tải thông tin bài viết. Vui lòng thử lại sau." />
       )}
 
-      {blog.banner && (
-        <div className="relative w-full h-96 rounded-xl overflow-hidden mb-8">
-          <Image
-            src={blog.banner}
-            alt={blog.title}
-            fill
-            className="object-cover" />
-        </div>
-      )}
-
       <div className="bg-white rounded-xl p-8 mb-6 border">
         <div className="flex flex-wrap gap-2 mb-4">
           {blog.tags?.map((tag, index) => (
@@ -72,8 +62,8 @@ const PreviewDetailBlogPage = () => {
               key={index}
               className="text-xs font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full"
             >
-                              {tag}
-                          </span>
+                {tag}
+            </span>
           ))}
         </div>
 
@@ -113,6 +103,16 @@ const PreviewDetailBlogPage = () => {
             </p>
           )}
         </div>
+
+        {blog.images && (
+          <div className="relative w-full h-96 rounded-xl overflow-hidden">
+            <Image
+              src={blog.images[0]}
+              alt={blog.title}
+              fill
+              className="object-cover" />
+          </div>
+        )}
       </div>
     </main>
   );

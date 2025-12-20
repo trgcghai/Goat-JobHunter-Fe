@@ -1,7 +1,9 @@
 import { api } from "@/services/api";
 import type {
+  UploadMultipleFilesRequest,
+  UploadMultipleFilesResponse,
   UploadSingleFileRequest,
-  UploadSingleFileResponse,
+  UploadSingleFileResponse
 } from "./uploadType";
 
 export const uploadApi = api.injectEndpoints({
@@ -17,11 +19,28 @@ export const uploadApi = api.injectEndpoints({
         return {
           url: "/files",
           method: "POST",
-          data: bodyFormData,
+          data: bodyFormData
         };
-      },
+      }
     }),
-  }),
+    uploadMultipleFiles: builder.mutation<UploadMultipleFilesResponse, UploadMultipleFilesRequest>({
+      query: ({ files, folderType }) => {
+        const bodyFormData = new FormData();
+        files.forEach((file) => {
+          bodyFormData.append("files", file);
+        });
+        bodyFormData.append("folder", folderType);
+        return {
+          url: "/files/multiple",
+          method: "POST",
+          data: bodyFormData
+        };
+      }
+    })
+  })
 });
 
-export const { useUploadSingleFileMutation } = uploadApi;
+export const {
+  useUploadSingleFileMutation,
+  useUploadMultipleFilesMutation
+} = uploadApi;

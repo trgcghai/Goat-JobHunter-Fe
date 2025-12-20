@@ -14,7 +14,7 @@ export type BlogIdsRequest = {
 // Base Blog Content
 type BlogContent = {
   title: string;
-  banner: string;
+  images: string[];
   description?: string;
   content: string;
   tags?: string[];

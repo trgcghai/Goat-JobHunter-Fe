@@ -137,7 +137,10 @@ const useBlogActions = () => {
       }
 
       try {
-        const response = await createBlog(data).unwrap();
+        const response = await createBlog({
+          ...data,
+          images: [data.banner]
+        }).unwrap();
 
         if (response.data) {
           toast.success("Tạo bài viết thành công!");
@@ -163,6 +166,7 @@ const useBlogActions = () => {
       try {
         const response = await updateBlog({
           ...data,
+          images: [data.banner],
           blogId: blogId.toString()
         }).unwrap();
 
