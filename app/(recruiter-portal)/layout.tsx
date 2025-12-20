@@ -29,12 +29,6 @@ const RecruiterTabs: SidebarTab[] = [
     icon: <Users className="w-4 h-4" />,
   },
   {
-    id: "blogs",
-    label: "Bài đăng",
-    url: "/recruiter-portal/blogs",
-    icon: <BookOpen className="w-4 h-4" />,
-  },
-  {
     id: "information",
     label: "Thông tin công ty",
     url: "/recruiter-portal/information",

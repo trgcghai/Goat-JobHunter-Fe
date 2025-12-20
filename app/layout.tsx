@@ -2,8 +2,9 @@ import { ReduxProvider } from "@/app/StoreProvider";
 import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import NotificationListener from "@/components/common/NotificationListener";
+import "./globals.css";
+import "react-photo-album/styles.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
