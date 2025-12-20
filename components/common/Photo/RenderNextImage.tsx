@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { RenderImageContext, RenderImageProps } from "react-photo-album";
+import { useMemo } from "react";
 
 export default function RenderNextImage(
   { alt = "", title, sizes }: RenderImageProps,
