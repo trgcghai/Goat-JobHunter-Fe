@@ -11,22 +11,11 @@ export type BlogIdsRequest = {
   mode: BlogActionType;
 };
 
-// Base Blog Content
-type BlogContent = {
-  title: string;
-  images: string[];
-  description?: string;
-  content: string;
-  tags?: string[];
-  draft: boolean;
-};
-
-// Create & Update
-export type CreateBlogRequest = BlogContent;
-
-export type UpdateBlogRequest = BlogContent & {
-  blogId: string;
-};
+// Update Blog
+export type UpdateBlogRequest = {
+  blogId: number;
+  formData: FormData;
+}
 
 // Fetch with Pagination
 export type FetchBlogsRequest = {

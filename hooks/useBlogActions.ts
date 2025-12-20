@@ -8,9 +8,9 @@ import {
 import { useCallback } from "react";
 import { toast } from "sonner";
 import { BlogActionType } from "@/types/enum";
-import { BlogFormData } from "@/app/(recruiter-portal)/recruiter-portal/blogs/form/components/schema";
 import { useUser } from "@/hooks/useUser";
 import { useLikeBlogsMutation, useUnlikeBlogsMutation } from "@/services/user/userApi";
+import { CreateBlogDto } from "@/types/dto";
 
 const useBlogActions = () => {
   const { isSignedIn, user } = useUser();
@@ -130,17 +130,26 @@ const useBlogActions = () => {
 
   // Create blog
   const handleCreateBlog = useCallback(
-    async (data: BlogFormData & { banner: string }) => {
+    async (data: CreateBlogDto) => {
       if (!isSignedIn || !user) {
         toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
         return;
       }
 
       try {
-        const response = await createBlog({
-          ...data,
-          images: [data.banner]
-        }).unwrap();
+
+        const formData = new FormData();
+
+        formData.append("title", data.title);
+        formData.append("content", data.content);
+
+        if (data.files) {
+          for (const file in data.files) {
+            formData.append("files", file);
+          }
+        }
+
+        const response = await createBlog(formData).unwrap();
 
         if (response.data) {
           toast.success("Tạo bài viết thành công!");
@@ -157,17 +166,27 @@ const useBlogActions = () => {
 
   // Update blog
   const handleUpdateBlog = useCallback(
-    async (blogId: number, data: BlogFormData & { banner: string }) => {
+    async (blogId: number, data: CreateBlogDto) => {
       if (!isSignedIn || !user) {
         toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
         return;
       }
 
       try {
+        const formData = new FormData();
+
+        formData.append("title", data.title);
+        formData.append("content", data.content);
+
+        if (data.files) {
+          for (const file in data.files) {
+            formData.append("files", file);
+          }
+        }
+
         const response = await updateBlog({
-          ...data,
-          images: [data.banner],
-          blogId: blogId.toString()
+          blogId,
+          formData,
         }).unwrap();
 
         if (response.data) {

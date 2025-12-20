@@ -86,3 +86,9 @@ export type RecruiterResponse = UserResponse & {
     name: string;
   }
 }
+
+export type CreateBlogDto = {
+  title: string;
+  content: string;
+  files?: File[]
+}

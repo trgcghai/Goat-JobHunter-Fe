@@ -14,13 +14,16 @@ import {
   SelectValue
 } from "@/components/ui/select";
 import { ImageIcon } from "lucide-react";
-import { useMemo, useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { useUser } from "@/hooks/useUser";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { Photo, RowsPhotoAlbum } from "react-photo-album";
+import { RowsPhotoAlbum } from "react-photo-album";
 import RenderNextImage from "@/components/common/Photo/RenderNextImage";
 import { Dropzone, DropzoneEmptyState } from "@/components/ui/shadcn-io/dropzone";
+import { useBlogImagesInput } from "@/app/(social-hub)/hub/fyp/hooks/useBlogImagesInput";
+import useBlogActions from "@/hooks/useBlogActions";
+import LoaderSpin from "@/components/common/LoaderSpin";
 
 interface CreateBlogDialogProps {
   open: boolean;
@@ -32,135 +35,41 @@ const MAX_IMAGE_UPLOAD = 90;
 
 export function CreateBlogDialog({ open, onOpenChange }: CreateBlogDialogProps) {
   const { user } = useUser();
+  const { handleCreateBlog, isCreating } = useBlogActions();
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
-  const [imageFiles, setImageFiles] = useState<File[]>([]);
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const [isDragging, setIsDragging] = useState(false);
-  const dragCounter = useRef(0);
-  const dialogRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!open) return;
+  const {
+    imageFiles,
+    isDragging,
+    formattedImageUrls,
+    handleFilesAdded,
+    resetImages
+  } = useBlogImagesInput(open, {
+    maxDisplayed: MAX_DISPLAYED_IMAGES,
+    maxUpload: MAX_IMAGE_UPLOAD
+  });
 
-    const handleDragEnter = (e: DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
+  const handlePost = async () => {
+    console.log("Creating post with:", { title, content, imageFiles });
 
-      if (e.dataTransfer?.types.includes("Files")) {
-        dragCounter.current++;
-        if (dragCounter.current === 1) {
-          setIsDragging(true);
-        }
-      }
-    };
-
-    const handleDragLeave = (e: DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      dragCounter.current--;
-      if (dragCounter.current === 0) {
-        setIsDragging(false);
-      }
-    };
-
-    const handleDragOver = (e: DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-    };
-
-    const handleDrop = (e: DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      setIsDragging(false);
-      dragCounter.current = 0;
-    };
-
-    document.addEventListener("dragenter", handleDragEnter);
-    document.addEventListener("dragleave", handleDragLeave);
-    document.addEventListener("dragover", handleDragOver);
-    document.addEventListener("drop", handleDrop);
-
-    return () => {
-      document.removeEventListener("dragenter", handleDragEnter);
-      document.removeEventListener("dragleave", handleDragLeave);
-      document.removeEventListener("dragover", handleDragOver);
-      document.removeEventListener("drop", handleDrop);
-      dragCounter.current = 0;
-      setIsDragging(false);
-    };
-  }, [open]);
-
-  const handleFilesAdded = (files: File[]) => {
-
-    console.log(files);
-
-    const imageFilesArray = Array.isArray(files) ? files : [files];
-    const newImageFiles = [...imageFiles, ...imageFilesArray];
-    setImageFiles(newImageFiles);
-
-    imageFilesArray.forEach((file) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreviews((prev) => [...prev, reader.result as string]);
-      };
-      reader.readAsDataURL(file);
+    await handleCreateBlog({
+      title,
+      content,
+      files: imageFiles
     });
 
-    setIsDragging(false);
-    dragCounter.current = 0;
-  };
-
-  const handlePost = () => {
-    console.log("Creating post with:", { title, content, imageFiles });
     onOpenChange(false);
     setContent("");
     setTitle("");
-    setImageFiles([]);
-    setImagePreviews([]);
+    resetImages();
   };
-
-  const formattedImageUrls: Photo[] = useMemo(() => {
-    if (imagePreviews.length > 0 && imagePreviews.length <= MAX_DISPLAYED_IMAGES) {
-      return imagePreviews.map((preview, index) => ({
-        src: preview,
-        width: 16,
-        height: 9,
-        alt: `Image ${index + 1}`
-      }));
-    }
-
-    return imagePreviews.slice(0, MAX_DISPLAYED_IMAGES).map((preview, index) => {
-      if (index === 4) {
-        return {
-          src: preview,
-          width: 16,
-          height: 9,
-          alt: `Image ${index + 1}`,
-          title: `+${imagePreviews.length - MAX_DISPLAYED_IMAGES} more`,
-          "aria-isLastWithMore": true,
-          "aria-moreCount": imagePreviews.length - MAX_DISPLAYED_IMAGES
-        };
-      }
-
-      return {
-        src: preview,
-        width: 16,
-        height: 9,
-        alt: `Image ${index + 1}`
-      };
-    });
-  }, [imagePreviews]);
 
   const isAllowed = !!content.trim() && !!title.trim();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        ref={dialogRef}
-        className="max-w-2xl max-h-[90vh] overflow-y-auto"
-      >
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-center text-xl font-bold">Tạo bài viết</DialogTitle>
         </DialogHeader>
@@ -273,10 +182,17 @@ export function CreateBlogDialog({ open, onOpenChange }: CreateBlogDialogProps) 
             <Button
               onClick={handlePost}
               variant={isAllowed ? "default" : "secondary"}
-              disabled={!isAllowed}
+              disabled={!isAllowed || isCreating}
               className="rounded-xl w-full"
             >
-              Đăng bài
+              {isCreating ?
+                <>
+                  <LoaderSpin />
+                  Đang tải...
+                </>
+                :
+                <>Đăng bài</>
+              }
             </Button>
           </div>
         </div>
