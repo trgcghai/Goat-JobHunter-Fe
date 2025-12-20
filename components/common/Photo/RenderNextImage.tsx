@@ -24,7 +24,7 @@ export default function RenderNextImage(
         fill
         title={title}
         sizes={sizes}
-        className="object-cover"
+        className="object-cover rounded-xl"
         placeholder={"blurDataURL" in photo ? "blur" : undefined}
       />
 

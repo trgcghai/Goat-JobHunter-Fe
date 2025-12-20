@@ -12,6 +12,10 @@ export function CreateBlogTrigger() {
   const { user } = useUser();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  if (!user) {
+    return null;
+  }
+
   return (
     <>
       <Card className="mb-4 p-4">

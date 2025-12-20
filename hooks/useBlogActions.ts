@@ -140,7 +140,6 @@ const useBlogActions = () => {
 
         const formData = new FormData();
 
-        formData.append("title", data.title);
         formData.append("content", data.content);
 
         if (data.files) {
@@ -175,7 +174,6 @@ const useBlogActions = () => {
       try {
         const formData = new FormData();
 
-        formData.append("title", data.title);
         formData.append("content", data.content);
 
         if (data.files) {
