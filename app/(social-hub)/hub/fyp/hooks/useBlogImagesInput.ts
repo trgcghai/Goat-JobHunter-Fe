@@ -9,7 +9,7 @@ interface UseBlogImagesInputOptions {
 
 export function useBlogImagesInput(
   open: boolean,
-  { maxDisplayed = 5, maxUpload = 90, maxSizeMb = 5 }: UseBlogImagesInputOptions = {}
+  { maxDisplayed = 5, maxUpload = 90, maxSizeMb = 2 }: UseBlogImagesInputOptions = {}
 ) {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);

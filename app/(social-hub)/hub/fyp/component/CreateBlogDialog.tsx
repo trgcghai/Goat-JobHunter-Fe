@@ -42,6 +42,8 @@ export function CreateBlogDialog({ open, onOpenChange }: CreateBlogDialogProps) 
   });
 
   const handlePost = async () => {
+    console.log(imageFiles);
+
     await handleCreateBlog({
       content,
       files: imageFiles

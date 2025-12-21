@@ -143,7 +143,7 @@ const useBlogActions = () => {
         formData.append("content", data.content);
 
         if (data.files) {
-          for (const file in data.files) {
+          for (const file of data.files) {
             formData.append("files", file);
           }
         }
@@ -177,7 +177,7 @@ const useBlogActions = () => {
         formData.append("content", data.content);
 
         if (data.files) {
-          for (const file in data.files) {
+          for (const file of data.files) {
             formData.append("files", file);
           }
         }
