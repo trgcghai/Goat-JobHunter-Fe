@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useFetchGroupedAddressesByCompanyQuery } from '@/services/company/companyApi';
+import { useCountJobsByCompanyQuery } from '@/services/job/jobApi';
 import { Company } from '@/types/model';
 import { MapPin, Star, Briefcase, MessageSquare } from 'lucide-react';
 import Image from 'next/image';
@@ -19,12 +20,14 @@ export default function CompanyCard({ company }: CompanyCardProps) {
     const hasValidCoverPhoto = company.coverPhoto && company.coverPhoto.trim() !== '';
 
     const { data: groupedAddresses } = useFetchGroupedAddressesByCompanyQuery(company.accountId);
+    const {data: countJobs} = useCountJobsByCompanyQuery();
 
-    const cities = groupedAddresses?.data ? Object.keys(groupedAddresses.data)[0] : '';
+    const citiesArray = groupedAddresses?.data ? Object.keys(groupedAddresses.data) : [];
+    const firstCity = citiesArray[0] || '';
+    const remainingCitiesCount = citiesArray.length - 1;
 
     // Fake data
     const avgRating = 4.5;
-    const totalJobs = 25;
     const totalReviews = 128;
 
     return (
@@ -80,15 +83,18 @@ export default function CompanyCard({ company }: CompanyCardProps) {
                     )}
 
                     <div className="flex items-center gap-4 flex-wrap text-sm text-muted-foreground justify-between">
-                        {cities && (
+                        {firstCity && (
                             <div className="flex items-center gap-1">
                                 <MapPin className="h-4 w-4 shrink-0" />
-                                <span className="truncate">{cities}</span>
+                                <span className="truncate">
+                                    {firstCity}
+                                    {remainingCitiesCount > 0 && ` +${remainingCitiesCount}`}
+                                </span>
                             </div>
                         )}
                         <div className="flex items-center gap-1">
                             <Briefcase className="h-4 w-4 shrink-0" />
-                            <span>{totalJobs} việc làm</span>
+                            <span>{countJobs?.data?.[company.accountId] || 0} việc làm</span>
                         </div>
                         <div className="flex items-center gap-1">
                             <MessageSquare className="h-4 w-4 shrink-0" />

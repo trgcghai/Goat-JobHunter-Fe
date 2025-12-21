@@ -36,7 +36,9 @@ export const companyApi = api.injectEndpoints({
                     params,
                     filterFields: ['name', 'verified'],
                     textSearchFields: ['name'],
-                    arrayFields: ['addresses'],
+                    nestedArrayFields: {
+                        addresses: 'addresses.province',
+                    },
                     defaultSort: 'createdAt,desc',
                     sortableFields: ['name', 'createdAt', 'updatedAt'],
                 });
