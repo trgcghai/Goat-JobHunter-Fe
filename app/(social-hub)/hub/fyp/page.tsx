@@ -1,11 +1,18 @@
+"use client";
+
 import { SocialBlogCard } from "@/app/(social-hub)/hub/fyp/component/SocialBlogCard";
 import { CreateBlogTrigger } from "@/app/(social-hub)/hub/fyp/component/CreateBlogTrigger";
 import { Separator } from "@/components/ui/separator";
 import { Blog } from "@/types/model";
+import { useFetchAvailableBlogsQuery } from "@/services/blog/blogApi";
+import ErrorMessage from "@/components/common/ErrorMessage";
+import LoaderSpin from "@/components/common/LoaderSpin";
 
 export default function FypPage() {
 
-  const blogs: Blog[] = []
+  const { data, isLoading, isError, isFetching, isSuccess } = useFetchAvailableBlogsQuery({});
+
+  const blogs: Blog[] = data?.data?.result || [];
 
   return (
     <div className="mx-auto max-w-4xl">
@@ -22,11 +29,15 @@ export default function FypPage() {
 
       <Separator className="my-4" />
 
-      <div className="space-y-4">
+      {isError && <ErrorMessage message={"Có lỗi xảy ra khi tải bài viết. Vui lòng thử lại sau."} />}
+
+      {(isLoading || isFetching) && <LoaderSpin />}
+
+      {isSuccess && <div className="space-y-4">
         {blogs.map((blog) => (
           <SocialBlogCard key={blog.blogId} blog={blog} />
         ))}
-      </div>
+      </div>}
     </div>
   );
 }

@@ -1,15 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Photo } from "react-photo-album";
+import { MAX_IMAGE_UPLOAD } from "@/constants/constant";
+import formatImageUrlsForPhotoView from "@/utils/formatImageUrlsForPhotoView";
 
 interface UseBlogImagesInputOptions {
-  maxDisplayed?: number;
-  maxUpload?: number;
   maxSizeMb?: number;
 }
 
 export function useBlogImagesInput(
   open: boolean,
-  { maxDisplayed = 5, maxUpload = 90, maxSizeMb = 2 }: UseBlogImagesInputOptions = {}
+  { maxSizeMb = 2 }: UseBlogImagesInputOptions = {}
 ) {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
@@ -69,7 +68,7 @@ export function useBlogImagesInput(
       (file) => file.size <= maxSizeMb * 1024 * 1024
     );
 
-    const remainingSlots = maxUpload - imageFiles.length;
+    const remainingSlots = MAX_IMAGE_UPLOAD - imageFiles.length;
     const limited = accepted.slice(0, Math.max(remainingSlots, 0));
 
     if (!limited.length) return;
@@ -96,31 +95,10 @@ export function useBlogImagesInput(
     dragCounter.current = 0;
   };
 
-  const formattedImageUrls: Photo[] = useMemo(() => {
-    if (imagePreviews.length <= maxDisplayed) {
-      return imagePreviews.map((preview, index) => ({
-        src: preview,
-        width: 16,
-        height: 9,
-        alt: `Image ${index + 1}`
-      }));
-    }
-
-    return imagePreviews.slice(0, maxDisplayed).map((preview, index) => {
-      if (index === maxDisplayed - 1) {
-        return {
-          src: preview,
-          width: 16,
-          height: 9,
-          alt: `Image ${index + 1}`,
-          title: `+${imagePreviews.length - maxDisplayed} more`,
-          "aria-isLastWithMore": true,
-          "aria-moreCount": imagePreviews.length - maxDisplayed
-        };
-      }
-      return { src: preview, width: 16, height: 9, alt: `Image ${index + 1}` };
-    });
-  }, [imagePreviews, maxDisplayed]);
+  const formattedImageUrls = useMemo(
+    () => formatImageUrlsForPhotoView(imagePreviews),
+    [imagePreviews]
+  );
 
   return {
     imageFiles,

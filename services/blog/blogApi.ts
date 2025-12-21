@@ -49,7 +49,7 @@ export const blogApi = api.injectEndpoints({
       query: (params) => {
         const { params: queryParams } = buildSpringQuery({
           params,
-          filterFields: ["title", "draft", "enabled"],
+          filterFields: ["title", "draft"],
           textSearchFields: ["title"],
           defaultSort: "createdAt,desc"
         });
@@ -67,11 +67,10 @@ export const blogApi = api.injectEndpoints({
       query: (params) => {
         const { params: queryParams } = buildSpringQuery({
           params,
-          filterFields: ["title", "content", "authorId"],
+          filterFields: ["title", "content"],
           textSearchFields: ["title", "content"],
           arrayFields: ["tags"],
           defaultSort: "createdAt,desc",
-          sortableFields: ["title", "createdAt", "updatedAt"]
         });
 
         return {

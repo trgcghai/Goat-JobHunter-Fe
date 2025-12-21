@@ -10,20 +10,18 @@ import { useUser } from "@/hooks/useUser";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { RowsPhotoAlbum } from "react-photo-album";
-import RenderNextImage from "@/components/common/Photo/RenderNextImage";
+import { RenderNextImage } from "@/components/common/Photo/RenderNextImage";
 import { Dropzone, DropzoneEmptyState } from "@/components/ui/shadcn-io/dropzone";
 import { useBlogImagesInput } from "@/app/(social-hub)/hub/fyp/hooks/useBlogImagesInput";
 import useBlogActions from "@/hooks/useBlogActions";
 import LoaderSpin from "@/components/common/LoaderSpin";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { MAX_IMAGE_UPLOAD } from "@/constants/constant";
 
 interface CreateBlogDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
-
-const MAX_DISPLAYED_IMAGES = 4;
-const MAX_IMAGE_UPLOAD = 90;
 
 export function CreateBlogDialog({ open, onOpenChange }: CreateBlogDialogProps) {
   const { user } = useUser();
@@ -36,10 +34,7 @@ export function CreateBlogDialog({ open, onOpenChange }: CreateBlogDialogProps) 
     formattedImageUrls,
     handleFilesAdded,
     resetImages
-  } = useBlogImagesInput(open, {
-    maxDisplayed: MAX_DISPLAYED_IMAGES,
-    maxUpload: MAX_IMAGE_UPLOAD
-  });
+  } = useBlogImagesInput(open);
 
   const handlePost = async () => {
     console.log(imageFiles);

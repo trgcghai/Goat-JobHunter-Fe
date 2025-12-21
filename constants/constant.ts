@@ -94,3 +94,7 @@ export enum ROLE {
   HR = "HR",
   APPLICANT = "APPLICANT",
 }
+
+export const MAX_IMAGE_UPLOAD = 90;
+
+export const MAX_DISPLAYED_IMAGES = 4;
