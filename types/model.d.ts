@@ -49,7 +49,7 @@ export type Company = Account & {
   logo: string;
   coverPhoto: string;
   website: string;
-  address: string;
+  addresses: string[];
   phone: string;
   size: CompanySize;
   verified: boolean;

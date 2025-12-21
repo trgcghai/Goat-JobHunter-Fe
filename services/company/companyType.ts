@@ -8,7 +8,7 @@ export type FetchCompaniesRequest = {
   size?: number;
   sortBy?: string;
   name?: string;
-  address?: string;
+  addresses?: string[];
   enabled?: boolean;
   verified?: boolean;
 };
@@ -18,3 +18,7 @@ export type CompanyMutationResponse = IBackendRes<Company>;
 export type FetchCompaniesResponse = IBackendRes<IModelPaginate<Company>>;
 
 export type FetchCompanyByIdResponse = IBackendRes<Company>;
+
+export type FetchGroupedAddressesByCompanyResponse = IBackendRes<
+  Record<string, string[]>
+>;

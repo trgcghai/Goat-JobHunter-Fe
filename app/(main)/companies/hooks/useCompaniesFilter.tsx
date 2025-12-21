@@ -1,57 +1,67 @@
-import { useFetchAvailableCompaniesQuery } from "@/services/company/companyApi";
-import { useMemo, useState } from "react";
-
+import { useFetchAvailableCompaniesQuery } from '@/services/company/companyApi';
+import { useRouter } from 'next/navigation';
+import { useMemo, useState } from 'react';
 
 export interface CompanyFilters {
-  name?: string;
-  address?: string;
-  enabled?: boolean;
-  verified?: boolean;
+    name?: string;
+    addresses?: string[];
+    verified?: boolean;
 }
 
 export interface UseCompanyFilterOptions {
-  initialPage?: number;
-  itemsPerPage?: number;
-  initialFilters?: CompanyFilters;
+    initialPage?: number;
+    itemsPerPage?: number;
+    initialFilters?: CompanyFilters;
 }
 
 export const useCompanyFilter = (options?: UseCompanyFilterOptions) => {
-    const {
-        initialPage = 1,
-        itemsPerPage = 10,
-        initialFilters = {},
-    } = options || {};
+    const { initialPage = 1, itemsPerPage = 9, initialFilters = {} } = options || {};
+
+    const router = useRouter();
 
     const [currentPage, setCurrentPage] = useState(initialPage);
     const [filters, setFilters] = useState<CompanyFilters>(initialFilters);
+    const [nameInputValue, setNameInputValue] = useState<string>('');
+
+    const handleNameInputChange = (value: string) => {
+        setNameInputValue(value);
+    };
+
+    const { data: companiesData, isFetching: isFetchingCompanies } = useFetchAvailableCompaniesQuery({
+        page: 1,
+        size: 50,
+        name: nameInputValue,
+    });
 
     const queryParams = useMemo(() => {
-        const params: Record<string, string | number | boolean> = {
-          page: currentPage,
-          size: itemsPerPage,
+        const params: Record<string, string | number | boolean | string[]> = {
+            page: currentPage,
+            size: itemsPerPage,
         };
 
         // Add filters
         if (filters.name) {
-          params.name = filters.name;
+            params.name = filters.name;
         }
 
-        if (filters.address) {
-          params.address = filters.address;
+        if (filters.addresses && filters.addresses.length > 0) {
+            params.addresses = filters.addresses;
         }
 
         if (filters.verified !== undefined) {
-          params.verified = filters.verified;
-        }
-
-        if (filters.enabled !== undefined) {
-          params.enabled = filters.enabled;
+            params.verified = filters.verified;
         }
 
         return params;
-      }, [currentPage, itemsPerPage, filters]);
+    }, [currentPage, itemsPerPage, filters]);
 
-    const {data: companyResponse, isLoading, isFetching, isError, error} = useFetchAvailableCompaniesQuery(queryParams);
+    const {
+        data: companyResponse,
+        isLoading,
+        isFetching,
+        isError,
+        error,
+    } = useFetchAvailableCompaniesQuery(queryParams);
 
     const companies = companyResponse?.data?.result || [];
     const meta = companyResponse?.data?.meta || {
@@ -71,9 +81,11 @@ export const useCompanyFilter = (options?: UseCompanyFilterOptions) => {
 
     const resetFilters = () => {
         setFilters(initialFilters);
+        setNameInputValue('');
         setCurrentPage(1);
-    };
 
+        router.push('/companies');
+    };
 
     const goToPage = (page: number) => {
         if (page >= 1 && page <= totalPages) {
@@ -97,7 +109,7 @@ export const useCompanyFilter = (options?: UseCompanyFilterOptions) => {
     const hasPreviousPage = currentPage > 1;
 
     const activeFiltersCount = Object.entries(filters).filter(([_, value]) => {
-        return value !== undefined && value !== null && value !== "";
+        return value !== undefined && value !== null && value !== '' && (!Array.isArray(value) || value.length > 0);
     }).length;
 
     return {
@@ -121,11 +133,17 @@ export const useCompanyFilter = (options?: UseCompanyFilterOptions) => {
         resetFilters,
         activeFiltersCount,
 
+        // Search inputs
+        companiesData: companiesData?.data?.result || [],
+        isFetchingCompanies,
+        nameInputValue,
+        handleNameInputChange,
+
         // Pagination
         goToPage,
         nextPage,
         previousPage,
         hasNextPage,
         hasPreviousPage,
-    }
-}
+    };
+};
