@@ -49,15 +49,13 @@ export default function CompanyFilter({
         })) || [];
 
     return (
-        <div className="bg-white rounded-xl border border-border p-6 mb-6">
+        <div className="bg-white rounded-xl border border-border p-6 mb-6 shadow-xl">
             <div className="mb-6 flex items-center justify-between">
                 <div>
                     <p className="text-xl md:text-2xl font-bold text-foreground mb-2">
                         Trải nghiệm về công ty của bạn?
                     </p>
-                    <p className="text-muted-foreground">
-                        Review ẩn danh của bạn sẽ giúp hàng triệu người đang tìm kiếm việc làm
-                    </p>
+                    <p className="font-bold">Review ẩn danh của bạn sẽ giúp hàng triệu người đang tìm kiếm việc làm</p>
                 </div>
                 <Button size="sm" onClick={onResetFilters} disabled={activeFiltersCount === 0} className="rounded-xl">
                     <X className="h-4 w-4 mr-2" />

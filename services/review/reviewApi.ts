@@ -1,8 +1,16 @@
 import { api } from '../api';
-import { AverageRatingsByCompanyResponse, CountReviewsByCompanyResponse } from './reviewType';
+import { AverageRatingsByCompanyResponse, CountAllReviewsResponse, CountReviewsByCompanyResponse, LatestReviewsResponse } from './reviewType';
 
 export const reviewApi = api.injectEndpoints({
     endpoints: (builder) => ({
+        latestReviews: builder.query<LatestReviewsResponse, void>({
+            query: () => ({
+                url: `/reviews/latest`,
+                method: 'GET',
+            }),
+            providesTags: ['Review'],
+        }),
+
         countReviewsByCompany: builder.query<CountReviewsByCompanyResponse, void>({
             query: () => ({
                 url: `/reviews/companies/count`,
@@ -18,7 +26,20 @@ export const reviewApi = api.injectEndpoints({
             }),
             providesTags: ['Review'],
         }),
+
+        countAllReviews: builder.query<CountAllReviewsResponse, void>({
+            query: () => ({
+                url: `/reviews/count`,
+                method: 'GET',
+            }),
+            providesTags: ['Review'],
+        }),
     }),
 });
 
-export const { useCountReviewsByCompanyQuery, useAverageRatingsByCompanyQuery } = reviewApi;
+export const {
+    useLatestReviewsQuery,
+    useCountReviewsByCompanyQuery,
+    useAverageRatingsByCompanyQuery,
+    useCountAllReviewsQuery,
+} = reviewApi;

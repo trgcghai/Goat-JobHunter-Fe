@@ -2,8 +2,6 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { useFetchGroupedAddressesByCompanyQuery } from '@/services/company/companyApi';
-import { useCountJobsByCompanyQuery } from '@/services/job/jobApi';
-import { useAverageRatingsByCompanyQuery, useCountReviewsByCompanyQuery } from '@/services/review/reviewApi';
 import { Company } from '@/types/model';
 import { MapPin, Star, Briefcase, MessageSquare } from 'lucide-react';
 import Image from 'next/image';
@@ -12,18 +10,18 @@ import { useState } from 'react';
 
 interface CompanyCardProps {
     company: Company;
+    totalJobs?: number;
+    totalReviews?: number;
+    averageRating?: number;
 }
 
-export default function CompanyCard({ company }: CompanyCardProps) {
+export default function CompanyCard({ company, totalJobs, totalReviews, averageRating }: CompanyCardProps) {
     const [imageError, setImageError] = useState(false);
     const [logoError, setLogoError] = useState(false);
     const hasValidLogo = company.logo && company.logo.trim() !== '';
     const hasValidCoverPhoto = company.coverPhoto && company.coverPhoto.trim() !== '';
 
     const { data: groupedAddresses } = useFetchGroupedAddressesByCompanyQuery(company.accountId);
-    const { data: countJobs } = useCountJobsByCompanyQuery();
-    const { data: countReviews } = useCountReviewsByCompanyQuery();
-    const { data: averageRatings } = useAverageRatingsByCompanyQuery();
 
     const citiesArray = groupedAddresses?.data ? Object.keys(groupedAddresses.data) : [];
     const firstCity = citiesArray[0] || '';
@@ -68,7 +66,7 @@ export default function CompanyCard({ company }: CompanyCardProps) {
 
                         <div className="flex items-center gap-1 text-sm font-semibold text-foreground shrink-0 pb-1">
                             <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                            <span>{averageRatings?.data?.[company.accountId] || 0}</span>
+                            <span>{averageRating || 0}</span>
                         </div>
                     </div>
                 </div>
@@ -92,11 +90,11 @@ export default function CompanyCard({ company }: CompanyCardProps) {
                         )}
                         <div className="flex items-center gap-1">
                             <Briefcase className="h-4 w-4 shrink-0" />
-                            <span>{countJobs?.data?.[company.accountId] || 0} việc làm</span>
+                            <span>{totalJobs || 0} việc làm</span>
                         </div>
                         <div className="flex items-center gap-1">
                             <MessageSquare className="h-4 w-4 shrink-0" />
-                            <span>{countReviews?.data?.[company.accountId] || 0} đánh giá</span>
+                            <span>{totalReviews || 0} đánh giá</span>
                         </div>
                     </div>
                 </CardContent>
