@@ -72,12 +72,6 @@ export function CreateBlogDialog({ open, onOpenChange }: CreateBlogDialogProps) 
 
           <ScrollArea className="h-[500px] space-y-4">
             <div className="-mx-3 px-4">
-              {/*<Textarea*/}
-              {/*  placeholder="Bạn đang nghĩ gì?"*/}
-              {/*  value={content}*/}
-              {/*  onChange={(e) => setContent(e.target.value)}*/}
-              {/*  className="min-h-[150px] resize-none border-none text-lg focus-visible:ring-0"*/}
-              {/*/>*/}
               <RichTextEditor
                 value={content}
                 onChange={(v) => setContent(v)}

@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import ErrorMessage from "@/components/common/ErrorMessage";
 import LoaderSpin from "@/components/common/LoaderSpin";
 import { useInfiniteScrollBlogs } from "@/app/(social-hub)/hub/fyp/hooks/useInfiniteScrollBlogs";
+import { BlogDetailDialog } from "@/app/(social-hub)/hub/fyp/component/BlogDetailDialog";
 
 export default function FypPage() {
   const {
@@ -19,46 +20,49 @@ export default function FypPage() {
   } = useInfiniteScrollBlogs();
 
   return (
-    <div className="mx-auto max-w-4xl">
-      <div className="mb-6">
-        <h1 className="mb-6 text-4xl font-bold text-balance">
-          Welcome to{" "}
-          <span className="bg-gradient-to-r bg-primary bg-clip-text text-transparent">
-            Story Hub!
-          </span>
-        </h1>
-      </div>
+    <>
+      <div className="mx-auto max-w-4xl">
+        <div className="mb-6">
+          <h1 className="mb-6 text-4xl font-bold text-balance">
+            Welcome to{" "}
+            <span className="bg-gradient-to-r bg-primary bg-clip-text text-transparent">
+                      Story Hub!
+                  </span>
+          </h1>
+        </div>
 
-      <CreateBlogTrigger />
+        <CreateBlogTrigger />
 
-      <Separator className="my-4" />
+        <Separator className="my-4" />
 
-      {isError && <ErrorMessage message={"Có lỗi xảy ra khi tải bài viết. Vui lòng thử lại sau."} />}
+        {isError && <ErrorMessage message={"Có lỗi xảy ra khi tải bài viết. Vui lòng thử lại sau."} />}
 
-      {isLoading && <LoaderSpin />}
+        {isLoading && <LoaderSpin />}
 
-      {isSuccess && (
-        <>
-          <div className="space-y-4">
-            {blogs.map((blog) => (
-              <SocialBlogCard key={blog.blogId} blog={blog} />
-            ))}
-          </div>
-
-          {/* Infinite scroll trigger */}
-          {hasMore && (
-            <div ref={targetRef} className="py-8 flex justify-center">
-              {isFetching && <LoaderSpin />}
+        {isSuccess && (
+          <>
+            <div className="space-y-4">
+              {blogs.map((blog) => (
+                <SocialBlogCard key={blog.blogId} blog={blog} />
+              ))}
             </div>
-          )}
 
-          {!hasMore && blogs.length > 0 && (
-            <p className="text-center text-muted-foreground py-8">
-              Bạn đã xem hết tất cả bài viết
-            </p>
-          )}
-        </>
-      )}
-    </div>
+            {/* Infinite scroll trigger */}
+            {hasMore && (
+              <div ref={targetRef} className="py-8 flex justify-center">
+                {isFetching && <LoaderSpin />}
+              </div>
+            )}
+
+            {!hasMore && blogs.length > 0 && (
+              <p className="text-center text-muted-foreground py-8">
+                Bạn đã xem hết tất cả bài viết
+              </p>
+            )}
+          </>
+        )}
+      </div>
+      <BlogDetailDialog />
+    </>
   );
 }
