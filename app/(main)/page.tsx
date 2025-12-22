@@ -53,7 +53,7 @@ export default function Home() {
   const { data: checkFollowedData } =
     useCheckRecruitersFollowedQuery(
       {
-        recruiterIds: recruiters.map((recruiter) => recruiter.userId)
+        recruiterIds: recruiters.map((recruiter) => recruiter.accountId)
       },
       {
         skip: !recruiters || recruiters.length === 0 || !isSignedIn || !user
