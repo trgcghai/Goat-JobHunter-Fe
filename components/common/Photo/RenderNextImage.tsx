@@ -52,7 +52,7 @@ export function RenderBlogImage(
 
   return (
     <div
-      className={`relative w-full`}
+      className={`relative w-full border-t`}
       style={{ aspectRatio: `${width} / ${height}` }}
     >
       <Image

@@ -59,10 +59,6 @@ export function SocialBlogCard({ blog }: SocialBlogCardProps) {
           </Button>
         </div>
 
-        <h3 className="mb-2 text-lg font-bold leading-snug">{blog.title}</h3>
-
-        <p className="mb-3 text-sm text-muted-foreground line-clamp-3">{blog.description}</p>
-
         <RichTextPreview content={blog.content} className="mb-3 text-sm" />
 
         {blog.tags.length > 0 && (

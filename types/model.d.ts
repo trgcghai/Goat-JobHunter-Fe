@@ -175,9 +175,7 @@ export type Subscriber = {
 
 export type Blog = {
   blogId: number;
-  title: string;
   images: string[];
-  description: string;
   content: string;
   tags: string[];
   draft: boolean;

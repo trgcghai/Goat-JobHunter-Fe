@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Textarea } from "@/components/ui/textarea";
 import { ImageIcon } from "lucide-react";
 import { useState } from "react";
 import { useUser } from "@/hooks/useUser";
@@ -17,6 +16,7 @@ import useBlogActions from "@/hooks/useBlogActions";
 import LoaderSpin from "@/components/common/LoaderSpin";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MAX_IMAGE_UPLOAD } from "@/constants/constant";
+import RichTextEditor from "@/components/RichText/Editor";
 
 interface CreateBlogDialogProps {
   open: boolean;
@@ -37,8 +37,6 @@ export function CreateBlogDialog({ open, onOpenChange }: CreateBlogDialogProps) 
   } = useBlogImagesInput(open);
 
   const handlePost = async () => {
-    console.log(imageFiles);
-
     await handleCreateBlog({
       content,
       files: imageFiles
@@ -53,7 +51,7 @@ export function CreateBlogDialog({ open, onOpenChange }: CreateBlogDialogProps) 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl overflow-hidden">
+      <DialogContent className="max-w-3xl! overflow-hidden">
         <DialogHeader>
           <DialogTitle className="text-center text-xl font-bold">Tạo bài viết</DialogTitle>
         </DialogHeader>
@@ -72,13 +70,19 @@ export function CreateBlogDialog({ open, onOpenChange }: CreateBlogDialogProps) 
             </div>
           </div>
 
-          <ScrollArea className="h-[500px] space-y-4 overflow-y-scroll">
-            <div className="-mx-3">
-              <Textarea
-                placeholder="Bạn đang nghĩ gì?"
+          <ScrollArea className="h-[500px] space-y-4">
+            <div className="-mx-3 px-4">
+              {/*<Textarea*/}
+              {/*  placeholder="Bạn đang nghĩ gì?"*/}
+              {/*  value={content}*/}
+              {/*  onChange={(e) => setContent(e.target.value)}*/}
+              {/*  className="min-h-[150px] resize-none border-none text-lg focus-visible:ring-0"*/}
+              {/*/>*/}
+              <RichTextEditor
                 value={content}
-                onChange={(e) => setContent(e.target.value)}
-                className="min-h-[150px] resize-none border-none text-lg focus-visible:ring-0"
+                onChange={(v) => setContent(v)}
+                placeholder="Bạn đang nghĩ gì?"
+                allowImage={false}
               />
             </div>
 
