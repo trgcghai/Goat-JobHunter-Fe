@@ -1,17 +1,17 @@
 interface CurrencyFormatOptions {
-  minimumFractionDigits?: number;
-  maximumFractionDigits?: number;
+    minimumFractionDigits?: number;
+    maximumFractionDigits?: number;
 }
 
-const DEFAULT_LOCALE = "vi-VN";
-const DEFAULT_CURRENCY = "VND";
+const DEFAULT_LOCALE = 'vi-VN';
+const DEFAULT_CURRENCY = 'VND';
 
 // Create default formatter
 const defaultFormatter = new Intl.NumberFormat(DEFAULT_LOCALE, {
-  style: "currency",
-  currency: DEFAULT_CURRENCY,
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 0,
+    style: 'currency',
+    currency: DEFAULT_CURRENCY,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
 });
 
 /**
@@ -20,7 +20,7 @@ const defaultFormatter = new Intl.NumberFormat(DEFAULT_LOCALE, {
  * @returns Formatted currency string (e.g., "10.000.000 ₫")
  */
 export const formatCurrency = (amount: number): string => {
-  return defaultFormatter.format(amount);
+    return defaultFormatter.format(amount);
 };
 
 /**
@@ -29,17 +29,14 @@ export const formatCurrency = (amount: number): string => {
  * @param options - Custom format options
  * @returns Formatted currency string
  */
-export const formatCurrencyWithOptions = (
-  amount: number,
-  options?: CurrencyFormatOptions,
-): string => {
-  const customFormatter = new Intl.NumberFormat(DEFAULT_LOCALE, {
-    style: "currency",
-    currency: DEFAULT_CURRENCY,
-    minimumFractionDigits: options?.minimumFractionDigits ?? 0,
-    maximumFractionDigits: options?.maximumFractionDigits ?? 0,
-  });
-  return customFormatter.format(amount);
+export const formatCurrencyWithOptions = (amount: number, options?: CurrencyFormatOptions): string => {
+    const customFormatter = new Intl.NumberFormat(DEFAULT_LOCALE, {
+        style: 'currency',
+        currency: DEFAULT_CURRENCY,
+        minimumFractionDigits: options?.minimumFractionDigits ?? 0,
+        maximumFractionDigits: options?.maximumFractionDigits ?? 0,
+    });
+    return customFormatter.format(amount);
 };
 
 /**
@@ -48,16 +45,16 @@ export const formatCurrencyWithOptions = (
  * @returns Compact currency string (e.g., "10Tr", "1,5Tỷ")
  */
 export const formatCompactCurrency = (amount: number): string => {
-  if (amount >= 1_000_000_000) {
-    return `${(amount / 1_000_000_000).toFixed(1).replace(".", ",")}Tỷ`;
-  }
-  if (amount >= 1_000_000) {
-    return `${(amount / 1_000_000).toFixed(1).replace(".", ",")}Tr`;
-  }
-  if (amount >= 1_000) {
-    return `${(amount / 1_000).toFixed(1).replace(".", ",")}K`;
-  }
-  return defaultFormatter.format(amount);
+    if (amount >= 1_000_000_000) {
+        return `${(amount / 1_000_000_000).toFixed(1).replace('.', ',')}Tỷ`;
+    }
+    if (amount >= 1_000_000) {
+        return `${(amount / 1_000_000).toFixed(1).replace('.', ',')}Tr`;
+    }
+    if (amount >= 1_000) {
+        return `${(amount / 1_000).toFixed(1).replace('.', ',')}K`;
+    }
+    return defaultFormatter.format(amount);
 };
 
 /**
@@ -67,7 +64,7 @@ export const formatCompactCurrency = (amount: number): string => {
  * @returns Currency range string (e.g., "10.000.000 ₫ - 20.000.000 ₫")
  */
 export const formatCurrencyRange = (min: number, max: number): string => {
-  return `${defaultFormatter.format(min)} - ${defaultFormatter.format(max)}`;
+    return `${defaultFormatter.format(min)} - ${defaultFormatter.format(max)}`;
 };
 
 /**
@@ -76,11 +73,8 @@ export const formatCurrencyRange = (min: number, max: number): string => {
  * @param max - Maximum amount
  * @returns Compact currency range string (e.g., "10Tr - 20Tr")
  */
-export const formatCompactCurrencyRange = (
-  min: number,
-  max: number,
-): string => {
-  return `${formatCompactCurrency(min)} - ${formatCompactCurrency(max)}`;
+export const formatCompactCurrencyRange = (min: number, max: number): string => {
+    return `${formatCompactCurrency(min)} - ${formatCompactCurrency(max)}`;
 };
 
 /**
@@ -88,9 +82,9 @@ export const formatCompactCurrencyRange = (
  * @returns Currency symbol (₫)
  */
 export const getCurrencySymbol = (): string => {
-  const parts = defaultFormatter.formatToParts(0);
-  const currencyPart = parts.find((part) => part.type === "currency");
-  return currencyPart?.value || "₫";
+    const parts = defaultFormatter.formatToParts(0);
+    const currencyPart = parts.find((part) => part.type === 'currency');
+    return currencyPart?.value || '₫';
 };
 
 /**
@@ -99,11 +93,9 @@ export const getCurrencySymbol = (): string => {
  * @returns Parsed number
  */
 export const parseCurrency = (currencyString: string): number => {
-  // Remove currency symbol, spaces, and dots (thousand separators)
-  const numericString = currencyString
-    .replace(/[₫\s.]/g, "")
-    .replace(/,/g, ".");
-  return parseFloat(numericString) || 0;
+    // Remove currency symbol, spaces, and dots (thousand separators)
+    const numericString = currencyString.replace(/[₫\s.]/g, '').replace(/,/g, '.');
+    return parseFloat(numericString) || 0;
 };
 
 /**
@@ -112,13 +104,22 @@ export const parseCurrency = (currencyString: string): number => {
  * @returns Formatted salary range (e.g., "10Tr - 20Tr")
  */
 export const formatSalaryRange = (salaryRange: string): string => {
-  const [min, max] = salaryRange.split("-").map((s) => parseInt(s.trim()));
+    const [min, max] = salaryRange.split('-').map((s) => parseInt(s.trim()));
 
-  if (!min || !max) {
-    return "Thỏa thuận";
-  }
+    if (!min || !max) {
+        return 'Thỏa thuận';
+    }
 
-  return formatCompactCurrencyRange(min, max);
+    return formatCompactCurrencyRange(min, max);
+};
+
+/**
+ * Format number with thousand separators (,)
+ * @param value - Number to format
+ * @returns Formatted string (e.g., "27,054", "1,000,000")
+ */
+export const formatNumberWithComma = (value: number): string => {
+    return new Intl.NumberFormat('en-US').format(value);
 };
 
 // Export constants
