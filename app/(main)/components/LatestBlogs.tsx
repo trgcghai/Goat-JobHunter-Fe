@@ -10,9 +10,9 @@ import {
 } from "@/components/ui/empty";
 import { Blog } from "@/types/model";
 import { formatDate } from "@/utils/formatDate";
-import { ArrowRight, ImageIcon, RefreshCcwIcon } from "lucide-react";
-import Image from "next/image";
+import { ArrowRight, RefreshCcwIcon } from "lucide-react";
 import Link from "next/link";
+import RichTextPreview from "@/components/RichText/Preview";
 
 interface LatestBlogsProps {
   blogs: Blog[];
@@ -59,22 +59,7 @@ export default function LatestBlogs({ blogs, isLoading }: LatestBlogsProps) {
               href={`/blogs/${blog.blogId}`}
               className="block h-full"
             >
-              <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer py-0 pb-4 flex flex-col h-full">
-                {
-                  blog.banner && blog.banner.trim() !== "" ? (
-                    <Image
-                      src={blog.banner || "/placeholder.svg"}
-                      alt={blog.title}
-                      className="h-40 w-full object-cover"
-                      width={400}
-                      height={160}
-                    />
-                  ) : (
-                    <div className="h-40 w-full bg-muted flex items-center justify-center">
-                      <ImageIcon className="h-16 w-16 text-muted-foreground" />
-                    </div>
-                  )
-                }
+              <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer pb-4 flex flex-col h-full">
                 <CardHeader>
                   <div className="mb-2 flex flex-wrap gap-2">
                     {blog.tags?.slice(0, 2).map((tag, index) => (
@@ -86,17 +71,12 @@ export default function LatestBlogs({ blogs, isLoading }: LatestBlogsProps) {
                       </span>
                     ))}
                   </div>
-                  <h3 className="font-bold text-lg text-foreground line-clamp-2">
-                    {blog.title}
-                  </h3>
                   <p className="text-xs text-muted-foreground">
                     {formatDate(blog.createdAt as "")}
                   </p>
                 </CardHeader>
                 <CardContent className="flex-1">
-                  <p className="text-sm text-muted-foreground line-clamp-2">
-                    {blog.description}
-                  </p>
+                  <RichTextPreview content={blog.content} className="text-sm text-muted-foreground line-clamp-2" />
                 </CardContent>
               </Card>
             </Link>

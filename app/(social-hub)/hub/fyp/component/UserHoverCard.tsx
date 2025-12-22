@@ -55,11 +55,11 @@ export function UserHoverCard({
           )}
 
           <div className="flex gap-2">
-            <Button className="flex-1" size="sm">
+            <Button className="flex-1 rounded-xl" size="sm">
               <UserPlus className="h-4 w-4 mr-2" />
               Kết bạn
             </Button>
-            <Button variant="secondary" className="flex-1" size="sm">
+            <Button variant="secondary" className="flex-1 rounded-xl" size="sm">
               <MessageCircle className="h-4 w-4 mr-2" />
               Nhắn tin
             </Button>

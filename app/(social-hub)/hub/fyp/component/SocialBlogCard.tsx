@@ -1,11 +1,11 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Card } from "@/components/ui/card"
-import { ThumbsUp, Eye, MessageCircle, Bookmark } from "lucide-react"
-import { Blog } from "@/types/model"
-import { formatDistanceToNow } from "date-fns"
-import { vi } from "date-fns/locale"
-import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { Bookmark, Flag } from "lucide-react";
+import { Blog } from "@/types/model";
+import { formatDistanceToNow } from "date-fns";
+import { vi } from "date-fns/locale";
+import { Button } from "@/components/ui/button";
 import { UserHoverCard } from "@/app/(social-hub)/hub/fyp/component/UserHoverCard";
 import Link from "next/link";
 import { RowsPhotoAlbum } from "react-photo-album";
@@ -13,12 +13,17 @@ import { RenderBlogImage } from "@/components/common/Photo/RenderNextImage";
 import { useMemo } from "react";
 import RichTextPreview from "@/components/RichText/Preview";
 import formatImageUrlsForPhotoView from "@/utils/formatImageUrlsForPhotoView";
+import { useAppDispatch } from "@/lib/hooks";
+import { openBlogDetail } from "@/lib/features/blogDetailSlice";
+import BlogActivity from "@/app/(social-hub)/hub/fyp/component/BlogActivity";
 
 interface SocialBlogCardProps {
-  blog: Blog
+  blog: Blog;
 }
 
 export function SocialBlogCard({ blog }: SocialBlogCardProps) {
+  const dispatch = useAppDispatch();
+
   const timeAgo = formatDistanceToNow(new Date(blog.createdAt), {
     addSuffix: true,
     locale: vi
@@ -28,6 +33,10 @@ export function SocialBlogCard({ blog }: SocialBlogCardProps) {
     () => formatImageUrlsForPhotoView(blog?.images),
     [blog?.images]
   );
+
+  const handleOpenDetail = () => {
+    dispatch(openBlogDetail(blog));
+  };
 
   return (
     <Card className="overflow-hidden border border-border bg-card py-0 gap-0">
@@ -54,14 +63,13 @@ export function SocialBlogCard({ blog }: SocialBlogCardProps) {
             </UserHoverCard>
             <div className="text-xs text-muted-foreground">{timeAgo}</div>
           </div>
-          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
+          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" title="Lưu bài viết">
             <Bookmark className="h-4 w-4" />
           </Button>
+          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" title="Báo cáo bài viết">
+            <Flag className="h-4 w-4" />
+          </Button>
         </div>
-
-        <h3 className="mb-2 text-lg font-bold leading-snug">{blog.title}</h3>
-
-        <p className="mb-3 text-sm text-muted-foreground line-clamp-3">{blog.description}</p>
 
         <RichTextPreview content={blog.content} className="mb-3 text-sm" />
 
@@ -81,29 +89,20 @@ export function SocialBlogCard({ blog }: SocialBlogCardProps) {
       </div>
 
       {formattedImageUrls.length > 0 && (
-        <RowsPhotoAlbum
-          photos={formattedImageUrls}
-          render={{ image: RenderBlogImage }}
-          spacing={0}
-        />
+        <div className="border-t">
+          <RowsPhotoAlbum
+            photos={formattedImageUrls}
+            render={{ image: RenderBlogImage }}
+            spacing={0}
+          />
+        </div>
       )}
 
-      <div className="flex items-center justify-between border-t border-border px-4 py-3">
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-1.5">
-            <ThumbsUp className="h-4 w-4" />
-            <span>{blog.activity?.totalLikes || 0}</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <MessageCircle className="h-4 w-4" />
-            <span>{blog.activity?.totalComments || 0}</span>
-          </div>
-        </div>
-        <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-          <Eye className="h-4 w-4" />
-          <span>{blog.activity?.totalReads || 0}</span>
-        </div>
-      </div>
+      <BlogActivity
+        blog={blog}
+        onLikeClick={() => {}}
+        onCommentClick={handleOpenDetail}
+      />
     </Card>
-  )
+  );
 }
