@@ -38,13 +38,13 @@ export function UserDisplay() {
     <Card>
       <CardContent className="">
         <div className="flex items-center gap-3">
-          <Avatar className="h-12 w-12">
-            <AvatarImage src="/avatar-person.jpg" alt="User" />
-            <AvatarFallback>U</AvatarFallback>
+          <Avatar className="h-12 w-12 border">
+            <AvatarImage src={user.avatar} alt="User" />
+            <AvatarFallback>{user.fullName[0]}</AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
             <Link href="/profile" className="text-sm font-semibold text-foreground truncate">
-              {user?.fullName || user?.contact.email}
+              {user?.fullName || user?.email}
             </Link>
             <p className="text-xs text-muted-foreground">@{user?.username}</p>
           </div>

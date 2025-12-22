@@ -2,7 +2,7 @@
 import Sidebar, { SidebarTab } from "@/components/common/Sidebar";
 import { useUser } from "@/hooks/useUser";
 import { useGetMyAccountQuery } from "@/services/auth/authApi";
-import { BookOpen, Briefcase, FileText, MessageCircleCode, Users } from "lucide-react";
+import { Briefcase, FileText, MessageCircleCode, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { AIChatPopup } from "@/components/common/AIChatPopup";
@@ -27,12 +27,6 @@ const RecruiterTabs: SidebarTab[] = [
     label: "Khám phá ứng viên",
     url: "/recruiter-portal/applicants",
     icon: <Users className="w-4 h-4" />,
-  },
-  {
-    id: "blogs",
-    label: "Bài đăng",
-    url: "/recruiter-portal/blogs",
-    icon: <BookOpen className="w-4 h-4" />,
   },
   {
     id: "information",

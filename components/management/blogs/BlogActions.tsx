@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff, Trash2 } from "lucide-react";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
-import { useBlogConfirmDialog } from "@/app/(recruiter-portal)/recruiter-portal/blogs/hooks/useBlogConfirmDialog";
+import { useBlogConfirmDialog } from "@/hooks/useBlogConfirmDialog";
 import useBlogActions from "@/hooks/useBlogActions";
 import { useUser } from "@/hooks/useUser";
 import DisableBlogsDialog from "@/components/management/blogs/DisableBlogsDialog";

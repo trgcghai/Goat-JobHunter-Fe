@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Edit, Eye, EyeOff, FileText, Loader2, Trash2 } from "lucide-react";
 import Link from "next/link";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
-import { useBlogConfirmDialog } from "@/app/(recruiter-portal)/recruiter-portal/blogs/hooks/useBlogConfirmDialog";
+import { useBlogConfirmDialog } from "@/hooks/useBlogConfirmDialog";
 import useBlogActions from "@/hooks/useBlogActions";
 import { useUser } from "@/hooks/useUser";
 import { ROLE } from "@/constants/constant";
