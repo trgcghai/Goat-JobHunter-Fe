@@ -1,10 +1,10 @@
 import { User } from "@/types/model";
 import { ROLE } from "@/constants/constant";
 import { ReactNode } from "react";
-import { LoginResponseDto } from "@/types/dto";
+import { ApplicantResponse, LoginResponseDto, RecruiterResponse, UserResponse } from "@/types/dto";
 
 interface HasRoleProps {
-  user: User | LoginResponseDto | null;
+  user: User | LoginResponseDto | UserResponse | ApplicantResponse | RecruiterResponse | null;
   role: ROLE;
   children: ReactNode | ReactNode[]
 }

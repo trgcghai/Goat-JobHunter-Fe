@@ -1,7 +1,7 @@
 import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type { Applicant, Contact } from "@/types/model";
 import { Education, Gender, Level } from "@/types/enum";
-import { FetchCurrentApplicantDto } from "@/types/dto";
+import { ApplicantResponse, FetchCurrentApplicantDto } from "@/types/dto";
 
 // Create Applicant
 export type CreateApplicantRequest = {
@@ -23,10 +23,11 @@ export type CreateApplicantRequest = {
 
 // Update Applicant
 export type UpdateApplicantRequest = {
-  userId: number,
+  accountId: number,
   username: string;
   fullName: string;
-  contact: Contact;
+  email: string;
+  phone: string;
   address: string;
   dob: Date;
   gender: Gender;
@@ -35,7 +36,7 @@ export type UpdateApplicantRequest = {
   avatar: string;
 }
 
-export type ApplicantMutationResponse = IBackendRes<Applicant>;
+export type ApplicantMutationResponse = IBackendRes<ApplicantResponse>;
 
 
 export type FetchApplicantsResponse = IBackendRes<IModelPaginate<Applicant>>;

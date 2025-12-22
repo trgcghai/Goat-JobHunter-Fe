@@ -4,7 +4,7 @@ import {
   Empty,
   EmptyDescription,
   EmptyHeader,
-  EmptyTitle,
+  EmptyTitle
 } from "@/components/ui/empty";
 import { useUser } from "@/hooks/useUser";
 import { useGetMyAccountQuery } from "@/services/auth/authApi";
@@ -16,6 +16,7 @@ const ProfilePage = () => {
   // Fetch user data to ensure it's up-to-date when accessing the profile page,
   // the data returned is stored in the redux store handle by rtk query automatically
   useGetMyAccountQuery();
+
   const { user, isSignedIn } = useUser(); // Get user data from redux store
   const [activeTab, setActiveTab] = useState("applications");
   const pathname = usePathname();

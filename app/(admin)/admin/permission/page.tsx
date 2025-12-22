@@ -55,7 +55,7 @@ const AdminPermissionPage = () => {
 
           {isLoading ? (
             <div className="flex justify-center py-8"><LoaderSpin /></div>
-          ) : (
+          ) : !isError && (
             <>
               <PermissionActions selectedItems={selectedItems} />
 

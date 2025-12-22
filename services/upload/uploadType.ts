@@ -10,3 +10,18 @@ export type UploadSingleFileResponse = IBackendRes<{
   publicId: string;
   url: string;
 }>;
+
+// Upload Multiple Files
+export type UploadMultipleFilesRequest = {
+  files: File[];
+  folderType: string;
+};
+
+export type UploadMultipleFilesResponse = IBackendRes<
+  {
+    publicId: string;
+    url: string;
+  }[]
+  |
+  string
+>;

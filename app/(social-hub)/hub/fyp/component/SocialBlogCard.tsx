@@ -2,13 +2,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
 import { ThumbsUp, Eye, MessageCircle, Bookmark } from "lucide-react"
-import Image from "next/image"
 import { Blog } from "@/types/model"
 import { formatDistanceToNow } from "date-fns"
 import { vi } from "date-fns/locale"
 import { Button } from "@/components/ui/button"
 import { UserHoverCard } from "@/app/(social-hub)/hub/fyp/component/UserHoverCard";
 import Link from "next/link";
+import { RowsPhotoAlbum } from "react-photo-album";
+import { RenderBlogImage } from "@/components/common/Photo/RenderNextImage";
+import { useMemo } from "react";
+import RichTextPreview from "@/components/RichText/Preview";
+import formatImageUrlsForPhotoView from "@/utils/formatImageUrlsForPhotoView";
 
 interface SocialBlogCardProps {
   blog: Blog
@@ -19,6 +23,11 @@ export function SocialBlogCard({ blog }: SocialBlogCardProps) {
     addSuffix: true,
     locale: vi
   });
+
+  const formattedImageUrls = useMemo(
+    () => formatImageUrlsForPhotoView(blog?.images),
+    [blog?.images]
+  );
 
   return (
     <Card className="overflow-hidden border border-border bg-card py-0 gap-0">
@@ -54,6 +63,8 @@ export function SocialBlogCard({ blog }: SocialBlogCardProps) {
 
         <p className="mb-3 text-sm text-muted-foreground line-clamp-3">{blog.description}</p>
 
+        <RichTextPreview content={blog.content} className="mb-3 text-sm" />
+
         {blog.tags.length > 0 && (
           <div className="mb-3 flex flex-wrap gap-2">
             {blog.tags.map((tag, index) => (
@@ -69,16 +80,12 @@ export function SocialBlogCard({ blog }: SocialBlogCardProps) {
         )}
       </div>
 
-      {blog.banner && (
-        <div className="relative aspect-video w-full overflow-hidden">
-          <Image
-            src={blog.banner}
-            alt={blog.title}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-        </div>
+      {formattedImageUrls.length > 0 && (
+        <RowsPhotoAlbum
+          photos={formattedImageUrls}
+          render={{ image: RenderBlogImage }}
+          spacing={0}
+        />
       )}
 
       <div className="flex items-center justify-between border-t border-border px-4 py-3">

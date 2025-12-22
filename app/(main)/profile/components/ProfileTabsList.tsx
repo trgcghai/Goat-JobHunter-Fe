@@ -1,10 +1,7 @@
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Bell, Briefcase, Lock, Mail, UserIcon } from "lucide-react";
-import { useUser } from "@/hooks/useUser";
-import { HasApplicant } from "@/components/common/HasRole";
 
 const ProfileTabsList = () => {
-  const { user } = useUser();
   return (
     <TabsList className="w-full flex mb-8">
       <TabsTrigger
@@ -36,15 +33,14 @@ const ProfileTabsList = () => {
         <Mail className="h-4 w-4" />
         <span className="hidden sm:inline">Email</span>
       </TabsTrigger>
-      <HasApplicant user={user!}>
-        <TabsTrigger
-          value="info"
-          className="flex items-center gap-2 rounded-xl cursor-pointer"
-        >
-          <UserIcon className="h-4 w-4" />
-          <span className="hidden sm:inline">Thông Tin</span>
-        </TabsTrigger>
-      </HasApplicant>
+
+      <TabsTrigger
+        value="info"
+        className="flex items-center gap-2 rounded-xl cursor-pointer"
+      >
+        <UserIcon className="h-4 w-4" />
+        <span className="hidden sm:inline">Thông Tin</span>
+      </TabsTrigger>
     </TabsList>
   );
 };

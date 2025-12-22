@@ -7,33 +7,27 @@ import { Label } from "@/components/ui/label";
 import { getRevertGenderKeyValue } from "@/utils/getRevertEnumKeyValue";
 import { capitalize } from "lodash";
 import { Edit2 } from "lucide-react";
-import { useMemo, useState } from "react";
-import ApplicantForm from "@/app/(main)/profile/components/ProfileInfo/ApplicantForm";
-import { useFetchCurrentApplicantQuery } from "@/services/applicant/applicantApi";
-import LoaderSpin from "@/components/common/LoaderSpin";
+import { useState } from "react";
+import UserForm from "@/app/(main)/profile/components/ProfileInfo/UserForm";
 import ErrorMessage from "@/components/common/ErrorMessage";
 import { formatDate } from "@/utils/formatDate";
+import { useUser } from "@/hooks/useUser";
+import { ApplicantResponse, RecruiterResponse } from "@/types/dto";
+import { HasApplicant, HasRecruiter } from "@/components/common/HasRole";
 
 export default function ProfileInfo() {
   const [showModal, setShowModal] = useState(false);
-  const { data, isLoading, isError } = useFetchCurrentApplicantQuery();
-  const user = useMemo(() => data?.data, [data?.data]);
+  const { user } = useUser();
 
-  if (isLoading) {
-    return <LoaderSpin />;
-  }
-
-  if (isError || !user) {
-    return <ErrorMessage message={"Có lỗi xảy ra khi tải thông tin người dùng. Vui lòng thử lại sau"} />;
+  if (!user) {
+    return <ErrorMessage message={"Không tìm thấy thông tin người dùng."} />;
   }
 
   return (
     <>
       <Card className="p-6">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-foreground">
-            Thông Tin Tài Khoản
-          </h2>
+          <h2 className="text-xl font-bold text-foreground">Thông Tin Tài Khoản</h2>
           <Button
             onClick={() => setShowModal(true)}
             className="flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl"
@@ -77,7 +71,7 @@ export default function ProfileInfo() {
               <Input
                 id="email"
                 type="email"
-                value={user?.contact.email || "Chưa cập nhật"}
+                value={user?.email || "Chưa cập nhật"}
                 disabled
                 className="rounded-xl text-gray-800"
               />
@@ -88,7 +82,7 @@ export default function ProfileInfo() {
               </Label>
               <Input
                 id="phone"
-                value={user?.contact?.phone || "Chưa cập nhật"}
+                value={user?.phone || "Chưa cập nhật"}
                 disabled
                 className="rounded-xl text-gray-800"
               />
@@ -103,11 +97,7 @@ export default function ProfileInfo() {
               <Input
                 id="gender"
                 type="text"
-                value={
-                  user?.gender
-                    ? capitalize(getRevertGenderKeyValue(user.gender))
-                    : "Chưa cập nhật"
-                }
+                value={user?.gender ? capitalize(getRevertGenderKeyValue(user.gender)) : "Chưa cập nhật"}
                 disabled
                 className="rounded-xl text-gray-800"
               />
@@ -132,48 +122,60 @@ export default function ProfileInfo() {
             <Input
               id="address"
               type="text"
-              value={
-                user?.address
-                  ? capitalize(user?.address)
-                  : "Chưa cập nhật"
-              }
+              value={user?.address ? user?.address : "Chưa cập nhật"}
               disabled
               className="rounded-xl text-gray-800"
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <HasApplicant user={user}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="capitalize" htmlFor="level">
+                  Trình độ
+                </Label>
+                <Input
+                  id="level"
+                  value={(user as ApplicantResponse)?.level ? capitalize((user as ApplicantResponse)?.level) : "Chưa cập nhật"}
+                  disabled
+                  className="rounded-xl text-gray-800"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="capitalize" htmlFor="education">
+                  Học Vấn
+                </Label>
+                <Input
+                  id="education"
+                  type="text"
+                  value={(user as ApplicantResponse)?.education ? capitalize((user as ApplicantResponse).education) : "Chưa cập nhật"}
+                  disabled
+                  className="rounded-xl text-gray-800"
+                />
+              </div>
+            </div>
+          </HasApplicant>
+
+          <HasRecruiter user={user}>
             <div className="space-y-2">
-              <Label className="capitalize" htmlFor="level">
-                Trình độ
+              <Label className="capitalize" htmlFor="position">
+                Vị trí
               </Label>
               <Input
-                id="level"
-                value={user?.level ? capitalize(user?.level) : "Chưa cập nhật"}
+                id="position"
+                value={(user as RecruiterResponse)?.position || "Chưa cập nhật"}
                 disabled
                 className="rounded-xl text-gray-800"
               />
             </div>
-            <div className="space-y-2">
-              <Label className="capitalize" htmlFor="education">
-                Học Vấn
-              </Label>
-              <Input
-                id="education"
-                type="text"
-                value={
-                  user?.education
-                    ? capitalize(user.education)
-                    : "Chưa cập nhật"
-                }
-                disabled
-                className="rounded-xl text-gray-800"
-              />
-            </div>
-          </div>
+          </HasRecruiter>
         </div>
       </Card>
-      <ApplicantForm open={showModal} onOpenChange={setShowModal} profile={user} />;
+      <UserForm
+        open={showModal}
+        onOpenChange={setShowModal}
+        profile={user as ApplicantResponse | RecruiterResponse}
+      />
     </>
   );
 }

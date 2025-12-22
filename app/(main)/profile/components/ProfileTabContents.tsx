@@ -6,11 +6,8 @@ import {
   ProfilePassword
 } from "@/app/(main)/profile/components";
 import { TabsContent } from "@/components/ui/tabs";
-import { HasApplicant } from "@/components/common/HasRole";
-import { useUser } from "@/hooks/useUser";
 
 const ProfileTabContents = () => {
-  const { user } = useUser();
   return (
     <>
       <TabsContent value="applications" className="space-y-4">
@@ -29,11 +26,9 @@ const ProfileTabContents = () => {
         <ProfileEmailNotification />
       </TabsContent>
 
-      <HasApplicant user={user!}>
-        <TabsContent value="info" className="space-y-4">
-          <ProfileInfo />
-        </TabsContent>
-      </HasApplicant>
+      <TabsContent value="info" className="space-y-4">
+        <ProfileInfo />
+      </TabsContent>
     </>
   );
 };

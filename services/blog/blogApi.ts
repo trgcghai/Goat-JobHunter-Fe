@@ -5,24 +5,24 @@ import {
   BlogIdsRequest,
   BlogMutationResponse,
   BlogStatusResponse,
-  CreateBlogRequest,
   CreateCommentRequest,
   FetchBlogByIdResponse,
   FetchBlogsRequest,
   FetchBlogsResponse,
   FetchTagsRequest,
-  FetchTagsResponse, GetCommentsResponse,
+  FetchTagsResponse,
+  GetCommentsResponse,
   UpdateBlogRequest
 } from "./blogType";
 
 export const blogApi = api.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
-    createBlog: builder.mutation<BlogMutationResponse, CreateBlogRequest>({
-      query: (blog) => ({
+    createBlog: builder.mutation<BlogMutationResponse, FormData>({
+      query: (data) => ({
         url: "/blogs",
         method: "POST",
-        data: blog
+        data
       }),
       invalidatesTags: ["Blog"]
     }),
@@ -31,7 +31,7 @@ export const blogApi = api.injectEndpoints({
       query: (data) => ({
         url: "/blogs",
         method: "PUT",
-        data
+        data,
       }),
       invalidatesTags: ["Blog"]
     }),
@@ -49,7 +49,7 @@ export const blogApi = api.injectEndpoints({
       query: (params) => {
         const { params: queryParams } = buildSpringQuery({
           params,
-          filterFields: ["title", "draft", "enabled"],
+          filterFields: ["title", "draft"],
           textSearchFields: ["title"],
           defaultSort: "createdAt,desc"
         });
@@ -67,11 +67,10 @@ export const blogApi = api.injectEndpoints({
       query: (params) => {
         const { params: queryParams } = buildSpringQuery({
           params,
-          filterFields: ["title", "content", "authorId"],
+          filterFields: ["title", "content"],
           textSearchFields: ["title", "content"],
           arrayFields: ["tags"],
           defaultSort: "createdAt,desc",
-          sortableFields: ["title", "createdAt", "updatedAt"]
         });
 
         return {

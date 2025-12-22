@@ -69,6 +69,7 @@ export default function EditPermissionDialog({ open, onOpenChange, permission }:
           permissionId: permission.permissionId,
         });
       } else {
+        console.log(data);
         await handleCreatePermission(data);
       }
       onOpenChange(false);

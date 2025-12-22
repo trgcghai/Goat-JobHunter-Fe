@@ -64,9 +64,6 @@ export function LoginForm({
           case "SUPER_ADMIN":
             router.push("/dashboard");
             return;
-          case "HR":
-            router.push("/recruiter-portal");
-            return;
           default:
             router.push("/");
         }

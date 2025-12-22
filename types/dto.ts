@@ -50,3 +50,44 @@ export type LoginResponseDto = {
   enabled: boolean;
   role: Role;
 }
+
+export type UserResponse = {
+  accountId: number;
+  username: string;
+  email: string;
+  phone: string;
+  address: string;
+  fullName: string;
+  avatar: string;
+  gender: Gender;
+  dob: string;
+  enabled: boolean;
+  coverPhoto: string;
+  headline: string;
+  bio: string;
+  role: {
+    roleId: number;
+    name: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type ApplicantResponse = UserResponse & {
+  availableStatus: boolean;
+  education: Education;
+  level: Level;
+}
+
+export type RecruiterResponse = UserResponse & {
+  position: string;
+  company: {
+    companyId: number;
+    name: string;
+  }
+}
+
+export type CreateBlogDto = {
+  content: string;
+  files?: File[]
+}

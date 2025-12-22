@@ -2,7 +2,7 @@
 import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Plus } from "lucide-react";
-import CreateRoleDialog from "./components/CreateRoleDialog";
+import RoleDialog from "./components/RoleDialog";
 import { RoleTable } from "./components/RoleTable";
 import { Button } from "@/components/ui/button";
 import { useFetchRolesQuery } from "@/services/role/roleApi";
@@ -47,7 +47,7 @@ const AdminRolePage = () => {
         </CardContent>
       </Card>
 
-      <CreateRoleDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} />;
+      <RoleDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} />
     </div>
   )
 };

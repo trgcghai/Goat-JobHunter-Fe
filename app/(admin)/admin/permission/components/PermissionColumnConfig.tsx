@@ -72,7 +72,13 @@ export const permissionColumns: ColumnDef<Permission>[] = [
     accessorKey: "createdAt",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Ngày tạo" />,
     cell: ({ row }) => <div
-      className="text-sm text-muted-foreground line-clamp-1">{formatDate(row.getValue("createdAt"))}</div>
+      className="text-sm text-muted-foreground line-clamp-1">{row.getValue("createdAt") ? formatDate(row.getValue("createdAt")) : "-"}</div>
+  },
+  {
+    accessorKey: "updatedAt",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Ngày cập nhật" />,
+    cell: ({ row }) => <div
+      className="text-sm text-muted-foreground line-clamp-1">{row.getValue("updatedAt") ? formatDate(row.getValue("updatedAt")) : "-"}</div>
   },
   {
     id: "actions",

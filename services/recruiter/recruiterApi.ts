@@ -10,6 +10,7 @@ import {
   RecruiterMutationResponse,
   UpdateRecruiterRequest
 } from "./recruiterType";
+import { setUser } from "@/lib/features/authSlice";
 
 export const recruiterApi = api.injectEndpoints({
   overrideExisting: true,
@@ -35,7 +36,16 @@ export const recruiterApi = api.injectEndpoints({
         method: "PUT",
         data
       }),
-      invalidatesTags: ["Recruiter", "Account", "User"]
+      invalidatesTags: ["Recruiter", "Account", "User"],
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          // Dispatch action to save user data to slice
+          dispatch(setUser({ user: data?.data }));
+        } catch (error) {
+          console.error("Failed to fetch account:", error);
+        }
+      },
     }),
 
     deleteRecruiter: builder.mutation<

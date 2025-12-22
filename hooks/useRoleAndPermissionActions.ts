@@ -4,7 +4,7 @@ import {
   useDeactivateRoleMutation,
   useDeleteRoleMutation, useUpdateRoleMutation
 } from "@/services/role/roleApi";
-import { RoleFormValues } from "@/app/(admin)/admin/role/components/CreateRoleDialog";
+import { RoleFormValues } from "@/app/(admin)/admin/role/components/RoleDialog";
 import { toast } from "sonner";
 import { Permission, Role } from "@/types/model";
 import {
