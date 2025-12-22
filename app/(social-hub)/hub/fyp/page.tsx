@@ -3,16 +3,20 @@
 import { SocialBlogCard } from "@/app/(social-hub)/hub/fyp/component/SocialBlogCard";
 import { CreateBlogTrigger } from "@/app/(social-hub)/hub/fyp/component/CreateBlogTrigger";
 import { Separator } from "@/components/ui/separator";
-import { Blog } from "@/types/model";
-import { useFetchAvailableBlogsQuery } from "@/services/blog/blogApi";
 import ErrorMessage from "@/components/common/ErrorMessage";
 import LoaderSpin from "@/components/common/LoaderSpin";
+import { useInfiniteScrollBlogs } from "@/app/(social-hub)/hub/fyp/hooks/useInfiniteScrollBlogs";
 
 export default function FypPage() {
-
-  const { data, isLoading, isError, isFetching, isSuccess } = useFetchAvailableBlogsQuery({});
-
-  const blogs: Blog[] = data?.data?.result || [];
+  const {
+    blogs,
+    isLoading,
+    isError,
+    isFetching,
+    isSuccess,
+    hasMore,
+    targetRef
+  } = useInfiniteScrollBlogs();
 
   return (
     <div className="mx-auto max-w-4xl">
@@ -31,13 +35,30 @@ export default function FypPage() {
 
       {isError && <ErrorMessage message={"Có lỗi xảy ra khi tải bài viết. Vui lòng thử lại sau."} />}
 
-      {(isLoading || isFetching) && <LoaderSpin />}
+      {isLoading && <LoaderSpin />}
 
-      {isSuccess && <div className="space-y-4">
-        {blogs.map((blog) => (
-          <SocialBlogCard key={blog.blogId} blog={blog} />
-        ))}
-      </div>}
+      {isSuccess && (
+        <>
+          <div className="space-y-4">
+            {blogs.map((blog) => (
+              <SocialBlogCard key={blog.blogId} blog={blog} />
+            ))}
+          </div>
+
+          {/* Infinite scroll trigger */}
+          {hasMore && (
+            <div ref={targetRef} className="py-8 flex justify-center">
+              {isFetching && <LoaderSpin />}
+            </div>
+          )}
+
+          {!hasMore && blogs.length > 0 && (
+            <p className="text-center text-muted-foreground py-8">
+              Bạn đã xem hết tất cả bài viết
+            </p>
+          )}
+        </>
+      )}
     </div>
   );
 }
