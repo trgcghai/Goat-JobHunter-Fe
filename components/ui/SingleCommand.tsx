@@ -54,7 +54,7 @@ export function SingleCommand({
 
             <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
                 <Command shouldFilter={false}>
-                    <CommandInput placeholder={placeholder} onValueChange={onSearch} />
+                    <CommandInput onValueChange={onSearch} />
                     <CommandList>
                         {loading && <div className="p-2 text-center text-sm text-muted-foreground">Đang tải...</div>}
 
