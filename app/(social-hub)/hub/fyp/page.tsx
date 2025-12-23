@@ -24,7 +24,7 @@ export default function FypPage() {
   } = useInfiniteScrollBlogs();
 
   const { data } = useCheckSavedBlogsQuery({
-    blogIds: blogs.map((blog) => blog.blogId)
+    blogIds: blogs.map((blog) => blog.blogId) || []
   }, {
     skip: !blogs || !isSignedIn
   });
@@ -62,7 +62,6 @@ export default function FypPage() {
               ))}
             </div>
 
-            {/* Infinite scroll trigger */}
             {hasMore && (
               <div ref={targetRef} className="py-8 flex justify-center">
                 {isFetching && <LoaderSpin />}

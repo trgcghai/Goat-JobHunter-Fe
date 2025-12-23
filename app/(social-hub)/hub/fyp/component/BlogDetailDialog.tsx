@@ -130,7 +130,7 @@ export function BlogDetailDialog() {
 
               <div className="space-y-4">
                 <h3 className="font-semibold">
-                  Bình luận ({blog.activity?.totalComments || 0})
+                  Tất cả bình luận
                 </h3>
                 {comments && comments.length > 0 &&
                   <CommentSection
