@@ -1,6 +1,6 @@
 "use client";
 
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -17,9 +17,14 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { closeBlogDetail } from "@/lib/features/blogDetailSlice";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import BlogActivity from "@/app/(social-hub)/hub/fyp/component/BlogActivity";
+import { useUser } from "@/hooks/useUser";
+import { Button } from "@/components/ui/button";
+import { Send } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 
 export function BlogDetailDialog() {
   const dispatch = useAppDispatch();
+  const { user } = useUser();
   const { blog, open } = useAppSelector((state) => state.blogDetail);
 
   const handleClose = () => {
@@ -53,14 +58,14 @@ export function BlogDetailDialog() {
               </Avatar>
               <div>
                 <UserHoverCard
-                  userId={blog.author.userId}
+                  userId={blog.author.accountId}
                   fullName={blog.author.fullName}
-                  avatar="/placeholder.svg"
-                  username="username"
-                  bio="Bio của người dùng"
+                  avatar={blog.author.avatar}
+                  username={blog.author.username}
+                  bio={blog.author.bio}
                 >
                   <Link
-                    href={`/hub/users/${blog.author.userId}`}
+                    href={`/hub/users/${blog.author.accountId}`}
                     className="text-sm font-semibold hover:underline cursor-pointer"
                   >
                     {blog.author.fullName}
@@ -97,8 +102,10 @@ export function BlogDetailDialog() {
 
               <BlogActivity
                 blog={blog}
-                onLikeClick={() => {}}
-                onCommentClick={() => {}}
+                onLikeClick={() => {
+                }}
+                onCommentClick={() => {
+                }}
                 className="p-0 my-2"
               />
 
@@ -113,6 +120,17 @@ export function BlogDetailDialog() {
             </div>
           </ScrollArea>
         </div>
+        <DialogFooter className="px-4 pt-4 border-t">
+          <div className="w-full flex items-start gap-2">
+            <Textarea
+              className="rounded-xl"
+              placeholder={`Bình luận với tên ${user?.fullName || user?.username}...`}
+            />
+            <Button className="rounded-xl" size="icon-lg">
+              <Send className="w-4 h-4" />
+            </Button>
+          </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
