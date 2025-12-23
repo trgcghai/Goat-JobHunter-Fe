@@ -9,8 +9,10 @@ import { useInfiniteScrollBlogs } from "@/app/(social-hub)/hub/fyp/hooks/useInfi
 import { BlogDetailDialog } from "@/app/(social-hub)/hub/fyp/component/BlogDetailDialog";
 import { useCheckSavedBlogsQuery } from "@/services/user/savedBlogsApi";
 import { useMemo } from "react";
+import { useUser } from "@/hooks/useUser";
 
 export default function FypPage() {
+  const { isSignedIn } = useUser();
   const {
     blogs,
     isLoading,
@@ -24,7 +26,7 @@ export default function FypPage() {
   const { data } = useCheckSavedBlogsQuery({
     blogIds: blogs.map((blog) => blog.blogId)
   }, {
-    skip: !blogs
+    skip: !blogs || !isSignedIn
   });
 
   const savedBlogIds = useMemo(() => data?.data || [], [data]);

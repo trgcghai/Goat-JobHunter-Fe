@@ -1,50 +1,53 @@
-import React from "react";
+import React, { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
-import { User } from "@/types/model";
-import CommentAvatar from "@/app/(main)/blogs/[id]/components/utils/CommentAvatar";
+import { useUser } from "@/hooks/useUser";
+import { useAppSelector } from "@/lib/hooks";
+import { toast } from "sonner";
+import useCommentActions from "@/hooks/useCommentActions";
 
-interface Props {
-  user: User | null;
-  value: string;
-  onChange: (value: string) => void;
-  onSubmit: () => void;
-  isCommenting: boolean;
-}
+const CommentInput = () => {
+  const { user } = useUser();
+  const [input, setInput] = useState("");
+  const { blog } = useAppSelector((state) => state.blogDetail);
+  const { handleCommentBlog, isCommenting } = useCommentActions();
 
-const CommentInput = ({
-  user,
-  value: comment,
-  onChange: setComment,
-  onSubmit: handleComment,
-  isCommenting,
-}: Props) => {
+  const handleSendComment = async () => {
+    if (!blog) {
+      toast.error("Không tìm thấy bài viết để bình luận.");
+      return;
+    }
+
+    if (!input.trim()) {
+      toast.info("Vui lòng nhập nội dung bình luận.");
+      return;
+    }
+
+    await handleCommentBlog(Number(blog.blogId), input);
+    setInput("");
+  };
+
   return (
-    <div className="flex gap-4">
-      <CommentAvatar
-        src={user?.avatar || "/placeholder.svg"}
-        alt={"Current User"}
-        fallback={user?.fullName?.charAt(0) || user?.username?.charAt(0) || user?.contact.email.charAt(0)}
+    <div className="w-full flex items-start gap-2">
+      <Textarea
+        className="rounded-xl resize-none max-h-24 overflow-y-auto"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        placeholder={`Bình luận với tên ${user?.fullName || user?.username}...`}
+        rows={3}
+        disabled={isCommenting}
       />
-      <div className="flex-1 flex gap-2">
-        <Textarea
-          placeholder="Viết bình luận của bạn..."
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          className="min-h-20 rounded-xl resize-none"
-          rows={3}
-          disabled={isCommenting}
-        />
-        <Button
-          className="rounded-xl"
-          onClick={handleComment}
-          disabled={!comment.trim() || isCommenting}
-        >
-          <Send className="h-4 w-4" />
-        </Button>
-      </div>
+      <Button
+        className="rounded-xl"
+        size="icon"
+        onClick={handleSendComment}
+        disabled={isCommenting || !input.trim()}
+      >
+        <Send className="w-4 h-4" />
+      </Button>
     </div>
   );
 };
+
 export default CommentInput;

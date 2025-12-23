@@ -1,89 +1,60 @@
-"use client";
-
-import CommentItem from "@/app/(main)/blogs/[id]/components/CommentItem";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
-import { Send } from "lucide-react";
-import { useState } from "react";
 import LoaderSpin from "@/components/common/LoaderSpin";
 import ErrorMessage from "@/components/common/ErrorMessage";
 import { NestedComment } from "@/app/(main)/blogs/[id]/components/utils/formatComments";
-import { useUser } from "@/hooks/useUser";
-import CommentInput from "@/app/(main)/blogs/[id]/components/CommentInput";
+import { CommentItem } from "@/app/(main)/blogs/[id]/components/index";
 
 interface CommentSectionProps {
-  totalComments: number;
-  initialComments: NestedComment[];
+  comments: NestedComment[];
   isLoading: boolean;
-  isCommenting: boolean;
   isError: boolean;
-  onComment: (comment: string) => void;
+  isCommenting: boolean;
   onReply: (replyTo: number, comment: string) => void;
   onDelete: (commentId: number) => void;
 }
 
 export default function CommentSection({
-  totalComments,
-  initialComments,
+  comments,
   isLoading,
-  isCommenting,
   isError,
-  onComment,
+  isCommenting,
   onReply,
   onDelete
 }: CommentSectionProps) {
-  const { user } = useUser();
-  const [comment, setComment] = useState("");
-
-  const handleComment = async () => {
-    await onComment(comment);
-    setComment("");
-  };
-
   if (isLoading) {
     return (
-      <Card className="p-6">
+      <div className="py-4">
         <LoaderSpin />
-      </Card>
+      </div>
     );
   }
 
   if (isError) {
     return (
-      <Card className="p-6">
-        <ErrorMessage message="Không thể tải bình luận. Vui lòng thử lại sau." />
-      </Card>
+      <div className="py-4">
+        <ErrorMessage message="Không thể tải bình luận." />
+      </div>
+    );
+  }
+
+  if (comments.length === 0) {
+    return (
+      <p className="text-sm text-muted-foreground text-center py-8">
+        Chưa có bình luận nào
+      </p>
     );
   }
 
   return (
-    <Card className="p-6">
-      <h2 className="text-2xl font-bold text-foreground mb-6">
-        Bình luận ({totalComments})
-      </h2>
-
-      <div className="mb-8">
-        <CommentInput
-          user={user}
-          value={comment}
-          onChange={setComment}
-          onSubmit={handleComment}
+    <div className="space-y-4">
+      {comments.map((comment) => (
+        <CommentItem
+          key={comment.commentId}
+          comment={comment}
+          onReply={onReply}
+          onDelete={onDelete}
           isCommenting={isCommenting}
         />
-      </div>
-
-      <div className="space-y-6">
-        {initialComments.map((comment) => (
-          <CommentItem
-            key={comment.commentId}
-            comment={comment}
-            onReply={onReply}
-            onDelete={onDelete}
-            isCommenting={isCommenting}
-          />
-        ))}
-      </div>
-    </Card>
+      ))}
+    </div>
   );
 }

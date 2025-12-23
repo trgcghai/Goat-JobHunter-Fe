@@ -18,14 +18,33 @@ import { closeBlogDetail } from "@/lib/features/blogDetailSlice";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import BlogActivity from "@/app/(social-hub)/hub/fyp/component/BlogActivity";
 import { useUser } from "@/hooks/useUser";
-import { Button } from "@/components/ui/button";
-import { Send } from "lucide-react";
-import { Textarea } from "@/components/ui/textarea";
+import { useGetCommentsByBlogIdQuery } from "@/services/blog/blogApi";
+import { formatCommentsToNested, NestedComment } from "@/app/(main)/blogs/[id]/components/utils/formatComments";
+import { CommentSection } from "@/app/(main)/blogs/[id]/components";
+import CommentInput from "@/app/(main)/blogs/[id]/components/CommentInput";
 
 export function BlogDetailDialog() {
   const dispatch = useAppDispatch();
-  const { user } = useUser();
+  const { user, isSignedIn } = useUser();
   const { blog, open } = useAppSelector((state) => state.blogDetail);
+
+  const {
+    data: commentsData,
+    isLoading: isLoadingComments,
+    isError: isLoadCommentsFailed
+  } = useGetCommentsByBlogIdQuery(blog?.blogId || -1, {
+    skip: !blog
+  });
+
+  const comments: NestedComment[] = useMemo(() => {
+    if (!commentsData?.data) return []
+
+    const rawComments = Array.isArray(commentsData.data)
+      ? commentsData.data
+      : [commentsData.data];
+
+    return formatCommentsToNested(rawComments)
+  }, [commentsData]);
 
   const handleClose = () => {
     dispatch(closeBlogDetail());
@@ -42,6 +61,8 @@ export function BlogDetailDialog() {
     addSuffix: true,
     locale: vi
   });
+
+  const isCommenting = false
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -76,7 +97,7 @@ export function BlogDetailDialog() {
             </div>
           </div>
 
-          <ScrollArea className="h-[700px]">
+          <ScrollArea className="h-[600px]">
             <div className="p-4">
               <RichTextPreview content={blog.content} className="mb-4" />
 
@@ -113,24 +134,32 @@ export function BlogDetailDialog() {
                 <h3 className="font-semibold">
                   Bình luận ({blog.activity?.totalComments || 0})
                 </h3>
-                <p className="text-sm text-muted-foreground text-center py-8">
-                  Chưa có bình luận nào
-                </p>
+                {comments && comments.length > 0 &&
+                  <CommentSection
+                    comments={comments}
+                    isLoading={isLoadingComments}
+                    isCommenting={isCommenting}
+                    isError={isLoadCommentsFailed}
+                    onReply={() => {
+                    }}
+                    onDelete={() => {
+                    }}
+                  />
+                }
+                {(!comments || comments.length === 0) &&
+                  <p className="text-sm text-muted-foreground text-center py-8">
+                    Chưa có bình luận nào
+                  </p>
+                }
               </div>
             </div>
           </ScrollArea>
         </div>
-        <DialogFooter className="px-4 pt-4 border-t">
-          <div className="w-full flex items-start gap-2">
-            <Textarea
-              className="rounded-xl"
-              placeholder={`Bình luận với tên ${user?.fullName || user?.username}...`}
-            />
-            <Button className="rounded-xl" size="icon-lg">
-              <Send className="w-4 h-4" />
-            </Button>
-          </div>
-        </DialogFooter>
+        {isSignedIn && user &&
+          <DialogFooter className="px-4 pt-4 border-t">
+            <CommentInput />
+          </DialogFooter>
+        }
       </DialogContent>
     </Dialog>
   );

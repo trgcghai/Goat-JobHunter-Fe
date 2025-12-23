@@ -1,14 +1,12 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { formatDateTime } from "@/utils/formatDate";
-import { CornerDownRight, Trash2, X } from "lucide-react";
+import { CornerDownRight, Send, Trash2, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { NestedComment } from "@/app/(main)/blogs/[id]/components/utils/formatComments";
 import { useUser } from "@/hooks/useUser";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
-import CommentInput from "@/app/(main)/blogs/[id]/components/CommentInput";
-import CommentAvatar from "@/app/(main)/blogs/[id]/components/utils/CommentAvatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface CommentItemProps {
   comment: NestedComment;
@@ -23,11 +21,10 @@ export default function CommentItem({ comment, onReply, onDelete, isCommenting }
   const [replyContent, setReplyContent] = useState("");
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  // Calculate margin based on level (max 3 levels: 0, 1, 2)
   const marginClass = useMemo(() => {
     if (comment.level === 0) return "";
-    if (comment.level <= 2) return "ml-14";
-    return ""; // Level 3+ has no margin
+    if (comment.level <= 2) return "ml-12";
+    return "";
   }, [comment.level]);
 
   const author = useMemo(() => {
@@ -39,6 +36,7 @@ export default function CommentItem({ comment, onReply, onDelete, isCommenting }
   }, [comment.parent?.commentedBy]);
 
   const handleReply = async () => {
+    if (!replyContent.trim()) return;
     await onReply(comment.commentId, replyContent);
     setIsReplying(false);
     setReplyContent("");
@@ -46,85 +44,99 @@ export default function CommentItem({ comment, onReply, onDelete, isCommenting }
 
   return (
     <>
-      <div className={`space-y-4 ${marginClass}`}>
-        <div className="flex gap-4">
-          <CommentAvatar
-            className={"h-12 w-12 flex-shrink-0 border-2"}
-            src={comment.commentedBy.avatar || "/placeholder.svg"}
-            alt={author}
-            fallback={author.charAt(0).toUpperCase()}
-          />
+      <div className={`space-y-3 ${marginClass}`}>
+        <div className="flex gap-2">
+          <Avatar className="h-12 w-12 flex-shrink-0 border">
+            <AvatarImage src={comment.commentedBy.avatar || "/placeholder.svg"} alt={author} />
+            <AvatarFallback>{author.charAt(0).toUpperCase()}</AvatarFallback>
+          </Avatar>
+
           <div className="flex-1 min-w-0">
-            <div className="bg-gray-100 rounded-xl p-4">
-              <div className="flex items-center justify-between mb-2">
-                <p className="font-semibold text-foreground truncate">
-                  {author}
-                </p>
+            <div className="bg-gray-50 rounded-xl px-3">
+              <div className="flex items-center justify-between mb-1">
+                <p className="font-semibold text-sm truncate">{author}</p>
                 <p className="text-xs text-muted-foreground whitespace-nowrap ml-2">
                   {comment.createdAt ? formatDateTime(comment.createdAt) : "-"}
                 </p>
               </div>
+
               {comment.parent && (
-                <p className="text-xs text-primary mb-2">
-                  <span className={"font-light"}>Trả lời </span>
-                  <span className={"font-bold text-sm"}>{replyTo}</span>
+                <p className="text-xs text-primary mb-1">
+                  <span className="font-light">Trả lời </span>
+                  <span className="font-semibold">{replyTo}</span>
                 </p>
               )}
-              <p className="text-foreground break-words">{comment.comment}</p>
+
+              <p className="text-sm break-words">{comment.comment}</p>
             </div>
 
-            <div className="flex items-center justify-between gap-4 mt-2 ml-4">
+            <div className="flex items-center justify-between gap-2 mt-1 ml-3">
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-xs text-muted-foreground hover:text-primary"
+                className="text-xs h-7 px-2"
                 onClick={() => setIsReplying(!isReplying)}
               >
                 <CornerDownRight className="h-3 w-3 mr-1" />
                 Trả lời
               </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className={`text-xs text-destructive hover:text-destructive ${user && user?.userId === comment.commentedBy.userId ? "block" : "hidden"}`}
-                onClick={() => setIsDeleteOpen(true)}
-              >
-                <Trash2 className={"h-3 w-3"} />
-              </Button>
+
+              {user && user.accountId === comment.commentedBy.accountId && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs h-7 px-2 text-destructive hover:text-destructive"
+                  onClick={() => setIsDeleteOpen(true)}
+                >
+                  <Trash2 className="h-3 w-3" />
+                </Button>
+              )}
             </div>
 
             {isReplying && (
-              <div className="mt-4 ml-4">
-                <div className="mb-4 flex items-center justify-between bg-primary/5 p-3 rounded-lg">
-                  <span className="text-sm text-muted-foreground">
-                    Đang trả lời {author || "bình luận này"}
+              <div className="mt-3 ml-3">
+                <div className="mb-2 flex items-center justify-between bg-primary/5 p-2 rounded-lg">
+                  <span className="text-xs text-muted-foreground">
+                    Đang trả lời {author}
                   </span>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-6 w-6"
+                    className="h-5 w-5"
                     onClick={() => {
                       setIsReplying(false);
                       setReplyContent("");
                     }}
                   >
-                    <X className="h-4 w-4" />
+                    <X className="h-3 w-3" />
                   </Button>
                 </div>
-                <CommentInput
-                  user={user}
-                  value={replyContent}
-                  onChange={setReplyContent}
-                  onSubmit={handleReply}
-                  isCommenting={isCommenting}
-                />
+
+                <div className="flex gap-2">
+                  <Textarea
+                    placeholder="Viết trả lời..."
+                    value={replyContent}
+                    onChange={(e) => setReplyContent(e.target.value)}
+                    className="min-h-16 max-h-24 overflow-y-auto rounded-xl resize-none text-sm"
+                    rows={2}
+                    disabled={isCommenting}
+                  />
+                  <Button
+                    className="rounded-xl"
+                    size="icon"
+                    onClick={handleReply}
+                    disabled={!replyContent.trim() || isCommenting}
+                  >
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             )}
           </div>
         </div>
 
         {comment.replies && comment.replies.length > 0 && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {comment.replies.map((reply) => (
               <CommentItem
                 key={reply.commentId}
@@ -141,7 +153,7 @@ export default function CommentItem({ comment, onReply, onDelete, isCommenting }
       <ConfirmDialog
         open={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}
-        title={`Xóa comment này?`}
+        title="Xóa bình luận?"
         description="Hành động này không thể hoàn tác."
         confirmText="Xóa"
         confirmBtnClass="bg-destructive text-white"
