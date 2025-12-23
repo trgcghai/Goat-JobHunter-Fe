@@ -19,9 +19,9 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import BlogActivity from "@/app/(social-hub)/hub/fyp/component/BlogActivity";
 import { useUser } from "@/hooks/useUser";
 import { useGetCommentsByBlogIdQuery } from "@/services/blog/blogApi";
-import { formatCommentsToNested, NestedComment } from "@/app/(main)/blogs/[id]/components/utils/formatComments";
-import { CommentSection } from "@/app/(main)/blogs/[id]/components";
-import CommentInput from "@/app/(main)/blogs/[id]/components/CommentInput";
+import { formatCommentsToNested, NestedComment } from "@/app/(social-hub)/hub/fyp/component/comment/utils/formatComments";
+import CommentInput from "@/app/(social-hub)/hub/fyp/component/comment/CommentInput";
+import CommentSection from "@/app/(social-hub)/hub/fyp/component/comment/CommentSection";
 
 export function BlogDetailDialog() {
   const dispatch = useAppDispatch();
@@ -61,8 +61,6 @@ export function BlogDetailDialog() {
     addSuffix: true,
     locale: vi
   });
-
-  const isCommenting = false
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -138,12 +136,7 @@ export function BlogDetailDialog() {
                   <CommentSection
                     comments={comments}
                     isLoading={isLoadingComments}
-                    isCommenting={isCommenting}
                     isError={isLoadCommentsFailed}
-                    onReply={() => {
-                    }}
-                    onDelete={() => {
-                    }}
                   />
                 }
                 {(!comments || comments.length === 0) &&

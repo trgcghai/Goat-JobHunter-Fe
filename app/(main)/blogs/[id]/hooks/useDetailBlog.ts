@@ -2,7 +2,7 @@ import { useFetchBlogByIdReadQuery, useGetCommentsByBlogIdQuery } from "@/servic
 import { useFetchRecruiterByIdQuery } from "@/services/recruiter/recruiterApi";
 import { useCheckLikedBlogsQuery } from "@/services/user/userApi";
 import { useMemo } from "react";
-import { formatCommentsToNested, NestedComment } from "@/app/(main)/blogs/[id]/components/utils/formatComments";
+import { formatCommentsToNested, NestedComment } from "@/app/(social-hub)/hub/fyp/component/comment/utils/formatComments";
 import useCommentActions from "@/hooks/useCommentActions";
 import { toast } from "sonner";
 import useBlogActions from "@/hooks/useBlogActions";

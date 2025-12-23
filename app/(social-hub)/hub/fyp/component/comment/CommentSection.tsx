@@ -1,24 +1,18 @@
 import LoaderSpin from "@/components/common/LoaderSpin";
 import ErrorMessage from "@/components/common/ErrorMessage";
-import { NestedComment } from "@/app/(main)/blogs/[id]/components/utils/formatComments";
-import { CommentItem } from "@/app/(main)/blogs/[id]/components/index";
+import { NestedComment } from "@/app/(social-hub)/hub/fyp/component/comment/utils/formatComments";
+import CommentItem from "@/app/(social-hub)/hub/fyp/component/comment/CommentItem";
 
 interface CommentSectionProps {
   comments: NestedComment[];
   isLoading: boolean;
   isError: boolean;
-  isCommenting: boolean;
-  onReply: (replyTo: number, comment: string) => void;
-  onDelete: (commentId: number) => void;
 }
 
 export default function CommentSection({
   comments,
   isLoading,
-  isError,
-  isCommenting,
-  onReply,
-  onDelete
+  isError
 }: CommentSectionProps) {
   if (isLoading) {
     return (
@@ -50,9 +44,6 @@ export default function CommentSection({
         <CommentItem
           key={comment.commentId}
           comment={comment}
-          onReply={onReply}
-          onDelete={onDelete}
-          isCommenting={isCommenting}
         />
       ))}
     </div>

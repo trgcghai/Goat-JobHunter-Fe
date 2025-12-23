@@ -3,20 +3,23 @@ import { Textarea } from "@/components/ui/textarea";
 import { formatDateTime } from "@/utils/formatDate";
 import { CornerDownRight, Send, Trash2, X } from "lucide-react";
 import { useMemo, useState } from "react";
-import { NestedComment } from "@/app/(main)/blogs/[id]/components/utils/formatComments";
+import { NestedComment } from "@/app/(social-hub)/hub/fyp/component/comment/utils/formatComments";
 import { useUser } from "@/hooks/useUser";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import useCommentActions from "@/hooks/useCommentActions";
+import { toast } from "sonner";
+import { useAppSelector } from "@/lib/hooks";
 
 interface CommentItemProps {
   comment: NestedComment;
-  onReply: (replyTo: number, comment: string) => void;
-  onDelete: (commentId: number) => void;
-  isCommenting: boolean
 }
 
-export default function CommentItem({ comment, onReply, onDelete, isCommenting }: CommentItemProps) {
+export default function CommentItem({ comment }: CommentItemProps) {
   const { user } = useUser();
+  const { blog } = useAppSelector((state) => state.blogDetail);
+  const { handleReplyComment, handleDeleteComment, isCommenting } = useCommentActions();
+
   const [isReplying, setIsReplying] = useState(false);
   const [replyContent, setReplyContent] = useState("");
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -36,23 +39,37 @@ export default function CommentItem({ comment, onReply, onDelete, isCommenting }
   }, [comment.parent?.commentedBy]);
 
   const handleReply = async () => {
-    if (!replyContent.trim()) return;
-    await onReply(comment.commentId, replyContent);
+    if (!blog) {
+      toast.error("Không tìm thấy bài viết.");
+      return;
+    }
+
+    if (!replyContent.trim()) {
+      toast.info("Vui lòng nhập nội dung trả lời.");
+      return;
+    }
+
+    await handleReplyComment(Number(blog.blogId), comment.commentId, replyContent);
     setIsReplying(false);
     setReplyContent("");
+  };
+
+  const handleDelete = async () => {
+    await handleDeleteComment(comment.commentId);
+    setIsDeleteOpen(false);
   };
 
   return (
     <>
       <div className={`space-y-3 ${marginClass}`}>
-        <div className="flex gap-2">
-          <Avatar className="h-12 w-12 flex-shrink-0 border">
+        <div className="flex gap-3">
+          <Avatar className="h-8 w-8 flex-shrink-0">
             <AvatarImage src={comment.commentedBy.avatar || "/placeholder.svg"} alt={author} />
             <AvatarFallback>{author.charAt(0).toUpperCase()}</AvatarFallback>
           </Avatar>
 
           <div className="flex-1 min-w-0">
-            <div className="bg-gray-50 rounded-xl px-3">
+            <div className="bg-gray-50 rounded-xl p-3">
               <div className="flex items-center justify-between mb-1">
                 <p className="font-semibold text-sm truncate">{author}</p>
                 <p className="text-xs text-muted-foreground whitespace-nowrap ml-2">
@@ -70,7 +87,7 @@ export default function CommentItem({ comment, onReply, onDelete, isCommenting }
               <p className="text-sm break-words">{comment.comment}</p>
             </div>
 
-            <div className="flex items-center justify-between gap-2 mt-1 ml-3">
+            <div className="flex items-center justify-between mt-1 ml-3">
               <Button
                 variant="ghost"
                 size="sm"
@@ -141,9 +158,6 @@ export default function CommentItem({ comment, onReply, onDelete, isCommenting }
               <CommentItem
                 key={reply.commentId}
                 comment={reply}
-                onReply={onReply}
-                onDelete={onDelete}
-                isCommenting={isCommenting}
               />
             ))}
           </div>
@@ -157,7 +171,7 @@ export default function CommentItem({ comment, onReply, onDelete, isCommenting }
         description="Hành động này không thể hoàn tác."
         confirmText="Xóa"
         confirmBtnClass="bg-destructive text-white"
-        onConfirm={() => onDelete(comment.commentId)}
+        onConfirm={handleDelete}
       />
     </>
   );
