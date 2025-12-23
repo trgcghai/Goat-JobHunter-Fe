@@ -18,7 +18,7 @@ const NAV_ITEMS = [
 export function NavigationBar() {
   const pathname = usePathname();
 
-  const isActive = (href: string) => pathname.startsWith(href);
+  const isActive = (href: string) => pathname == href;
 
   return (
     <Card>

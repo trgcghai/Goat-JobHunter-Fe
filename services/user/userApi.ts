@@ -3,18 +3,16 @@ import { buildSpringQuery } from "@/utils/buildSpringQuery";
 import {
   CheckLikedBlogsResponse,
   CheckRecruitersFollowedResponse,
-  CheckSavedJobsRequest,
-  CheckSavedJobsResponse, CreateUserRequest,
+  CreateUserRequest,
   FetchUsersRequest,
   FetchUsersResponse,
   FollowRecruitersRequest,
   FollowRecruitersResponse,
-  GetFollowedRecruitersResponse, GetLikedBlogsResponse,
-  GetSavedJobsResponse,
-  JobIdsRequest, LikedBlogsResponse,
+  GetFollowedRecruitersResponse,
+  GetLikedBlogsResponse,
+  LikedBlogsResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
-  SaveJobsResponse,
   UpdatePasswordRequest,
   UpdatePasswordResponse,
   UserIdsRequest, UserMutationResponse,
@@ -86,72 +84,6 @@ export const userApi = api.injectEndpoints({
         method: "PUT",
         data
       })
-    }),
-
-    // Saved Jobs APIs
-    getSavedJobs: builder.query<GetSavedJobsResponse, void>({
-      query: () => ({
-        url: "/users/me/saved-jobs",
-        method: "GET"
-      }),
-      providesTags: (result) =>
-        result?.data
-          ? [
-            ...result.data.result.map((job) => ({
-              type: "SavedJob" as const,
-              id: job.jobId
-            })),
-            { type: "SavedJob", id: "LIST" }
-          ]
-          : [{ type: "SavedJob", id: "LIST" }]
-    }),
-
-    checkSavedJobs: builder.query<
-      CheckSavedJobsResponse,
-      CheckSavedJobsRequest
-    >({
-      query: (params) => ({
-        url: "/users/me/saved-jobs/contains",
-        method: "GET",
-        params: { jobIds: params.jobIds }
-      }),
-      providesTags: (_, __, arg) =>
-        arg.jobIds
-          ? arg.jobIds.map((jobId) => ({
-            type: "SavedJob" as const,
-            id: jobId
-          }))
-          : []
-    }),
-
-    saveJobs: builder.mutation<SaveJobsResponse, JobIdsRequest>({
-      query: (data) => ({
-        url: "/users/me/saved-jobs",
-        method: "PUT",
-        data
-      }),
-      invalidatesTags: (_, __, arg) => [
-        { type: "SavedJob", id: "LIST" },
-        ...arg.jobIds.map((jobId) => ({
-          type: "SavedJob" as const,
-          id: jobId
-        }))
-      ]
-    }),
-
-    unsaveJobs: builder.mutation<SaveJobsResponse, JobIdsRequest>({
-      query: (data) => ({
-        url: "/users/me/saved-jobs",
-        method: "DELETE",
-        data
-      }),
-      invalidatesTags: (_, __, arg) => [
-        { type: "SavedJob", id: "LIST" },
-        ...arg.jobIds.map((jobId) => ({
-          type: "SavedJob" as const,
-          id: jobId
-        }))
-      ]
     }),
 
     // Liked blogs APIs
@@ -349,11 +281,6 @@ export const {
   useCreateUserMutation,
   useUpdatePasswordMutation,
   useResetPasswordMutation,
-
-  useGetSavedJobsQuery,
-  useCheckSavedJobsQuery,
-  useSaveJobsMutation,
-  useUnsaveJobsMutation,
 
   useGetLikedBlogsQuery,
   useCheckLikedBlogsQuery,

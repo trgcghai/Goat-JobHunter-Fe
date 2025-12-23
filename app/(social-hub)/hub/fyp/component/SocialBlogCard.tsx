@@ -16,13 +16,16 @@ import formatImageUrlsForPhotoView from "@/utils/formatImageUrlsForPhotoView";
 import { useAppDispatch } from "@/lib/hooks";
 import { openBlogDetail } from "@/lib/features/blogDetailSlice";
 import BlogActivity from "@/app/(social-hub)/hub/fyp/component/BlogActivity";
+import useBlogActions from "@/hooks/useBlogActions";
 
 interface SocialBlogCardProps {
   blog: Blog;
+  isSaved: boolean;
 }
 
-export function SocialBlogCard({ blog }: SocialBlogCardProps) {
+export function SocialBlogCard({ blog, isSaved }: SocialBlogCardProps) {
   const dispatch = useAppDispatch();
+  const { handleToggleSaveBlog, isLoading } = useBlogActions();
 
   const timeAgo = formatDistanceToNow(new Date(blog.createdAt), {
     addSuffix: true,
@@ -38,6 +41,10 @@ export function SocialBlogCard({ blog }: SocialBlogCardProps) {
     dispatch(openBlogDetail(blog));
   };
 
+  const handleSaveClick = async (e: React.MouseEvent) => {
+    await handleToggleSaveBlog(e, blog.blogId, isSaved);
+  };
+
   return (
     <Card className="overflow-hidden border border-border bg-card py-0 gap-0">
       <div className="p-4">
@@ -48,14 +55,14 @@ export function SocialBlogCard({ blog }: SocialBlogCardProps) {
           </Avatar>
           <div className="flex-1">
             <UserHoverCard
-              userId={blog.author.userId}
+              userId={blog.author.accountId}
               fullName={blog.author.fullName}
-              avatar="/placeholder.svg"
-              username="username"
-              bio="Bio của người dùng"
+              avatar={blog.author.avatar}
+              username={blog.author.username}
+              bio={blog.author.bio}
             >
               <Link
-                href={`/hub/users/${blog.author.userId}`}
+                href={`/hub/users/${blog.author.accountId}`}
                 className="text-sm font-semibold hover:underline cursor-pointer"
               >
                 {blog.author.fullName}
@@ -63,10 +70,23 @@ export function SocialBlogCard({ blog }: SocialBlogCardProps) {
             </UserHoverCard>
             <div className="text-xs text-muted-foreground">{timeAgo}</div>
           </div>
-          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" title="Lưu bài viết">
-            <Bookmark className="h-4 w-4" />
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-8 w-8 rounded-full"
+            title="Lưu bài viết"
+            onClick={handleSaveClick}
+            disabled={isLoading}
+          >
+            <Bookmark
+              className={`h-4 w-4 ${
+                isSaved
+                  ? "fill-primary text-primary"
+                  : "fill-white text-foreground"
+              }`}
+            />
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" title="Báo cáo bài viết">
+          <Button variant="outline" size="icon" className="h-8 w-8 rounded-full" title="Báo cáo bài viết">
             <Flag className="h-4 w-4" />
           </Button>
         </div>
@@ -100,7 +120,8 @@ export function SocialBlogCard({ blog }: SocialBlogCardProps) {
 
       <BlogActivity
         blog={blog}
-        onLikeClick={() => {}}
+        onLikeClick={() => {
+        }}
         onCommentClick={handleOpenDetail}
       />
     </Card>

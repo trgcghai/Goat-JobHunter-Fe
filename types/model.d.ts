@@ -187,8 +187,13 @@ export type Blog = {
     totalParentComments: number;
   };
   author: {
-    userId: number;
+    accountId: number;
     fullName: string;
+    username: string;
+    avatar: string;
+    bio: string;
+    headline: string;
+    coverPhoto: string;
   };
   createdAt: string;
   createdBy: string;

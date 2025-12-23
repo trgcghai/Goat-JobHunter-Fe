@@ -40,6 +40,13 @@ export type JobIdsRequest = {
 
 export type CheckSavedJobsRequest = JobIdsRequest;
 
+// Saved Blogs
+export type BlogIdsRequest = {
+  blogIds: number[];
+};
+
+export type CheckLikedBlogsRequest = BlogIdsRequest;
+
 // Follow Recruiters
 export type RecruiterIdsRequest = {
   recruiterIds: number[];
@@ -80,6 +87,19 @@ export type CheckSavedJobsResponse = IBackendRes<
     result: boolean;
   }[]
 >;
+
+// Saved Blogs Responses
+export type GetSavedBlogsResponse = IBackendRes<IModelPaginate<Blog>>;
+
+export type SaveBlogsResponse = {
+  userId: number;
+  savedBlogs: Blog[];
+};
+
+export type CheckSavedBlogsResponse = IBackendRes<{
+  blogId: number;
+  result: boolean;
+}[]>;
 
 // Liked Blogs Responses
 export type GetLikedBlogsResponse = IBackendRes<IModelPaginate<Blog>>;

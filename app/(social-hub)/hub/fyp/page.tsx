@@ -7,6 +7,8 @@ import ErrorMessage from "@/components/common/ErrorMessage";
 import LoaderSpin from "@/components/common/LoaderSpin";
 import { useInfiniteScrollBlogs } from "@/app/(social-hub)/hub/fyp/hooks/useInfiniteScrollBlogs";
 import { BlogDetailDialog } from "@/app/(social-hub)/hub/fyp/component/BlogDetailDialog";
+import { useCheckSavedBlogsQuery } from "@/services/user/savedBlogsApi";
+import { useMemo } from "react";
 
 export default function FypPage() {
   const {
@@ -18,6 +20,14 @@ export default function FypPage() {
     hasMore,
     targetRef
   } = useInfiniteScrollBlogs();
+
+  const { data } = useCheckSavedBlogsQuery({
+    blogIds: blogs.map((blog) => blog.blogId)
+  }, {
+    skip: !blogs
+  });
+
+  const savedBlogIds = useMemo(() => data?.data || [], [data]);
 
   return (
     <>
@@ -43,7 +53,10 @@ export default function FypPage() {
           <>
             <div className="space-y-4">
               {blogs.map((blog) => (
-                <SocialBlogCard key={blog.blogId} blog={blog} />
+                <SocialBlogCard
+                  key={blog.blogId} blog={blog}
+                  isSaved={savedBlogIds.find(b => b.blogId === blog.blogId)?.result || false}
+                />
               ))}
             </div>
 

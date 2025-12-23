@@ -8,9 +8,10 @@ import {
 import { useFetchAvailableBlogsQuery } from "@/services/blog/blogApi";
 import { useFetchJobsAvailableQuery } from "@/services/job/jobApi";
 import { useFetchAvailableRecruitersQuery } from "@/services/recruiter/recruiterApi";
-import { useCheckRecruitersFollowedQuery, useCheckSavedJobsQuery } from "@/services/user/userApi";
+import { useCheckRecruitersFollowedQuery } from "@/services/user/userApi";
 import { useMemo } from "react";
 import { useUser } from "@/hooks/useUser";
+import { useCheckSavedJobsQuery } from "@/services/user/savedJobsApi";
 
 export default function Home() {
   const { user, isSignedIn } = useUser();
