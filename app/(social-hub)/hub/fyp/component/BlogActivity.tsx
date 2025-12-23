@@ -1,8 +1,9 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Eye, MessageCircle, ThumbsUp } from "lucide-react";
+import { Eye, MessageCircle } from "lucide-react";
 import { Blog } from "@/types/model";
 import { cn } from "@/lib/utils";
+import { ReactionButton } from "@/app/(social-hub)/hub/fyp/component/ReactionButton";
 
 interface BlogActivityProps {
   blog: Blog;
@@ -15,15 +16,7 @@ const BlogActivity = ({ blog, onCommentClick, onLikeClick, className }: BlogActi
   return (
     <div className={cn("flex items-center justify-between px-4 py-3", className)}>
       <div className="flex items-center gap-4 text-sm text-muted-foreground">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="flex items-center rounded-full gap-1"
-          onClick={onLikeClick}
-        >
-          <ThumbsUp className="h-4 w-4" />
-          <span>{blog.activity?.totalLikes || 0}</span>
-        </Button>
+        <ReactionButton totalReactions={blog.activity?.totalLikes || 0} onLikeClick={onLikeClick} />
         <Button
           variant="ghost"
           size="icon"

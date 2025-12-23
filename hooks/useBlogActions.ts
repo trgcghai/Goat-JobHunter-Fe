@@ -9,7 +9,6 @@ import { useCallback } from "react";
 import { toast } from "sonner";
 import { BlogActionType } from "@/types/enum";
 import { useUser } from "@/hooks/useUser";
-import { useLikeBlogsMutation, useUnlikeBlogsMutation } from "@/services/user/userApi";
 import { CreateBlogDto } from "@/types/dto";
 import { useSaveBlogsMutation, useUnsaveBlogsMutation } from "@/services/user/savedBlogsApi";
 
@@ -20,8 +19,6 @@ const useBlogActions = () => {
   const [disableBlogs, { isLoading: isDisabling }] = useDisableBlogsMutation();
   const [createBlog, { isLoading: isCreating }] = useCreateBlogMutation();
   const [updateBlog, { isLoading: isUpdating }] = useUpdateBlogMutation();
-  const [likeBlogs, { isLoading: isLiking }] = useLikeBlogsMutation();
-  const [unlikeBlogs, { isLoading: isUnliking }] = useUnlikeBlogsMutation();
   const [saveBlogs, { isLoading: isSaving, isSuccess: isSaveBlogSuccess, isError: isSaveBlogError }] =
     useSaveBlogsMutation();
   const [unsaveBlogs, { isLoading: isUnsaving, isSuccess: isUnsaveBlogSuccess, isError: isUnsaveBlogError }] =
@@ -205,43 +202,7 @@ const useBlogActions = () => {
     [isSignedIn, updateBlog, user]
   );
 
-  const handleLikeBlog = useCallback(
-    async (blogId: number) => {
-      if (!isSignedIn || !user) {
-        toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
-        return;
-      }
-
-      try {
-        await likeBlogs({ blogIds: [blogId] }).unwrap();
-      } catch (error) {
-        console.error("Failed to like blog:", error);
-        toast.error("Không thể thích bài viết. Vui lòng thử lại sau.");
-        throw error;
-      }
-    },
-    [isSignedIn, likeBlogs, user]
-  );
-
-  const handleUnlikeBlog = useCallback(
-    async (blogId: number) => {
-      if (!isSignedIn || !user) {
-        toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
-        return;
-      }
-
-      try {
-        await unlikeBlogs({ blogIds: [blogId] }).unwrap();
-      } catch (error) {
-        console.error("Failed to unlike blog:", error);
-        toast.error("Không thể bỏ thích bài viết. Vui lòng thử lại sau.");
-        throw error;
-      }
-    },
-    [isSignedIn, unlikeBlogs, user]
-  );
-
-// Unsave blog
+  // Unsave blog
   const handleUnsaveBlog = useCallback(
     async (blogId: number) => {
       if (!isSignedIn || !user) {
@@ -308,8 +269,6 @@ const useBlogActions = () => {
     isDisabling,
     isCreating,
     isUpdating,
-    isLiking,
-    isUnliking,
     isSaving,
     isUnsaving,
     isLoading:
@@ -318,8 +277,6 @@ const useBlogActions = () => {
       isDisabling ||
       isCreating ||
       isUpdating ||
-      isLiking ||
-      isUnliking ||
       isSaving ||
       isUnsaving,
 
@@ -329,8 +286,6 @@ const useBlogActions = () => {
     handleToggleBlogStatus,
     handleCreateBlog,
     handleUpdateBlog,
-    handleLikeBlog,
-    handleUnlikeBlog,
     handleUnsaveBlog,
     handleToggleSaveBlog
   };

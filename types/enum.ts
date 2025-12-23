@@ -74,3 +74,12 @@ export enum MessageTypeRole {
   User = "USER",
   AI = "AI"
 }
+
+export enum ReactionType {
+  LIKE = "Thích",
+  CELEBRATE = "Chúc mừng",
+  SUPPORT = "Ủng hộ",
+  LOVE = "Yêu",
+  INSIGHTFUL = "Sâu sắc",
+  FUNNY = "Hài hước"
+}

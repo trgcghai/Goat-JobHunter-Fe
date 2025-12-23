@@ -101,21 +101,6 @@ export type CheckSavedBlogsResponse = IBackendRes<{
   result: boolean;
 }[]>;
 
-// Liked Blogs Responses
-export type GetLikedBlogsResponse = IBackendRes<IModelPaginate<Blog>>;
-
-export type LikedBlogsResponse = {
-  userId: number;
-  likedBlogs: Blog[];
-};
-
-export type CheckLikedBlogsResponse = IBackendRes<
-  {
-    blogId: number;
-    result: boolean;
-  }[]
->;
-
 // Follow Recruiters Responses
 export type GetFollowedRecruitersResponse = IBackendRes<Recruiter[]>;
 
