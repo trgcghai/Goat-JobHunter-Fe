@@ -120,7 +120,7 @@ export function SocialBlogCard({ blog, isSaved }: SocialBlogCardProps) {
 
       <BlogActivity
         blog={blog}
-        onLikeClick={() => {}}
+        onReactionChange={() => {}}
         onCommentClick={handleOpenDetail}
       />
     </Card>

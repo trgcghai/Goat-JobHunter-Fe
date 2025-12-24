@@ -8,6 +8,7 @@ import {
   NotificationTypeEnum,
   WorkingType
 } from "@/types/enum";
+import { LucideIcon } from "lucide-react";
 
 export type Address = {
   addressId: number;
@@ -277,3 +278,11 @@ export type MessageType = {
   content: string;
   createdAt: string;
 };
+
+export type Reaction = {
+  id: string
+  icon: LucideIcon
+  label: string
+  color: string,
+  hoverColor: string
+}

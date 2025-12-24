@@ -1,5 +1,8 @@
 import { Option } from "@/components/ui/MultipleSelector";
-import { Level, WorkingType } from "@/types/enum";
+import { Level, ReactionType, WorkingType } from "@/types/enum";
+import { Clover, Heart, Lightbulb, PartyPopper, Smile, ThumbsUp } from "lucide-react";
+import { capitalize } from "lodash";
+import { Reaction } from "@/types/model";
 
 export const LEVEL_OPTIONS = [
   { value: Level.INTERN, label: "Intern" },
@@ -104,3 +107,48 @@ export enum ROLE {
 export const MAX_IMAGE_UPLOAD = 90;
 
 export const MAX_DISPLAYED_IMAGES = 4;
+
+export const reactions: Reaction[] = [
+  {
+    id: ReactionType.LIKE,
+    icon: ThumbsUp,
+    label: capitalize(ReactionType.LIKE),
+    color: "#0A66C2",
+    hoverColor: "#004182"
+  },
+  {
+    id: ReactionType.CELEBRATE,
+    icon: PartyPopper,
+    label: capitalize(ReactionType.CELEBRATE),
+    color: "#6DAF3D",
+    hoverColor: "#5A9130"
+  },
+  {
+    id: ReactionType.SUPPORT,
+    icon: Clover,
+    label: capitalize(ReactionType.SUPPORT),
+    color: "#DF704D",
+    hoverColor: "#C95A3A"
+  },
+  {
+    id: ReactionType.LOVE,
+    icon: Heart,
+    label: capitalize(ReactionType.LOVE),
+    color: "#DF704D",
+    hoverColor: "#C95A3A"
+  },
+  {
+    id: ReactionType.INSIGHTFUL,
+    icon: Lightbulb,
+    label: capitalize(ReactionType.INSIGHTFUL),
+    color: "#F5C344",
+    hoverColor: "#D9AB2A"
+  },
+  {
+    id: ReactionType.FUNNY,
+    icon: Smile,
+    label: capitalize(ReactionType.FUNNY),
+    color: "#F5C344",
+    hoverColor: "#D9AB2A"
+  }
+]

@@ -7,16 +7,16 @@ import { ReactionButton } from "@/app/(social-hub)/hub/fyp/component/ReactionBut
 
 interface BlogActivityProps {
   blog: Blog;
-  onLikeClick: () => void;
+  onReactionChange: () => void;
   onCommentClick: () => void;
   className?: string;
 }
 
-const BlogActivity = ({ blog, onCommentClick, onLikeClick, className }: BlogActivityProps) => {
+const BlogActivity = ({ blog, onCommentClick, onReactionChange, className }: BlogActivityProps) => {
   return (
     <div className={cn("flex items-center justify-between px-4 py-3", className)}>
       <div className="flex items-center gap-4 text-sm text-muted-foreground">
-        <ReactionButton totalReactions={blog.activity?.totalLikes || 0} onLikeClick={onLikeClick} />
+        <ReactionButton totalReactions={blog.activity?.totalLikes || 0} onReactionChange={onReactionChange} />
         <Button
           variant="ghost"
           size="icon"

@@ -121,7 +121,7 @@ export function BlogDetailDialog() {
 
               <BlogActivity
                 blog={blog}
-                onLikeClick={() => {
+                onReactionChange={() => {
                 }}
                 onCommentClick={() => {
                 }}
