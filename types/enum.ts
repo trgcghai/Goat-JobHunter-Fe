@@ -76,10 +76,10 @@ export enum MessageTypeRole {
 }
 
 export enum ReactionType {
-  LIKE = "Thích",
-  CELEBRATE = "Chúc mừng",
-  SUPPORT = "Ủng hộ",
-  LOVE = "Yêu",
-  INSIGHTFUL = "Sâu sắc",
-  FUNNY = "Hài hước"
+  LIKE = "LIKE",
+  CELEBRATE = "CELEBRATE",
+  SUPPORT = "SUPPORT",
+  LOVE = "LOVE",
+  INSIGHTFUL = "INSIGHTFUL",
+  FUNNY = "FUNNY"
 }

@@ -152,3 +152,12 @@ export const reactions: Reaction[] = [
     hoverColor: "#D9AB2A"
   }
 ]
+
+export const reactionLabelMap: Record<ReactionType, string> = {
+  [ReactionType.LIKE]: "Thích",
+  [ReactionType.CELEBRATE]: "Chúc mừng",
+  [ReactionType.SUPPORT]: "Ủng hộ",
+  [ReactionType.LOVE]: "Yêu",
+  [ReactionType.INSIGHTFUL]: "Sâu sắc",
+  [ReactionType.FUNNY]: "Hài hước"
+};

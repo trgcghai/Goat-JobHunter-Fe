@@ -21,9 +21,10 @@ import useBlogActions from "@/hooks/useBlogActions";
 interface SocialBlogCardProps {
   blog: Blog;
   isSaved: boolean;
+  initialReaction: string | null;
 }
 
-export function SocialBlogCard({ blog, isSaved }: SocialBlogCardProps) {
+export function SocialBlogCard({ blog, isSaved, initialReaction }: SocialBlogCardProps) {
   const dispatch = useAppDispatch();
   const { handleToggleSaveBlog, isLoading } = useBlogActions();
 
@@ -120,8 +121,8 @@ export function SocialBlogCard({ blog, isSaved }: SocialBlogCardProps) {
 
       <BlogActivity
         blog={blog}
-        onReactionChange={() => {}}
         onCommentClick={handleOpenDetail}
+        initialReaction={initialReaction}
       />
     </Card>
   );

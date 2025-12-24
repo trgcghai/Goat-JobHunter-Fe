@@ -121,11 +121,8 @@ export function BlogDetailDialog() {
 
               <BlogActivity
                 blog={blog}
-                onReactionChange={() => {
-                }}
-                onCommentClick={() => {
-                }}
                 className="p-0 my-2"
+                initialReaction={null}
               />
 
               <div className="space-y-4">

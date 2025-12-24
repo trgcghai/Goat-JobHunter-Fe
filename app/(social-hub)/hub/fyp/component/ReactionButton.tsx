@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ThumbsUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -7,10 +7,10 @@ import {
   HoverCardContent,
   HoverCardTrigger
 } from "@/components/ui/hover-card";
-import { reactions } from "@/constants/constant";
+import { reactionLabelMap, reactions } from "@/constants/constant";
 
 interface ReactionButtonProps {
-  initialReaction?: string | null; // for post that user has already reacted
+  initialReaction: string | null; // for post that user has already reacted
   onReactionChange: (reactionId: string | null) => void;
   totalReactions: number;
 }
@@ -21,8 +21,12 @@ export function ReactionButton({
  totalReactions
 }: ReactionButtonProps) {
 
-  const [selectedReaction, setSelectedReaction] = useState<string | null>(initialReaction);
+  const [selectedReaction, setSelectedReaction] = useState<string | null>();
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    setSelectedReaction(initialReaction);
+  }, [initialReaction]);
 
   const handleReactionClick = (reactionId: string) => {
     const newReaction = selectedReaction === reactionId ? null : reactionId;
@@ -80,6 +84,7 @@ export function ReactionButton({
                 "animate-in fade-in zoom-in-50",
                 `bg-[${reaction.color}] hover:bg-[${reaction.hoverColor}]`
               )}
+              title={reactionLabelMap[reaction.id as keyof typeof reactionLabelMap]}
               style={{
                 animationDelay: `${index * 30}ms`,
                 animationFillMode: "both"

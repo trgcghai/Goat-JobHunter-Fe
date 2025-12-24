@@ -10,6 +10,7 @@ import { BlogDetailDialog } from "@/app/(social-hub)/hub/fyp/component/BlogDetai
 import { useCheckSavedBlogsQuery } from "@/services/user/savedBlogsApi";
 import { useMemo } from "react";
 import { useUser } from "@/hooks/useUser";
+import { useCheckReactBlogQuery } from "@/services/reaction/reactionApi";
 
 export default function FypPage() {
   const { isSignedIn } = useUser();
@@ -23,13 +24,21 @@ export default function FypPage() {
     targetRef
   } = useInfiniteScrollBlogs();
 
-  const { data } = useCheckSavedBlogsQuery({
+  const { data: savedBlogData } = useCheckSavedBlogsQuery({
     blogIds: blogs.map((blog) => blog.blogId) || []
   }, {
     skip: !blogs || !isSignedIn
   });
 
-  const savedBlogIds = useMemo(() => data?.data || [], [data]);
+  const savedBlogIds = useMemo(() => savedBlogData?.data || [], [savedBlogData]);
+
+  const { data: reactedBlogData } = useCheckReactBlogQuery({
+    blogIds: blogs.map((blog) => blog.blogId) || []
+  }, {
+    skip: !blogs || !isSignedIn
+  });
+
+  const reactedBlogIds = useMemo(() => reactedBlogData?.data || [], [reactedBlogData]);
 
   return (
     <>
@@ -58,6 +67,7 @@ export default function FypPage() {
                 <SocialBlogCard
                   key={blog.blogId} blog={blog}
                   isSaved={savedBlogIds.find(b => b.blogId === blog.blogId)?.result || false}
+                  initialReaction={reactedBlogIds.find(b => b.blogId === blog.blogId)?.reactionType || null}
                 />
               ))}
             </div>

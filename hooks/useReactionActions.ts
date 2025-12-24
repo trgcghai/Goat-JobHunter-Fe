@@ -26,11 +26,9 @@ const useReactionActions = () => {
           reactionType
         }).unwrap();
 
-        toast.success("Đã thả cảm xúc!");
       } catch (error) {
         console.error("Failed to react blog:", error);
         toast.error("Không thể thả cảm xúc. Vui lòng thử lại sau.");
-        throw error;
       }
     },
     [reactBlog, isSignedIn, user]
@@ -49,11 +47,9 @@ const useReactionActions = () => {
           blogIds: [blogId]
         }).unwrap();
 
-        toast.success("Đã bỏ cảm xúc!");
       } catch (error) {
         console.error("Failed to unreact blog:", error);
         toast.error("Không thể bỏ cảm xúc. Vui lòng thử lại sau.");
-        throw error;
       }
     },
     [unreactBlog, isSignedIn, user]

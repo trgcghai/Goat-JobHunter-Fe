@@ -4,19 +4,31 @@ import { Eye, MessageCircle } from "lucide-react";
 import { Blog } from "@/types/model";
 import { cn } from "@/lib/utils";
 import { ReactionButton } from "@/app/(social-hub)/hub/fyp/component/ReactionButton";
+import useReactionActions from "@/hooks/useReactionActions";
+import { ReactionType } from "@/types/enum";
 
 interface BlogActivityProps {
   blog: Blog;
-  onReactionChange: () => void;
-  onCommentClick: () => void;
+  initialReaction: string | null;
+  onCommentClick?: () => void;
   className?: string;
 }
 
-const BlogActivity = ({ blog, onCommentClick, onReactionChange, className }: BlogActivityProps) => {
+const BlogActivity = ({ blog, onCommentClick, initialReaction, className }: BlogActivityProps) => {
+
+  const { handleReactBlog, handleUnreactBlog } = useReactionActions();
+
+  const handleReactionChange = (reactionId: string | null) => {
+    if (reactionId) {
+      return handleReactBlog(blog.blogId, reactionId as ReactionType);
+    }
+    return handleUnreactBlog(blog.blogId);
+  };
+
   return (
     <div className={cn("flex items-center justify-between px-4 py-3", className)}>
       <div className="flex items-center gap-4 text-sm text-muted-foreground">
-        <ReactionButton totalReactions={blog.activity?.totalLikes || 0} onReactionChange={onReactionChange} />
+        <ReactionButton totalReactions={blog.activity?.totalLikes || 0} onReactionChange={handleReactionChange} initialReaction={initialReaction} />
         <Button
           variant="ghost"
           size="icon"
