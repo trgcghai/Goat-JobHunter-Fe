@@ -60,6 +60,14 @@ export const companyApi = api.injectEndpoints({
             providesTags: ['Company'],
         }),
 
+        fetchCompanyByName: builder.query<FetchCompanyByIdResponse, string>({
+            query: (name) => ({
+                url: `/companies/slug/${name}`,
+                method: 'GET',
+            }),
+            providesTags: ['Company'],
+        }),
+
         fetchGroupedAddressesByCompany: builder.query<FetchGroupedAddressesByCompanyResponse, CompanyIdRequest>({
             query: (companyId) => ({
                 url: `/companies/${companyId}/group-addresses`,
@@ -74,5 +82,6 @@ export const {
     useFetchCompaniesQuery,
     useFetchAvailableCompaniesQuery,
     useFetchCompanyByIdQuery,
+    useFetchCompanyByNameQuery,
     useFetchGroupedAddressesByCompanyQuery,
 } = companyApi;

@@ -2,6 +2,7 @@
 
 import { Review } from '@/types/model';
 import { getTimeLabel } from '@/utils/formatDate';
+import { slugify } from '@/utils/slug';
 import { Star } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -18,7 +19,7 @@ export default function LatestReviewCard({ review }: LatestReviewCardProps) {
     const daysSince = getTimeLabel(review.createdAt);
 
     return (
-        <Link href={`/companies/${review.company?.accountId}`} className="h-full">
+        <Link href={`/companies/${slugify(review.company?.name || '')}`} className="h-full">
             <div className="h-full flex flex-col overflow-hidden hover:shadow-2xl transition-shadow duration-300 cursor-pointer p-4 border rounded-lg bg-white mb-6">
                 <div className="flex-1 flex flex-col gap-2">
                     <div className="flex items-center gap-4">
@@ -51,7 +52,7 @@ export default function LatestReviewCard({ review }: LatestReviewCardProps) {
                                 <Star
                                     key={index}
                                     className={`h-5 w-5 ${
-                                        index < (review.rating || 0)
+                                        index < (review.rating.overall || 0)
                                             ? 'fill-yellow-400 text-yellow-400'
                                             : 'fill-none text-gray-300'
                                     }`}

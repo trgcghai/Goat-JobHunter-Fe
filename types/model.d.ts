@@ -70,7 +70,14 @@ export type Company = Account & {
 
 export type Review = {
     reviewId: number;
-    rating: number;
+    rating: {
+        overall: number;
+        salaryBenefits: number;
+        trainingLearning: number;
+        managementCaresAboutMe: number;
+        cultureFun: number;
+        officeWorkspace: number;
+    };
     summary: string;
     experience: string;
     suggestion: string;
@@ -84,7 +91,7 @@ export type Review = {
     createdBy?: string;
     updatedAt?: string;
     updatedBy?: string;
-}
+};
 
 export type Skill = {
     skillId: number;
@@ -192,26 +199,26 @@ export type Subscriber = {
 };
 
 export type Blog = {
-  blogId: number;
-  images: string[];
-  content: string;
-  tags: string[];
-  draft: boolean;
-  enabled: boolean;
-  activity?: {
-    totalLikes: number;
-    totalComments: number;
-    totalReads: number;
-    totalParentComments: number;
-  };
-  author: {
-    userId: number;
-    fullName: string;
-  };
-  createdAt: string;
-  createdBy: string;
-  updatedAt: string;
-  updatedBy: string;
+    blogId: number;
+    images: string[];
+    content: string;
+    tags: string[];
+    draft: boolean;
+    enabled: boolean;
+    activity?: {
+        totalLikes: number;
+        totalComments: number;
+        totalReads: number;
+        totalParentComments: number;
+    };
+    author: {
+        userId: number;
+        fullName: string;
+    };
+    createdAt: string;
+    createdBy: string;
+    updatedAt: string;
+    updatedBy: string;
 };
 
 type CommentedBy = {
