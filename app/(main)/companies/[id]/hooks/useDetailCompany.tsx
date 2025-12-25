@@ -1,5 +1,10 @@
-import { useFetchCompanyByNameQuery, useFetchGroupedAddressesByCompanyQuery } from '@/services/company/companyApi';
+import {
+    useFetchCompanyByNameQuery,
+    useFetchGroupedAddressesByCompanyQuery,
+    useFetchSkillsByCompanyQuery,
+} from '@/services/company/companyApi';
 import { useCountJobsByCompanyQuery } from '@/services/job/jobApi';
+import { useCountReviewsByCompanyQuery } from '@/services/review/reviewApi';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useMemo } from 'react';
 
@@ -14,6 +19,12 @@ const useDetailCompany = (name: string) => {
         skip: !companyId,
     });
 
+    const { data: countReviews } = useCountReviewsByCompanyQuery(undefined, {
+        skip: !companyId,
+    });
+
+    const { data: skillsResponse } = useFetchSkillsByCompanyQuery(companyId ?? skipToken);
+
     const citiesArray = useMemo(
         () => (groupedAddresses?.data ? Object.keys(groupedAddresses.data) : []),
         [groupedAddresses],
@@ -21,8 +32,10 @@ const useDetailCompany = (name: string) => {
 
     return {
         company: company?.data,
+        skills: skillsResponse?.data || [],
         citiesArray,
         totalJobs: company?.data?.accountId ? countJobs?.data?.[company?.data?.accountId] || 0 : 0,
+        totalReviews: company?.data?.accountId ? countReviews?.data?.[company?.data?.accountId] || 0 : 0,
 
         isError,
         isLoading,

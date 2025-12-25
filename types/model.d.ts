@@ -24,7 +24,7 @@ export type Account = {
     username: string;
     email: string;
     password: string;
-    avatar: string;
+    avatar?: string;
     enabled: boolean;
     addresses: Address[];
     createdAt: string;
@@ -61,11 +61,15 @@ export type Company = Account & {
     name: string;
     description: string;
     logo: string;
-    coverPhoto: string;
-    website: string;
-    phone: string;
     size: CompanySize;
     verified: boolean;
+    country: string;
+    industry: string;
+    workingDays: string;
+    overtimePolicy: string;
+    coverPhoto?: string;
+    website?: string;
+    phone?: string;
 };
 
 export type Review = {
