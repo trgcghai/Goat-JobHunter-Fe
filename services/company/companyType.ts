@@ -20,3 +20,5 @@ export type FetchCompaniesResponse = IBackendRes<IModelPaginate<Company>>;
 export type FetchCompanyByIdResponse = IBackendRes<Company>;
 
 export type FetchGroupedAddressesByCompanyResponse = IBackendRes<Record<string, string[]>>;
+
+export type FetchSkillsByCompanyResponse = IBackendRes<Record<number, string>>;

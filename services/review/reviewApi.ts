@@ -1,5 +1,12 @@
 import { api } from '../api';
-import { AverageRatingsByCompanyResponse, CountAllReviewsResponse, CountReviewsByCompanyResponse, LatestReviewsResponse } from './reviewType';
+import {
+    AverageRatingsByCompanyResponse,
+    CountAllReviewsResponse,
+    CountReviewsByCompanyResponse,
+    LatestReviewsResponse,
+    RatingSummaryByCompanyResponse,
+} from './reviewType';
+import { CompanyIdRequest } from '../company/companyType';
 
 export const reviewApi = api.injectEndpoints({
     endpoints: (builder) => ({
@@ -30,6 +37,14 @@ export const reviewApi = api.injectEndpoints({
         countAllReviews: builder.query<CountAllReviewsResponse, void>({
             query: () => ({
                 url: `/reviews/count`,
+                method: 'GET',
+            }),
+            providesTags: ['Review'],
+        }),
+
+        getRatingByCompany: builder.query<RatingSummaryByCompanyResponse, CompanyIdRequest>({
+            query: (companyId) => ({
+                url: `/reviews/companies/${companyId}/ratings/summary`,
                 method: 'GET',
             }),
             providesTags: ['Review'],

@@ -5,6 +5,7 @@ import {
     FetchCompaniesResponse,
     FetchCompanyByIdResponse,
     FetchGroupedAddressesByCompanyResponse,
+    FetchSkillsByCompanyResponse,
 } from './companyType';
 import { buildSpringQuery } from '@/utils/buildSpringQuery';
 
@@ -60,9 +61,25 @@ export const companyApi = api.injectEndpoints({
             providesTags: ['Company'],
         }),
 
+        fetchCompanyByName: builder.query<FetchCompanyByIdResponse, string>({
+            query: (name) => ({
+                url: `/companies/slug/${name}`,
+                method: 'GET',
+            }),
+            providesTags: ['Company'],
+        }),
+
         fetchGroupedAddressesByCompany: builder.query<FetchGroupedAddressesByCompanyResponse, CompanyIdRequest>({
             query: (companyId) => ({
                 url: `/companies/${companyId}/group-addresses`,
+                method: 'GET',
+            }),
+            providesTags: ['Company'],
+        }),
+
+        fetchSkillsByCompany: builder.query<FetchSkillsByCompanyResponse, CompanyIdRequest>({
+            query: (companyId) => ({
+                url: `/companies/${companyId}/jobs/skills`,
                 method: 'GET',
             }),
             providesTags: ['Company'],
@@ -74,5 +91,7 @@ export const {
     useFetchCompaniesQuery,
     useFetchAvailableCompaniesQuery,
     useFetchCompanyByIdQuery,
+    useFetchCompanyByNameQuery,
     useFetchGroupedAddressesByCompanyQuery,
+    useFetchSkillsByCompanyQuery,
 } = companyApi;
