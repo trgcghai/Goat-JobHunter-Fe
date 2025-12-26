@@ -7,8 +7,13 @@ import ErrorMessage from "@/components/common/ErrorMessage";
 import LoaderSpin from "@/components/common/LoaderSpin";
 import { useInfiniteScrollBlogs } from "@/app/(social-hub)/hub/fyp/hooks/useInfiniteScrollBlogs";
 import { BlogDetailDialog } from "@/app/(social-hub)/hub/fyp/component/BlogDetailDialog";
+import { useCheckSavedBlogsQuery } from "@/services/user/savedBlogsApi";
+import { useMemo } from "react";
+import { useUser } from "@/hooks/useUser";
+import { useCheckReactBlogQuery } from "@/services/reaction/reactionApi";
 
 export default function FypPage() {
+  const { isSignedIn } = useUser();
   const {
     blogs,
     isLoading,
@@ -18,6 +23,22 @@ export default function FypPage() {
     hasMore,
     targetRef
   } = useInfiniteScrollBlogs();
+
+  const { data: savedBlogData } = useCheckSavedBlogsQuery({
+    blogIds: blogs.map((blog) => blog.blogId) || []
+  }, {
+    skip: !blogs || !isSignedIn
+  });
+
+  const savedBlogIds = useMemo(() => savedBlogData?.data || [], [savedBlogData]);
+
+  const { data: reactedBlogData } = useCheckReactBlogQuery({
+    blogIds: blogs.map((blog) => blog.blogId) || []
+  }, {
+    skip: !blogs || !isSignedIn
+  });
+
+  const reactedBlogIds = useMemo(() => reactedBlogData?.data || [], [reactedBlogData]);
 
   return (
     <>
@@ -43,11 +64,14 @@ export default function FypPage() {
           <>
             <div className="space-y-4">
               {blogs.map((blog) => (
-                <SocialBlogCard key={blog.blogId} blog={blog} />
+                <SocialBlogCard
+                  key={blog.blogId} blog={blog}
+                  isSaved={savedBlogIds.find(b => b.blogId === blog.blogId)?.result || false}
+                  initialReaction={reactedBlogIds.find(b => b.blogId === blog.blogId)?.reactionType || null}
+                />
               ))}
             </div>
 
-            {/* Infinite scroll trigger */}
             {hasMore && (
               <div ref={targetRef} className="py-8 flex justify-center">
                 {isFetching && <LoaderSpin />}

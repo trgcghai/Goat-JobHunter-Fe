@@ -11,7 +11,7 @@ import {
   TableRow
 } from "@/components/ui/table";
 import useJobActions from "@/hooks/useJobActions";
-import { useGetSavedJobsQuery } from "@/services/user/userApi";
+import { useGetSavedJobsQuery } from "@/services/user/savedJobsApi";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { formatDate } from "@/utils/formatDate";
 import { capitalize } from "lodash";

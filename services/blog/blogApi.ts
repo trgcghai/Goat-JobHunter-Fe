@@ -177,8 +177,8 @@ export const blogApi = api.injectEndpoints({
     }),
 
     // comments endpoints
-    getCommentsByBlogId: builder.query<GetCommentsResponse, string>({
-      query: (blogId: string) => {
+    getCommentsByBlogId: builder.query<GetCommentsResponse, number>({
+      query: (blogId: number) => {
         const { params } = buildSpringQuery({
           params: {},
           filterFields: [],

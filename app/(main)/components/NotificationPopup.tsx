@@ -60,12 +60,14 @@ export default function NotificationPopup() {
         }
 
         {isError &&
-          <>
+          <div>
             <div className="flex items-center justify-between p-4 border-b border-border">
               <h3 className="font-semibold text-foreground">Thông báo</h3>
             </div>
-            <ErrorMessage message="Đã có lỗi xảy ra khi tải các thông báo. Vui lòng thử lại sau" onRetry={refetch} />
-          </>
+            <div className="p-4">
+              <ErrorMessage message="Đã có lỗi xảy ra khi tải các thông báo. Vui lòng thử lại sau" onRetry={refetch} variant="compact" />
+            </div>
+          </div>
         }
 
         {isSuccess &&

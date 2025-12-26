@@ -12,7 +12,7 @@ import {
 import {
   useSaveJobsMutation,
   useUnsaveJobsMutation
-} from "@/services/user/userApi";
+} from "@/services/user/savedJobsApi";
 import { Job } from "@/types/model";
 import { useCallback } from "react";
 import { toast } from "sonner";
@@ -94,13 +94,13 @@ const useJobActions = () => {
   const handleCreateJob = useCallback(
     async (jobData: JobFormData) => {
       try {
-        if (!user?.userId) {
+        if (!user?.accountId) {
           toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
           return;
         }
 
         const response = await createJob({
-          recruiterId: user.userId,
+          recruiterId: user.accountId,
           active: true,
           careerId: Number(jobData.career),
           skillIds: jobData.skills.map((skill) => Number(skill.skillId)),
@@ -151,7 +151,7 @@ const useJobActions = () => {
   const handleUpdateJob = useCallback(
     async (jobId: number, jobData: JobFormData) => {
       try {
-        if (!user?.userId) {
+        if (!user?.accountId) {
           toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
           return;
         }
