@@ -13,7 +13,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Grid3x3, List, Loader2 } from "lucide-react";
 import { useMemo, useState } from "react";
-import { useCheckSavedJobsQuery } from "@/services/user/userApi";
+import { useCheckSavedJobsQuery } from "@/services/user/savedJobsApi";
 import { useUser } from "@/hooks/useUser";
 import { useSearchParams } from "next/navigation";
 

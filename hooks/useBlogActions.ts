@@ -9,8 +9,8 @@ import { useCallback } from "react";
 import { toast } from "sonner";
 import { BlogActionType } from "@/types/enum";
 import { useUser } from "@/hooks/useUser";
-import { useLikeBlogsMutation, useUnlikeBlogsMutation } from "@/services/user/userApi";
 import { CreateBlogDto } from "@/types/dto";
+import { useSaveBlogsMutation, useUnsaveBlogsMutation } from "@/services/user/savedBlogsApi";
 
 const useBlogActions = () => {
   const { isSignedIn, user } = useUser();
@@ -19,8 +19,10 @@ const useBlogActions = () => {
   const [disableBlogs, { isLoading: isDisabling }] = useDisableBlogsMutation();
   const [createBlog, { isLoading: isCreating }] = useCreateBlogMutation();
   const [updateBlog, { isLoading: isUpdating }] = useUpdateBlogMutation();
-  const [likeBlogs, { isLoading: isLiking }] = useLikeBlogsMutation();
-  const [unlikeBlogs, { isLoading: isUnliking }] = useUnlikeBlogsMutation();
+  const [saveBlogs, { isLoading: isSaving, isSuccess: isSaveBlogSuccess, isError: isSaveBlogError }] =
+    useSaveBlogsMutation();
+  const [unsaveBlogs, { isLoading: isUnsaving, isSuccess: isUnsaveBlogSuccess, isError: isUnsaveBlogError }] =
+    useUnsaveBlogsMutation();
 
 
   // Delete multiple blogs
@@ -184,7 +186,7 @@ const useBlogActions = () => {
 
         const response = await updateBlog({
           blogId,
-          formData,
+          formData
         }).unwrap();
 
         if (response.data) {
@@ -200,40 +202,65 @@ const useBlogActions = () => {
     [isSignedIn, updateBlog, user]
   );
 
-  const handleLikeBlog = useCallback(
+  // Unsave blog
+  const handleUnsaveBlog = useCallback(
     async (blogId: number) => {
       if (!isSignedIn || !user) {
         toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
         return;
       }
 
-      try {
-        await likeBlogs({ blogIds: [blogId] }).unwrap();
-      } catch (error) {
-        console.error("Failed to like blog:", error);
-        toast.error("Không thể thích bài viết. Vui lòng thử lại sau.");
-        throw error;
+      await unsaveBlogs({
+        blogIds: [blogId]
+      });
+
+      if (isUnsaveBlogSuccess) {
+        toast.success("Đã bỏ lưu bài viết.");
+      }
+
+      if (isUnsaveBlogError) {
+        toast.error("Đã xảy ra lỗi. Vui lòng thử lại.");
       }
     },
-    [isSignedIn, likeBlogs, user]
+    [isSignedIn, user, unsaveBlogs, isUnsaveBlogSuccess, isUnsaveBlogError]
   );
 
-  const handleUnlikeBlog = useCallback(
-    async (blogId: number) => {
+  // Toggle save blog
+  const handleToggleSaveBlog = useCallback(
+    async (
+      e: React.MouseEvent,
+      blogId: number,
+      isSaved: boolean
+    ) => {
+      e.preventDefault();
+      e.stopPropagation();
+
       if (!isSignedIn || !user) {
         toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
         return;
       }
 
-      try {
-        await unlikeBlogs({ blogIds: [blogId] }).unwrap();
-      } catch (error) {
-        console.error("Failed to unlike blog:", error);
-        toast.error("Không thể bỏ thích bài viết. Vui lòng thử lại sau.");
-        throw error;
+      if (isSaved) {
+        await unsaveBlogs({
+          blogIds: [blogId]
+        });
+      } else {
+        await saveBlogs({
+          blogIds: [blogId]
+        });
+      }
+
+      if (isSaveBlogSuccess || isUnsaveBlogSuccess) {
+        toast.success(
+          isSaved ? "Đã bỏ lưu bài viết." : "Đã lưu bài viết thành công."
+        );
+      }
+
+      if (isSaveBlogError || isUnsaveBlogError) {
+        toast.error("Đã xảy ra lỗi. Vui lòng thử lại.");
       }
     },
-    [isSignedIn, unlikeBlogs, user]
+    [isSignedIn, user, saveBlogs, unsaveBlogs, isSaveBlogSuccess, isUnsaveBlogSuccess, isSaveBlogError, isUnsaveBlogError]
   );
 
   return {
@@ -242,16 +269,16 @@ const useBlogActions = () => {
     isDisabling,
     isCreating,
     isUpdating,
-    isLiking,
-    isUnliking,
+    isSaving,
+    isUnsaving,
     isLoading:
       isDeleting ||
       isEnabling ||
       isDisabling ||
       isCreating ||
       isUpdating ||
-      isLiking ||
-      isUnliking,
+      isSaving ||
+      isUnsaving,
 
     handleDeleteBlogs,
     handleEnableBlogs,
@@ -259,8 +286,8 @@ const useBlogActions = () => {
     handleToggleBlogStatus,
     handleCreateBlog,
     handleUpdateBlog,
-    handleLikeBlog,
-    handleUnlikeBlog
+    handleUnsaveBlog,
+    handleToggleSaveBlog
   };
 };
 

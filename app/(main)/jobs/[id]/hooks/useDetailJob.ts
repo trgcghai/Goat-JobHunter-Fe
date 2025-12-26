@@ -4,7 +4,7 @@ import {
   useFetchJobByIdQuery,
   useFetchRelatedJobsQuery
 } from "@/services/job/jobApi";
-import { useCheckSavedJobsQuery } from "@/services/user/userApi";
+import { useCheckSavedJobsQuery } from "@/services/user/savedJobsApi";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useFetchRecruiterByIdQuery } from "@/services/recruiter/recruiterApi";

@@ -1,71 +1,72 @@
 import {
-    ApplicationStatus,
-    CompanySize,
-    Education,
-    Gender,
-    Level,
-    MessageTypeRole,
-    NotificationTypeEnum,
-    WorkingType,
-} from '@/types/enum';
+  ApplicationStatus,
+  CompanySize,
+  Education,
+  Gender,
+  Level,
+  MessageTypeRole,
+  NotificationTypeEnum,
+  WorkingType
+} from "@/types/enum";
+import { LucideIcon } from "lucide-react";
 
 export type Address = {
-    addressId: number;
-    province: string;
-    fullAddress: string;
-    createdAt?: string;
-    createdBy?: string;
-    updatedAt?: string;
-    updatedBy?: string;
+  addressId: number;
+  province: string;
+  fullAddress: string;
+  createdAt?: string;
+  createdBy?: string;
+  updatedAt?: string;
+  updatedBy?: string;
 };
 
 export type Account = {
-    accountId: number;
-    username: string;
-    email: string;
-    password: string;
-    avatar: string;
-    enabled: boolean;
-    addresses: Address[];
-    createdAt: string;
-    createdBy: string;
-    updatedAt: string;
-    updatedBy: string;
+  accountId: number;
+  username: string;
+  email: string;
+  password: string;
+  avatar: string;
+  enabled: boolean;
+  addresses: Address[];
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
 
-    role: Role;
+  role: Role;
 };
 
 export type User = Account & {
-    address: string;
-    phone: string;
-    dob: string;
-    fullName: string;
-    gender: Gender;
-    coverPhoto: string;
-    headline: string;
-    bio: string;
+  address: string;
+  phone: string;
+  dob: string;
+  fullName: string;
+  gender: Gender;
+  coverPhoto: string;
+  headline: string;
+  bio: string;
 };
 
 export type Recruiter = User & {
-    position: string;
-    company: Company;
+  position: string;
+  company: Company;
 };
 
 export type Applicant = User & {
-    availableStatus: boolean;
-    education: Education;
-    level: Level;
+  availableStatus: boolean;
+  education: Education;
+  level: Level;
 };
 
 export type Company = Account & {
-    name: string;
-    description: string;
-    logo: string;
-    coverPhoto: string;
-    website: string;
-    phone: string;
-    size: CompanySize;
-    verified: boolean;
+  name: string;
+  description: string;
+  logo: string;
+  coverPhoto: string;
+  website: string;
+  phone: string;
+  size: CompanySize;
+  verified: boolean;
 };
 
 export type Review = {
@@ -87,108 +88,108 @@ export type Review = {
 }
 
 export type Skill = {
-    skillId: number;
-    name: string;
+  skillId: number;
+  name: string;
 
-    createdAt: string;
-    createdBy: string;
-    updatedAt: string;
-    updatedBy: string;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
 };
 
 export type Career = {
-    careerId: number;
-    name: string;
+  careerId: number;
+  name: string;
 
-    createdAt: string;
-    createdBy: string;
-    updatedAt: string;
-    updatedBy: string;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
 };
 
 export type Job = {
-    jobId: number;
-    description: string;
-    startDate: string;
-    endDate: string;
-    active: boolean;
-    enabled: boolean;
-    level: Level;
-    quantity: number;
-    salary: number;
-    title: string;
-    workingType: WorkingType;
-    address: Address;
-    recruiter: Recruiter;
-    skills: Skill[];
-    career: Career;
-    createdAt: string;
-    createdBy: string;
-    updatedAt: string;
-    updatedBy: string;
+  jobId: number;
+  description: string;
+  startDate: string;
+  endDate: string;
+  active: boolean;
+  enabled: boolean;
+  level: Level;
+  quantity: number;
+  salary: number;
+  title: string;
+  workingType: WorkingType;
+  address: Address;
+  recruiter: Recruiter;
+  skills: Skill[];
+  career: Career;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
 };
 
 export type Application = {
-    applicationId: number;
-    email: string;
-    resumeUrl: string;
-    status: ApplicationStatus;
-    user: { userId: string; fullName: string };
-    job: { jobId: string; title: string };
-    recruiterName: string;
-    createdAt: string;
-    createdBy: string;
+  applicationId: number;
+  email: string;
+  resumeUrl: string;
+  status: ApplicationStatus;
+  user: { userId: string; fullName: string };
+  job: { jobId: string; title: string };
+  recruiterName: string;
+  createdAt: string;
+  createdBy: string;
 };
 
 export type Permission = {
-    permissionId: number;
-    apiPath: string;
-    method: string;
-    module: string;
-    name: string;
+  permissionId: number;
+  apiPath: string;
+  method: string;
+  module: string;
+  name: string;
 
-    createdAt: string;
-    createdBy: string;
-    updatedAt: string;
-    updatedBy: string;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
 };
 
 export type Role = {
-    roleId: number;
-    description: string;
-    active: boolean;
-    name: string;
+  roleId: number;
+  description: string;
+  active: boolean;
+  name: string;
 
-    permissions: Permission[];
+  permissions: Permission[];
 
-    createdAt: string;
-    createdBy: string;
-    updatedAt: string;
-    updatedBy: string;
+  createdAt: string;
+  createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
 };
 
 export type Contact = {
-    phone?: string;
-    email?: string;
+  phone?: string;
+  email?: string;
 };
 
 export type Select = {
-    label: string | undefined;
-    value: string | undefined;
-    key?: string | undefined;
+  label: string | undefined;
+  value: string | undefined;
+  key?: string | undefined;
 };
 
 export type Subscriber = {
-    subscriberId: number;
-    name: string;
-    email: string;
-    skills: Skill[];
+  subscriberId: number;
+  name: string;
+  email: string;
+  skills: Skill[];
 
-    createdBy?: string;
-    isDeleted?: boolean;
-    deletedAt?: boolean | null;
-    createdAt?: string;
-    updatedAt?: string;
+  createdBy?: string;
+  isDeleted?: boolean;
+  deletedAt?: boolean | null;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type Blog = {
@@ -205,8 +206,13 @@ export type Blog = {
     totalParentComments: number;
   };
   author: {
-    userId: number;
+    accountId: number;
     fullName: string;
+    username: string;
+    avatar: string;
+    bio: string;
+    headline: string;
+    coverPhoto: string;
   };
   createdAt: string;
   createdBy: string;
@@ -215,78 +221,86 @@ export type Blog = {
 };
 
 type CommentedBy = {
-    userId: number;
-    fullName: string;
-    username: string;
-    avatar: string;
+  accountId: number;
+  fullName: string;
+  username: string;
+  avatar: string;
 };
 
 export type CommentType = {
-    commentId: number;
+  commentId: number;
+  comment: string;
+  reply: boolean;
+  blog: {
+    blogId: number;
+    title: string;
+  };
+  parent?: {
+    commentId: string;
     comment: string;
-    reply: boolean;
-    blog: {
-        blogId: number;
-        title: string;
-    };
-    parent?: {
-        commentId: string;
-        comment: string;
-        commentedBy: CommentedBy;
-    };
     commentedBy: CommentedBy;
-    createdAt: string;
+  };
+  commentedBy: CommentedBy;
+  createdAt: string;
 };
 
 export type NotificationType = {
-    notificationId: number;
-    type: NotificationTypeEnum;
-    seen: boolean;
-    blog: {
-        blogId: string;
-        title: string;
-    };
-    lastActor: {
-        userId: string;
-        fullName: string;
-        username: string;
-        avatar: string;
-    };
-    actorCount: number;
-    recipient: {
-        userId: string;
-        fullName: string;
-        username: string;
-        avatar: string;
-    };
-    comment?: {
-        commentId: string;
-        comment: string;
-    };
-    reply?: {
-        commentId: string;
-        comment: string;
-    };
-    repliedOnComment?: {
-        commentId: string;
-        comment: string;
-    };
-    createdAt: string;
+  notificationId: number;
+  type: NotificationTypeEnum;
+  seen: boolean;
+  blog: {
+    blogId: string;
+    title: string;
+  };
+  lastActor: {
+    userId: string;
+    fullName: string;
+    username: string;
+    avatar: string;
+  };
+  actorCount: number;
+  recipient: {
+    userId: string;
+    fullName: string;
+    username: string;
+    avatar: string;
+  };
+  comment?: {
+    commentId: string;
+    comment: string;
+  };
+  reply?: {
+    commentId: string;
+    comment: string;
+  };
+  repliedOnComment?: {
+    commentId: string;
+    comment: string;
+  };
+  createdAt: string;
 };
 
 export type Conversation = {
-    conversationId: number;
-    title: string;
-    pinned: boolean;
-    createdAt: string;
-    updatedAt: string;
-    createdBy: string;
-    updatedBy: string;
+  conversationId: number;
+  title: string;
+  pinned: boolean;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+  updatedBy: string;
 };
 
 export type MessageType = {
-    messageId: number;
-    role: MessageTypeRole;
-    content: string;
-    createdAt: string;
+  messageId: number;
+  role: MessageTypeRole;
+  content: string;
+  createdAt: string;
 };
+
+export type Reaction = {
+  id: string
+  icon: LucideIcon
+  label: string
+  color: string,
+  hoverColor: string
+}

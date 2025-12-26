@@ -1,6 +1,6 @@
 "use client";
 
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -17,10 +17,34 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { closeBlogDetail } from "@/lib/features/blogDetailSlice";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import BlogActivity from "@/app/(social-hub)/hub/fyp/component/BlogActivity";
+import { useUser } from "@/hooks/useUser";
+import { useGetCommentsByBlogIdQuery } from "@/services/blog/blogApi";
+import { formatCommentsToNested, NestedComment } from "@/app/(social-hub)/hub/fyp/component/comment/utils/formatComments";
+import CommentInput from "@/app/(social-hub)/hub/fyp/component/comment/CommentInput";
+import CommentSection from "@/app/(social-hub)/hub/fyp/component/comment/CommentSection";
 
 export function BlogDetailDialog() {
   const dispatch = useAppDispatch();
+  const { user, isSignedIn } = useUser();
   const { blog, open } = useAppSelector((state) => state.blogDetail);
+
+  const {
+    data: commentsData,
+    isLoading: isLoadingComments,
+    isError: isLoadCommentsFailed
+  } = useGetCommentsByBlogIdQuery(blog?.blogId || -1, {
+    skip: !blog
+  });
+
+  const comments: NestedComment[] = useMemo(() => {
+    if (!commentsData?.data) return []
+
+    const rawComments = Array.isArray(commentsData.data)
+      ? commentsData.data
+      : [commentsData.data];
+
+    return formatCommentsToNested(rawComments)
+  }, [commentsData]);
 
   const handleClose = () => {
     dispatch(closeBlogDetail());
@@ -53,14 +77,14 @@ export function BlogDetailDialog() {
               </Avatar>
               <div>
                 <UserHoverCard
-                  userId={blog.author.userId}
+                  userId={blog.author.accountId}
                   fullName={blog.author.fullName}
-                  avatar="/placeholder.svg"
-                  username="username"
-                  bio="Bio của người dùng"
+                  avatar={blog.author.avatar}
+                  username={blog.author.username}
+                  bio={blog.author.bio}
                 >
                   <Link
-                    href={`/hub/users/${blog.author.userId}`}
+                    href={`/hub/users/${blog.author.accountId}`}
                     className="text-sm font-semibold hover:underline cursor-pointer"
                   >
                     {blog.author.fullName}
@@ -71,7 +95,7 @@ export function BlogDetailDialog() {
             </div>
           </div>
 
-          <ScrollArea className="h-[700px]">
+          <ScrollArea className="h-[600px]">
             <div className="p-4">
               <RichTextPreview content={blog.content} className="mb-4" />
 
@@ -97,22 +121,35 @@ export function BlogDetailDialog() {
 
               <BlogActivity
                 blog={blog}
-                onLikeClick={() => {}}
-                onCommentClick={() => {}}
                 className="p-0 my-2"
+                initialReaction={null}
               />
 
               <div className="space-y-4">
                 <h3 className="font-semibold">
-                  Bình luận ({blog.activity?.totalComments || 0})
+                  Tất cả bình luận
                 </h3>
-                <p className="text-sm text-muted-foreground text-center py-8">
-                  Chưa có bình luận nào
-                </p>
+                {comments && comments.length > 0 &&
+                  <CommentSection
+                    comments={comments}
+                    isLoading={isLoadingComments}
+                    isError={isLoadCommentsFailed}
+                  />
+                }
+                {(!comments || comments.length === 0) &&
+                  <p className="text-sm text-muted-foreground text-center py-8">
+                    Chưa có bình luận nào
+                  </p>
+                }
               </div>
             </div>
           </ScrollArea>
         </div>
+        {isSignedIn && user &&
+          <DialogFooter className="px-4 pt-4 border-t">
+            <CommentInput />
+          </DialogFooter>
+        }
       </DialogContent>
     </Dialog>
   );
