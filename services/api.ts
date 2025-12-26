@@ -1,44 +1,44 @@
-import axiosInstance from "@/services/axios";
-import { BaseQueryFn, createApi } from "@reduxjs/toolkit/query/react";
-import { AxiosError, AxiosRequestConfig } from "axios";
-import { IBackendRes } from "@/types/api";
+import axiosInstance from '@/services/axios';
+import { BaseQueryFn, createApi } from '@reduxjs/toolkit/query/react';
+import { AxiosError, AxiosRequestConfig } from 'axios';
+import { IBackendRes } from '@/types/api';
 
 const axiosBaseQuery =
-  (
-    { baseUrl }: { baseUrl: string } = {
-      baseUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"
-    }
-  ): BaseQueryFn<
-    {
-      url: string;
-      method?: AxiosRequestConfig["method"];
-      data?: AxiosRequestConfig["data"];
-      params?: AxiosRequestConfig["params"];
-      headers?: AxiosRequestConfig["headers"];
-    },
-    unknown,
-    unknown
-  > =>
+    (
+        { baseUrl }: { baseUrl: string } = {
+            baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080',
+        },
+    ): BaseQueryFn<
+        {
+            url: string;
+            method?: AxiosRequestConfig['method'];
+            data?: AxiosRequestConfig['data'];
+            params?: AxiosRequestConfig['params'];
+            headers?: AxiosRequestConfig['headers'];
+        },
+        unknown,
+        unknown
+    > =>
     async ({ url, method, data, params, headers }) => {
-      try {
-        const result = await axiosInstance({
-          url: baseUrl + url,
-          method,
-          data,
-          params,
-          headers,
-          responseType: headers?.responseType || "json"
-        });
-        return { data: result.data };
-      } catch (axiosError) {
-        const err = axiosError as AxiosError;
-        return {
-          error: {
-            status: err.response?.status,
-            data: err.response?.data || err.message
-          }
-        };
-      }
+        try {
+            const result = await axiosInstance({
+                url: baseUrl + url,
+                method,
+                data,
+                params,
+                headers,
+                responseType: headers?.responseType || 'json',
+            });
+            return { data: result.data };
+        } catch (axiosError) {
+            const err = axiosError as AxiosError;
+            return {
+                error: {
+                    status: err.response?.status,
+                    data: err.response?.data || err.message,
+                },
+            };
+        }
     };
 
 export const api = createApi({
@@ -76,52 +76,82 @@ export const api = createApi({
         method: "GET"
       })
     }),
+    tagTypes: [
+        'User',
+        'Job',
+        'Application',
+        'Blog',
+        'Recruiter',
+        'Company',
+        'Applicant',
+        'Account',
+        'Contact',
+        'Skill',
+        'Career',
+        'Permission',
+        'Role',
+        'Subscriber',
+        'Notifications',
+        'SavedJob',
+        'Comment',
+        'Conversations',
+        'LikedBlog',
+        'Message',
+        'Review',
+    ],
+    endpoints: (builder) => ({
+        ping: builder.query<string, void>({
+            query: () => ({
+                url: '/ping',
+                method: 'GET',
+            }),
+        }),
 
-    clearCookies: builder.query<unknown, void>({
-      query: () => ({
-        url: "/clear-cookies",
-        method: "GET"
-      })
-    }),
+        clearCookies: builder.query<unknown, void>({
+            query: () => ({
+                url: '/clear-cookies',
+                method: 'GET',
+            }),
+        }),
 
-    backup: builder.query({
-      query: () => ({
-        url: "/admin/backup",
-        method: "GET",
-        responseType: "blob"
-      })
-    }),
+        backup: builder.query({
+            query: () => ({
+                url: '/admin/backup',
+                method: 'GET',
+                responseType: 'blob',
+            }),
+        }),
 
-    generateDescription: builder.mutation<string, string>({
-      query: (content: string) => ({
-        url: "/ai/generate/blogs/description",
-        method: "POST",
-        data: { content }
-      })
-    }),
+        generateDescription: builder.mutation<string, string>({
+            query: (content: string) => ({
+                url: '/ai/generate/blogs/description',
+                method: 'POST',
+                data: { content },
+            }),
+        }),
 
-    generateTags: builder.mutation<IBackendRes<string[]>, string>({
-      query: (content: string) => ({
-        url: "/ai/generate/blogs/tags",
-        method: "POST",
-        data: { content }
-      })
-    }),
+        generateTags: builder.mutation<IBackendRes<string[]>, string>({
+            query: (content: string) => ({
+                url: '/ai/generate/blogs/tags',
+                method: 'POST',
+                data: { content },
+            }),
+        }),
 
-    getUuid: builder.query<string, void>({
-      query: () => ({
-        url: "/uuid",
-        method: "GET"
-      })
+        getUuid: builder.query<string, void>({
+            query: () => ({
+                url: '/uuid',
+                method: 'GET',
+            }),
+        }),
     }),
-  })
 });
 
 export const {
-  usePingQuery,
-  useClearCookiesQuery,
-  useLazyBackupQuery,
-  useGenerateDescriptionMutation,
-  useGenerateTagsMutation,
-  useGetUuidQuery,
+    usePingQuery,
+    useClearCookiesQuery,
+    useLazyBackupQuery,
+    useGenerateDescriptionMutation,
+    useGenerateTagsMutation,
+    useGetUuidQuery,
 } = api;

@@ -69,6 +69,24 @@ export type Company = Account & {
   verified: boolean;
 };
 
+export type Review = {
+    reviewId: number;
+    rating: number;
+    summary: string;
+    experience: string;
+    suggestion: string;
+    recommended: boolean;
+    verified: boolean;
+
+    user: User;
+    company: Company;
+
+    createdAt?: string;
+    createdBy?: string;
+    updatedAt?: string;
+    updatedBy?: string;
+}
+
 export type Skill = {
   skillId: number;
   name: string;
