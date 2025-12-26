@@ -1,209 +1,197 @@
-import { useFetchJobsAvailableQuery } from "@/services/job/jobApi";
-import { useGetSkillsQuery } from "@/services/skill/skillApi";
-import { debounce } from "lodash";
-import { useCallback, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useFetchJobsAvailableQuery } from '@/services/job/jobApi';
+import { useGetAllSkillsQuery, useGetSkillsQuery } from '@/services/skill/skillApi';
+import { debounce } from 'lodash';
+import { useCallback, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export interface JobFilters {
-  location?: string[];
-  skills?: string[];
-  level?: string[];
-  workingType?: string[];
+    location?: string[];
+    skills?: string[];
+    level?: string[];
+    workingType?: string[];
 }
 
 export interface UseJobsFilterOptions {
-  initialPage?: number;
-  itemsPerPage?: number;
-  initialFilters?: JobFilters;
+    initialPage?: number;
+    itemsPerPage?: number;
+    initialFilters?: JobFilters;
 }
 
 export const useJobsFilter = (options?: UseJobsFilterOptions) => {
-  const {
-    initialPage = 1,
-    itemsPerPage = 10,
-    initialFilters = {},
-  } = options || {};
+    const { initialPage = 1, itemsPerPage = 10, initialFilters = {} } = options || {};
 
-  const router = useRouter()
+    const router = useRouter();
 
-  const [currentPage, setCurrentPage] = useState(initialPage);
-  const [filters, setFilters] = useState<JobFilters>(initialFilters);
-  const [skillInputValue, setSkillInputValue] = useState<string>("");
-  const [debouncedSkillInput, setDebouncedSkillInput] = useState<string>("");
+    const [currentPage, setCurrentPage] = useState(initialPage);
+    const [filters, setFilters] = useState<JobFilters>(initialFilters);
+    const [skillInputValue, setSkillInputValue] = useState<string>('');
+    const [debouncedSkillInput, setDebouncedSkillInput] = useState<string>('');
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedSkillSearch = useCallback(
-    debounce((value: string) => {
-      setDebouncedSkillInput(value);
-    }, 500),
-    []
-  );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const debouncedSkillSearch = useCallback(
+        debounce((value: string) => {
+            setDebouncedSkillInput(value);
+        }, 500),
+        [],
+    );
 
-  // Handle skill input value change
-  const handleSkillInputChange = (value: string) => {
-    setSkillInputValue(value);
-    debouncedSkillSearch(value);
-  };
-
-  // Fetch skills from API
-  const { data: skillsData, isFetching: isFetchingSkills } = useGetSkillsQuery(
-    {
-      page: 1,
-      size: 50,
-      name: debouncedSkillInput
-    },
-    {
-      skip: !debouncedSkillInput || debouncedSkillInput.length < 2
-    }
-  );
-
-  // Convert API skills to map for easy lookup (name -> id)
-  const skillNameToIdMap = useMemo(() => {
-    const map = new Map<string, number>();
-    skillsData?.data?.result?.forEach((skill) => {
-      map.set(skill.name, skill.skillId);
-    });
-    return map;
-  }, [skillsData]);
-
-  // Build query params matching FetchJobsRequest
-  const queryParams = useMemo(() => {
-    const params: Record<string, string | number | string[] | boolean | number[]> = {
-      page: currentPage,
-      size: itemsPerPage,
+    // Handle skill input value change
+    const handleSkillInputChange = (value: string) => {
+        setSkillInputValue(value);
+        debouncedSkillSearch(value);
     };
 
-    if (filters.location && filters.location.length > 0) {
-      params.location = filters.location.join(",");
-    }
+    // Fetch skills from API
+    const { data: skillsData, isFetching: isFetchingSkills } = useGetAllSkillsQuery(
+        {
+            name: debouncedSkillInput,
+        },
+        {
+            skip: !debouncedSkillInput && debouncedSkillInput.length < 2 && filters.skills?.length === 0,
+        },
+    );
 
-    if (filters.level && filters.level.length > 0) {
-      params.level = filters.level;
-    }
+    // Convert API skills to map for easy lookup (name -> id)
+    const skillNameToIdMap = useMemo(() => {
+        const map = new Map<string, number>();
+        skillsData?.data?.result?.forEach((skill) => {
+            map.set(skill.name, skill.skillId);
+        });
+        return map;
+    }, [skillsData]);
 
-    if (filters.workingType && filters.workingType.length > 0) {
-      params.workingType = filters.workingType;
-    }
+    // Build query params matching FetchJobsRequest
+    const queryParams = useMemo(() => {
+        const params: Record<string, string | number | string[] | boolean | number[]> = {
+            page: currentPage,
+            size: itemsPerPage,
+        };
 
-    if (filters.skills && filters.skills.length > 0) {
-      // Convert skill names to IDs for API call
-      const skillIds = filters.skills
-        .map(skillName => skillNameToIdMap.get(skillName))
-        .filter((id): id is number => id !== undefined);
+        if (filters.location && filters.location.length > 0) {
+            params.location = filters.location.join(',');
+        }
 
-      if (skillIds.length > 0) {
-        params.skills = skillIds;
-      }
-    }
+        if (filters.level && filters.level.length > 0) {
+            params.level = filters.level;
+        }
 
-    return params;
-  }, [currentPage, itemsPerPage, filters, skillNameToIdMap]);
+        if (filters.workingType && filters.workingType.length > 0) {
+            params.workingType = filters.workingType;
+        }
 
-  const {
-    data: jobsResponse,
-    isLoading,
-    isFetching,
-    isError,
-    error,
-  } = useFetchJobsAvailableQuery(queryParams);
+        if (filters.skills && filters.skills.length > 0) {
+            // Convert skill names to IDs for API call
+            const skillIds = filters.skills
+                .map((skillName) => skillNameToIdMap.get(skillName))
+                .filter((id): id is number => id !== undefined);
 
-  // Extract data from response
-  const jobs = jobsResponse?.data?.result || [];
-  const meta = jobsResponse?.data?.meta || {
-    current: 1,
-    pageSize: itemsPerPage,
-    pages: 0,
-    total: 0,
-  };
+            if (skillIds.length > 0) {
+                params.skills = skillIds;
+            }
+        }
 
-  const totalPages = meta.pages;
-  const totalItems = meta.total;
+        return params;
+    }, [currentPage, itemsPerPage, filters, skillNameToIdMap]);
 
-  // Filter handlers
-  const handleFilterChange = (newFilters: Partial<JobFilters>) => {
-    setFilters((prev) => ({ ...prev, ...newFilters }));
-    setCurrentPage(1);
-  };
+    const { data: jobsResponse, isLoading, isFetching, isError, error } = useFetchJobsAvailableQuery(queryParams);
 
-  const resetFilters = () => {
-    setFilters({
-      level: [],
-      skills: [],
-      location: [],
-      workingType: [],
-    });
-    setCurrentPage(1);
-    setSkillInputValue("");
-    setDebouncedSkillInput("");
+    // Extract data from response
+    const jobs = jobsResponse?.data?.result || [];
+    const meta = jobsResponse?.data?.meta || {
+        current: 1,
+        pageSize: itemsPerPage,
+        pages: 0,
+        total: 0,
+    };
 
-    router.push("/jobs")
-  };
+    const totalPages = meta.pages;
+    const totalItems = meta.total;
 
-  // Pagination handlers
-  const goToPage = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
+    // Filter handlers
+    const handleFilterChange = (newFilters: Partial<JobFilters>) => {
+        setFilters((prev) => ({ ...prev, ...newFilters }));
+        setCurrentPage(1);
+    };
 
-  const nextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage((prev) => prev + 1);
-    }
-  };
+    const resetFilters = () => {
+        setFilters({
+            level: [],
+            skills: [],
+            location: [],
+            workingType: [],
+        });
+        setCurrentPage(1);
+        setSkillInputValue('');
+        setDebouncedSkillInput('');
 
-  const previousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage((prev) => prev - 1);
-    }
-  };
+        router.push('/jobs');
+    };
 
-  const hasNextPage = currentPage < totalPages;
-  const hasPreviousPage = currentPage > 1;
+    // Pagination handlers
+    const goToPage = (page: number) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
 
-  // Active filters count
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const activeFiltersCount = Object.entries(filters).filter(([_, value]) => {
-    if (Array.isArray(value)) {
-      return value.length > 0;
-    }
-    return value !== undefined && value !== null && value !== "";
-  }).length;
+    const nextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage((prev) => prev + 1);
+        }
+    };
 
-  return {
-    // Data
-    jobs,
-    meta,
-    totalPages,
-    totalItems,
-    currentPage,
-    itemsPerPage,
+    const previousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage((prev) => prev - 1);
+        }
+    };
 
-    // Loading states
-    isLoading,
-    isFetching,
-    isError,
-    error,
+    const hasNextPage = currentPage < totalPages;
+    const hasPreviousPage = currentPage > 1;
 
-    // Filters
-    filters,
-    handleFilterChange,
-    resetFilters,
-    activeFiltersCount,
+    // Active filters count
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const activeFiltersCount = Object.entries(filters).filter(([_, value]) => {
+        if (Array.isArray(value)) {
+            return value.length > 0;
+        }
+        return value !== undefined && value !== null && value !== '';
+    }).length;
 
-    // Pagination
-    goToPage,
-    nextPage,
-    previousPage,
-    hasNextPage,
-    hasPreviousPage,
+    return {
+        // Data
+        jobs,
+        meta,
+        totalPages,
+        totalItems,
+        currentPage,
+        itemsPerPage,
 
-    // Skills
-    skillsData: skillsData?.data?.result || [],
-    isFetchingSkills,
-    skillInputValue,
-    handleSkillInputChange,
-  };
+        // Loading states
+        isLoading,
+        isFetching,
+        isError,
+        error,
+
+        // Filters
+        filters,
+        handleFilterChange,
+        resetFilters,
+        activeFiltersCount,
+
+        // Pagination
+        goToPage,
+        nextPage,
+        previousPage,
+        hasNextPage,
+        hasPreviousPage,
+
+        // Skills
+        skillsData: skillsData?.data?.result || [],
+        isFetchingSkills,
+        skillInputValue,
+        handleSkillInputChange,
+    };
 };
 
 export default useJobsFilter;

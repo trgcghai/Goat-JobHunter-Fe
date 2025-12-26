@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Company } from '@/types/model';
-import { Building2, Calendar, Clock, Flag, Globe, Briefcase, Pin, MapPin } from 'lucide-react';
+import { Building2, Calendar, Clock, Flag, Globe, Briefcase, MapPin } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useState, useMemo } from 'react';
 
 interface AboutTabProps {
@@ -10,6 +11,7 @@ interface AboutTabProps {
 
 export default function AboutTab({ company, skills }: AboutTabProps) {
     const [activeLocationIndex, setActiveLocationIndex] = useState(0);
+    const router = useRouter();
 
     const groupedAddresses = useMemo(() => {
         const groups: Record<string, typeof company.addresses> = {};
@@ -21,6 +23,12 @@ export default function AboutTab({ company, skills }: AboutTabProps) {
         });
         return groups;
     }, [company]);
+
+    const handleSkillClick = (skill: string) => {
+        const params = new URLSearchParams();
+        params.set('skills', skill);
+        router.push(`/jobs?${params.toString().replaceAll('+', '%20')}`);
+    };
 
     return (
         <div className="space-y-6">
@@ -125,6 +133,7 @@ export default function AboutTab({ company, skills }: AboutTabProps) {
                             <Badge
                                 key={id}
                                 className="px-3 py-1.5 bg-white text-gray-700 text-[14px] font-medium border border-gray-300 hover:border-primary hover:text-primary transition-colors cursor-pointer rounded-2xl"
+                                onClick={() => handleSkillClick(name)}
                             >
                                 {name}
                             </Badge>

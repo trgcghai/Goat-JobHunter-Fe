@@ -42,39 +42,9 @@ const axiosBaseQuery =
     };
 
 export const api = createApi({
-  reducerPath: "api",
-  baseQuery: axiosBaseQuery({
-    baseUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1"
-  }),
-  tagTypes: [
-    "User",
-    "Job",
-    "Application",
-    "Blog",
-    "Recruiter",
-    "Company",
-    "Applicant",
-    "Account",
-    "Contact",
-    "Skill",
-    "Career",
-    "Permission",
-    "Role",
-    "Subscriber",
-    "Notifications",
-    "SavedJob",
-    "Comment",
-    "Conversations",
-    "LikedBlog",
-    "SavedBlog",
-    "Message",
-  ],
-  endpoints: (builder) => ({
-    ping: builder.query<string, void>({
-      query: () => ({
-        url: "/ping",
-        method: "GET"
-      })
+    reducerPath: 'api',
+    baseQuery: axiosBaseQuery({
+        baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1',
     }),
     tagTypes: [
         'User',
@@ -96,8 +66,9 @@ export const api = createApi({
         'Comment',
         'Conversations',
         'LikedBlog',
+        'SavedBlog',
         'Message',
-        'Review',
+        'Review'
     ],
     endpoints: (builder) => ({
         ping: builder.query<string, void>({
