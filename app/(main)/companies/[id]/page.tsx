@@ -10,7 +10,17 @@ import { AboutTab, BlogTab, ReviewTab } from './components/tabs';
 
 export default function DetailCompanyPage() {
     const params = useParams<{ id: string }>();
-    const { company, skills, citiesArray, totalJobs, totalReviews, isError, isLoading } = useDetailCompany(params.id);
+    const {
+        company,
+        skills,
+        citiesArray,
+        totalJobs,
+        totalReviews,
+        ratingSummary,
+        recommendedPercentage,
+        isError,
+        isLoading,
+    } = useDetailCompany(params.id);
 
     const tabs: Array<{ id: string; label: string; count: number | null }> = useMemo(
         () => [
@@ -74,7 +84,14 @@ export default function DetailCompanyPage() {
                             </div>
                         </div>
                         {activeTab === 'about' && <AboutTab company={company!} skills={skills} />}
-                        {activeTab === 'reviews' && <ReviewTab />}
+                        {activeTab === 'reviews' && (
+                            <ReviewTab
+                                ratingSummary={ratingSummary!}
+                                recommendedPercentage={recommendedPercentage!}
+                                totalReviews={totalReviews}
+                                companyName={params.id}
+                            />
+                        )}
                         {activeTab === 'blogs' && <BlogTab />}
                     </div>
 

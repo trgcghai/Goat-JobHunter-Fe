@@ -24,6 +24,7 @@ export default function JobsPage() {
   const searchParams = useSearchParams();
   const initLevel = useMemo(() => searchParams.get("level") ? [searchParams.get("level") as string] : [], [searchParams]);
   const initWorkingType = useMemo(() => searchParams.get("workingType") ? [searchParams.get("workingType") as string] : [], [searchParams]);
+  const initSkills = useMemo(() => searchParams.get("skills") ? [searchParams.get("skills") as string] : [], [searchParams]);
 
   const { user, isSignedIn } = useUser();
   const {
@@ -44,7 +45,6 @@ export default function JobsPage() {
     hasPreviousPage,
     activeFiltersCount,
 
-    // Skills props can be used in JobFilter
     skillsData,
     isFetchingSkills,
     skillInputValue,
@@ -53,9 +53,9 @@ export default function JobsPage() {
     itemsPerPage,
     initialFilters: {
       location: [],
-      skills: [],
+      skills: initSkills,
       level: initLevel,
-      workingType: initWorkingType
+      workingType: initWorkingType,
     }
   });
 
