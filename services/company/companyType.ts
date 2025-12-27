@@ -1,5 +1,5 @@
 import type { IBackendRes, IModelPaginate } from '@/types/api';
-import { Company } from '@/types/model';
+import { Company, Job } from '@/types/model';
 
 export type CompanyIdRequest = number;
 
@@ -13,6 +13,10 @@ export type FetchCompaniesRequest = {
     verified?: boolean;
 };
 
+export type FetchJobsByCompanyRequest = {
+    companyId: number;
+};
+
 export type CompanyMutationResponse = IBackendRes<Company>;
 
 export type FetchCompaniesResponse = IBackendRes<IModelPaginate<Company>>;
@@ -22,3 +26,5 @@ export type FetchCompanyByIdResponse = IBackendRes<Company>;
 export type FetchGroupedAddressesByCompanyResponse = IBackendRes<Record<string, string[]>>;
 
 export type FetchSkillsByCompanyResponse = IBackendRes<Record<number, string>>;
+
+export type FetchJobsByCompanyResponse = IBackendRes<Job[]>;

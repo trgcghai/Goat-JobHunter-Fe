@@ -229,7 +229,7 @@ export const jobApi = api.injectEndpoints({
             providesTags: ['Job'],
         }),
 
-        countJobsByCompany: builder.query<CountJobsByCompanyResponse, void>({
+        countAvailableJobsByCompany: builder.query<CountJobsByCompanyResponse, void>({
             query: () => ({
                 url: `/jobs/companies/count`,
                 method: 'GET',
@@ -275,6 +275,6 @@ export const {
     useEnabledJobsMutation,
     useDisabledJobsMutation,
     useCountApplicationsQuery,
-    useCountJobsByCompanyQuery,
+    useCountAvailableJobsByCompanyQuery,
     useFetchApplicantsSuitableForJobQuery,
 } = jobApi;
