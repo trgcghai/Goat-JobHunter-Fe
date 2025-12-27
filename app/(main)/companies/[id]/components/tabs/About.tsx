@@ -3,6 +3,7 @@ import { Company } from '@/types/model';
 import { Building2, Calendar, Clock, Flag, Globe, Briefcase, MapPin } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, useMemo } from 'react';
+import { COMPANY_SIZE_OPTIONS } from '@/constants/constant';
 
 interface AboutTabProps {
     company: Company;
@@ -32,11 +33,11 @@ export default function AboutTab({ company, skills }: AboutTabProps) {
 
     return (
         <div className="space-y-6">
-            <div className="bg-white rounded-xl border border-gray-200 shadow-[0_1px_3px_rgba(0,0,0,0.04)] w-full">
-                <div className="p-5 border-b border-gray-200">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-[0_1px_3px_rgba(0,0,0,0.04)] w-full p-6">
+                <div className="pb-6 border-b border-gray-300 border-dashed">
                     <h3 className="text-xl font-bold text-gray-900">Thông tin chung</h3>
                 </div>
-                <div className="p-6">
+                <div className="py-6">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-y-6 gap-x-32">
                         <div className="flex items-start gap-4">
                             <Building2 className="w-5 h-5 text-gray-400 mt-0.5 shrink-0" />
@@ -45,7 +46,8 @@ export default function AboutTab({ company, skills }: AboutTabProps) {
                                     Quy mô công ty
                                 </span>
                                 <span className="text-gray-900 font-bold text-[16px] whitespace-nowrap">
-                                    {company.size}
+                                    {COMPANY_SIZE_OPTIONS.find((option) => option.value === company.size)?.label ||
+                                        company.size}
                                 </span>
                             </div>
                         </div>
@@ -94,7 +96,7 @@ export default function AboutTab({ company, skills }: AboutTabProps) {
                             </div>
                         </div>
                     </div>
-                    <div className="mt-6 pt-4 border-t border-gray-100 border-dashed">
+                    <div className="pt-6">
                         <a
                             href={company.website}
                             target="_blank"
@@ -108,11 +110,11 @@ export default function AboutTab({ company, skills }: AboutTabProps) {
                 </div>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-                <div className="p-5 border-b border-gray-200">
-                    <h2 className="text-[22px] font-bold text-gray-900 leading-tight">Giới thiệu công ty</h2>
+            <div className="bg-white border border-gray-200 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
+                <div className="pb-6 border-b border-gray-300 border-dashed">
+                    <h3 className="text-xl font-bold text-gray-900 leading-tight">Giới thiệu công ty</h3>
                 </div>
-                <div className="p-6">
+                <div className="py-6">
                     <div className="prose prose-sm max-w-none text-gray-800 leading-7 text-[15px]">
                         {company.description ? (
                             <div dangerouslySetInnerHTML={{ __html: company.description }} />
@@ -123,11 +125,11 @@ export default function AboutTab({ company, skills }: AboutTabProps) {
                 </div>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-                <div className="p-5 border-b border-gray-200">
-                    <h2 className="text-xl font-bold text-gray-900">Chuyên môn của chúng tôi</h2>
+            <div className="bg-white border border-gray-200 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
+                <div className="pb-6 border-b border-gray-300 border-dashed">
+                    <h3 className="text-xl font-bold text-gray-900">Chuyên môn của chúng tôi</h3>
                 </div>
-                <div className="p-6">
+                <div className="py-6">
                     <div className="flex flex-wrap gap-2">
                         {Object.entries(skills).map(([id, name]) => (
                             <Badge
@@ -142,11 +144,11 @@ export default function AboutTab({ company, skills }: AboutTabProps) {
                 </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-gray-200 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
-                <div className="p-5 border-b border-gray-200">
-                    <h2 className="text-xl font-bold text-gray-900">Địa điểm</h2>
+            <div className="bg-white rounded-xl border border-gray-200 shadow-[0_1px_3px_rgba(0,0,0,0.04)] p-6">
+                <div className="pb-6 border-b border-gray-300 border-dashed">
+                    <h3 className="text-xl font-bold text-gray-900">Địa điểm</h3>
                 </div>
-                <div className="p-6">
+                <div className="py-6">
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
                         <div className="md:col-span-5 flex flex-col gap-4 max-h-[400px] overflow-y-auto custom-scrollbar">
                             {Object.entries(groupedAddresses).map(([province, addresses]) => (

@@ -1,149 +1,149 @@
-import { useFetchAvailableCompaniesQuery } from "@/services/company/companyApi";
-import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useFetchAvailableCompaniesQuery } from '@/services/company/companyApi';
+import { useRouter } from 'next/navigation';
+import { useMemo, useState } from 'react';
 
 export interface CompanyFilters {
-  name?: string;
-  addresses?: string[];
-  verified?: boolean;
+    name?: string;
+    addresses?: string[];
+    verified?: boolean;
 }
 
 export interface UseCompanyFilterOptions {
-  initialPage?: number;
-  itemsPerPage?: number;
-  initialFilters?: CompanyFilters;
+    initialPage?: number;
+    itemsPerPage?: number;
+    initialFilters?: CompanyFilters;
 }
 
 export const useCompanyFilter = (options?: UseCompanyFilterOptions) => {
-  const { initialPage = 1, itemsPerPage = 9, initialFilters = {} } = options || {};
+    const { initialPage = 1, itemsPerPage = 9, initialFilters = {} } = options || {};
 
-  const router = useRouter();
+    const router = useRouter();
 
-  const [currentPage, setCurrentPage] = useState(initialPage);
-  const [filters, setFilters] = useState<CompanyFilters>(initialFilters);
-  const [nameInputValue, setNameInputValue] = useState<string>("");
+    const [currentPage, setCurrentPage] = useState(initialPage);
+    const [filters, setFilters] = useState<CompanyFilters>(initialFilters);
+    const [nameInputValue, setNameInputValue] = useState<string>('');
 
-  const handleNameInputChange = (value: string) => {
-    setNameInputValue(value);
-  };
-
-  const { data: companiesData, isFetching: isFetchingCompanies } = useFetchAvailableCompaniesQuery({
-    page: 1,
-    size: 50,
-    name: nameInputValue
-  });
-
-  const queryParams = useMemo(() => {
-    const params: Record<string, string | number | boolean | string[]> = {
-      page: currentPage,
-      size: itemsPerPage
+    const handleNameInputChange = (value: string) => {
+        setNameInputValue(value);
     };
 
-    // Add filters
-    if (filters.name) {
-      params.name = filters.name;
-    }
+    const { data: companiesData, isFetching: isFetchingCompanies } = useFetchAvailableCompaniesQuery({
+        page: 1,
+        size: 50,
+        name: nameInputValue,
+    });
 
-    if (filters.addresses && filters.addresses.length > 0) {
-      params.addresses = filters.addresses;
-    }
+    const queryParams = useMemo(() => {
+        const params: Record<string, string | number | boolean | string[]> = {
+            page: currentPage,
+            size: itemsPerPage,
+        };
 
-    if (filters.verified !== undefined) {
-      params.verified = filters.verified;
-    }
+        // Add filters
+        if (filters.name) {
+            params.name = filters.name;
+        }
 
-    return params;
-  }, [currentPage, itemsPerPage, filters]);
+        if (filters.addresses && filters.addresses.length > 0) {
+            params.addresses = filters.addresses;
+        }
 
-  const {
-    data: companyResponse,
-    isLoading,
-    isFetching,
-    isError,
-    error
-  } = useFetchAvailableCompaniesQuery(queryParams);
+        if (filters.verified !== undefined) {
+            params.verified = filters.verified;
+        }
 
-  const companies = companyResponse?.data?.result || [];
-  const meta = companyResponse?.data?.meta || {
-    current: 1,
-    pageSize: itemsPerPage,
-    pages: 0,
-    total: 0
-  };
+        return params;
+    }, [currentPage, itemsPerPage, filters]);
 
-  const totalPages = meta.pages;
-  const totalItems = meta.total;
+    const {
+        data: companyResponse,
+        isLoading,
+        isFetching,
+        isError,
+        error,
+    } = useFetchAvailableCompaniesQuery(queryParams);
 
-  const handleFilterChange = (newFilters: Partial<CompanyFilters>) => {
-    setFilters((prev) => ({ ...prev, ...newFilters }));
-    setCurrentPage(1);
-  };
+    const companies = companyResponse?.data?.result || [];
+    const meta = companyResponse?.data?.meta || {
+        current: 1,
+        pageSize: itemsPerPage,
+        pages: 0,
+        total: 0,
+    };
 
-  const resetFilters = () => {
-    setFilters(initialFilters);
-    setNameInputValue("");
-    setCurrentPage(1);
+    const totalPages = meta.pages;
+    const totalItems = meta.total;
 
-    router.push("/companies");
-  };
+    const handleFilterChange = (newFilters: Partial<CompanyFilters>) => {
+        setFilters((prev) => ({ ...prev, ...newFilters }));
+        setCurrentPage(1);
+    };
 
-  const goToPage = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
+    const resetFilters = () => {
+        setFilters(initialFilters);
+        setNameInputValue('');
+        setCurrentPage(1);
 
-  const nextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage((prev) => prev + 1);
-    }
-  };
+        router.push('/companies');
+    };
 
-  const previousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage((prev) => prev - 1);
-    }
-  };
+    const goToPage = (page: number) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
 
-  const hasNextPage = currentPage < totalPages;
-  const hasPreviousPage = currentPage > 1;
+    const nextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage((prev) => prev + 1);
+        }
+    };
 
-  const activeFiltersCount = Object.entries(filters).filter(([_, value]) => {
-    return value !== undefined && value !== null && value !== "" && (!Array.isArray(value) || value.length > 0);
-  }).length;
+    const previousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage((prev) => prev - 1);
+        }
+    };
 
-  return {
-    // Data
-    companies,
-    meta,
-    totalPages,
-    totalItems,
-    currentPage,
-    itemsPerPage,
+    const hasNextPage = currentPage < totalPages;
+    const hasPreviousPage = currentPage > 1;
 
-    // Loading states
-    isLoading,
-    isFetching,
-    isError,
-    error,
+    const activeFiltersCount = Object.entries(filters).filter(([_, value]) => {
+        return value !== undefined && value !== null && value !== '' && (!Array.isArray(value) || value.length > 0);
+    }).length;
 
-    // Filters
-    filters,
-    handleFilterChange,
-    resetFilters,
-    activeFiltersCount,
+    return {
+        // Data
+        companies,
+        meta,
+        totalPages,
+        totalItems,
+        currentPage,
+        itemsPerPage,
 
-    // Search inputs
-    companiesData: companiesData?.data?.result || [],
-    isFetchingCompanies,
-    nameInputValue,
-    handleNameInputChange,
+        // Loading states
+        isLoading,
+        isFetching,
+        isError,
+        error,
 
-    // Pagination
-    goToPage,
-    nextPage,
-    previousPage,
-    hasNextPage,
-    hasPreviousPage
-  };
+        // Filters
+        filters,
+        handleFilterChange,
+        resetFilters,
+        activeFiltersCount,
+
+        // Search inputs
+        companiesData: companiesData?.data?.result || [],
+        isFetchingCompanies,
+        nameInputValue,
+        handleNameInputChange,
+
+        // Pagination
+        goToPage,
+        nextPage,
+        previousPage,
+        hasNextPage,
+        hasPreviousPage,
+    };
 };
