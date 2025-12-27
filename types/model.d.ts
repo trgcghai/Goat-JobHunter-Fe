@@ -131,7 +131,6 @@ export type Job = {
     title: string;
     workingType: WorkingType;
     address: Address;
-    recruiter: Recruiter;
     skills: Skill[];
     career: Career;
     company: Company;

@@ -7,12 +7,17 @@ import ErrorMessage from '@/components/common/ErrorMessage';
 import { HeroSection } from './components';
 import { useMemo, useState } from 'react';
 import { AboutTab, BlogTab, ReviewTab } from './components/tabs';
+import JobList from './components/JobList';
+import { useCheckSavedJobsQuery } from '@/services/user/savedJobsApi';
 
 export default function DetailCompanyPage() {
     const params = useParams<{ id: string }>();
     const {
+        user,
+        isSignedIn,
         company,
         skills,
+        jobs,
         citiesArray,
         totalJobs,
         totalReviews,
@@ -20,6 +25,8 @@ export default function DetailCompanyPage() {
         recommendedPercentage,
         isError,
         isLoading,
+        isLoadingJobs,
+        isErrorJobs,
     } = useDetailCompany(params.id);
 
     const tabs: Array<{ id: string; label: string; count: number | null }> = useMemo(
@@ -31,7 +38,18 @@ export default function DetailCompanyPage() {
         [totalReviews],
     );
 
+    const { data: checkSavedJobsData } = useCheckSavedJobsQuery(
+        {
+            jobIds: jobs.map((job) => job.jobId),
+        },
+        {
+            skip: !jobs || jobs.length === 0 || !user || !isSignedIn,
+        },
+    );
+
     const [activeTab, setActiveTab] = useState<string>(tabs[0].id);
+
+    const savedJobs = useMemo(() => checkSavedJobsData?.data || [], [checkSavedJobsData]);
 
     if (!company && (isLoading || isError === false)) {
         return <LoaderSpin />;
@@ -96,13 +114,7 @@ export default function DetailCompanyPage() {
                     </div>
 
                     <div className="w-full lg:w-[380px] shrink-0">
-                        <div className="bg-white rounded border border-gray-200 shadow-[0_1px_3px_rgba(0,0,0,0.04)] sticky top-24 max-h-[calc(100vh-120px)] flex flex-col">
-                            <div className="p-4 border-b border-gray-200 bg-white flex justify-between items-center shrink-0">
-                                <h3 className="font-bold text-gray-900 text-lg">{totalJobs} Việc làm</h3>
-                                <span className="text-xs text-gray-500">Cuộn để xem</span>
-                            </div>
-                            <div className="p-3 overflow-y-auto custom-scrollbar space-y-3">okkkk</div>
-                        </div>
+                        <JobList jobs={jobs || []} isLoading={isLoadingJobs} isError={isErrorJobs} savedJobs={savedJobs}/>
                     </div>
                 </div>
             </section>

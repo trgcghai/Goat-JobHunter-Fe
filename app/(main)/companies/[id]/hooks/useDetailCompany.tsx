@@ -1,9 +1,11 @@
+import { useUser } from '@/hooks/useUser';
 import {
+    useFetchAvailableJobsByCompanyQuery,
     useFetchCompanyByNameQuery,
     useFetchGroupedAddressesByCompanyQuery,
     useFetchSkillsByCompanyQuery,
 } from '@/services/company/companyApi';
-import { useCountJobsByCompanyQuery } from '@/services/job/jobApi';
+import { useCountAvailableJobsByCompanyQuery } from '@/services/job/jobApi';
 import {
     useCalculateRecommendedPercentageByCompanyQuery,
     useCountReviewsByCompanyQuery,
@@ -13,11 +15,12 @@ import { skipToken } from '@reduxjs/toolkit/query';
 import { useMemo } from 'react';
 
 const useDetailCompany = (name: string) => {
+    const { user, isSignedIn } = useUser();
     const { data: company, isError, isLoading } = useFetchCompanyByNameQuery(name);
     const companyId = company?.data?.accountId;
 
     const { data: groupedAddresses } = useFetchGroupedAddressesByCompanyQuery(companyId ?? skipToken);
-    const { data: countJobs } = useCountJobsByCompanyQuery(undefined, {
+    const { data: countJobs } = useCountAvailableJobsByCompanyQuery(undefined, {
         skip: !companyId,
     });
     const { data: countReviews } = useCountReviewsByCompanyQuery(undefined, {
@@ -28,6 +31,16 @@ const useDetailCompany = (name: string) => {
     const { data: recommendedPercentageResponse } = useCalculateRecommendedPercentageByCompanyQuery(
         companyId ?? skipToken,
     );
+    const {
+        data: jobsResponse,
+        isLoading: isLoadingJobs,
+        isError: isErrorJobs,
+    } = useFetchAvailableJobsByCompanyQuery(
+        { companyId: companyId ?? 0 },
+        {
+            skip: !companyId,
+        },
+    );
 
     const citiesArray = useMemo(
         () => (groupedAddresses?.data ? Object.keys(groupedAddresses.data) : []),
@@ -35,8 +48,12 @@ const useDetailCompany = (name: string) => {
     );
 
     return {
+        user,
+        isSignedIn,
+
         company: company?.data,
         skills: skillsResponse?.data || [],
+        jobs: jobsResponse?.data || [],
         citiesArray,
         totalJobs: company?.data?.accountId ? countJobs?.data?.[company?.data?.accountId] || 0 : 0,
         totalReviews: company?.data?.accountId ? countReviews?.data?.[company?.data?.accountId] || 0 : 0,
@@ -45,6 +62,8 @@ const useDetailCompany = (name: string) => {
 
         isError,
         isLoading,
+        isLoadingJobs,
+        isErrorJobs,
     };
 };
 
