@@ -6,6 +6,9 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import AwardBadge from './AwardBadge';
 import useCompanyActions from '@/hooks/useCompanyActions';
+import ReviewDialog from './ReviewDialog';
+import useReviewActions from '@/hooks/useReviewActions';
+import { toast } from 'sonner';
 
 interface HeroSectionProps {
     company: Company;
@@ -16,18 +19,28 @@ interface HeroSectionProps {
 
 export default function HeroSection({ company, totalJobs, citiesArray, isFollowed }: HeroSectionProps) {
     const { handleToggleFollowCompany, isLoading: isLoadingFollow } = useCompanyActions();
+    const { handleCreateReview, isCreating, user } = useReviewActions();
 
     const [logoError, setLogoError] = useState(false);
     const [localIsFollowed, setLocalIsFollowed] = useState(isFollowed);
+    const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
     const hasValidLogo = company.logo && company.logo.trim() !== '';
 
     useEffect(() => {
         setLocalIsFollowed(isFollowed);
     }, [isFollowed]);
 
-    const handleFollowClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleFollowClick = (e: React.MouseEvent<HTMLButtonElement>): void => {
         setLocalIsFollowed(!localIsFollowed);
         handleToggleFollowCompany(e, company, localIsFollowed);
+    };
+
+    const handleReviewClick = () => {
+        if (!user) {
+            toast.error('Bạn phải đăng nhập để thực hiện chức năng này.');
+            return;
+        }
+        setIsReviewDialogOpen(true);
     };
 
     return (
@@ -72,7 +85,10 @@ export default function HeroSection({ company, totalJobs, citiesArray, isFollowe
                                 </div>
                             </div>
                             <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                                <button className="bg-primary hover:bg-primary/80 text-white font-bold py-2.5 rounded shadow-sm text-[14px] sm:text-[16px] transition-colors whitespace-nowrap cursor-pointer w-full sm:w-[150px] md:w-[180px] text-center">
+                                <button
+                                    onClick={handleReviewClick}
+                                    className="bg-primary hover:bg-primary/80 text-white font-bold py-2.5 rounded shadow-sm text-[14px] sm:text-[16px] transition-colors whitespace-nowrap cursor-pointer w-full sm:w-[150px] md:w-[180px] text-center"
+                                >
                                     Viết đánh giá
                                 </button>
                                 <button
@@ -105,6 +121,14 @@ export default function HeroSection({ company, totalJobs, citiesArray, isFollowe
                 </div>
                 <AwardBadge />
             </div>
+
+            <ReviewDialog
+                open={isReviewDialogOpen}
+                onOpenChange={setIsReviewDialogOpen}
+                company={company}
+                onSubmit={handleCreateReview}
+                isLoading={isCreating}
+            />
         </section>
     );
 }

@@ -88,6 +88,7 @@ export type Review = {
     suggestion: string;
     recommended: boolean;
     verified: boolean;
+    enabled: boolean;
 
     user: User;
     company: Company;
