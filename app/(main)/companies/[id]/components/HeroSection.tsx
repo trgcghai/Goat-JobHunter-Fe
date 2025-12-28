@@ -1,20 +1,34 @@
 'use client';
 
 import { Company } from '@/types/model';
-import { BriefcaseBusiness, MapPin } from 'lucide-react';
+import { BriefcaseBusiness, MapPin, UserMinus, UserPlus } from 'lucide-react';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AwardBadge from './AwardBadge';
+import useCompanyActions from '@/hooks/useCompanyActions';
 
 interface HeroSectionProps {
     company: Company;
     totalJobs: number;
     citiesArray: string[];
+    isFollowed: boolean;
 }
 
-export default function HeroSection({ company, totalJobs, citiesArray }: HeroSectionProps) {
+export default function HeroSection({ company, totalJobs, citiesArray, isFollowed }: HeroSectionProps) {
+    const { handleToggleFollowCompany, isLoading: isLoadingFollow } = useCompanyActions();
+
     const [logoError, setLogoError] = useState(false);
+    const [localIsFollowed, setLocalIsFollowed] = useState(isFollowed);
     const hasValidLogo = company.logo && company.logo.trim() !== '';
+
+    useEffect(() => {
+        setLocalIsFollowed(isFollowed);
+    }, [isFollowed]);
+
+    const handleFollowClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        setLocalIsFollowed(!localIsFollowed);
+        handleToggleFollowCompany(e, company, localIsFollowed);
+    };
 
     return (
         <section className="border-b border-border bg-primary/5 py-6">
@@ -61,8 +75,29 @@ export default function HeroSection({ company, totalJobs, citiesArray }: HeroSec
                                 <button className="bg-primary hover:bg-primary/80 text-white font-bold py-2.5 rounded shadow-sm text-[14px] sm:text-[16px] transition-colors whitespace-nowrap cursor-pointer w-full sm:w-[150px] md:w-[180px] text-center">
                                     Viết đánh giá
                                 </button>
-                                <button className="bg-white hover:bg-green-200 text-primary font-bold py-2.5 rounded shadow-sm text-[14px] sm:text-[16px] transition-colors whitespace-nowrap cursor-pointer border border-primary w-full sm:w-[150px] md:w-[180px] text-center">
-                                    Theo dõi
+                                <button
+                                    onClick={handleFollowClick}
+                                    disabled={isLoadingFollow}
+                                    className={`${
+                                        localIsFollowed
+                                            ? 'bg-primary hover:bg-primary/80 text-white'
+                                            : 'bg-white hover:bg-gray-100 text-primary border border-primary'
+                                    } font-bold py-2.5 rounded shadow-sm text-[14px] sm:text-[16px] transition-colors whitespace-nowrap w-full sm:w-[150px] md:w-[180px] text-center flex items-center justify-center gap-2 ${
+                                        isLoadingFollow ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                                    }`}
+                                    title={localIsFollowed ? 'Bỏ theo dõi' : 'Theo dõi'}
+                                >
+                                    {localIsFollowed ? (
+                                        <>
+                                            <UserMinus className="w-4 h-4" />
+                                            Bỏ theo dõi
+                                        </>
+                                    ) : (
+                                        <>
+                                            <UserPlus className="w-4 h-4" />
+                                            Theo dõi
+                                        </>
+                                    )}
                                 </button>
                             </div>
                         </div>

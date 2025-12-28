@@ -6,7 +6,7 @@ import { IBackendRes } from '@/types/api';
 const axiosBaseQuery =
     (
         { baseUrl }: { baseUrl: string } = {
-            baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080',
+            baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1',
         },
     ): BaseQueryFn<
         {
@@ -68,7 +68,7 @@ export const api = createApi({
         'LikedBlog',
         'SavedBlog',
         'Message',
-        'Review'
+        'Review',
     ],
     endpoints: (builder) => ({
         ping: builder.query<string, void>({

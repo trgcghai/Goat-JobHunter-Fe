@@ -6,23 +6,26 @@ import LoaderSpin from '@/components/common/LoaderSpin';
 import ErrorMessage from '@/components/common/ErrorMessage';
 import { HeroSection } from './components';
 import { useMemo, useState } from 'react';
-import { AboutTab, BlogTab, ReviewTab } from './components/tabs';
+import { AboutTab, ReviewTab } from './components/tabs';
 import JobList from './components/JobList';
-import { useCheckSavedJobsQuery } from '@/services/user/savedJobsApi';
 
 export default function DetailCompanyPage() {
     const params = useParams<{ id: string }>();
     const {
-        user,
-        isSignedIn,
         company,
         skills,
         jobs,
+
         citiesArray,
         totalJobs,
         totalReviews,
+
         ratingSummary,
         recommendedPercentage,
+
+        savedJobs,
+        isFollowed,
+
         isError,
         isLoading,
         isLoadingJobs,
@@ -33,23 +36,11 @@ export default function DetailCompanyPage() {
         () => [
             { id: 'about', label: 'Giới thiệu', count: null },
             { id: 'reviews', label: 'Đánh giá', count: totalReviews },
-            { id: 'blogs', label: 'Bài viết', count: null },
         ],
         [totalReviews],
     );
 
-    const { data: checkSavedJobsData } = useCheckSavedJobsQuery(
-        {
-            jobIds: jobs.map((job) => job.jobId),
-        },
-        {
-            skip: !jobs || jobs.length === 0 || !user || !isSignedIn,
-        },
-    );
-
     const [activeTab, setActiveTab] = useState<string>(tabs[0].id);
-
-    const savedJobs = useMemo(() => checkSavedJobsData?.data || [], [checkSavedJobsData]);
 
     if (!company && (isLoading || isError === false)) {
         return <LoaderSpin />;
@@ -67,7 +58,7 @@ export default function DetailCompanyPage() {
 
     return (
         <div className="flex-1">
-            <HeroSection company={company!} totalJobs={totalJobs} citiesArray={citiesArray} />
+            <HeroSection company={company!} totalJobs={totalJobs} citiesArray={citiesArray} isFollowed={isFollowed || false} />
             <section className="border-b border-border p-6">
                 <div className="mx-auto max-w-7xl flex flex-col lg:flex-row gap-6 px-4 sm:px-6 lg:px-8">
                     <div className="flex-1 min-w-0">
@@ -110,11 +101,15 @@ export default function DetailCompanyPage() {
                                 companyName={params.id}
                             />
                         )}
-                        {activeTab === 'blogs' && <BlogTab />}
                     </div>
 
                     <div className="w-full lg:w-[380px] shrink-0">
-                        <JobList jobs={jobs || []} isLoading={isLoadingJobs} isError={isErrorJobs} savedJobs={savedJobs}/>
+                        <JobList
+                            jobs={jobs || []}
+                            isLoading={isLoadingJobs}
+                            isError={isErrorJobs}
+                            savedJobs={savedJobs}
+                        />
                     </div>
                 </div>
             </section>
