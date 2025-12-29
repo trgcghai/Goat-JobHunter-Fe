@@ -12,7 +12,7 @@ import {
     useGetRatingByCompanyQuery,
 } from '@/services/review/reviewApi';
 import { useCheckSavedJobsQuery } from '@/services/user/savedJobsApi';
-import { useCheckCompaniesFollowedQuery } from '@/services/user/userApi';
+import { useCheckCompaniesFollowedQuery, useCheckReviewedCompaniesQuery } from '@/services/user/userApi';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useMemo } from 'react';
 
@@ -71,6 +71,18 @@ const useDetailCompany = (name: string) => {
         }
     }, [companyId, checkFollowedData, isSuccessFollowed]);
 
+    const { data: checkReviewedData, isSuccess: isSuccessReviewed } = useCheckReviewedCompaniesQuery(
+        {
+            companyIds: companyId ? [companyId] : [],
+        },
+        { skip: !companyId || !user || !isSignedIn },
+    );
+    const isReviewed = useMemo(() => {
+        if (checkReviewedData && isSuccessReviewed) {
+            return checkReviewedData.data?.find((reviewed) => reviewed.companyId === companyId)?.result || false;
+        }
+    }, [companyId, checkReviewedData, isSuccessReviewed]);
+
     return {
         user,
         isSignedIn,
@@ -86,6 +98,7 @@ const useDetailCompany = (name: string) => {
 
         savedJobs,
         isFollowed,
+        isReviewed,
 
         isError,
         isLoading,

@@ -3,6 +3,7 @@ import { buildSpringQuery } from '@/utils/buildSpringQuery';
 import {
     CheckCompaniesFollowedResponse,
     CheckRecruitersFollowedResponse,
+    CheckReviewedCompaniesResponse,
     CreateUserRequest,
     FetchUsersRequest,
     FetchUsersResponse,
@@ -14,6 +15,7 @@ import {
     GetFollowedRecruitersResponse,
     ResetPasswordRequest,
     ResetPasswordResponse,
+    ReviewedCompanyIdsRequest,
     UpdatePasswordRequest,
     UpdatePasswordResponse,
     UserIdsRequest,
@@ -151,6 +153,14 @@ export const userApi = api.injectEndpoints({
             invalidatesTags: ['User'],
         }),
 
+        checkReviewedCompanies: builder.query<CheckReviewedCompaniesResponse, ReviewedCompanyIdsRequest>({
+            query: ({ companyIds }) => ({
+                url: '/users/me/reviewed-companies/contains',
+                params: { companyIds },
+            }),
+            providesTags: ['User'],
+        }),
+
         // User Status APIs
         activateUsers: builder.mutation<UserStatusResponse, UserIdsRequest>({
             query: (data) => ({
@@ -189,6 +199,8 @@ export const {
     useCheckCompaniesFollowedQuery,
     useFollowCompaniesMutation,
     useUnfollowCompaniesMutation,
+
+    useCheckReviewedCompaniesQuery,
 
     useActivateUsersMutation,
     useDeactivateUsersMutation,

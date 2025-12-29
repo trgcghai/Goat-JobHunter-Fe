@@ -92,7 +92,7 @@ export const reviewApi = api.injectEndpoints({
                 method: 'POST',
                 data: body,
             }),
-            invalidatesTags: ['Review'],
+            invalidatesTags: ['User', 'Review', 'Company'],
         }),
     }),
 });

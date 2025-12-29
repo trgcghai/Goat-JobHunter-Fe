@@ -56,6 +56,8 @@ export type CompanyIdsRequest = {
 
 export type FollowCompaniesRequest = CompanyIdsRequest;
 
+export type ReviewedCompanyIdsRequest = CompanyIdsRequest;
+
 // Fetch with Pagination
 export type FetchUsersRequest = {
     page?: number;
@@ -123,6 +125,13 @@ export type GetFollowedCompaniesResponse = IBackendRes<Company[]>;
 export type FollowCompaniesResponse = IBackendRes<User>;
 
 export type CheckCompaniesFollowedResponse = IBackendRes<
+    {
+        companyId: number;
+        result: boolean;
+    }[]
+>;
+
+export type CheckReviewedCompaniesResponse = IBackendRes<
     {
         companyId: number;
         result: boolean;

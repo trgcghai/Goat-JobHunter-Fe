@@ -25,6 +25,7 @@ export default function DetailCompanyPage() {
 
         savedJobs,
         isFollowed,
+        isReviewed,
 
         isError,
         isLoading,
@@ -58,7 +59,7 @@ export default function DetailCompanyPage() {
 
     return (
         <div className="flex-1">
-            <HeroSection company={company!} totalJobs={totalJobs} citiesArray={citiesArray} isFollowed={isFollowed || false} />
+            <HeroSection company={company!} totalJobs={totalJobs} citiesArray={citiesArray} isFollowed={isFollowed || false} isReviewed={isReviewed || false} />
             <section className="border-b border-border p-6">
                 <div className="mx-auto max-w-7xl flex flex-col lg:flex-row gap-6 px-4 sm:px-6 lg:px-8">
                     <div className="flex-1 min-w-0">

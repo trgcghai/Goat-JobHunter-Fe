@@ -15,9 +15,10 @@ interface HeroSectionProps {
     totalJobs: number;
     citiesArray: string[];
     isFollowed: boolean;
+    isReviewed: boolean;
 }
 
-export default function HeroSection({ company, totalJobs, citiesArray, isFollowed }: HeroSectionProps) {
+export default function HeroSection({ company, totalJobs, citiesArray, isFollowed, isReviewed }: HeroSectionProps) {
     const { handleToggleFollowCompany, isLoading: isLoadingFollow } = useCompanyActions();
     const { handleCreateReview, isCreating, user } = useReviewActions();
 
@@ -31,6 +32,10 @@ export default function HeroSection({ company, totalJobs, citiesArray, isFollowe
     }, [isFollowed]);
 
     const handleFollowClick = (e: React.MouseEvent<HTMLButtonElement>): void => {
+        if (!user) {
+            toast.error('Bạn phải đăng nhập để thực hiện chức năng này.');
+            return;
+        }
         setLocalIsFollowed(!localIsFollowed);
         handleToggleFollowCompany(e, company, localIsFollowed);
     };
@@ -87,9 +92,14 @@ export default function HeroSection({ company, totalJobs, citiesArray, isFollowe
                             <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                                 <button
                                     onClick={handleReviewClick}
-                                    className="bg-primary hover:bg-primary/80 text-white font-bold py-2.5 rounded shadow-sm text-[14px] sm:text-[16px] transition-colors whitespace-nowrap cursor-pointer w-full sm:w-[150px] md:w-[180px] text-center"
+                                    disabled={isReviewed}
+                                    className={`${
+                                        isReviewed
+                                            ? 'bg-gray-300 cursor-not-allowed'
+                                            : 'bg-primary hover:bg-primary/80 cursor-pointer'
+                                    } text-white font-bold py-2.5 rounded shadow-sm text-[14px] sm:text-[16px] transition-colors whitespace-nowrap w-full sm:w-[150px] md:w-[180px] text-center`}
                                 >
-                                    Viết đánh giá
+                                    {isReviewed ? 'Đã đánh giá' : 'Viết đánh giá'}
                                 </button>
                                 <button
                                     onClick={handleFollowClick}
