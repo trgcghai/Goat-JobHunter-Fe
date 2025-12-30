@@ -98,6 +98,14 @@ export default function CompanyCard({ company, totalJobs, totalReviews, averageR
                             <span>{totalReviews || 0} đánh giá</span>
                         </div>
                     </div>
+
+                    {company.awards && company.awards.length > 0 && (
+                        <div className="mt-3 text-sm text-muted-foreground font-bold">
+                            <span>
+                                Tốt nhất về {company.awards[0].type} {company.awards[0].year}
+                            </span>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
         </Link>

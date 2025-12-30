@@ -129,7 +129,10 @@ export default function HeroSection({ company, totalJobs, citiesArray, isFollowe
                         </div>
                     </div>
                 </div>
-                <AwardBadge />
+                <AwardBadge
+                    year={company.awards && company.awards.length > 0 ? company.awards[0].year : undefined}
+                    type={company.awards && company.awards.length > 0 ? company.awards[0].type : undefined}
+                />
             </div>
 
             <ReviewDialog
