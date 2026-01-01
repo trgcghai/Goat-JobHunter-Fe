@@ -81,14 +81,17 @@ export function ReactionButton({
               className={cn(
                 "w-12 h-12 rounded-full flex items-center justify-center text-white transition-all duration-200 cursor-pointer",
                 "hover:scale-125 active:scale-95",
-                "animate-in fade-in zoom-in-50",
-                `bg-[${reaction.color}] hover:bg-[${reaction.hoverColor}]`
+                "animate-in fade-in zoom-in-50"
               )}
               title={reactionLabelMap[reaction.id as keyof typeof reactionLabelMap]}
               style={{
+                backgroundColor: reaction.color,
+                color: "#fff",
                 animationDelay: `${index * 30}ms`,
-                animationFillMode: "both"
+                animationFillMode: "both",
               }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = reaction.hoverColor)}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = reaction.color)}
             >
               <reaction.icon className="w-5 h-5" />
             </Button>

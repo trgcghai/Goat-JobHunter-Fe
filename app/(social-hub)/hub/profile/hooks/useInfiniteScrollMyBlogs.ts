@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
-import { useFetchAvailableBlogsQuery } from '@/services/blog/blogApi';
-import { Blog } from '@/types/model';
+import { useFetchBlogsByCurrentRecruiterQuery } from "@/services/blog/blogApi";
+import { Blog } from "@/types/model";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { useCheckSavedBlogsQuery } from "@/services/user/savedBlogsApi";
 import { useCheckReactBlogQuery } from "@/services/reaction/reactionApi";
@@ -8,47 +8,45 @@ import { useUser } from "@/hooks/useUser";
 
 const PAGE_SIZE = 15;
 
-export function useInfiniteScrollBlogs() {
+export function useInfiniteScrollMyBlogs() {
   const { isSignedIn } = useUser();
   const [page, setPage] = useState(1);
   const [allBlogs, setAllBlogs] = useState<Blog[]>([]);
   const [hasMore, setHasMore] = useState(true);
 
-  const { data, isLoading, isError, isFetching, isSuccess } = useFetchAvailableBlogsQuery({
-    page,
-    size: PAGE_SIZE,
-  });
+  const { data, isLoading, isError, isFetching, isSuccess } =
+    useFetchBlogsByCurrentRecruiterQuery({
+      page,
+      size: PAGE_SIZE,
+    });
 
-  // Update blogs when new data arrives
+  console.log("data", data);
+
   useEffect(() => {
     if (isSuccess && data?.data?.result) {
       const newBlogs = data.data.result;
 
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setAllBlogs((prev) => {
-        // Avoid duplicates
-        const existingIds = new Set(prev.map(blog => blog.blogId));
-        const uniqueNewBlogs = newBlogs.filter(blog => !existingIds.has(blog.blogId));
-        return page === 1 ? newBlogs : [...prev, ...uniqueNewBlogs];
+        const existingIds = new Set(prev.map((b) => b.blogId));
+        const uniqueNew = newBlogs.filter((b) => !existingIds.has(b.blogId));
+        return page === 1 ? uniqueNew : [...prev, ...uniqueNew];
       });
 
-      // Check if there are more blogs to load
       const totalPages = data.data.meta.pages || 1;
       setHasMore(page < totalPages);
     }
   }, [data, isSuccess, page]);
 
   const loadMore = useCallback(() => {
-    if (!isFetching && hasMore) {
-      setPage((prev) => prev + 1);
-    }
+    if (!isFetching && hasMore) setPage((prev) => prev + 1);
   }, [isFetching, hasMore]);
 
   const { targetRef } = useInfiniteScroll({
     onLoadMore: loadMore,
     hasMore,
     isLoading: isFetching,
-    rootMargin: '200px',
+    rootMargin: "200px",
   });
 
   const reset = useCallback(() => {

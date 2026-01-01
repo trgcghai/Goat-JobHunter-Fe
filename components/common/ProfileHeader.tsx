@@ -14,6 +14,7 @@ import {
   TooltipTrigger
 } from "@/components/ui/tooltip";
 import { HasApplicant } from "@/components/common/HasRole";
+import { ApplicantResponse } from "@/types/dto";
 
 interface ProfileHeaderProps {
   fullPage?: boolean;
@@ -76,7 +77,7 @@ export default function ProfileHeader({ fullPage = false, type }: ProfileHeaderP
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="flex items-center gap-2 py-1 rounded-full">
-                          {user.availableStatus ? (
+                          {(user as ApplicantResponse).availableStatus ? (
                             <Eye className="h-5 w-5 text-green-600" />
                           ) : (
                             <EyeOff className="h-5 w-5 text-destructive" />
@@ -85,7 +86,7 @@ export default function ProfileHeader({ fullPage = false, type }: ProfileHeaderP
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>
-                          {user.availableStatus
+                          {(user as ApplicantResponse).availableStatus
                             ? "Hồ sơ của bạn đang công khai, có thể tìm thấy bởi các nhà tuyển dụng"
                             : "Hồ sơ của bạn đang ẩn, không thể tìm thấy bởi các nhà tuyển dụng"}
                         </p>
