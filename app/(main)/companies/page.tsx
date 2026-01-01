@@ -6,7 +6,6 @@ import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from '@/components/u
 import CustomPagination from '@/components/common/CustomPagination';
 import { TrendingUp } from 'lucide-react';
 import { useCompanyFilter } from './hooks/useCompaniesFilter';
-import { useCountJobsByCompanyQuery } from '@/services/job/jobApi';
 import {
     useAverageRatingsByCompanyQuery,
     useCountAllReviewsQuery,
@@ -16,6 +15,7 @@ import {
 import { useMemo } from 'react';
 import { CompanyCard, CompanyFilter, LatestReviewCard } from './components';
 import { formatNumberWithComma } from '@/utils/formatCurrency';
+import { useCountAvailableJobsByCompanyQuery } from '@/services/job/jobApi';
 
 export default function CompaniesPage() {
     const {
@@ -47,7 +47,7 @@ export default function CompaniesPage() {
         },
     });
 
-    const { data: countJobs } = useCountJobsByCompanyQuery();
+    const { data: countJobs } = useCountAvailableJobsByCompanyQuery();
     const { data: countReviews } = useCountReviewsByCompanyQuery();
     const { data: averageRatings } = useAverageRatingsByCompanyQuery();
     const { data: reviewResponses } = useLatestReviewsQuery();

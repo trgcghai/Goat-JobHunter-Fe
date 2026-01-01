@@ -3,6 +3,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { useFetchGroupedAddressesByCompanyQuery } from '@/services/company/companyApi';
 import { Company } from '@/types/model';
+import { slugify } from '@/utils/slug';
 import { MapPin, Star, Briefcase, MessageSquare } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -28,12 +29,12 @@ export default function CompanyCard({ company, totalJobs, totalReviews, averageR
     const remainingCitiesCount = citiesArray.length - 1;
 
     return (
-        <Link href={`/companies/${company.accountId}`} className="h-full">
+        <Link href={`/companies/${slugify(company.name)}`} className="h-full">
             <Card className="h-full flex flex-col overflow-hidden hover:shadow-2xl transition-shadow duration-300 cursor-pointer p-0">
                 <div className="relative h-36 bg-gradient-to-r from-blue-500 to-purple-600">
                     {hasValidCoverPhoto && !imageError ? (
                         <Image
-                            src={company.coverPhoto}
+                            src={company.coverPhoto!}
                             alt={`${company.name} cover`}
                             className="w-full h-full object-cover border-0 border-b"
                             width={400}
@@ -46,7 +47,7 @@ export default function CompanyCard({ company, totalJobs, totalReviews, averageR
                         <div className="w-20 h-20 rounded-lg bg-white shadow-lg flex items-center justify-center overflow-hidden shrink-0 p-1">
                             {hasValidLogo && !logoError ? (
                                 <Image
-                                    src={company.logo}
+                                    src={company.logo!}
                                     alt={`${company.name} logo`}
                                     className="w-full h-full object-cover border-2 shadow"
                                     width={80}

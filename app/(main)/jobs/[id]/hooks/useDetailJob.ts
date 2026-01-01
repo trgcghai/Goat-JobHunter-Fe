@@ -1,152 +1,136 @@
-import { useUser } from "@/hooks/useUser";
-import {
-  useCountApplicationsQuery,
-  useFetchJobByIdQuery,
-  useFetchRelatedJobsQuery
-} from "@/services/job/jobApi";
-import { useCheckSavedJobsQuery } from "@/services/user/savedJobsApi";
-import { useMemo, useState } from "react";
-import { toast } from "sonner";
-import { useFetchRecruiterByIdQuery } from "@/services/recruiter/recruiterApi";
+import { useUser } from '@/hooks/useUser';
+import { useCountApplicationsQuery, useFetchJobByIdQuery, useFetchRelatedJobsQuery } from '@/services/job/jobApi';
+import { useCheckSavedJobsQuery } from '@/services/user/savedJobsApi';
+import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
+import { useFetchCompanyByIdQuery } from '@/services/company/companyApi';
 
 const useDetailJob = (id: string) => {
-  const { user, isSignedIn } = useUser();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [page, setPage] = useState(1);
+    const { user, isSignedIn } = useUser();
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [page, setPage] = useState(1);
 
-  const { data, isLoading, isError, isSuccess } = useFetchJobByIdQuery(id, {
-    skip: !id // Skip if id is not available
-  });
+    const { data, isLoading, isError, isSuccess } = useFetchJobByIdQuery(id, {
+        skip: !id,
+    });
 
-  const job = useMemo(() => data?.data, [data]);
+    const job = useMemo(() => data?.data, [data]);
 
-  const {
-    data: recruiterData,
-    isLoading: isLoadingRecruiter,
-    isError: isErrorRecruiter
-  } = useFetchRecruiterByIdQuery(job?.recruiter.userId || -1, {
-    skip: !job || !job.recruiter || !job.recruiter.userId
-  });
+    const {
+        data: companyData,
+        isLoading: isLoadingCompany,
+        isError: isErrorCompany,
+    } = useFetchCompanyByIdQuery(job?.company.accountId || -1, {
+        skip: !job || !job.company || !job.company.accountId,
+    });
 
-  const recruiter = useMemo(() => recruiterData?.data, [recruiterData]);
+    const company = useMemo(() => companyData?.data, [companyData]);
 
-  const { data: checkSavedJobData, isSuccess: isCheckSavedSuccess } =
-    useCheckSavedJobsQuery(
-      {
-        jobIds: [Number(id)]
-      },
-      {
-        skip: !id || !isSignedIn || !user // Skip if job is not available or user is not signed in
-      }
+    const { data: checkSavedJobData, isSuccess: isCheckSavedSuccess } = useCheckSavedJobsQuery(
+        {
+            jobIds: [Number(id)],
+        },
+        {
+            skip: !id || !isSignedIn || !user,
+        },
     );
 
-  const isSaved = useMemo(() => {
-    if (isCheckSavedSuccess && checkSavedJobData) {
-      return checkSavedJobData.data?.find(
-        (savedJob) => savedJob.jobId === Number(id)
-      )?.result || false;
-    }
-    return false;
-  }, [checkSavedJobData, id, isCheckSavedSuccess]);
+    const isSaved = useMemo(() => {
+        if (isCheckSavedSuccess && checkSavedJobData) {
+            return checkSavedJobData.data?.find((savedJob) => savedJob.jobId === Number(id))?.result || false;
+        }
+        return false;
+    }, [checkSavedJobData, id, isCheckSavedSuccess]);
 
-  const {
-    data: relatedJobsData,
-    isLoading: isRelatedJobsLoading,
-    isError: isRelatedJobsError
-  } = useFetchRelatedJobsQuery(
-    {
-      skills: job?.skills.map((skill) => skill.skillId) || [],
-      page,
-      size: 9
-    },
-    { skip: !id || !job || !job.skills }
-  );
-
-  const relatedJobs = useMemo(
-    () =>
-      (relatedJobsData?.data?.result || []).filter(
-        (job) => job.jobId.toString() != id
-      ),
-    [id, relatedJobsData?.data?.result]
-  );
-
-  const relatedJobMeta = useMemo(
-    () => relatedJobsData?.data?.meta,
-    [relatedJobsData?.data?.meta]
-  );
-
-  const { data: checkSavedJobsData } =
-    useCheckSavedJobsQuery(
-      {
-        jobIds: relatedJobs.map(j => j.jobId)
-      },
-      {
-        skip: !relatedJobs || relatedJobs.length === 0 || !isSignedIn || !user // Skip if job is not available or user is not signed in
-      }
+    const {
+        data: relatedJobsData,
+        isLoading: isRelatedJobsLoading,
+        isError: isRelatedJobsError,
+    } = useFetchRelatedJobsQuery(
+        {
+            skills: job?.skills.map((skill) => skill.skillId) || [],
+            page,
+            size: 9,
+        },
+        { skip: !id || !job || !job.skills },
     );
 
-  const savedJobs = useMemo(() => checkSavedJobsData?.data || [], [checkSavedJobsData]);
+    const relatedJobs = useMemo(
+        () => (relatedJobsData?.data?.result || []).filter((job) => job.jobId.toString() != id),
+        [id, relatedJobsData?.data?.result],
+    );
 
-  const { data: countApplicationsData } = useCountApplicationsQuery(
-    { jobIds: job ? [job.jobId] : [] },
-    {
-      skip: !job
-    }
-  );
+    const relatedJobMeta = useMemo(() => relatedJobsData?.data?.meta, [relatedJobsData?.data?.meta]);
 
-  const numberOfApplications = useMemo(() => {
-    if (countApplicationsData) {
-      return (
-        countApplicationsData.data?.find((item) => item.jobId == job?.jobId)?.applications || 0
-      );
-    }
-    return 0;
-  }, [countApplicationsData, job?.jobId]);
+    const { data: checkSavedJobsData } = useCheckSavedJobsQuery(
+        {
+            jobIds: relatedJobs.map((j) => j.jobId),
+        },
+        {
+            skip: !relatedJobs || relatedJobs.length === 0 || !isSignedIn || !user, // Skip if job is not available or user is not signed in
+        },
+    );
 
-  const handleOpenCVDialog = () => {
-    if (!isSignedIn || !user) {
-      toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
-      return;
-    }
+    const savedJobs = useMemo(() => checkSavedJobsData?.data || [], [checkSavedJobsData]);
 
-    if (!job) {
-      toast.error("Có lỗi khi ứng tuyển công việc. Vui lòng thử lại sau.");
-      return;
-    }
+    const { data: countApplicationsData } = useCountApplicationsQuery(
+        { jobIds: job ? [job.jobId] : [] },
+        {
+            skip: !job,
+        },
+    );
 
-    setIsDialogOpen(true);
-  };
+    const numberOfApplications = useMemo(() => {
+        if (countApplicationsData) {
+            return countApplicationsData.data?.find((item) => item.jobId == job?.jobId)?.applications || 0;
+        }
+        return 0;
+    }, [countApplicationsData, job?.jobId]);
 
-  return {
-    // states
-    isSaved,
-    isDialogOpen,
-    setIsDialogOpen,
+    const handleOpenCVDialog = () => {
+        if (!isSignedIn || !user) {
+            toast.error('Bạn phải đăng nhập để thực hiện chức năng này.');
+            return;
+        }
 
-    // data from api
-    job,
-    isLoading,
-    isError,
-    isSuccess,
+        if (!job) {
+            toast.error('Có lỗi khi ứng tuyển công việc. Vui lòng thử lại sau.');
+            return;
+        }
 
-    // recruiter
-    recruiter,
-    isLoadingRecruiter,
-    isErrorRecruiter,
+        setIsDialogOpen(true);
+    };
 
-    relatedJobs,
-    relatedJobMeta,
-    savedJobs,
-    isRelatedJobsLoading,
-    isRelatedJobsError,
-    page,
-    setPage,
+    return {
+        // states
+        isSaved,
+        isDialogOpen,
+        setIsDialogOpen,
 
-    numberOfApplications,
+        // data from api
+        job,
+        isLoading,
+        isError,
+        isSuccess,
 
-    // handlers and functions
-    handleOpenCVDialog
-  };
+        // company
+        company,
+        isLoadingCompany,
+        isErrorCompany,
+
+        relatedJobs,
+        relatedJobMeta,
+        savedJobs,
+        isRelatedJobsLoading,
+        isRelatedJobsError,
+        page,
+        setPage,
+
+        numberOfApplications,
+
+        // handlers and functions
+        handleOpenCVDialog,
+    };
 };
 
 export default useDetailJob;

@@ -108,55 +108,71 @@ export const MAX_IMAGE_UPLOAD = 90;
 export const MAX_DISPLAYED_IMAGES = 4;
 
 export const reactions: Reaction[] = [
-  {
-    id: ReactionType.LIKE,
-    icon: ThumbsUp,
-    label: capitalize(ReactionType.LIKE),
-    color: "#0A66C2",
-    hoverColor: "#004182"
-  },
-  {
-    id: ReactionType.CELEBRATE,
-    icon: PartyPopper,
-    label: capitalize(ReactionType.CELEBRATE),
-    color: "#6DAF3D",
-    hoverColor: "#5A9130"
-  },
-  {
-    id: ReactionType.SUPPORT,
-    icon: Clover,
-    label: capitalize(ReactionType.SUPPORT),
-    color: "#DF704D",
-    hoverColor: "#C95A3A"
-  },
-  {
-    id: ReactionType.LOVE,
-    icon: Heart,
-    label: capitalize(ReactionType.LOVE),
-    color: "#DF704D",
-    hoverColor: "#C95A3A"
-  },
-  {
-    id: ReactionType.INSIGHTFUL,
-    icon: Lightbulb,
-    label: capitalize(ReactionType.INSIGHTFUL),
-    color: "#F5C344",
-    hoverColor: "#D9AB2A"
-  },
-  {
-    id: ReactionType.FUNNY,
-    icon: Smile,
-    label: capitalize(ReactionType.FUNNY),
-    color: "#F5C344",
-    hoverColor: "#D9AB2A"
-  }
-]
+    {
+        id: ReactionType.LIKE,
+        icon: ThumbsUp,
+        label: capitalize(ReactionType.LIKE),
+        color: '#0A66C2',
+        hoverColor: '#004182',
+    },
+    {
+        id: ReactionType.CELEBRATE,
+        icon: PartyPopper,
+        label: capitalize(ReactionType.CELEBRATE),
+        color: '#6DAF3D',
+        hoverColor: '#5A9130',
+    },
+    {
+        id: ReactionType.SUPPORT,
+        icon: Clover,
+        label: capitalize(ReactionType.SUPPORT),
+        color: '#DF704D',
+        hoverColor: '#C95A3A',
+    },
+    {
+        id: ReactionType.LOVE,
+        icon: Heart,
+        label: capitalize(ReactionType.LOVE),
+        color: '#DF704D',
+        hoverColor: '#C95A3A',
+    },
+    {
+        id: ReactionType.INSIGHTFUL,
+        icon: Lightbulb,
+        label: capitalize(ReactionType.INSIGHTFUL),
+        color: '#F5C344',
+        hoverColor: '#D9AB2A',
+    },
+    {
+        id: ReactionType.FUNNY,
+        icon: Smile,
+        label: capitalize(ReactionType.FUNNY),
+        color: '#F5C344',
+        hoverColor: '#D9AB2A',
+    },
+];
 
 export const reactionLabelMap: Record<ReactionType, string> = {
-  [ReactionType.LIKE]: "Thích",
-  [ReactionType.CELEBRATE]: "Chúc mừng",
-  [ReactionType.SUPPORT]: "Ủng hộ",
-  [ReactionType.LOVE]: "Yêu",
-  [ReactionType.INSIGHTFUL]: "Sâu sắc",
-  [ReactionType.FUNNY]: "Hài hước"
+    [ReactionType.LIKE]: 'Thích',
+    [ReactionType.CELEBRATE]: 'Chúc mừng',
+    [ReactionType.SUPPORT]: 'Ủng hộ',
+    [ReactionType.LOVE]: 'Yêu',
+    [ReactionType.INSIGHTFUL]: 'Sâu sắc',
+    [ReactionType.FUNNY]: 'Hài hước',
 };
+
+export const COMPANY_SIZE_OPTIONS = [
+    { value: 'STARTUP', label: 'Khởi nghiệp' },
+    { value: 'SMALL', label: 'Nhỏ' },
+    { value: 'MEDIUM', label: 'Vừa' },
+    { value: 'LARGE', label: 'Lớn' },
+    { value: 'ENTERPRISE', label: 'Tập đoàn' },
+];
+
+export const RATING_TYPES = [
+    { value: 'salaryBenefits', label: 'Lương thưởng & phúc lợi' },
+    { value: 'trainingLearning', label: 'Đào tạo & học hỏi' },
+    { value: 'managementCaresAboutMe', label: 'Sự quan tâm đến nhân viên' },
+    { value: 'cultureFun', label: 'Văn hóa công ty' },
+    { value: 'officeWorkspace', label: 'Văn phòng làm việc' },
+];

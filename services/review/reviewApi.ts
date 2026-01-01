@@ -1,8 +1,38 @@
 import { api } from '../api';
-import { AverageRatingsByCompanyResponse, CountAllReviewsResponse, CountReviewsByCompanyResponse, LatestReviewsResponse } from './reviewType';
+import {
+    AverageRatingsByCompanyResponse,
+    CalculateRecommendedPercentageByCompanyResponse,
+    CountAllReviewsResponse,
+    CountReviewsByCompanyResponse,
+    LatestReviewsResponse,
+    RatingSummaryByCompanyResponse,
+    ReviewsByCompanyRequest,
+    ReviewsByCompanyResponse,
+} from './reviewType';
+import { CompanyIdRequest } from '../company/companyType';
+import { buildSpringQuery } from '@/utils/buildSpringQuery';
 
 export const reviewApi = api.injectEndpoints({
     endpoints: (builder) => ({
+        getAllReviewsByCompany: builder.query<ReviewsByCompanyResponse, ReviewsByCompanyRequest>({
+            query: (params) => {
+                const { params: queryParams } = buildSpringQuery({
+                    params,
+                    filterFields: ['name', 'verified'],
+                    textSearchFields: ['name'],
+                    defaultSort: 'createdAt,desc',
+                    sortableFields: ['name', 'createdAt', 'updatedAt'],
+                });
+
+                return {
+                    url: `/reviews/companies/${params.companyName}`,
+                    method: 'GET',
+                    params: queryParams,
+                };
+            },
+            providesTags: ['Review'],
+        }),
+
         latestReviews: builder.query<LatestReviewsResponse, void>({
             query: () => ({
                 url: `/reviews/latest`,
@@ -34,12 +64,34 @@ export const reviewApi = api.injectEndpoints({
             }),
             providesTags: ['Review'],
         }),
+
+        getRatingByCompany: builder.query<RatingSummaryByCompanyResponse, CompanyIdRequest>({
+            query: (companyId) => ({
+                url: `/reviews/companies/${companyId}/ratings/summary`,
+                method: 'GET',
+            }),
+            providesTags: ['Review'],
+        }),
+
+        calculateRecommendedPercentageByCompany: builder.query<
+            CalculateRecommendedPercentageByCompanyResponse,
+            CompanyIdRequest
+        >({
+            query: (companyId) => ({
+                url: `/reviews/companies/${companyId}/recommendation-rate`,
+                method: 'GET',
+            }),
+            providesTags: ['Review'],
+        }),
     }),
 });
 
 export const {
+    useGetAllReviewsByCompanyQuery,
     useLatestReviewsQuery,
     useCountReviewsByCompanyQuery,
     useAverageRatingsByCompanyQuery,
     useCountAllReviewsQuery,
+    useGetRatingByCompanyQuery,
+    useCalculateRecommendedPercentageByCompanyQuery,
 } = reviewApi;
