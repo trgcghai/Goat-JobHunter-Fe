@@ -38,7 +38,6 @@ export const UserSignUpSchema = z
     phone: z
       .string()
       .regex(/^\d{10}$/, "Số điện thoại không hợp lệ"),
-    address: z.string().nonempty("Địa chỉ không được để trống"),
     password: z.string().nonempty("Mật khẩu không được để trống"),
     confirmPassword: z
       .string()
@@ -53,7 +52,7 @@ export const UserSignUpSchema = z
   .refine((data) => data.password === data.confirmPassword, {
     message: "Mật khẩu và xác nhận mật khẩu không khớp",
     path: ["confirmPassword"],
-  })
+  });
 
 export type TUserSignUpSchema = z.infer<typeof UserSignUpSchema>;
 
