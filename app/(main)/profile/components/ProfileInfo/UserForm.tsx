@@ -10,13 +10,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useUser } from "@/hooks/useUser";
-import { ApplicantResponse, RecruiterResponse, UserResponse } from "@/types/dto";
+import { ApplicantResponse, RecruiterResponse } from "@/types/dto";
 import { Education, Gender, Level } from "@/types/enum";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { capitalize } from "lodash";
-import { Loader2 } from "lucide-react";
+import { Loader2, Plus, Trash2 } from "lucide-react";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { HasApplicant, HasRecruiter } from "@/components/common/HasRole";
 import { ROLE } from "@/constants/constant";
@@ -42,13 +42,19 @@ const UserForm = ({ open, onOpenChange, profile }: UserFormProps) => {
       gender: Gender.NAM,
       email: "",
       phone: "",
-      address: "",
+      addresses: [{ province: "", fullAddress: "" }],
       education: Education.SCHOOL,
       level: Level.INTERN,
       availableStatus: true,
-      position: "",
-    },
+      position: ""
+    }
   });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "addresses"
+  });
+
 
   useEffect(() => {
     const baseData = {
@@ -56,22 +62,32 @@ const UserForm = ({ open, onOpenChange, profile }: UserFormProps) => {
       username: profile?.username || "",
       email: profile.email || "",
       phone: profile?.phone || "",
-      address: profile?.address || "",
+      addresses: profile?.addresses?.length > 0
+        ? profile.addresses.map(addr => ({
+          addressId: addr.addressId,
+          province: addr.province,
+          fullAddress: addr.fullAddress
+        }))
+        : [{ province: "", fullAddress: "" }],
       dob: profile?.dob ? new Date(profile.dob) : new Date(),
-      gender: profile?.gender || Gender.NAM,
+      gender: profile?.gender || Gender.NAM
     };
 
     if (isApplicant) {
+
+      // Applicant specific fields
       form.reset({
         ...baseData,
         education: (profile as ApplicantResponse)?.education || Education.SCHOOL,
         level: (profile as ApplicantResponse)?.level || Level.INTERN,
-        availableStatus: (profile as ApplicantResponse)?.availableStatus ?? true,
+        availableStatus: (profile as ApplicantResponse)?.availableStatus ?? true
       });
     } else {
+
+      // Recruiter specific fields
       form.reset({
         ...baseData,
-        position: (profile as RecruiterResponse)?.position || "",
+        position: (profile as RecruiterResponse)?.position || ""
       });
     }
   }, [profile, form, isApplicant]);
@@ -89,7 +105,7 @@ const UserForm = ({ open, onOpenChange, profile }: UserFormProps) => {
       gender: data.gender,
       email: data.email,
       phone: data.phone,
-      address: data.address,
+      addresses: data.addresses
     };
 
     if (isApplicant) {
@@ -97,12 +113,12 @@ const UserForm = ({ open, onOpenChange, profile }: UserFormProps) => {
         ...basePayload,
         education: data.education!,
         level: data.level!,
-        availableStatus: data.availableStatus!,
+        availableStatus: data.availableStatus!
       });
     } else {
       await handleUpdateRecruiter(profile.accountId, {
         ...basePayload,
-        position: data.position!,
+        position: data.position!
       });
     }
 
@@ -203,19 +219,75 @@ const UserForm = ({ open, onOpenChange, profile }: UserFormProps) => {
                 />
               </div>
 
-              <FormField
-                control={form.control}
-                name="address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel required>Địa chỉ</FormLabel>
-                    <FormControl>
-                      <Input {...field} className="rounded-xl" placeholder="Địa chỉ liên hệ" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label required>Địa chỉ</Label>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => append({ province: "", fullAddress: "" })}
+                    className="rounded-xl"
+                  >
+                    <Plus className="h-4 w-4 mr-1" />
+                    Thêm địa chỉ
+                  </Button>
+                </div>
+
+                {fields.map((field, index) => (
+                  <div key={field.id} className="p-4 border rounded-xl space-y-3 bg-muted/30">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium">Địa chỉ {index + 1}</span>
+                      {fields.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => remove(index)}
+                        >
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      )}
+                    </div>
+
+                    <FormField
+                      control={form.control}
+                      name={`addresses.${index}.province`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel required>Tỉnh/Thành phố</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              placeholder="VD: Hồ Chí Minh"
+                              className="rounded-xl"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name={`addresses.${index}.fullAddress`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel required>Địa chỉ chi tiết</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              placeholder="VD: 123 Đường ABC, Quận 1"
+                              className="rounded-xl"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                ))}
+              </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormField

@@ -37,7 +37,6 @@ export type Account = {
 };
 
 export type User = Account & {
-    address: string;
     phone: string;
     dob: string;
     fullName: string;

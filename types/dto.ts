@@ -1,9 +1,9 @@
-import { Contact, Role } from "@/types/model";
+import { Address, Contact, Role } from "@/types/model";
 import { Education, Gender, Level } from "@/types/enum";
 
 export type FetchCurrentRecruiterDto = {
   userId: number,
-  address: string,
+  addresses: Address[],
   contact: Contact,
   username: string,
   fullName: string,
@@ -20,7 +20,7 @@ export type FetchCurrentRecruiterDto = {
 
 export type FetchCurrentApplicantDto = {
   userId: number,
-  address: string,
+  addresses: Address[],
   contact: Contact,
   username: string,
   fullName: string,
@@ -40,7 +40,7 @@ export type LoginResponseDto = {
   accountId: number;
   email: string;
   phone: string;
-  address: string;
+  addresses: Address[],
   dob: string;
   gender: Gender
   fullName: string;
@@ -56,7 +56,7 @@ export type UserResponse = {
   username: string;
   email: string;
   phone: string;
-  address: string;
+  addresses: Address[],
   fullName: string;
   avatar: string;
   gender: Gender;
@@ -90,4 +90,40 @@ export type RecruiterResponse = UserResponse & {
 export type CreateBlogDto = {
   content: string;
   files?: File[]
+}
+
+export type ApplicantUpdateDto = {
+  accountId: number;
+  username?: string;
+  fullName?: string;
+  email?: string;
+  phone?: string;
+  addresses?: {
+    addressId?: number;
+    province: string;
+    fullAddress: string;
+  }[];
+  dob?: string;
+  gender?: Gender;
+  education?: Education;
+  level?: Level;
+  avatar?: string;
+  availableStatus?: boolean;
+}
+
+export type RecruiterUpdateDto = {
+  accountId: number;
+  username?: string;
+  fullName?: string;
+  email?: string;
+  phone?: string;
+  addresses?: {
+    addressId?: number;
+    province: string;
+    fullAddress: string;
+  }[];
+  dob?: string;
+  gender?: Gender;
+  position?: string;
+  avatar?: string;
 }

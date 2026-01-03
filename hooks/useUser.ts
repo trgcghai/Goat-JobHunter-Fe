@@ -13,12 +13,12 @@ import {
   VerifyCodeRequest
 } from "@/services/auth/authType";
 import { useCreateUserMutation, useResetPasswordMutation, useUpdatePasswordMutation } from "@/services/user/userApi";
-import { Applicant, Recruiter } from "@/types/model";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import { toast } from "sonner";
 import { useUpdateRecruiterMutation } from "@/services/recruiter/recruiterApi";
 import { TUserSignUpSchema } from "@/app/(auth)/components/schemas";
+import { ApplicantUpdateDto, RecruiterUpdateDto } from "@/types/dto";
 
 export function useUser() {
   const router = useRouter();
@@ -294,14 +294,14 @@ export function useUser() {
    * Update applicant information
    */
   const handleUpdateApplicant = useCallback(
-    async (accountId: number, data: Partial<Applicant>) => {
+    async (accountId: number, data: Partial<ApplicantUpdateDto>) => {
       try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const updatedData: Record<string, any> = {};
 
         // Chỉ thêm các field không undefined/null
         for (const key in data) {
-          const value = data[key as keyof Applicant];
+          const value = data[key as keyof ApplicantUpdateDto];
           if (value != undefined) {
             updatedData[key] = value;
           }
@@ -314,8 +314,8 @@ export function useUser() {
 
         // @ts-expect-error Không cần check kỹ lưỡng kiểu dữ liệu ở đây
         const response = await updateApplicant({
+          ...updatedData,
           accountId,
-          ...updatedData
         });
 
         if (response.error) {
@@ -336,14 +336,14 @@ export function useUser() {
    * Update recruiter information
    */
   const handleUpdateRecruiter = useCallback(
-    async (accountId: number, data: Partial<Recruiter>) => {
+    async (accountId: number, data: Partial<RecruiterUpdateDto>) => {
       try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const updatedData: Record<string, any> = {};
 
         // Chỉ thêm các field không undefined/null
         for (const key in data) {
-          const value = data[key as keyof Recruiter];
+          const value = data[key as keyof RecruiterUpdateDto];
           if (value) {
             updatedData[key] = value;
           }
@@ -354,15 +354,10 @@ export function useUser() {
           return;
         }
 
-        console.log("check updatedData:", {
-          accountId,
-          ...updatedData
-        });
-
         // @ts-expect-error Không cần check kỹ lưỡng kiểu dữ liệu ở đây
         const response = await updateRecruiter({
+          ...updatedData,
           accountId,
-          ...updatedData
         });
 
         if (response.error) {
