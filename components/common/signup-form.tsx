@@ -33,7 +33,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
+import { Plus, Trash2 } from "lucide-react";
 
 export function SignupForm({
  className,
@@ -49,7 +50,6 @@ export function SignupForm({
       fullName: "",
       username: "",
       phone: "",
-      address: "",
       password: "",
       confirmPassword: "",
       type: SignUpType.APPLICANT
@@ -86,7 +86,7 @@ export function SignupForm({
     >
       <Card>
         <CardHeader>
-          <Link href="/" className="flex items-center gap-2 mb-4">
+          <Link href="/" className="flex items-center gap-2 mb-2">
             <Image
               src="/logo.png"
               alt="GOAT Logo"
@@ -104,7 +104,7 @@ export function SignupForm({
         </CardHeader>
         <CardContent>
           <Form {...signUpForm}>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
               <FormField
                 control={control}
                 name="email"
@@ -205,7 +205,7 @@ export function SignupForm({
                   control={control}
                   name="phone"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="col-span-2">
                       <FormLabel required className="capitalize">
                         Số điện thoại
                       </FormLabel>
@@ -215,27 +215,6 @@ export function SignupForm({
                           placeholder="0123456789"
                           className="rounded-xl"
                           maxLength={10}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={control}
-                  name="address"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel required className="capitalize">
-                        Địa chỉ
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="text"
-                          placeholder="123 Đường ABC, Quận 1"
-                          className="rounded-xl"
                           {...field}
                         />
                       </FormControl>
