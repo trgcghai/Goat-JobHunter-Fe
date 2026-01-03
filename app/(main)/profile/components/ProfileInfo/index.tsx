@@ -116,16 +116,25 @@ export default function ProfileInfo() {
           </div>
 
           <div className="space-y-2">
-            <Label className="capitalize" htmlFor="address">
-              Địa chỉ
-            </Label>
-            <Input
-              id="address"
-              type="text"
-              value={user?.address ? user?.address : "Chưa cập nhật"}
-              disabled
-              className="rounded-xl text-gray-800"
-            />
+            <Label className="capitalize">Địa chỉ</Label>
+            {user?.addresses && user.addresses.length > 0 ? (
+              <div className="space-y-2">
+                {user.addresses.map((addr, index) => (
+                  <Input
+                    key={addr.addressId || index}
+                    value={`${addr.province} - ${addr.fullAddress}`}
+                    disabled
+                    className="rounded-xl text-gray-800"
+                  />
+                ))}
+              </div>
+            ) : (
+              <Input
+                value="Chưa cập nhật"
+                disabled
+                className="rounded-xl text-gray-800"
+              />
+            )}
           </div>
 
           <HasApplicant user={user}>
