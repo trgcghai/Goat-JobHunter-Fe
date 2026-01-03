@@ -11,6 +11,8 @@ import {
     useCountReviewsByCompanyQuery,
     useGetRatingByCompanyQuery,
 } from '@/services/review/reviewApi';
+import { useCheckSavedJobsQuery } from '@/services/user/savedJobsApi';
+import { useCheckCompaniesFollowedQuery, useCheckReviewedCompaniesQuery } from '@/services/user/userApi';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useMemo } from 'react';
 
@@ -47,6 +49,40 @@ const useDetailCompany = (name: string) => {
         [groupedAddresses],
     );
 
+    const { data: checkSavedJobsData } = useCheckSavedJobsQuery(
+        {
+            jobIds: jobsResponse?.data?.map((job) => job.jobId) || [],
+        },
+        {
+            skip: !jobsResponse || jobsResponse.data?.length === 0 || !user || !isSignedIn,
+        },
+    );
+    const savedJobs = useMemo(() => checkSavedJobsData?.data || [], [checkSavedJobsData]);
+
+    const { data: checkFollowedData, isSuccess: isSuccessFollowed } = useCheckCompaniesFollowedQuery(
+        {
+            companyIds: companyId ? [companyId] : [],
+        },
+        { skip: !companyId || !user || !isSignedIn },
+    );
+    const isFollowed = useMemo(() => {
+        if (checkFollowedData && isSuccessFollowed) {
+            return checkFollowedData.data?.find((followed) => followed.companyId === companyId)?.result || false;
+        }
+    }, [companyId, checkFollowedData, isSuccessFollowed]);
+
+    const { data: checkReviewedData, isSuccess: isSuccessReviewed } = useCheckReviewedCompaniesQuery(
+        {
+            companyIds: companyId ? [companyId] : [],
+        },
+        { skip: !companyId || !user || !isSignedIn },
+    );
+    const isReviewed = useMemo(() => {
+        if (checkReviewedData && isSuccessReviewed) {
+            return checkReviewedData.data?.find((reviewed) => reviewed.companyId === companyId)?.result || false;
+        }
+    }, [companyId, checkReviewedData, isSuccessReviewed]);
+
     return {
         user,
         isSignedIn,
@@ -59,6 +95,10 @@ const useDetailCompany = (name: string) => {
         totalReviews: company?.data?.accountId ? countReviews?.data?.[company?.data?.accountId] || 0 : 0,
         ratingSummary: ratingByCompany?.data?.ratings || {},
         recommendedPercentage: recommendedPercentageResponse?.data,
+
+        savedJobs,
+        isFollowed,
+        isReviewed,
 
         isError,
         isLoading,

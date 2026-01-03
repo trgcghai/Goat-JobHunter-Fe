@@ -4,6 +4,8 @@ import {
     CalculateRecommendedPercentageByCompanyResponse,
     CountAllReviewsResponse,
     CountReviewsByCompanyResponse,
+    CreateReviewRequest,
+    CreateReviewResponse,
     LatestReviewsResponse,
     RatingSummaryByCompanyResponse,
     ReviewsByCompanyRequest,
@@ -83,6 +85,15 @@ export const reviewApi = api.injectEndpoints({
             }),
             providesTags: ['Review'],
         }),
+
+        createReview: builder.mutation<CreateReviewResponse, CreateReviewRequest>({
+            query: (body) => ({
+                url: `/reviews`,
+                method: 'POST',
+                data: body,
+            }),
+            invalidatesTags: ['User', 'Review', 'Company'],
+        }),
     }),
 });
 
@@ -94,4 +105,5 @@ export const {
     useCountAllReviewsQuery,
     useGetRatingByCompanyQuery,
     useCalculateRecommendedPercentageByCompanyQuery,
+    useCreateReviewMutation,
 } = reviewApi;

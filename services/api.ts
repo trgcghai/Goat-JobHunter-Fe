@@ -4,21 +4,21 @@ import { AxiosError, AxiosRequestConfig } from "axios";
 import { IBackendRes } from "@/types/api";
 
 const axiosBaseQuery =
-  (
-    { baseUrl }: { baseUrl: string } = {
-      baseUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"
-    }
-  ): BaseQueryFn<
-    {
-      url: string;
-      method?: AxiosRequestConfig["method"];
-      data?: AxiosRequestConfig["data"];
-      params?: AxiosRequestConfig["params"];
-      headers?: AxiosRequestConfig["headers"];
-    },
-    unknown,
-    unknown
-  > =>
+    (
+        { baseUrl }: { baseUrl: string } = {
+            baseUrl: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1',
+        },
+    ): BaseQueryFn<
+        {
+            url: string;
+            method?: AxiosRequestConfig['method'];
+            data?: AxiosRequestConfig['data'];
+            params?: AxiosRequestConfig['params'];
+            headers?: AxiosRequestConfig['headers'];
+        },
+        unknown,
+        unknown
+    > =>
     async ({ url, method, data, params, headers }) => {
       try {
         const result = await axiosInstance({
@@ -82,6 +82,52 @@ export const api = createApi({
         method: "GET"
       })
     }),
+    tagTypes: [
+        'User',
+        'Job',
+        'Application',
+        'Blog',
+        'Recruiter',
+        'Company',
+        'Applicant',
+        'Account',
+        'Contact',
+        'Skill',
+        'Career',
+        'Permission',
+        'Role',
+        'Subscriber',
+        'Notifications',
+        'SavedJob',
+        'Comment',
+        'Conversations',
+        'LikedBlog',
+        'SavedBlog',
+        'Message',
+        'Review',
+    ],
+    endpoints: (builder) => ({
+        ping: builder.query<string, void>({
+            query: () => ({
+                url: '/ping',
+                method: 'GET',
+            }),
+        }),
+
+        clearCookies: builder.query<unknown, void>({
+            query: () => ({
+                url: '/clear-cookies',
+                method: 'GET',
+            }),
+        }),
+
+        backup: builder.query({
+            query: () => ({
+                url: '/admin/backup',
+                method: 'GET',
+                responseType: 'blob',
+            }),
+        }),
 
     backup: builder.query({
       query: () => ({

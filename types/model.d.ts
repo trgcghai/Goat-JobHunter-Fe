@@ -71,6 +71,15 @@ export type Company = Account & {
     coverPhoto?: string;
     website?: string;
     phone?: string;
+    awards?: CompanyAward[];
+};
+
+export type CompanyAward = {
+    companyAwardId: number;
+    type: string;
+    year: number;
+    average?: number;
+    totalReviews?: number;
 };
 
 export type Review = {
@@ -88,6 +97,7 @@ export type Review = {
     suggestion: string;
     recommended: boolean;
     verified: boolean;
+    enabled: boolean;
 
     user: User;
     company: Company;

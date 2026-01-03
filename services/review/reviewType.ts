@@ -29,3 +29,21 @@ export type CalculateRecommendedPercentageByCompanyResponse = IBackendRes<number
 export type RatingSummaryByCompanyResponse = IBackendRes<{
     ratings: Record<string, RatingItem>;
 }>;
+
+export type CreateReviewRequest = {
+    rating: {
+        overall: number;
+        salaryBenefits: number;
+        trainingLearning: number;
+        managementCaresAboutMe: number;
+        cultureFun: number;
+        officeWorkspace: number;
+    };
+    summary: string;
+    experience: string;
+    suggestion: string;
+    recommended: boolean;
+    companyId: number;
+};
+
+export type CreateReviewResponse = IBackendRes<Review>;
