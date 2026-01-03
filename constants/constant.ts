@@ -1,8 +1,8 @@
-import { Level, ReactionType, WorkingType } from '@/types/enum';
-import { Clover, Heart, Lightbulb, PartyPopper, Smile, ThumbsUp } from 'lucide-react';
-import { capitalize } from 'lodash';
-import { Reaction } from '@/types/model';
-import { Option } from '@/components/ui/MultipleSelector';
+import { Option } from "@/components/ui/MultipleSelector";
+import { Level, ReactionType, WorkingType } from "@/types/enum";
+import { Clover, Heart, Lightbulb, PartyPopper, Smile, ThumbsUp } from "lucide-react";
+import { capitalize } from "lodash";
+import { Reaction } from "@/types/model";
 
 export const LEVEL_OPTIONS = [
     { value: Level.INTERN, label: 'Intern' },
