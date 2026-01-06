@@ -1,10 +1,10 @@
 'use client';
 
 import type { Message, User, SharedMedia, SharedLink } from '../utils/types';
-import { ChatHeader } from './chatHeader';
-import { MessageInput } from './messageInput';
-import { MessageList } from './messageList';
-import { ChatDetailsPanel } from './chatDetailsPanel';
+import { ChatHeader } from './ChatHeader';
+import { MessageInput } from './MessageInput';
+import { MessageList } from './MessageList';
+import { ChatDetailsPanel } from './ChatDetailsPanel';
 
 interface ChatWindowProps {
   user: User;

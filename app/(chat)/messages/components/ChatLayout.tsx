@@ -2,7 +2,7 @@
 
 import { Sidebar } from '@/app/(chat)/messages/components/sidebar';
 import type { Conversation, Message, SharedMedia, SharedLink } from '../utils/types';
-import { ChatWindow } from './chatWindow';
+import { ChatWindow } from './ChatWindow';
 
 interface ChatLayoutProps {
   currentUserId: string;

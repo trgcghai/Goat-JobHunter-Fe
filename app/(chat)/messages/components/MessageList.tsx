@@ -3,7 +3,7 @@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import type { Message } from '../utils/types';
 import { useEffect, useRef } from 'react';
-import { MessageBubble } from './messageBubble';
+import { MessageBubble } from './MessageBubble';
 
 interface MessageListProps {
   messages: Message[];

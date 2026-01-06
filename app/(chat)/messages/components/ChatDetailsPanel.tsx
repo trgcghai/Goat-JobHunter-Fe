@@ -7,8 +7,8 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { SharedLink, SharedMedia, User } from '../utils/types';
 import { Bell, ShieldBan, UserCircle, X } from 'lucide-react';
-import { SharedLinksList } from './sharedLinksList';
-import { SharedMediaGrid } from './sharedMediaGrid';
+import { SharedLinksList } from './SharedLinksList';
+import { SharedMediaGrid } from './SharedMediaGrid';
 
 interface ChatDetailsPanelProps {
   user: User;

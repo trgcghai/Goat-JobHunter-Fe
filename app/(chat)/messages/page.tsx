@@ -1,6 +1,6 @@
 'use client';
 
-import { ChatLayout } from '@/app/(chat)/messages/components/chatLayout';
+import { ChatLayout } from '@/app/(chat)/messages/components/ChatLayout';
 import {
   conversations as initialConversations,
   currentUser,

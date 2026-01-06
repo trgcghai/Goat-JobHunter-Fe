@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import type { Conversation, User } from '../utils/types';
 import { Search } from 'lucide-react';
-import { ConversationItem } from '@/app/(chat)/messages/components/conversationItem';
+import { ConversationItem } from '@/app/(chat)/messages/components/ConversationItem';
 
 interface SidebarProps {
   currentUser: User;
