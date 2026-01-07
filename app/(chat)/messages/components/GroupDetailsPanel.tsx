@@ -1,25 +1,25 @@
-'use client';
+"use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import type { Group, SharedLink, SharedMedia, SharedFile } from '../utils/types';
-import { Crown, MoreVertical, UserPlus, X, ChevronDown, MessageCircle, User } from 'lucide-react';
-import { SharedLinksList } from './SharedLinksList';
-import { SharedMediaGrid } from './SharedMediaGrid';
-import { SharedFilesList } from './SharedFilesList';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import type { Group, SharedLink, SharedMedia, SharedFile } from "../utils/types";
+import { Crown, MoreVertical, UserPlus, X, ChevronDown, MessageCircle, User } from "lucide-react";
+import { SharedLinksList } from "./SharedLinksList";
+import { SharedMediaGrid } from "./SharedMediaGrid";
+import { SharedFilesList } from "./SharedFilesList";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { useState } from 'react';
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import { useState } from "react";
 
 interface GroupDetailsPanelProps {
   group: Group;
@@ -32,20 +32,20 @@ interface GroupDetailsPanelProps {
 }
 
 export function GroupDetailsPanel({
-  group,
-  sharedMedia,
-  sharedLinks,
-  sharedFiles,
-  isOpen,
-  onClose,
-  currentUserId = 'user-1',
-}: GroupDetailsPanelProps) {
+                                    group,
+                                    sharedMedia,
+                                    sharedLinks,
+                                    sharedFiles,
+                                    isOpen,
+                                    onClose,
+                                    currentUserId = "user-1"
+                                  }: GroupDetailsPanelProps) {
   const [isMembersOpen, setIsMembersOpen] = useState(false);
 
   if (!isOpen) return null;
 
   const currentMember = group.members.find((m) => m.userId === currentUserId);
-  const isAdmin = currentMember?.role === 'admin';
+  const isAdmin = currentMember?.role === "admin";
 
   return (
     <div className="w-[450px] border-l border-border bg-card shrink-0 flex flex-col h-full min-h-0">
@@ -60,7 +60,7 @@ export function GroupDetailsPanel({
         <div className="p-4 space-y-6">
           <div className="flex flex-col items-center text-center">
             <Avatar className="h-20 w-20">
-              <AvatarImage src={group.avatar || '/placeholder.svg'} alt={group.name} />
+              <AvatarImage src={group.avatar || "/placeholder.svg"} alt={group.name} />
               <AvatarFallback>{group.name.charAt(0)}</AvatarFallback>
             </Avatar>
             <h3 className="font-semibold text-lg mt-3">{group.name}</h3>
@@ -75,7 +75,8 @@ export function GroupDetailsPanel({
           <Collapsible open={isMembersOpen} onOpenChange={setIsMembersOpen}>
             <div className="bg-accent/30 rounded-lg overflow-hidden">
               <CollapsibleTrigger asChild>
-                <button className="w-full flex items-center justify-between p-3 hover:bg-accent/50 transition-colors cursor-pointer">
+                <button
+                  className="w-full flex items-center justify-between p-3 hover:bg-accent/50 transition-colors cursor-pointer">
                   <div className="flex items-center gap-2">
                     <h3 className="font-semibold text-sm">Chat members</h3>
                   </div>
@@ -96,14 +97,15 @@ export function GroupDetailsPanel({
                     )}
                     <ChevronDown
                       className={`h-4 w-4 transition-transform duration-200 ${
-                        isMembersOpen ? 'rotate-180' : ''
+                        isMembersOpen ? "rotate-180" : ""
                       }`}
                     />
                   </div>
                 </button>
               </CollapsibleTrigger>
 
-              <CollapsibleContent className="data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up">
+              <CollapsibleContent
+                className="data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up">
                 <div className="px-2 pb-2 space-y-1">
                   {group.members.map((member) => (
                     <div
@@ -112,18 +114,19 @@ export function GroupDetailsPanel({
                     >
                       <div className="relative flex-shrink-0">
                         <Avatar className="h-10 w-10">
-                          <AvatarImage src={member.avatar || '/placeholder.svg'} alt={member.name} />
+                          <AvatarImage src={member.avatar || "/placeholder.svg"} alt={member.name} />
                           <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
                         </Avatar>
                         {member.online && (
-                          <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-primary border-2 border-card" />
+                          <div
+                            className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-primary border-2 border-card" />
                         )}
                       </div>
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <p className="text-sm font-medium truncate">{member.name}</p>
-                          {member.role === 'admin' && (
+                          {member.role === "admin" && (
                             <Badge variant="secondary" className="text-xs flex items-center gap-1 px-1.5 py-0">
                               <Crown className="h-3 w-3" />
                               Admin
@@ -131,49 +134,52 @@ export function GroupDetailsPanel({
                           )}
                         </div>
                         <p className="text-xs text-muted-foreground">
-                          {member.online ? 'Online' : 'Offline'}
+                          {member.online ? "Online" : "Offline"}
                         </p>
                       </div>
 
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48">
-                          <DropdownMenuItem>
-                            <MessageCircle className="h-4 w-4 mr-2" />
-                            Nhắn tin
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <UserPlus className="h-4 w-4 mr-2" />
-                            Kết bạn
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <User className="h-4 w-4 mr-2" />
-                            Xem profile
-                          </DropdownMenuItem>
 
-                          {isAdmin && member.userId !== currentUserId && (
-                            <>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem>
-                                <Crown className="h-4 w-4 mr-2" />
-                                {member.role === 'admin' ? 'Remove admin' : 'Make admin'}
-                              </DropdownMenuItem>
-                              <DropdownMenuItem className="text-destructive">
-                                <X className="h-4 w-4 mr-2 text-destructive" />
-                                Remove from group
-                              </DropdownMenuItem>
-                            </>
-                          )}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      {member.name != "You" &&
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuItem>
+                              <MessageCircle className="h-4 w-4 mr-2" />
+                              Nhắn tin
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <UserPlus className="h-4 w-4 mr-2" />
+                              Kết bạn
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <User className="h-4 w-4 mr-2" />
+                              Xem profile
+                            </DropdownMenuItem>
+
+                            {isAdmin && member.userId !== currentUserId && (
+                              <>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem>
+                                  <Crown className="h-4 w-4 mr-2" />
+                                  {member.role === "admin" ? "Remove admin" : "Make admin"}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="text-destructive">
+                                  <X className="h-4 w-4 mr-2 text-destructive" />
+                                  Remove from group
+                                </DropdownMenuItem>
+                              </>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      }
                     </div>
                   ))}
                 </div>
