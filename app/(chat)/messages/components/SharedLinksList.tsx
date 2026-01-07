@@ -1,8 +1,8 @@
 "use client"
 
 import { Card } from "@/components/ui/card"
-import type { SharedLink } from "@/lib/types"
 import { ExternalLink, Link2 } from "lucide-react"
+import { SharedLink } from "@/app/(chat)/messages/utils/types";
 
 interface SharedLinksListProps {
   links: SharedLink[]

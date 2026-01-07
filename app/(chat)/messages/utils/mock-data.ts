@@ -1,12 +1,5 @@
 import type { Conversation, Message, User, SharedMedia, SharedLink, SharedFile } from './types';
 
-export const currentUser: User = {
-  id: 'user-1',
-  name: 'You',
-  avatar: '/diverse-user-avatars.png',
-  online: true,
-};
-
 export const users: User[] = [
   {
     id: 'user-2',
@@ -62,20 +55,6 @@ export const conversations: Conversation[] = [
     timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
     unreadCount: 1,
   },
-  {
-    id: 'conv-4',
-    user: users[3],
-    lastMessage: 'Perfect! See you then',
-    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000),
-    unreadCount: 0,
-  },
-  {
-    id: 'conv-5',
-    user: users[4],
-    lastMessage: 'The meeting is confirmed for 3pm',
-    timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-    unreadCount: 0,
-  },
 ];
 
 export const messagesByConversation: Record<string, Message[]> = {
@@ -88,7 +67,7 @@ export const messagesByConversation: Record<string, Message[]> = {
     },
     {
       id: 'msg-2',
-      senderId: 'user-1',
+      senderId: 'me',
       text: "I'm great! Just finished the new feature",
       timestamp: new Date(Date.now() - 25 * 60 * 1000),
     },
@@ -100,7 +79,7 @@ export const messagesByConversation: Record<string, Message[]> = {
     },
     {
       id: 'msg-4',
-      senderId: 'user-1',
+      senderId: 'me',
       text: 'Sure, let me share the screenshots',
       timestamp: new Date(Date.now() - 15 * 60 * 1000),
     },
@@ -120,7 +99,7 @@ export const messagesByConversation: Record<string, Message[]> = {
     },
     {
       id: 'msg-7',
-      senderId: 'user-1',
+      senderId: 'me',
       text: 'Of course! What do you need?',
       timestamp: new Date(Date.now() - 90 * 60 * 1000),
     },
@@ -140,7 +119,7 @@ export const messagesByConversation: Record<string, Message[]> = {
     },
     {
       id: 'msg-10',
-      senderId: 'user-1',
+      senderId: 'me',
       text: 'Yes! What did you have in mind?',
       timestamp: new Date(Date.now() - 150 * 60 * 1000),
     },
