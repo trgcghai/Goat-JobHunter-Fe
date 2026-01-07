@@ -1,7 +1,7 @@
 "use client"
 
 import { Card } from "@/components/ui/card"
-import { ExternalLink, Link2 } from "lucide-react"
+import { ExternalLink } from "lucide-react"
 import { SharedLink } from "@/app/(chat)/messages/utils/types";
 
 interface SharedLinksListProps {
@@ -18,7 +18,7 @@ export function SharedLinksList({ links }: SharedLinksListProps) {
   return (
     <div className="space-y-2">
       {links.map((link) => (
-        <Card key={link.id} className="group">
+        <Card key={link.id} className="group py-0!">
           <a
             href={link.url}
             target="_blank"
@@ -26,13 +26,6 @@ export function SharedLinksList({ links }: SharedLinksListProps) {
             className="flex items-start gap-3 p-3 hover:bg-accent/50 transition-colors rounded-lg"
           >
             <div className="flex-shrink-0 mt-0.5">
-              {link.favicon ? (
-                <div className="h-4 w-4 rounded-sm bg-muted flex items-center justify-center overflow-hidden">
-                  <Link2 className="h-3 w-3 text-muted-foreground" />
-                </div>
-              ) : (
-                <Link2 className="h-4 w-4 text-muted-foreground" />
-              )}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium line-clamp-1 text-balance">{link.title}</p>

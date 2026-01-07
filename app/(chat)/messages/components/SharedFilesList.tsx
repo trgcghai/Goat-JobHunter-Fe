@@ -25,7 +25,7 @@ export function SharedFilesList({ files }: SharedFilesListProps) {
   return (
     <div className="space-y-2">
       {files.map((file) => (
-        <Card key={file.id} className="group">
+        <Card key={file.id} className="group py-0!">
           <div className="flex items-center gap-3 p-3 hover:bg-accent/50 transition-colors rounded-lg">
             <div className="flex-shrink-0 text-muted-foreground">{getFileIcon(file.type)}</div>
             <div className="flex-1 min-w-0">
