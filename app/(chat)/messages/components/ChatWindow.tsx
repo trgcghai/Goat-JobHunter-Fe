@@ -6,7 +6,7 @@ import { MessageInput } from './MessageInput';
 import { MessageList } from './MessageList';
 import { ChatDetailsPanel } from './ChatDetailsPanel';
 import { GroupDetailsPanel } from './GroupDetailsPanel';
-import { useState } from 'react';
+import { useDetailsPanelState } from '../hooks/useDetailsPanelState';
 
 interface ChatWindowProps {
   user?: User;
@@ -31,49 +31,47 @@ export function ChatWindow({
   sharedFiles = [],
   currentUserId = 'me',
 }: ChatWindowProps) {
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const { isOpen: isDetailsOpen, toggle, close } = useDetailsPanelState();
 
   return (
     <>
-      <div className="flex-1 flex flex-col bg-background min-w-0">
+      <div className="flex-1 flex flex-col bg-background min-w-0 min-h-0">
         <ChatHeader
           user={user}
           group={group}
           isGroup={isGroup}
-          onToggleDetails={() => setIsDetailsOpen(!isDetailsOpen)}
+          onToggleDetails={toggle}
           isDetailsOpen={isDetailsOpen}
         />
         <MessageList messages={messages} currentUserId={currentUserId} isGroup={isGroup} />
         <MessageInput onSendMessage={onSendMessage} />
       </div>
 
-      <div
-        className={`transition-all duration-300 ease-in-out ${
-          isDetailsOpen ? 'w-[450px] opacity-100' : 'w-0 opacity-0 overflow-hidden'
-        }`}
-      >
-        {isGroup && group ? (
-          <GroupDetailsPanel
-            group={group}
-            sharedMedia={sharedMedia}
-            sharedLinks={sharedLinks}
-            sharedFiles={sharedFiles}
-            isOpen={isDetailsOpen}
-            onClose={() => setIsDetailsOpen(false)}
-            currentUserId={currentUserId}
-          />
-        ) : (
-          user && (
-            <ChatDetailsPanel
-              user={user}
+      {isDetailsOpen && (
+        <div className="shrink-0 h-full min-h-0">
+          {isGroup && group ? (
+            <GroupDetailsPanel
+              group={group}
               sharedMedia={sharedMedia}
               sharedLinks={sharedLinks}
+              sharedFiles={sharedFiles}
               isOpen={isDetailsOpen}
-              onClose={() => setIsDetailsOpen(false)}
+              onClose={close}
+              currentUserId={currentUserId}
             />
-          )
-        )}
-      </div>
+          ) : (
+            user && (
+              <ChatDetailsPanel
+                user={user}
+                sharedMedia={sharedMedia}
+                sharedLinks={sharedLinks}
+                isOpen={isDetailsOpen}
+                onClose={close}
+              />
+            )
+          )}
+        </div>
+      )}
     </>
   );
 }

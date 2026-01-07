@@ -277,48 +277,6 @@ export const mockSharedMedia: SharedMedia[] = [
     url: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4",
     thumbnail: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=300",
     timestamp: new Date("2025-01-17T08:40:00")
-  },
-  {
-    id: "m1",
-    type: "image",
-    url: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-    thumbnail: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=300",
-    timestamp: new Date("2025-01-12T10:15:00")
-  },
-  {
-    id: "m2",
-    type: "image",
-    url: "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
-    thumbnail: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=300",
-    timestamp: new Date("2025-01-13T14:30:00")
-  },
-  {
-    id: "m3",
-    type: "image",
-    url: "https://images.unsplash.com/photo-1518770660439-4636190af475",
-    thumbnail: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=300",
-    timestamp: new Date("2025-01-14T09:45:00")
-  },
-  {
-    id: "m4",
-    type: "image",
-    url: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d",
-    thumbnail: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=300",
-    timestamp: new Date("2025-01-15T18:10:00")
-  },
-  {
-    id: "m5",
-    type: "image",
-    url: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d",
-    thumbnail: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=300",
-    timestamp: new Date("2025-01-16T20:05:00")
-  },
-  {
-    id: "m6",
-    type: "image",
-    url: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4",
-    thumbnail: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=300",
-    timestamp: new Date("2025-01-17T08:40:00")
   }
 ];
 
