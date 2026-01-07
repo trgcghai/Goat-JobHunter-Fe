@@ -1,8 +1,8 @@
 "use client"
 
-import type { SharedMedia } from "@/lib/types"
 import { Play } from "lucide-react"
 import Image from "next/image"
+import { SharedMedia } from "@/app/(chat)/messages/utils/types";
 
 interface SharedMediaGridProps {
   media: SharedMedia[]
