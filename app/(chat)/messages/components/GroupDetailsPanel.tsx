@@ -40,7 +40,7 @@ export function GroupDetailsPanel({
   onClose,
   currentUserId = 'user-1',
 }: GroupDetailsPanelProps) {
-  const [isMembersOpen, setIsMembersOpen] = useState(true);
+  const [isMembersOpen, setIsMembersOpen] = useState(false);
 
   if (!isOpen) return null;
 
