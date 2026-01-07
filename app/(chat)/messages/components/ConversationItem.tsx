@@ -1,13 +1,11 @@
-"use client";
+'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import type { Conversation } from "../utils/types";
-import { cn } from "@/lib/utils";
-import { formatDistanceToNow } from "date-fns";
-import { vi } from "date-fns/locale";
-import { truncate } from "lodash";
-import { Dot } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import type { Conversation } from '../utils/types';
+import { cn } from '@/lib/utils';
+import { formatDistanceToNow } from 'date-fns';
+import { vi } from 'date-fns/locale';
 
 interface ConversationItemProps {
   conversation: Conversation;
@@ -16,44 +14,49 @@ interface ConversationItemProps {
 }
 
 export function ConversationItem({ conversation, active, onClick }: ConversationItemProps) {
-  const timeAgo = formatDistanceToNow(new Date(conversation.timestamp), {
+  const displayName = conversation.isGroup ? conversation.group?.name : conversation.user?.name;
+  const displayAvatar = conversation.isGroup ? conversation.group?.avatar : conversation.user?.avatar;
+  const isOnline = !conversation.isGroup && conversation.user?.online;
+
+  const timeAgo = formatDistanceToNow(conversation.timestamp, {
     addSuffix: true,
-    locale: vi
+    locale: vi,
   });
 
   return (
     <button
       onClick={onClick}
       className={cn(
-        "w-full flex items-center gap-3 p-3 rounded-xl transition-colors hover:bg-accent/50 mb-2",
-        active && "bg-accent/70"
+        'w-full flex items-center gap-3 p-3 rounded-xl transition-colors hover:bg-accent/50',
+        active && 'bg-accent/60'
       )}
     >
-      <div className="relative">
-        <Avatar className="h-12 w-12 border-2">
-          <AvatarImage src={conversation.user.avatar || "/placeholder.svg"} alt={conversation.user.name} />
-          <AvatarFallback>{conversation.user.name.charAt(0)}</AvatarFallback>
+      <div className="relative flex-shrink-0">
+        <Avatar className="h-12 w-12 border">
+          <AvatarImage src={displayAvatar || '/placeholder.svg'} alt={displayName} />
+          <AvatarFallback>{displayName?.charAt(0)}</AvatarFallback>
         </Avatar>
-        {conversation.user.online && (
-          <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-primary border-2 border-background" />
+        {isOnline && (
+          <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-primary border-2 border-card" />
         )}
       </div>
+
       <div className="flex-1 min-w-0 text-left">
-        <div className="flex items-center justify-between mb-1">
-          <span className="font-semibold text-sm">{truncate(conversation.user.name, { length: 40 })}</span>
+        <div className="flex items-center justify-between gap-2 mb-1">
+          <h3 className="font-semibold text-sm truncate">{displayName}</h3>
+          <span className="text-xs text-muted-foreground flex-shrink-0">{timeAgo}</span>
         </div>
-        <span className="text-sm text-muted-foreground">{truncate(conversation.lastMessage, { length: 40 })}</span>
-        <Dot className="w-4 h-4 inline-block" />
-        <span className="text-xs text-muted-foreground shrink-0">{timeAgo}</span>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-sm text-muted-foreground truncate">{conversation.lastMessage}</p>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {conversation.unreadCount > 0 && (
+              <Badge className="h-5 w-5 flex items-center justify-center rounded-full p-0 text-xs">
+                {conversation.unreadCount}
+              </Badge>
+            )}
+          </div>
+        </div>
       </div>
-      {conversation.unreadCount > 0 && (
-        <Badge
-          variant="default"
-          className="h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center"
-        >
-          {conversation.unreadCount}
-        </Badge>
-      )}
     </button>
   );
 }
