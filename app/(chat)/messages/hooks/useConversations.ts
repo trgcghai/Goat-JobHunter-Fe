@@ -1,30 +1,32 @@
-import { useState } from "react";
-import { Message } from "@/app/(chat)/messages/utils/types";
+import { useState } from 'react';
+import { Message } from '@/app/(chat)/messages/utils/types';
 import {
   conversations,
   messagesByConversation,
-  sharedLinksByConversation,
-  sharedMediaByConversation
-} from "@/app/(chat)/messages/utils/mock-data";
+  mockSharedMedia,
+  mockSharedLinks,
+  mockSharedFiles,
+} from '@/app/(chat)/messages/utils/mock-data';
 
 export default function useConversations(conversationId?: string) {
   const [messageState, setMessageState] = useState<Record<string, Message[]>>(messagesByConversation);
 
-  const activeConversation = conversationId
-    ? conversations.find((c) => c.id === conversationId)
-    : null;
+  const activeConversation = conversationId ? conversations.find((c) => c.id === conversationId) : null;
 
   const messages = conversationId ? messageState[conversationId] || [] : [];
-  const sharedMedia = conversationId ? sharedMediaByConversation[conversationId] || [] : [];
-  const sharedLinks = conversationId ? sharedLinksByConversation[conversationId] || [] : [];
 
   const handleSendMessage = (text: string) => {
-    if (!conversationId) return;
+    if (!conversationId || !activeConversation) return;
+
+    const senderId = 'user-1';
+    const senderName = 'You';
 
     const newMessage: Message = {
       id: Date.now().toString(),
       text,
-      senderId: 'currentUserId',
+      senderId,
+      senderName: activeConversation.isGroup ? senderName : undefined,
+      senderAvatar: activeConversation.isGroup ? '/diverse-user-avatars.png' : undefined,
       timestamp: new Date(),
     };
 
@@ -38,8 +40,9 @@ export default function useConversations(conversationId?: string) {
     conversations,
     activeConversation,
     messages,
-    sharedMedia,
-    sharedLinks,
+    sharedMedia: mockSharedMedia,
+    sharedLinks: mockSharedLinks,
+    sharedFiles: mockSharedFiles,
     sendMessage: handleSendMessage,
   };
 }

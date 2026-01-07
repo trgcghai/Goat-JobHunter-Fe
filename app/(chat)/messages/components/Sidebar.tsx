@@ -26,7 +26,7 @@ export function Sidebar() {
     <div className="h-full flex flex-col bg-card">
       <div className="px-4 h-16 flex items-center justify-between border-b">
         <div className="flex items-center gap-3">
-          <Avatar className="h-10 w-10">
+          <Avatar className="h-10 w-10 border">
             <AvatarImage src={currentUser.avatar || "/placeholder.svg"} alt={currentUser.fullName} />
             <AvatarFallback>{currentUser.fullName.charAt(0)}</AvatarFallback>
           </Avatar>

@@ -1,14 +1,15 @@
 'use client';
 
 import { ChatWindow } from '@/app/(chat)/messages/components/ChatWindow';
-import useConversations from "@/app/(chat)/messages/hooks/useConversations";
+import useConversations from '@/app/(chat)/messages/hooks/useConversations';
 import { useParams } from 'next/navigation';
 
 export default function ConversationPage() {
   const params = useParams();
   const conversationId = params?.id as string;
 
-  const { activeConversation, messages, sharedMedia, sharedLinks, sendMessage } = useConversations(conversationId);
+  const { activeConversation, messages, sharedMedia, sharedLinks, sharedFiles, sendMessage } =
+    useConversations(conversationId);
 
   if (!activeConversation) {
     return (
@@ -23,10 +24,14 @@ export default function ConversationPage() {
   return (
     <ChatWindow
       user={activeConversation.user}
+      group={activeConversation.group}
+      isGroup={activeConversation.isGroup}
       messages={messages}
       onSendMessage={sendMessage}
       sharedMedia={sharedMedia}
       sharedLinks={sharedLinks}
+      sharedFiles={sharedFiles}
+      currentUserId="user-1"
     />
   );
 }
