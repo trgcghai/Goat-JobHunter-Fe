@@ -5,33 +5,24 @@ import { ChatHeader } from './ChatHeader';
 import { MessageInput } from './MessageInput';
 import { MessageList } from './MessageList';
 import { ChatDetailsPanel } from './ChatDetailsPanel';
+import { useState } from 'react';
 
 interface ChatWindowProps {
   user: User;
   messages: Message[];
-  currentUserId: string;
   onSendMessage: (text: string) => void;
   sharedMedia: SharedMedia[];
   sharedLinks: SharedLink[];
-  isDetailsOpen: boolean;
-  onToggleDetails: () => void;
 }
 
-export function ChatWindow({
-  user,
-  messages,
-  currentUserId,
-  onSendMessage,
-  sharedMedia,
-  sharedLinks,
-  isDetailsOpen,
-  onToggleDetails,
-}: ChatWindowProps) {
+export function ChatWindow({ user, messages, onSendMessage, sharedMedia, sharedLinks }: ChatWindowProps) {
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+
   return (
     <>
       <div className="flex-1 flex flex-col bg-background min-w-0">
-        <ChatHeader user={user} onToggleDetails={onToggleDetails} isDetailsOpen={isDetailsOpen} />
-        <MessageList messages={messages} currentUserId={currentUserId} />
+        <ChatHeader user={user} onToggleDetails={() => setIsDetailsOpen(!isDetailsOpen)} isDetailsOpen={isDetailsOpen} />
+        <MessageList messages={messages} />
         <MessageInput onSendMessage={onSendMessage} />
       </div>
 
@@ -45,7 +36,7 @@ export function ChatWindow({
           sharedMedia={sharedMedia}
           sharedLinks={sharedLinks}
           isOpen={isDetailsOpen}
-          onClose={onToggleDetails}
+          onClose={() => setIsDetailsOpen(false)}
         />
       </div>
     </>

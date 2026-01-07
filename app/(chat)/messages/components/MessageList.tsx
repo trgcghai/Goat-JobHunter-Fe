@@ -7,10 +7,9 @@ import { MessageBubble } from './MessageBubble';
 
 interface MessageListProps {
   messages: Message[];
-  currentUserId: string;
 }
 
-export function MessageList({ messages, currentUserId }: MessageListProps) {
+export function MessageList({ messages }: MessageListProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -23,7 +22,7 @@ export function MessageList({ messages, currentUserId }: MessageListProps) {
     <ScrollArea className="flex-1 px-4" ref={scrollRef}>
       <div className="py-4 space-y-1">
         {messages.map((message) => (
-          <MessageBubble key={message.id} message={message} isOwn={message.senderId === currentUserId} />
+          <MessageBubble key={message.id} message={message} isOwn={message.senderId == 'me'} />
         ))}
       </div>
     </ScrollArea>
