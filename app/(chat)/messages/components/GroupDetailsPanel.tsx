@@ -75,8 +75,8 @@ export function GroupDetailsPanel({
           <Collapsible open={isMembersOpen} onOpenChange={setIsMembersOpen}>
             <div className="bg-accent/30 rounded-lg overflow-hidden">
               <CollapsibleTrigger asChild>
-                <button
-                  className="w-full flex items-center justify-between p-3 hover:bg-accent/50 transition-colors cursor-pointer">
+                <Button
+                  className="w-full flex items-center justify-between p-3 py-6 hover:bg-accent/50 transition-colors cursor-pointer" variant="ghost">
                   <div className="flex items-center gap-2">
                     <h3 className="font-semibold text-sm">Chat members</h3>
                   </div>
@@ -101,7 +101,7 @@ export function GroupDetailsPanel({
                       }`}
                     />
                   </div>
-                </button>
+                </Button>
               </CollapsibleTrigger>
 
               <CollapsibleContent
