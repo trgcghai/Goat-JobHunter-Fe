@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import type { Group, SharedLink, SharedMedia, SharedFile } from '../utils/types';
-import { Crown, MoreVertical, UserPlus, X } from 'lucide-react';
+import { Crown, MoreVertical, UserPlus, X, ChevronDown, MessageCircle, User } from 'lucide-react';
 import { SharedLinksList } from './SharedLinksList';
 import { SharedMediaGrid } from './SharedMediaGrid';
 import { SharedFilesList } from './SharedFilesList';
@@ -15,8 +16,10 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useState } from 'react';
 
 interface GroupDetailsPanelProps {
   group: Group;
@@ -37,6 +40,8 @@ export function GroupDetailsPanel({
   onClose,
   currentUserId = 'user-1',
 }: GroupDetailsPanelProps) {
+  const [isMembersOpen, setIsMembersOpen] = useState(true);
+
   if (!isOpen) return null;
 
   const currentMember = group.members.find((m) => m.userId === currentUserId);
@@ -67,60 +72,114 @@ export function GroupDetailsPanel({
 
           <Separator />
 
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-sm">Members</h3>
-              {isAdmin && (
-                <Button variant="ghost" size="sm" className="h-8 gap-1">
-                  <UserPlus className="h-4 w-4" />
-                  Add
-                </Button>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              {group.members.map((member) => (
-                <div key={member.userId} className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent/50">
-                  <div className="relative">
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={member.avatar || '/placeholder.svg'} alt={member.name} />
-                      <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    {member.online && (
-                      <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-primary border-2 border-card" />
+          <Collapsible open={isMembersOpen} onOpenChange={setIsMembersOpen}>
+            <div className="bg-accent/30 rounded-lg overflow-hidden">
+              <CollapsibleTrigger asChild>
+                <button className="w-full flex items-center justify-between p-3 hover:bg-accent/50 transition-colors cursor-pointer">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold text-sm">Chat members</h3>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {isAdmin && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 gap-1"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // Add member action
+                        }}
+                      >
+                        <UserPlus className="h-3.5 w-3.5" />
+                        <span className="text-xs">Add</span>
+                      </Button>
                     )}
+                    <ChevronDown
+                      className={`h-4 w-4 transition-transform duration-200 ${
+                        isMembersOpen ? 'rotate-180' : ''
+                      }`}
+                    />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="text-sm font-medium truncate">{member.name}</p>
-                      {member.role === 'admin' && (
-                        <Badge variant="secondary" className="text-xs flex items-center gap-1">
-                          <Crown className="h-3 w-3" />
-                          Admin
-                        </Badge>
-                      )}
+                </button>
+              </CollapsibleTrigger>
+
+              <CollapsibleContent className="data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up">
+                <div className="px-2 pb-2 space-y-1">
+                  {group.members.map((member) => (
+                    <div
+                      key={member.userId}
+                      className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-accent/50 transition-colors group"
+                    >
+                      <div className="relative flex-shrink-0">
+                        <Avatar className="h-10 w-10">
+                          <AvatarImage src={member.avatar || '/placeholder.svg'} alt={member.name} />
+                          <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        {member.online && (
+                          <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-primary border-2 border-card" />
+                        )}
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-medium truncate">{member.name}</p>
+                          {member.role === 'admin' && (
+                            <Badge variant="secondary" className="text-xs flex items-center gap-1 px-1.5 py-0">
+                              <Crown className="h-3 w-3" />
+                              Admin
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          {member.online ? 'Online' : 'Offline'}
+                        </p>
+                      </div>
+
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                          <DropdownMenuItem>
+                            <MessageCircle className="h-4 w-4 mr-2" />
+                            Nhắn tin
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <UserPlus className="h-4 w-4 mr-2" />
+                            Kết bạn
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <User className="h-4 w-4 mr-2" />
+                            Xem profile
+                          </DropdownMenuItem>
+
+                          {isAdmin && member.userId !== currentUserId && (
+                            <>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem>
+                                <Crown className="h-4 w-4 mr-2" />
+                                {member.role === 'admin' ? 'Remove admin' : 'Make admin'}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="text-destructive">
+                                <X className="h-4 w-4 mr-2 text-destructive" />
+                                Remove from group
+                              </DropdownMenuItem>
+                            </>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
-                    <p className="text-xs text-muted-foreground">{member.online ? 'Online' : 'Offline'}</p>
-                  </div>
-                  {isAdmin && member.userId !== currentUserId && (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem>
-                          {member.role === 'admin' ? 'Remove admin' : 'Make admin'}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">Remove from group</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  )}
+                  ))}
                 </div>
-              ))}
+              </CollapsibleContent>
             </div>
-          </div>
+          </Collapsible>
 
           <Separator />
 
