@@ -43,17 +43,16 @@ export function GroupDetailsPanel({
   const isAdmin = currentMember?.role === 'admin';
 
   return (
-    <div className="w-[450px] border-l border-border bg-card shrink-0 flex flex-col h-full">
-      <div className="h-16 border-b border-border flex items-center justify-between px-4">
+    <div className="w-[450px] border-l border-border bg-card shrink-0 flex flex-col h-full min-h-0">
+      <div className="h-16 border-b border-border flex items-center justify-between px-4 flex-none">
         <h2 className="font-semibold text-sm">Group Details</h2>
         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onClose}>
           <X className="h-5 w-5" />
         </Button>
       </div>
 
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 min-h-0">
         <div className="p-4 space-y-6">
-          {/* Group Info */}
           <div className="flex flex-col items-center text-center">
             <Avatar className="h-20 w-20">
               <AvatarImage src={group.avatar || '/placeholder.svg'} alt={group.name} />
@@ -68,7 +67,6 @@ export function GroupDetailsPanel({
 
           <Separator />
 
-          {/* Members Section */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-sm">Members</h3>
@@ -126,7 +124,6 @@ export function GroupDetailsPanel({
 
           <Separator />
 
-          {/* Shared Content Tabs */}
           <Tabs defaultValue="media" className="w-full">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="media">Media</TabsTrigger>
