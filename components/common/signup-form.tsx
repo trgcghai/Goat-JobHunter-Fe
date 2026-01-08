@@ -236,6 +236,13 @@ export function SignupForm({ className, ...props }: React.ComponentProps<'div'>)
                   Đăng nhập
                 </Link>
               </FieldDescription>
+
+              <FieldDescription className="text-center text-gray-400 mt-4">
+                Bạn đại diện cho doanh nghiệp?{' '}
+                <Link href="/company" className="text-primary hover:underline underline-offset-2">
+                  Đăng ký tài khoản công ty
+                </Link>
+              </FieldDescription>
             </form>
           </Form>
         </CardContent>

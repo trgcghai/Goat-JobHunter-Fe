@@ -1,25 +1,25 @@
-import { UserFormData, userSchema } from "@/app/(main)/profile/components/ProfileInfo/schema";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { DatePicker } from "@/components/ui/example-date-picker";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { useUser } from "@/hooks/useUser";
-import { ApplicantResponse, RecruiterResponse } from "@/types/dto";
-import { Education, Gender, Level } from "@/types/enum";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { capitalize } from "lodash";
-import { Loader2, Plus, Trash2 } from "lucide-react";
-import { useEffect } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { HasApplicant, HasRecruiter } from "@/components/common/HasRole";
-import { ROLE } from "@/constants/constant";
+import { UserFormData, userSchema } from '@/app/(main)/profile/components/ProfileInfo/schema';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { DatePicker } from '@/components/ui/example-date-picker';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useUser } from '@/hooks/useUser';
+import { ApplicantResponse, RecruiterResponse } from '@/types/dto';
+import { Education, Gender, Level } from '@/types/enum';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { capitalize } from 'lodash';
+import { Loader2, Plus, Trash2 } from 'lucide-react';
+import { useEffect } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { HasApplicant, HasCompany } from '@/components/common/HasRole';
+import { ROLE } from '@/constants/constant';
 
 interface UserFormProps {
   open: boolean;
@@ -36,65 +36,63 @@ const UserForm = ({ open, onOpenChange, profile }: UserFormProps) => {
   const form = useForm<UserFormData>({
     resolver: zodResolver(userSchema),
     defaultValues: {
-      fullName: "",
-      username: "",
+      fullName: '',
+      username: '',
       dob: new Date(),
       gender: Gender.NAM,
-      email: "",
-      phone: "",
-      addresses: [{ province: "", fullAddress: "" }],
+      email: '',
+      phone: '',
+      addresses: [{ province: '', fullAddress: '' }],
       education: Education.SCHOOL,
       level: Level.INTERN,
       availableStatus: true,
-      position: ""
-    }
+      position: '',
+    },
   });
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: "addresses"
+    name: 'addresses',
   });
-
 
   useEffect(() => {
     const baseData = {
-      fullName: profile?.fullName || "",
-      username: profile?.username || "",
-      email: profile.email || "",
-      phone: profile?.phone || "",
-      addresses: profile?.addresses?.length > 0
-        ? profile.addresses.map(addr => ({
-          addressId: addr.addressId,
-          province: addr.province,
-          fullAddress: addr.fullAddress
-        }))
-        : [{ province: "", fullAddress: "" }],
+      fullName: profile?.fullName || '',
+      username: profile?.username || '',
+      email: profile.email || '',
+      phone: profile?.phone || '',
+      addresses:
+        profile?.addresses?.length > 0
+          ? profile.addresses.map((addr) => ({
+              addressId: addr.addressId,
+              province: addr.province,
+              fullAddress: addr.fullAddress,
+            }))
+          : [{ province: '', fullAddress: '' }],
       dob: profile?.dob ? new Date(profile.dob) : new Date(),
-      gender: profile?.gender || Gender.NAM
+      gender: profile?.gender || Gender.NAM,
     };
 
     if (isApplicant) {
-
       // Applicant specific fields
       form.reset({
         ...baseData,
         education: (profile as ApplicantResponse)?.education || Education.SCHOOL,
         level: (profile as ApplicantResponse)?.level || Level.INTERN,
-        availableStatus: (profile as ApplicantResponse)?.availableStatus ?? true
+        availableStatus: (profile as ApplicantResponse)?.availableStatus ?? true,
       });
     } else {
-
       // Recruiter specific fields
       form.reset({
         ...baseData,
-        position: (profile as RecruiterResponse)?.position || ""
+        position: (profile as RecruiterResponse)?.position || '',
       });
     }
   }, [profile, form, isApplicant]);
 
   const onSubmit = async (data: UserFormData) => {
     if (!profile?.accountId) {
-      toast.error("Không thể cập nhật thông tin. Vui lòng thử lại sau.");
+      toast.error('Không thể cập nhật thông tin. Vui lòng thử lại sau.');
       return;
     }
 
@@ -105,7 +103,7 @@ const UserForm = ({ open, onOpenChange, profile }: UserFormProps) => {
       gender: data.gender,
       email: data.email,
       phone: data.phone,
-      addresses: data.addresses
+      addresses: data.addresses,
     };
 
     if (isApplicant) {
@@ -113,12 +111,12 @@ const UserForm = ({ open, onOpenChange, profile }: UserFormProps) => {
         ...basePayload,
         education: data.education!,
         level: data.level!,
-        availableStatus: data.availableStatus!
+        availableStatus: data.availableStatus!,
       });
     } else {
       await handleUpdateRecruiter(profile.accountId, {
         ...basePayload,
-        position: data.position!
+        position: data.position!,
       });
     }
 
@@ -226,7 +224,7 @@ const UserForm = ({ open, onOpenChange, profile }: UserFormProps) => {
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => append({ province: "", fullAddress: "" })}
+                    onClick={() => append({ province: '', fullAddress: '' })}
                     className="rounded-xl"
                   >
                     <Plus className="h-4 w-4 mr-1" />
@@ -239,12 +237,7 @@ const UserForm = ({ open, onOpenChange, profile }: UserFormProps) => {
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm font-medium">Địa chỉ {index + 1}</span>
                       {fields.length > 1 && (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => remove(index)}
-                        >
+                        <Button type="button" variant="ghost" size="sm" onClick={() => remove(index)}>
                           <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
                       )}
@@ -257,11 +250,7 @@ const UserForm = ({ open, onOpenChange, profile }: UserFormProps) => {
                         <FormItem>
                           <FormLabel required>Tỉnh/Thành phố</FormLabel>
                           <FormControl>
-                            <Input
-                              {...field}
-                              placeholder="VD: Hồ Chí Minh"
-                              className="rounded-xl"
-                            />
+                            <Input {...field} placeholder="VD: Hồ Chí Minh" className="rounded-xl" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -275,11 +264,7 @@ const UserForm = ({ open, onOpenChange, profile }: UserFormProps) => {
                         <FormItem>
                           <FormLabel required>Địa chỉ chi tiết</FormLabel>
                           <FormControl>
-                            <Input
-                              {...field}
-                              placeholder="VD: 123 Đường ABC, Quận 1"
-                              className="rounded-xl"
-                            />
+                            <Input {...field} placeholder="VD: 123 Đường ABC, Quận 1" className="rounded-xl" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -332,15 +317,15 @@ const UserForm = ({ open, onOpenChange, profile }: UserFormProps) => {
                                 <div className="flex items-center gap-2">
                                   <Switch checked={field.value} onCheckedChange={field.onChange} />
                                   <Label className="cursor-pointer">
-                                    {field.value ? "Công khai hồ sơ" : "Ẩn hồ sơ"}
+                                    {field.value ? 'Công khai hồ sơ' : 'Ẩn hồ sơ'}
                                   </Label>
                                 </div>
                               </TooltipTrigger>
-                              <TooltipContent align={"start"}>
+                              <TooltipContent align={'start'}>
                                 <p>
                                   {field.value
-                                    ? "Hồ sơ của bạn có thể được tìm thấy bởi nhà tuyển dụng"
-                                    : "Hồ sơ của bạn sẽ bị ẩn khỏi nhà tuyển dụng"}
+                                    ? 'Hồ sơ của bạn có thể được tìm thấy bởi nhà tuyển dụng'
+                                    : 'Hồ sơ của bạn sẽ bị ẩn khỏi nhà tuyển dụng'}
                                 </p>
                               </TooltipContent>
                             </Tooltip>
@@ -352,7 +337,7 @@ const UserForm = ({ open, onOpenChange, profile }: UserFormProps) => {
                   />
                 </HasApplicant>
 
-                <HasRecruiter user={profile}>
+                <HasCompany user={profile}>
                   <FormField
                     control={form.control}
                     name="position"
@@ -366,7 +351,7 @@ const UserForm = ({ open, onOpenChange, profile }: UserFormProps) => {
                       </FormItem>
                     )}
                   />
-                </HasRecruiter>
+                </HasCompany>
               </div>
 
               <HasApplicant user={profile}>
@@ -439,7 +424,7 @@ const UserForm = ({ open, onOpenChange, profile }: UserFormProps) => {
                     Đang lưu...
                   </>
                 ) : (
-                  "Cập nhật"
+                  'Cập nhật'
                 )}
               </Button>
             </div>

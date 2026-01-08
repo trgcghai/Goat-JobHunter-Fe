@@ -1,24 +1,22 @@
-import { clearUser, useAuthSlice } from "@/lib/features/authSlice";
-import { useAppDispatch } from "@/lib/hooks";
-import { useUpdateApplicantMutation } from "@/services/applicant/applicantApi";
+import { clearUser, useAuthSlice } from '@/lib/features/authSlice';
+import { useAppDispatch } from '@/lib/hooks';
+import { useUpdateApplicantMutation } from '@/services/applicant/applicantApi';
 import {
+  useCompanySignUpMutation,
   useLogoutMutation,
   useResendCodeMutation,
   useSigninMutation,
   useUserSignUpMutation,
-  useVerifyCodeMutation
-} from "@/services/auth/authApi";
-import {
-  SignInRequest,
-  VerifyCodeRequest
-} from "@/services/auth/authType";
-import { useCreateUserMutation, useResetPasswordMutation, useUpdatePasswordMutation } from "@/services/user/userApi";
-import { useRouter } from "next/navigation";
-import { useCallback } from "react";
-import { toast } from "sonner";
-import { useUpdateRecruiterMutation } from "@/services/recruiter/recruiterApi";
-import { TUserSignUpSchema } from "@/app/(auth)/components/schemas";
-import { ApplicantUpdateDto, RecruiterUpdateDto } from "@/types/dto";
+  useVerifyCodeMutation,
+} from '@/services/auth/authApi';
+import { SignInRequest, VerifyCodeRequest } from '@/services/auth/authType';
+import { useCreateUserMutation, useResetPasswordMutation, useUpdatePasswordMutation } from '@/services/user/userApi';
+import { useRouter } from 'next/navigation';
+import { useCallback } from 'react';
+import { toast } from 'sonner';
+import { useUpdateRecruiterMutation } from '@/services/recruiter/recruiterApi';
+import { TCompanySignUpSchema, TUserSignUpSchema } from '@/app/(auth)/components/schemas';
+import { ApplicantUpdateDto, RecruiterUpdateDto } from '@/types/dto';
 
 export function useUser() {
   const router = useRouter();
@@ -29,18 +27,15 @@ export function useUser() {
   // API mutations
   const [signinMutation, { isLoading: isSigningIn }] = useSigninMutation();
   const [userSignUpMutation, { isLoading: isSigningUp }] = useUserSignUpMutation();
+  const [companySignUpMutation, { isLoading: isSigningUpCompany }] = useCompanySignUpMutation();
   const [logoutMutation, { isLoading: isSigningOut }] = useLogoutMutation();
-  const [verifyCodeMutation, { isLoading: isVerifying }] =
-    useVerifyCodeMutation();
-  const [resendCodeMutation, { isLoading: isResending }] =
-    useResendCodeMutation();
-  const [updatePasswordMutation, { isLoading: isUpdatingPassword }] =
-    useUpdatePasswordMutation();
+  const [verifyCodeMutation, { isLoading: isVerifying }] = useVerifyCodeMutation();
+  const [resendCodeMutation, { isLoading: isResending }] = useResendCodeMutation();
+  const [updatePasswordMutation, { isLoading: isUpdatingPassword }] = useUpdatePasswordMutation();
   const [resetPassword, { isLoading: isReseting }] = useResetPasswordMutation();
   const [updateApplicant, { isLoading: isUpdatingApplicant }] = useUpdateApplicantMutation();
   const [updateRecruiter, { isLoading: isUpdatingRecruiter }] = useUpdateRecruiterMutation();
-  const [createUserMutation, { isLoading: isCreatingUser }] =
-    useCreateUserMutation();
+  const [createUserMutation, { isLoading: isCreatingUser }] = useCreateUserMutation();
 
   /**
    * Create new user action (admin only)
@@ -61,30 +56,30 @@ export function useUser() {
           fullName: data.fullName,
           username: data.username,
           phone: data.phone,
-          address: data.address
+          address: data.address,
         }).unwrap();
 
         if (response.statusCode === 201 || response.statusCode === 200) {
-          toast.success("Tạo người dùng thành công!");
+          toast.success('Tạo người dùng thành công!');
           return { success: true, data: response.data };
         }
 
-        toast.error("Tạo người dùng thất bại!");
+        toast.error('Tạo người dùng thất bại!');
         return { success: false };
       } catch (error) {
-        console.error("Failed to create user:", error);
+        console.error('Failed to create user:', error);
 
         // @ts-expect-error Handle API error
         if (error.status === 409) {
-          toast.error("Email đã tồn tại trong hệ thống!");
-          return { success: false, error: "Email already exists" };
+          toast.error('Email đã tồn tại trong hệ thống!');
+          return { success: false, error: 'Email already exists' };
         }
 
-        toast.error("Tạo người dùng thất bại!");
+        toast.error('Tạo người dùng thất bại!');
         return { success: false };
       }
     },
-    [createUserMutation]
+    [createUserMutation],
   );
 
   /**
@@ -96,41 +91,41 @@ export function useUser() {
         const response = await signinMutation(params).unwrap();
 
         if (response.statusCode === 400) {
-          throw new Error("Tài khoản đang bị khóa");
+          throw new Error('Tài khoản đang bị khóa');
         }
 
         if (response.statusCode === 200) {
-          toast.success("Đăng nhập thành công!");
+          toast.success('Đăng nhập thành công!');
           return { success: true, user: response?.data };
         }
 
         return { success: false };
       } catch (error) {
-        console.error("error signin:", error);
+        console.error('error signin:', error);
 
         // @ts-expect-error ts-ignore
-        if (error.status === 400 && error.data.message == "Account is locked") {
-          toast("Tài khoản của bạn đã bị khóa. Vui lòng kích hoạt lại.", {
+        if (error.status === 400 && error.data.message == 'Account is locked') {
+          toast('Tài khoản của bạn đã bị khóa. Vui lòng kích hoạt lại.', {
             action: {
-              label: "Kích hoạt ngay",
+              label: 'Kích hoạt ngay',
               onClick: () => {
-                router.push("/otp?email=" + params.email);
-              }
-            }
+                router.push('/otp?email=' + params.email);
+              },
+            },
           });
-          return { success: false, error: "Account is locked" };
+          return { success: false, error: 'Account is locked' };
         }
 
         // @ts-expect-error ts-ignore
-        if (error.status === 400 && error.data.message == "Bad credentials") {
-          return { success: false, error: "Bad credentials" };
+        if (error.status === 400 && error.data.message == 'Bad credentials') {
+          return { success: false, error: 'Bad credentials' };
         }
 
-        toast.error("Đăng nhập thất bại!");
+        toast.error('Đăng nhập thất bại!');
         return { success: false };
       }
     },
-    [signinMutation, router]
+    [signinMutation, router],
   );
 
   /**
@@ -142,17 +137,39 @@ export function useUser() {
         const response = await userSignUpMutation(params).unwrap();
 
         if (response.statusCode === 201) {
-          toast.success("Đăng ký thành công!");
+          toast.success('Đăng ký thành công!');
           return { success: true, type: params.type };
         }
         return { success: false };
       } catch (error) {
-        console.error("error sign up:", error);
-        toast.error("Đăng ký thất bại!");
+        console.error('error sign up:', error);
+        toast.error('Đăng ký thất bại!');
         return { success: false };
       }
     },
-    [userSignUpMutation]
+    [userSignUpMutation],
+  );
+
+  /**
+   * Sign up new company
+   */
+  const companySignUp = useCallback(
+    async (params: TCompanySignUpSchema) => {
+      try {
+        const response = await companySignUpMutation(params).unwrap();
+
+        if (response.statusCode === 201) {
+          toast.success('Đăng ký thành công!');
+          return { success: true, type: 'company' };
+        }
+        return { success: false };
+      } catch (error) {
+        console.error('error sign up:', error);
+        toast.error('Đăng ký thất bại!');
+        return { success: false };
+      }
+    },
+    [companySignUpMutation],
   );
 
   /**
@@ -165,15 +182,15 @@ export function useUser() {
       // Clear Redux state
       dispatch(clearUser());
 
-      toast.success("Đăng xuất thành công!");
-      router.push("/");
+      toast.success('Đăng xuất thành công!');
+      router.push('/');
 
       return { success: true };
     } catch (error) {
       dispatch(clearUser());
-      router.push("/");
+      router.push('/');
 
-      console.error("error sign out:", error);
+      console.error('error sign out:', error);
       return { success: false };
     }
   }, [logoutMutation, dispatch, router]);
@@ -187,19 +204,19 @@ export function useUser() {
         const response = await verifyCodeMutation(params).unwrap();
 
         if (response.statusCode === 200) {
-          toast.success("Xác thực email thành công!");
+          toast.success('Xác thực email thành công!');
           return { success: true };
         }
 
-        toast.error("Mã xác thực không đúng!");
-        return { success: false, error: "Invalid code" };
+        toast.error('Mã xác thực không đúng!');
+        return { success: false, error: 'Invalid code' };
       } catch (error) {
-        console.error("error verify code:", error);
-        toast.error("Xác thực thất bại!");
+        console.error('error verify code:', error);
+        toast.error('Xác thực thất bại!');
         return { success: false };
       }
     },
-    [verifyCodeMutation]
+    [verifyCodeMutation],
   );
 
   /**
@@ -209,86 +226,85 @@ export function useUser() {
     async (email: string) => {
       try {
         await resendCodeMutation({ email }).unwrap();
-        toast.success("Đã gửi lại mã xác thực!");
+        toast.success('Đã gửi lại mã xác thực!');
         return { success: true };
       } catch (error) {
-        console.error("error resend code:", error);
-        toast.error("Gửi lại mã thất bại!");
+        console.error('error resend code:', error);
+        toast.error('Gửi lại mã thất bại!');
         return { success: false };
       }
     },
-    [resendCodeMutation]
+    [resendCodeMutation],
   );
 
   /**
    * Update password (for logged-in users)
    */
   const updatePassword = useCallback(
-    async (params: {
-      oldPassword: string;
-      newPassword: string;
-      confirmPassword: string;
-    }) => {
+    async (params: { oldPassword: string; newPassword: string; confirmPassword: string }) => {
       try {
         const response = await updatePasswordMutation({
           currentPassword: params.oldPassword,
           newPassword: params.newPassword,
-          rePassword: params.confirmPassword
+          rePassword: params.confirmPassword,
         }).unwrap();
 
         if (response.statusCode === 200) {
-          toast.success("Cập nhật mật khẩu thành công!");
+          toast.success('Cập nhật mật khẩu thành công!');
           return { success: true };
         }
 
-        toast.error("Mật khẩu cũ không đúng!");
-        return { success: false, error: "Invalid old password" };
+        toast.error('Mật khẩu cũ không đúng!');
+        return { success: false, error: 'Invalid old password' };
       } catch (error) {
-        console.error("error update password:", error);
+        console.error('error update password:', error);
 
         // @ts-expect-error ts-ignore
         if (error.status === 400) {
-          toast.error("Mật khẩu cũ không đúng!");
-          return { success: false, error: "Invalid old password" };
+          toast.error('Mật khẩu cũ không đúng!');
+          return { success: false, error: 'Invalid old password' };
         }
 
-        toast.error("Cập nhật mật khẩu thất bại!");
+        toast.error('Cập nhật mật khẩu thất bại!');
         return { success: false };
       }
     },
-    [updatePasswordMutation]
+    [updatePasswordMutation],
   );
 
   /**
    * Reset password (for forgotten password)
    */
-  const handleResetPassword = useCallback(async ({ email, newPassword }: { email: string, newPassword: string }) => {
-    try {
-      const response = await resetPassword({
-        email,
-        newPassword
-      }).unwrap();
+  const handleResetPassword = useCallback(
+    async ({ email, newPassword }: { email: string; newPassword: string }) => {
+      try {
+        const response = await resetPassword({
+          email,
+          newPassword,
+        }).unwrap();
 
-      if (response.statusCode === 200) {
-        toast.success("Đặt lại mật khẩu thành công!");
-        return { success: true };
+        if (response.statusCode === 200) {
+          toast.success('Đặt lại mật khẩu thành công!');
+          return { success: true };
+        }
+
+        toast.error('Email không tồn tại!');
+        return { success: false, error: 'Email not found' };
+      } catch (error) {
+        console.error('error reset password:', error);
+
+        // @ts-expect-error ts-ignore
+        if (error.status === 404) {
+          toast.error('Email không tồn tại!');
+          return { success: false, error: 'Email not found' };
+        }
+
+        toast.error('Đặt lại mật khẩu thất bại!');
+        return { success: false };
       }
-
-      toast.error("Email không tồn tại!");
-      return { success: false, error: "Email not found" };
-    } catch (error) {
-      console.error("error reset password:", error);
-
-      // @ts-expect-error ts-ignore
-      if (error.status === 404) {
-        toast.error("Email không tồn tại!");
-        return { success: false, error: "Email not found" };
-      }
-
-      toast.error("Đặt lại mật khẩu thất bại!");
-      return { success: false };
-    }
-  }, [resetPassword]);
+    },
+    [resetPassword],
+  );
 
   /**
    * Update applicant information
@@ -319,17 +335,17 @@ export function useUser() {
         });
 
         if (response.error) {
-          toast.error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
+          toast.error('Cập nhật thông tin thất bại. Vui lòng thử lại sau.');
           return;
         }
 
-        toast.success("Cập nhật thông tin thành công!");
+        toast.success('Cập nhật thông tin thành công!');
       } catch (error) {
-        console.error("Failed to update applicant:", error);
-        toast.error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
+        console.error('Failed to update applicant:', error);
+        toast.error('Cập nhật thông tin thất bại. Vui lòng thử lại sau.');
       }
     },
-    [updateApplicant]
+    [updateApplicant],
   );
 
   /**
@@ -361,19 +377,18 @@ export function useUser() {
         });
 
         if (response.error) {
-          toast.error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
+          toast.error('Cập nhật thông tin thất bại. Vui lòng thử lại sau.');
           return;
         }
 
-        toast.success("Cập nhật thông tin thành công!");
+        toast.success('Cập nhật thông tin thành công!');
       } catch (error) {
-        console.error("Failed to update recruiter:", error);
-        toast.error("Cập nhật thông tin thất bại. Vui lòng thử lại sau.");
+        console.error('Failed to update recruiter:', error);
+        toast.error('Cập nhật thông tin thất bại. Vui lòng thử lại sau.');
       }
     },
-    [updateRecruiter]
+    [updateRecruiter],
   );
-
 
   return {
     // User data
@@ -383,6 +398,7 @@ export function useUser() {
     // Auth methods
     signIn,
     userSignUp,
+    companySignUp,
     signOut,
     verifyCode,
     resendCode,
@@ -392,6 +408,7 @@ export function useUser() {
     // Loading states
     isSigningIn,
     isSigningUp,
+    isSigningUpCompany,
     isSigningOut,
     isVerifying,
     isResending,
@@ -408,6 +425,6 @@ export function useUser() {
 
     // Create user (admin)
     handleCreateUser,
-    isCreatingUser
+    isCreatingUser,
   };
 }

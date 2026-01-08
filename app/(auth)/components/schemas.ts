@@ -63,3 +63,42 @@ export const SignUpTypeOptions = [
   { label: 'Ứng viên', value: SignUpType.APPLICANT },
   { label: 'Nhà tuyển dụng', value: SignUpType.RECRUITER },
 ];
+
+export const CompanyAddressSchema = z.object({
+  province: z.string().nonempty('Tỉnh/Thành phố không được để trống'),
+  fullAddress: z.string().nonempty('Địa chỉ chi tiết không được để trống'),
+});
+
+export const CompanySignUpSchema = z
+  .object({
+    username: z.string().nonempty('Tên đăng nhập không được để trống'),
+    email: z.string().nonempty('Email không được để trống').email('Email không hợp lệ'),
+    password: z.string().nonempty('Mật khẩu không được để trống'),
+    confirmPassword: z.string().nonempty('Xác nhận mật khẩu không được để trống'),
+
+    name: z.string().nonempty('Tên công ty không được để trống'),
+    description: z.string().min(50, 'Mô tả công ty phải có ít nhất 50 ký tự'),
+    logo: z.string().nonempty('Logo không được để trống'),
+    coverPhoto: z.string().nonempty('Ảnh bìa không được để trống'),
+    website: z.string().url('URL không hợp lệ').optional().or(z.literal('')),
+    phone: z.string().regex(/^\d{10}$/, 'Số điện thoại không hợp lệ'),
+    size: z.enum(['STARTUP', 'SMALL', 'MEDIUM', 'LARGE', 'ENTERPRISE'], {
+      message: 'Vui lòng chọn quy mô công ty',
+    }),
+    country: z.string().min(1, 'Quốc gia không được để trống'),
+    industry: z.string().min(1, 'Lĩnh vực không được để trống'),
+    workingDays: z.string().nonempty('Ngày làm việc không được để trống'),
+    overtimePolicy: z.string().nonempty('Chính sách làm thêm giờ không được để trống'),
+    addresses: z.array(CompanyAddressSchema).min(1, 'Cần ít nhất một địa chỉ'),
+  })
+  .refine((data) => isPasswordStrong(data.password), {
+    message: 'Mật khẩu phải có ít nhất 8 ký tự, chữ hoa, chữ thường, số và ký tự đặc biệt',
+    path: ['password'],
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Mật khẩu và xác nhận mật khẩu không khớp',
+    path: ['confirmPassword'],
+  });
+
+export type TCompanySignUpSchema = z.infer<typeof CompanySignUpSchema>;
+export type TCompanyAddress = z.infer<typeof CompanyAddressSchema>;

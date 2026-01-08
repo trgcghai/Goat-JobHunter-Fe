@@ -84,7 +84,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     // Check if user has recruiter role
-    const isAdmin = user?.role?.name === ROLE.SUPER_ADMIN;
+    const isAdmin = user?.role?.name === ROLE.SUPER_ADMIN || user?.role?.name === ROLE.COMPANY;
 
     if (!isAdmin) {
       // Not recruiter, redirect to home
