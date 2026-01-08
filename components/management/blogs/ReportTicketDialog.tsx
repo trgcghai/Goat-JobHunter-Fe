@@ -41,7 +41,7 @@ const ReportTicketDialog = ({ isOpen, onClose }: Props) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-999">
+    <div className="fixed inset-0 bg-black/20 flex items-center justify-center">
       <div className="bg-white p-6 rounded-lg w-[450px]">
         <h3 className="text-lg font-bold mb-4">Báo cáo vi phạm</h3>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
