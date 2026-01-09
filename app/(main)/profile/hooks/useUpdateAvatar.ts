@@ -89,16 +89,16 @@ const useUpdateAvatar = (type: "applicant" | "recruiter") => {
       });
 
       try {
-        if (!user?.userId) {
+        if (!user?.accountId) {
           throw new Error("User ID is missing");
         }
 
         if (type == "applicant") {
-          await handleUpdateApplicant(user?.userId, {
+          await handleUpdateApplicant(user.accountId, {
             avatar: avatarUrl
           });
         } else {
-          await handleUpdateRecruiter(user?.userId, {
+          await handleUpdateRecruiter(user.accountId, {
             avatar: avatarUrl
           });
         }

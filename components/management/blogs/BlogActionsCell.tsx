@@ -82,8 +82,7 @@ const BlogActionsCell = ({ blog }: BlogActionsCellProps) => {
             onClick={() =>
               openDialog(
                 blog.enabled ? "disable" : "enable",
-                [blog.blogId],
-                blog.title
+                [blog.blogId]
               )
             }
           >
@@ -112,7 +111,7 @@ const BlogActionsCell = ({ blog }: BlogActionsCellProps) => {
             variant={"outline"}
             title="Xóa"
             disabled={isLoading}
-            onClick={() => openDialog("delete", [blog.blogId], blog.title)}
+            onClick={() => openDialog("delete", [blog.blogId])}
           >
             {isLoading && actionType === "delete" ? (
               <Loader2 className={"h-4 w-4 animate-spin"} />
