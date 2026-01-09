@@ -2,7 +2,7 @@ import { ChatRoom } from "@/types/model";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Users } from "lucide-react";
 import { ChatRoomType } from "@/types/enum";
-import { formatLastMessageTime } from "@/app/(chat)/messages/utils/formatLastMessageTime";
+import { formatLastMessageTime } from "@/utils/formatDate";
 
 interface ConversationItemProps {
   chatRoom: ChatRoom;
