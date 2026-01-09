@@ -2,7 +2,7 @@ import { useFetchChatRoomsQuery } from "@/services/chatRoom/chatRoomApi";
 import { ChatRoom } from "@/types/model";
 
 export function useChatRooms() {
-  const { data, isLoading, error, refetch } = useFetchChatRoomsQuery({
+  const { data, isLoading, isError, refetch } = useFetchChatRoomsQuery({
     page: 1,
     size: 50
   });
@@ -14,7 +14,7 @@ export function useChatRooms() {
     chatRooms,
     total,
     isLoading,
-    error,
+    isError,
     refetch
   };
 }

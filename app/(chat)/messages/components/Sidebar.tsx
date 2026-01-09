@@ -13,7 +13,7 @@ import ErrorMessage from "@/components/common/ErrorMessage";
 
 export function Sidebar() {
   const { user: currentUser } = useUser();
-  const { chatRooms, isLoading, error } = useChatRooms();
+  const { chatRooms, isLoading, isError } = useChatRooms();
   const router = useRouter();
   const params = useParams();
   const activeConversationId = params?.id as string | undefined;
@@ -62,16 +62,16 @@ export function Sidebar() {
             </>
           )}
 
-          {error && <ErrorMessage message={"Có lỗi xảy ra khi tải các đoạn chat. Vui lòng thử lại sau."} />}
+          {isError && <ErrorMessage message={"Có lỗi xảy ra khi tải các đoạn chat. Vui lòng thử lại sau."} />}
 
-          {!isLoading && !error && chatRooms.length === 0 && (
+          {!isLoading && !isError && chatRooms.length === 0 && (
             <div className="text-center py-8 text-muted-foreground">
               <p>No conversations yet</p>
               <p className="text-sm mt-1">Start a new chat to get started</p>
             </div>
           )}
 
-          {!isLoading && !error && chatRooms.map((chatRoom) => (
+          {!isLoading && !isError && chatRooms.map((chatRoom) => (
             <ChatRoomItem
               key={chatRoom.chatRoomId}
               chatRoom={chatRoom}
