@@ -1,13 +1,13 @@
 import {
-    ApplicationStatus,
-    CompanySize,
-    Education,
-    Gender,
-    Level,
-    MessageTypeRole,
-    NotificationTypeEnum,
-    WorkingType,
-} from '@/types/enum';
+  ApplicationStatus, ChatRoomType,
+  CompanySize,
+  Education,
+  Gender,
+  Level,
+  MessageTypeRole,
+  NotificationTypeEnum,
+  WorkingType
+} from "@/types/enum";
 import { LucideIcon } from 'lucide-react';
 
 export type Address = {
@@ -324,3 +324,13 @@ export type Reaction = {
     color: string;
     hoverColor: string;
 };
+
+export type ChatRoom = {
+  chatRoomId: number
+  type: ChatRoomType
+  name: string
+  avatar: string | null
+  memberCount: number
+  lastMessagePreview: string | null
+  lastMessageTime: string | null
+}

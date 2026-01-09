@@ -91,3 +91,10 @@ export enum ReportReason {
   FALSE_INFO = 'Tin giả',
   OTHER = 'Lý do khác',
 }
+
+export enum ChatRoomType {
+  DIRECT = "DIRECT",
+  GROUP = "GROUP",
+  BROADCAST = "BROADCAST",
+  AI = "AI",
+}

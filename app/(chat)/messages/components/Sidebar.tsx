@@ -8,6 +8,7 @@ import { ConversationItem } from "@/app/(chat)/messages/components/ConversationI
 import { useUser } from "@/hooks/useUser";
 import useConversations from "@/app/(chat)/messages/hooks/useConversations";
 import { useRouter, useParams } from "next/navigation";
+import { useFetchChatRoomsQuery } from "@/services/chatRoom/chatRoomApi";
 
 export function Sidebar() {
   const { user: currentUser } = useUser();
@@ -15,6 +16,10 @@ export function Sidebar() {
   const router = useRouter();
   const params = useParams();
   const activeConversationId = params?.id as string | undefined;
+
+  const { data } = useFetchChatRoomsQuery({});
+
+  console.log({ data });
 
   if (!currentUser) return null;
 
