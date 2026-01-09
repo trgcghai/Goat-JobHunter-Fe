@@ -1,4 +1,6 @@
 import dayjs from 'dayjs';
+import { differenceInHours, format, isToday, isYesterday } from "date-fns";
+import { vi } from "date-fns/locale";
 
 function formatDate(dateString: string): string {
     const date = new Date(dateString);
@@ -40,21 +42,20 @@ function formatLastMessageTime(timestamp: string | null): string {
 
   const date = new Date(timestamp);
   const now = new Date();
-  const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
+  const diffInHours = differenceInHours(now, date);
 
   // Nếu trong vòng 24h → hiển thị giờ:phút
   if (diffInHours < 24) {
-    return date.toLocaleTimeString("vi-VN", {
-      hour: "2-digit",
-      minute: "2-digit"
-    });
+    if (isToday(date)) {
+      return format(date, 'HH:mm', { locale: vi });
+    }
+    if (isYesterday(date)) {
+      return 'Hôm qua';
+    }
   }
 
   // Nếu xa hơn → hiển thị dd/MM
-  return date.toLocaleDateString("vi-VN", {
-    day: "2-digit",
-    month: "2-digit"
-  });
+  return format(date, 'dd/MM', { locale: vi });
 }
 
 export { formatDate, formatDateTime, getDaysSinceCreation, getTimeLabel, formatLastMessageTime };
