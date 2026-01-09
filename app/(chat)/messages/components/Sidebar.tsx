@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Search } from "lucide-react";
-import { ConversationItem } from "@/app/(chat)/messages/components/ConversationItem";
+import { ChatRoomItem } from "@/app/(chat)/messages/components/ChatRoomItem";
 import { useUser } from "@/hooks/useUser";
 import { useChatRooms } from "@/app/(chat)/messages/hooks/useChatRooms";
 import { useRouter, useParams } from "next/navigation";
@@ -72,7 +72,7 @@ export function Sidebar() {
           )}
 
           {!isLoading && !error && chatRooms.map((chatRoom) => (
-            <ConversationItem
+            <ChatRoomItem
               key={chatRoom.chatRoomId}
               chatRoom={chatRoom}
               active={activeConversationId === String(chatRoom.chatRoomId)}

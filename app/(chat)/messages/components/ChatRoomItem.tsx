@@ -10,7 +10,7 @@ interface ConversationItemProps {
   onClick: () => void;
 }
 
-export function ConversationItem({ chatRoom, active, onClick }: ConversationItemProps) {
+export function ChatRoomItem({ chatRoom, active, onClick }: ConversationItemProps) {
   const isGroup = chatRoom.type === ChatRoomType.GROUP;
   const displayName = chatRoom.name || "Unnamed Chat";
   const avatarFallback = displayName.charAt(0).toUpperCase();
