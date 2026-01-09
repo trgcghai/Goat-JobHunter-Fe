@@ -32,14 +32,14 @@ interface GroupDetailsPanelProps {
 }
 
 export function GroupDetailsPanel({
-                                    group,
-                                    sharedMedia,
-                                    sharedLinks,
-                                    sharedFiles,
-                                    isOpen,
-                                    onClose,
-                                    currentUserId = "user-1"
-                                  }: GroupDetailsPanelProps) {
+  group,
+  sharedMedia,
+  sharedLinks,
+  sharedFiles,
+  isOpen,
+  onClose,
+  currentUserId = "user-1"
+}: GroupDetailsPanelProps) {
   const [isMembersOpen, setIsMembersOpen] = useState(false);
 
   if (!isOpen) return null;
@@ -76,25 +76,12 @@ export function GroupDetailsPanel({
             <div className="bg-accent/30 rounded-lg overflow-hidden">
               <CollapsibleTrigger asChild>
                 <Button
-                  className="w-full flex items-center justify-between p-3 py-6 hover:bg-accent/50 transition-colors cursor-pointer" variant="ghost">
+                  className="w-full flex items-center justify-between p-3 py-6 hover:bg-accent/50 transition-colors cursor-pointer rounded-xl"
+                  variant="ghost">
                   <div className="flex items-center gap-2">
                     <h3 className="font-semibold text-sm">Chat members</h3>
                   </div>
                   <div className="flex items-center gap-2">
-                    {isAdmin && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 gap-1"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          // Add member action
-                        }}
-                      >
-                        <UserPlus className="h-3.5 w-3.5" />
-                        <span className="text-xs">Add</span>
-                      </Button>
-                    )}
                     <ChevronDown
                       className={`h-4 w-4 transition-transform duration-200 ${
                         isMembersOpen ? "rotate-180" : ""
@@ -182,6 +169,20 @@ export function GroupDetailsPanel({
                       }
                     </div>
                   ))}
+                  {isAdmin && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-xl gap-1 w-full justify-center"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // Add member action
+                      }}
+                    >
+                      <UserPlus className="h-3.5 w-3.5" />
+                      <span className="text-xs">Add</span>
+                    </Button>
+                  )}
                 </div>
               </CollapsibleContent>
             </div>
