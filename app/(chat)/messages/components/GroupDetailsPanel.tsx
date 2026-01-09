@@ -32,14 +32,14 @@ interface GroupDetailsPanelProps {
 }
 
 export function GroupDetailsPanel({
-                                    group,
-                                    sharedMedia,
-                                    sharedLinks,
-                                    sharedFiles,
-                                    isOpen,
-                                    onClose,
-                                    currentUserId = "user-1"
-                                  }: GroupDetailsPanelProps) {
+  group,
+  sharedMedia,
+  sharedLinks,
+  sharedFiles,
+  isOpen,
+  onClose,
+  currentUserId = "user-1"
+}: GroupDetailsPanelProps) {
   const [isMembersOpen, setIsMembersOpen] = useState(false);
 
   if (!isOpen) return null;
@@ -50,7 +50,7 @@ export function GroupDetailsPanel({
   return (
     <div className="w-[450px] border-l border-border bg-card shrink-0 flex flex-col h-full min-h-0">
       <div className="h-16 border-b border-border flex items-center justify-between px-4 flex-none">
-        <h2 className="font-semibold text-sm">Group Details</h2>
+        <h2 className="font-semibold text-sm">Thông tin đoạn chat</h2>
         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onClose}>
           <X className="h-5 w-5" />
         </Button>
@@ -76,25 +76,12 @@ export function GroupDetailsPanel({
             <div className="bg-accent/30 rounded-lg overflow-hidden">
               <CollapsibleTrigger asChild>
                 <Button
-                  className="w-full flex items-center justify-between p-3 py-6 hover:bg-accent/50 transition-colors cursor-pointer" variant="ghost">
+                  className="w-full flex items-center justify-between p-3 py-6 hover:bg-accent/50 transition-colors cursor-pointer rounded-xl"
+                  variant="ghost">
                   <div className="flex items-center gap-2">
-                    <h3 className="font-semibold text-sm">Chat members</h3>
+                    <h3 className="font-semibold text-sm">Thành viên</h3>
                   </div>
                   <div className="flex items-center gap-2">
-                    {isAdmin && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-7 gap-1"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          // Add member action
-                        }}
-                      >
-                        <UserPlus className="h-3.5 w-3.5" />
-                        <span className="text-xs">Add</span>
-                      </Button>
-                    )}
                     <ChevronDown
                       className={`h-4 w-4 transition-transform duration-200 ${
                         isMembersOpen ? "rotate-180" : ""
@@ -129,7 +116,7 @@ export function GroupDetailsPanel({
                           {member.role === "admin" && (
                             <Badge variant="secondary" className="text-xs flex items-center gap-1 px-1.5 py-0">
                               <Crown className="h-3 w-3" />
-                              Admin
+                              Chủ nhóm
                             </Badge>
                           )}
                         </div>
@@ -169,11 +156,11 @@ export function GroupDetailsPanel({
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem>
                                   <Crown className="h-4 w-4 mr-2" />
-                                  {member.role === "admin" ? "Remove admin" : "Make admin"}
+                                  {member.role === "admin" ? "Xóa chủ nhóm" : "Cho làm chủ nhóm"}
                                 </DropdownMenuItem>
                                 <DropdownMenuItem className="text-destructive">
                                   <X className="h-4 w-4 mr-2 text-destructive" />
-                                  Remove from group
+                                  Xóa khỏi nhóm
                                 </DropdownMenuItem>
                               </>
                             )}
@@ -182,6 +169,20 @@ export function GroupDetailsPanel({
                       }
                     </div>
                   ))}
+                  {isAdmin && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-xl gap-1 w-full justify-center"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        // Add member action
+                      }}
+                    >
+                      <UserPlus className="h-4 w-4 mr-2" />
+                      <span className="text-sm">Thêm thành viên</span>
+                    </Button>
+                  )}
                 </div>
               </CollapsibleContent>
             </div>
@@ -191,8 +192,8 @@ export function GroupDetailsPanel({
 
           <Tabs defaultValue="media" className="w-full">
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="media">Media</TabsTrigger>
-              <TabsTrigger value="links">Links</TabsTrigger>
+              <TabsTrigger value="media">Phương tiện</TabsTrigger>
+              <TabsTrigger value="links">Liên kết</TabsTrigger>
               <TabsTrigger value="files">Files</TabsTrigger>
             </TabsList>
             <TabsContent value="media" className="mt-4">
