@@ -65,6 +65,7 @@ export function ChatWindow({
                 user={user}
                 sharedMedia={sharedMedia}
                 sharedLinks={sharedLinks}
+                sharedFiles={sharedFiles}
                 isOpen={isDetailsOpen}
                 onClose={close}
               />

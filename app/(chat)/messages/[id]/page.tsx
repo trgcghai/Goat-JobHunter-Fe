@@ -15,7 +15,7 @@ export default function ConversationPage() {
     return (
       <div className="flex-1 flex items-center justify-center bg-background">
         <div className="text-center text-muted-foreground">
-          <p className="text-lg">Conversation not found</p>
+          <p className="text-lg">Không tìm thấy đoạn chat</p>
         </div>
       </div>
     );

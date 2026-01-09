@@ -12,7 +12,7 @@ interface SharedFilesListProps {
 export function SharedFilesList({ files }: SharedFilesListProps) {
   if (files.length === 0) {
     return (
-      <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">No shared files yet</div>
+      <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">Chưa có file nào</div>
     );
   }
 

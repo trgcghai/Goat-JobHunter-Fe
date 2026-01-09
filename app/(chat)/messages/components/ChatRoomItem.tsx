@@ -12,7 +12,7 @@ interface ConversationItemProps {
 
 export function ChatRoomItem({ chatRoom, active, onClick }: ConversationItemProps) {
   const isGroup = chatRoom.type === ChatRoomType.GROUP;
-  const displayName = chatRoom.name || "Unnamed Chat";
+  const displayName = chatRoom.name;
   const avatarFallback = displayName.charAt(0).toUpperCase();
   const formattedTime = formatLastMessageTime(chatRoom.lastMessageTime);
 

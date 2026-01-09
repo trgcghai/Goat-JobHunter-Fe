@@ -11,7 +11,7 @@ interface SharedLinksListProps {
 export function SharedLinksList({ links }: SharedLinksListProps) {
   if (links.length === 0) {
     return (
-      <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">No shared links yet</div>
+      <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">Chưa có liên kết nào</div>
     )
   }
 
