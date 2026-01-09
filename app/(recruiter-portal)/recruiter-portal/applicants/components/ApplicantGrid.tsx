@@ -28,19 +28,19 @@ const ApplicantGrid = ({ applicants }: ApplicantGridProps) => {
 
   const onInvite = async () => {
 
-    console.log({ applicantIds: [selectedApplicant?.userId], jobId });
+    console.log({ applicantIds: [selectedApplicant?.accountId], jobId });
 
     if (!jobId) {
       toast.error("Vui lòng chọn một việc làm trước khi gửi email.");
       return;
     }
 
-    if (!selectedApplicant?.userId || !jobId) {
+    if (!selectedApplicant?.accountId || !jobId) {
       toast.error("Có lỗi xảy ra khi gửi mail. Vui lòng thử lại sau.");
       return
     }
 
-    await handleSendMailToApplicants([selectedApplicant?.userId], jobId);
+    await handleSendMailToApplicants([selectedApplicant?.accountId], jobId);
     setMode(null);
   }
 
@@ -63,7 +63,7 @@ const ApplicantGrid = ({ applicants }: ApplicantGridProps) => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {applicants.map((applicant) => (
           <ApplicantGridCard
-            key={applicant.userId}
+            key={applicant.accountId}
             applicant={applicant}
             onContact={() => onContact(applicant)} />
         ))}

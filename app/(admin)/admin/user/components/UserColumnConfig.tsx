@@ -39,7 +39,7 @@ export const userColumns: ColumnDef<User>[] = [
     cell: ({ row }) => (
       <div>
         <div className="font-medium">{row.getValue("fullName") || "Chưa cung cấp"}</div>
-        <div className="text-xs text-muted-foreground">UserID: {row.original.userId}</div>
+        <div className="text-xs text-muted-foreground">AccountID: {row.original.accountId}</div>
       </div>
     )
   },
@@ -58,7 +58,7 @@ export const userColumns: ColumnDef<User>[] = [
       <DataTableColumnHeader column={column} title="Email" />
     ),
     cell: ({ row }) => (
-      <div>{row.original.contact.email}</div>
+      <div>{row.original.email}</div>
     )
   },
   {
@@ -68,7 +68,7 @@ export const userColumns: ColumnDef<User>[] = [
       <DataTableColumnHeader column={column} title="Số điện thoại" />
     ),
     cell: ({ row }) => (
-      <div>{row.original.contact?.phone || "Chưa cung cấp"}</div>
+      <div>{row.original?.phone || "Chưa cung cấp"}</div>
     )
   },
   {

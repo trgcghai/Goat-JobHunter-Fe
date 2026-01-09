@@ -79,7 +79,7 @@ const ExploreApplicants = () => {
               </div>
 
               <SuitableApplicantActions selectedCount={selectedItems.length}
-                                        selectedIds={(selectedItems.map(item => item.userId))} />
+                                        selectedIds={(selectedItems.map(item => item.accountId))} />
 
               {viewMode == "table" && <ApplicantTable applicants={applicants} onSelectionChange={setSelectedItems} />}
 

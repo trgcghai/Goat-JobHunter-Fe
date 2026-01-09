@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { rejectSchema, RejectFormData } from "./schema";
-import { FileText } from "lucide-react";
 import { useEffect } from "react";
 
 interface RejectFormProps {

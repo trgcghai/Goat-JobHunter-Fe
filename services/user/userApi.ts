@@ -135,7 +135,7 @@ export const userApi = api.injectEndpoints({
             providesTags: ['User'],
         }),
 
-        followCompanies: builder.mutation<void, FollowCompaniesRequest>({
+        followCompanies: builder.mutation<FollowCompaniesResponse, FollowCompaniesRequest>({
             query: (data) => ({
                 url: '/users/me/followed-companies',
                 method: 'PUT',
@@ -144,7 +144,7 @@ export const userApi = api.injectEndpoints({
             invalidatesTags: ['User'],
         }),
 
-        unfollowCompanies: builder.mutation<void, FollowCompaniesRequest>({
+        unfollowCompanies: builder.mutation<FollowCompaniesResponse, FollowCompaniesRequest>({
             query: (data) => ({
                 url: '/users/me/followed-companies',
                 method: 'DELETE',

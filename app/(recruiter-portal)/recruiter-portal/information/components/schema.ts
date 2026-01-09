@@ -1,5 +1,4 @@
 import * as z from "zod";
-import { Gender } from "@/types/enum";
 
 const recruiterSchema = z.object({
   fullName: z.string().min(1, "Họ tên không được để trống"),

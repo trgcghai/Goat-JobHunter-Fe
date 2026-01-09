@@ -71,10 +71,8 @@ function RecruiterForm({ open, onOpenChange, profile }: RecruiterFormProps) {
     await handleUpdateRecruiter(profile.userId, {
       fullName: data.fullName,
       username: data.username,
-      contact: {
-        email: data.email,
-        phone: data.phone
-      },
+      email: data.email,
+      phone: data.phone,
       description: data.description,
       address: data.address,
       website: data.website

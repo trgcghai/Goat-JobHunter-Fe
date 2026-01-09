@@ -49,18 +49,17 @@ const RecruiterTable = () => {
             <TableHead>Tên nhà tuyển dụng</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Số điện thoại</TableHead>
-            <TableHead>Địa chỉ</TableHead>
             <TableHead>Thao tác</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {isSuccess &&
             recruiters.map((recruiter) => (
-              <TableRow key={recruiter.userId}>
+              <TableRow key={recruiter.accountId}>
                 <TableCell>
                   <div className="max-w-xs">
                     <Link
-                      href={`/recruiters/${recruiter.userId}`}
+                      href={`/recruiters/${recruiter.accountId}`}
                       className="font-medium hover:text-primary hover:underline truncate block"
                     >
                       {recruiter.fullName}
@@ -70,27 +69,20 @@ const RecruiterTable = () => {
                 <TableCell>
                   <div className="max-w-xs">
                     <span className="truncate block">
-                      {recruiter.contact?.email || "N/A"}
+                      {recruiter?.email || "Chưa cung cấp"}
                     </span>
                   </div>
                 </TableCell>
                 <TableCell>
                   <div className="max-w-xs">
                     <span className="truncate block">
-                      {recruiter.contact?.phone || "N/A"}
-                    </span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="max-w-xs">
-                    <span className="truncate block">
-                      {recruiter.address || "N/A"}
+                      {recruiter?.phone || "Chưa cung cấp"}
                     </span>
                   </div>
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center justify-start gap-2">
-                    <Link href={`/recruiters/${recruiter.userId}`}>
+                    <Link href={`/recruiters/${recruiter.accountId}`}>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -105,7 +97,7 @@ const RecruiterTable = () => {
                       size="sm"
                       className="rounded-xl text-destructive hover:text-destructive hover:bg-destructive/10"
                       onClick={() =>
-                        handleUnfollowRecruiters([recruiter.userId])
+                        handleUnfollowRecruiters([recruiter.accountId])
                       }
                       disabled={isUnfollowing}
                       title="Hủy theo dõi"
