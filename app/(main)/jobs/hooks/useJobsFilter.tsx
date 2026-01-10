@@ -1,5 +1,5 @@
 import { useFetchJobsAvailableQuery } from '@/services/job/jobApi';
-import { useGetAllSkillsQuery, useGetSkillsQuery } from '@/services/skill/skillApi';
+import { useGetAllSkillsQuery } from '@/services/skill/skillApi';
 import { debounce } from 'lodash';
 import { useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';

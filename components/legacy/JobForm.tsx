@@ -1,4 +1,3 @@
-import { JobFormData } from "@/app/(recruiter-portal)/recruiter-portal/jobs/form/components/schema";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -23,6 +22,7 @@ import { LEVEL_OPTIONS, WORKING_TYPE_OPTIONS } from "@/constants/constant";
 import { Loader2 } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 import RichTextEditor from "@/components/RichText/Editor";
+import { JobFormData } from "@/components/legacy/schema";
 
 interface JobFormProps {
   form: UseFormReturn<JobFormData>;

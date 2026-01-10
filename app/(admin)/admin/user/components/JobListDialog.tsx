@@ -20,7 +20,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import CustomPagination from "@/components/common/CustomPagination";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { Badge } from "@/components/ui/badge";
-import { DollarSign, MapPin } from "lucide-react";
+import { DollarSign } from "lucide-react";
 
 interface JobListDialogProps {
   user: User;
@@ -32,7 +32,7 @@ export default function JobListDialog({ user, open, onOpenChange }: JobListDialo
   const [page, setPage] = useState(1);
   const { data, isLoading, isError } = useFetchJobsByRecruiterQuery(
     {
-      recruiterId: user.userId,
+      recruiterId: user.accountId,
       page,
       size: 10
     }, {
@@ -55,7 +55,7 @@ export default function JobListDialog({ user, open, onOpenChange }: JobListDialo
       <DialogContent className="max-w-2xl! rounded-xl">
         <DialogHeader>
           <DialogTitle>
-            Việc làm của {user.fullName || user.contact.email}
+            Việc làm của {user.fullName || user.email}
           </DialogTitle>
           <DialogDescription />
         </DialogHeader>
@@ -85,9 +85,6 @@ export default function JobListDialog({ user, open, onOpenChange }: JobListDialo
                   <div className={"space-y-1"}>
                     <div className="font-semibold">{job.title}</div>
                     <div className="text-sm text-muted-foreground space-y-1">
-                      <p className={"flex items-center"}>
-                        <MapPin className={"h-4 w-4 mr-2"} /> {job.location}
-                      </p>
                       <p className={"flex items-center"}><DollarSign
                         className={"h-4 w-4 mr-2"} /> {formatCurrency(job.salary)}
                       </p>

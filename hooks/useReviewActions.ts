@@ -5,7 +5,7 @@ import { ReviewFormData } from '@/app/(main)/companies/[id]/components/schema';
 import { toast } from 'sonner';
 
 export default function useReviewActions() {
-    const { user, isSignedIn } = useUser();
+    const { user } = useUser();
 
     const [createReview, { isLoading: isCreating, isError: isErrorCreating }] = useCreateReviewMutation();
 

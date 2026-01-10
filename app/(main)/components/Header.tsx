@@ -11,21 +11,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Home,
-  Users,
   Briefcase,
   Building2,
-  FileText,
-  BookOpen,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
 const NAV_LINKS = [
-  { href: "/", label: "Trang Chủ", icon: Home },
+  { href: "/hub", label: "Trang chủ", icon: Home },
   { href: "/jobs", label: "Việc Làm", icon: Briefcase },
-  { href: "/recruiters", label: "Nhà Tuyển Dụng", icon: Users },
   { href: "/companies", label: "Công Ty", icon: Building2 },
-  { href: "/blogs", label: "Blog", icon: FileText },
-  { href: "/hub", label: "Story Hub", icon: BookOpen }
 ] as const;
 
 export default function Header() {

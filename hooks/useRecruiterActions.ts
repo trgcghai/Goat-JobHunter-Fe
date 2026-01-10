@@ -42,11 +42,11 @@ const useRecruiterActions = () => {
 
     if (isFollowed) {
       await unfollowRecruiters({
-        recruiterIds: [recruiter.userId],
+        recruiterIds: [recruiter.accountId],
       });
     } else {
       await followRecruiters({
-        recruiterIds: [recruiter.userId],
+        recruiterIds: [recruiter.accountId],
       });
     }
 

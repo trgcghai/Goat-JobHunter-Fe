@@ -6,7 +6,7 @@ import useJobActions from "@/hooks/useJobActions";
 import { Job } from "@/types/model";
 import { Ban, CheckCircle, Edit, Eye, EyeOff, FileText, Loader2, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useJobConfirmDialog } from "@/app/(recruiter-portal)/recruiter-portal/jobs/hooks/useJobConfirmDialog";
+import { useJobConfirmDialog } from "@/hooks/useJobConfirmDialog";
 import { ReactNode, useMemo } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useUser } from "@/hooks/useUser";

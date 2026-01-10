@@ -117,7 +117,7 @@ export const adminBlogColumns: ColumnDef<Blog>[] = [
     cell: ({ row }) => {
       return <div>
         <div className="font-medium">{row.original.author.fullName || "Chưa cung cấp"}</div>
-        <div className="text-xs text-muted-foreground">UserID: {row.original.author.userId}</div>
+        <div className="text-xs text-muted-foreground">AccountID: {row.original.author.accountId}</div>
       </div>;
     }
   },

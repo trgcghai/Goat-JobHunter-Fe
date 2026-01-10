@@ -159,8 +159,8 @@ export const adminJobColumns: ColumnDef<Job>[] = [
     ),
     cell: ({ row }) => {
       return <div>
-        <div className="font-medium">{row.original.recruiter.fullName || "Chưa cung cấp"}</div>
-        <div className="text-xs text-muted-foreground">UserID: {row.original.recruiter.userId}</div>
+        <div className="font-medium">{row.original.company.name || "Chưa cung cấp"}</div>
+        <div className="text-xs text-muted-foreground">AccountID: {row.original.company.accountId}</div>
       </div>;
     }
   },
