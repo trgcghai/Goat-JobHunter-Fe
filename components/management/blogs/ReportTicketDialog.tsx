@@ -35,8 +35,12 @@ const ReportTicketDialog = ({ isOpen, onClose }: Props) => {
     const selectedId = localStorage.getItem('selectedReportItem');
     const selectedType = localStorage.getItem('selectedReportType');
 
+    if (!selectedId || isNaN(Number(selectedId))) {
+      return setError('Không tìm thấy ID bài viết hợp lệ');
+    }
+
     const payload = {
-      targetId: Number(selectedId),
+      targetId: parseInt(selectedId, 10),
       reason: reason,
       description: description.trim(),
       //   description: reason === ReportReason.OTHER ? description : `Báo cáo: ${reason}`,
@@ -56,8 +60,6 @@ const ReportTicketDialog = ({ isOpen, onClose }: Props) => {
         setDescription('');
         onClose();
       }
-      console.log('ID gửi đi:', selectedId);
-      console.log('Loại:', selectedType);
     } catch (err) {
       console.error('Lỗi Server:', err);
     }

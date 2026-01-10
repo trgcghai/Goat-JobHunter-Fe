@@ -1,4 +1,4 @@
-import { useCreateBlogTicketMutation } from '@/services/ticket/ticketApi';
+import { useCreateBlogTicketMutation, useCreateCommentTicketMutation } from '@/services/ticket/ticketApi';
 import { useUser } from './useUser';
 import { useCallback } from 'react';
 import { CreateTicketRequest } from '@/services/ticket/ticketType';
@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 const useTicketActions = () => {
   const { isSignedIn, user } = useUser();
   const [createBlogTicket, { isLoading: isCreatingBlogTicket }] = useCreateBlogTicketMutation();
-  const [createCommentTicket, { isLoading: isCreatingCommentTicket }] = useCreateBlogTicketMutation();
+  const [createCommentTicket, { isLoading: isCreatingCommentTicket }] = useCreateCommentTicketMutation();
 
   const handleCreateBlogTicket = useCallback(
     async (data: CreateTicketRequest) => {
