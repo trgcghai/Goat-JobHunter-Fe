@@ -13,7 +13,7 @@ export default function CommentSection({
   comments,
   isLoading,
   isError
-}: CommentSectionProps) {
+}: Readonly<CommentSectionProps>) {
   if (isLoading) {
     return (
       <div className="py-4">

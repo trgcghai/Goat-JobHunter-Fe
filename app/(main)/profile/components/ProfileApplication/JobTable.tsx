@@ -79,8 +79,7 @@ const JobTable = () => {
           </TableHeader>
           <TableBody>
             {isSuccess &&
-              jobs &&
-              jobs.map((job) => {
+              jobs?.map((job) => {
                 return (
                   <TableRow key={job.jobId}>
                     <TableCell>

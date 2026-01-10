@@ -133,7 +133,7 @@ const useJobActions = () => {
   const handleDeleteJob = useCallback(
     async (jobId: number) => {
       try {
-        const response = await deleteJob(jobId.toString()).unwrap();
+        const response = await deleteJob(jobId).unwrap();
 
         if (response.data) {
           toast.success("Xóa công việc thành công!");

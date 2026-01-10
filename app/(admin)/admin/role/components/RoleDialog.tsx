@@ -16,12 +16,12 @@ import {
 } from "@/components/ui/form";
 import UseRoleAndPermissionActions from "@/hooks/useRoleAndPermissionActions";
 import type { Role } from "@/types/model";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 interface Props {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  role?: Role;
+  readonly open: boolean;
+  readonly onOpenChange: (open: boolean) => void;
+  readonly role?: Role;
 }
 
 const roleSchema = z.object({
@@ -62,7 +62,7 @@ export default function RoleDialog({ open, onOpenChange, role }: Props) {
         await handleUpdateRole({
           ...role,
           ...data,
-          roleId: role.roleId,
+          roleId: role.roleId
         });
       } else {
         await handleCreateRole(data);
@@ -73,6 +73,16 @@ export default function RoleDialog({ open, onOpenChange, role }: Props) {
       console.error(error);
     }
   };
+
+  const buttonText = useMemo(() => {
+    const isSaving = isCreating || isUpdating;
+
+    if (isSaving) {
+      return "Đang lưu..."
+    }
+
+    return role ? "Cập nhật" : "Tạo vai trò";
+  }, [isCreating, isUpdating, role]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -116,7 +126,7 @@ export default function RoleDialog({ open, onOpenChange, role }: Props) {
                 Hủy
               </Button>
               <Button type="submit" className="rounded-xl" disabled={isCreating || isUpdating}>
-                {isCreating || isUpdating ? "Đang lưu..." : role ? "Cập nhật" : "Tạo vai trò"}
+                {buttonText}
               </Button>
             </DialogFooter>
           </form>

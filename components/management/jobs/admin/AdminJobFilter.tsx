@@ -26,7 +26,7 @@ export default function AdminJobFilter({
   filters,
   onFilterChange,
   onResetFilters,
-}: AdminJobFilterProps) {
+}: Readonly<AdminJobFilterProps>) {
   const [searchTerm, setSearchTerm] = useState(filters.title || "");
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

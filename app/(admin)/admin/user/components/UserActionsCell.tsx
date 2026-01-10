@@ -18,7 +18,7 @@ import { HasApplicant, HasRecruiter } from "@/components/common/HasRole";
 import Link from "next/link";
 
 interface UserActionsCellProps {
-  user: User;
+  readonly user: User;
 }
 
 export function UserActionsCell({ user }: UserActionsCellProps) {

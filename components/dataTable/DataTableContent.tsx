@@ -23,7 +23,7 @@ interface DataTableContentProps<TData> {
 export function DataTableContent<TData>({
   table,
   columns,
-}: DataTableContentProps<TData>) {
+}: Readonly<DataTableContentProps<TData>>) {
   return (
     <div className="rounded-lg border">
       <Table>

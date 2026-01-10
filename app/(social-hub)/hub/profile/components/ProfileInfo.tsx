@@ -41,10 +41,10 @@ export function ProfileInfo() {
 
           <div className="space-y-4">
             <p className="text-sm">
-              {headline ? headline : "Chưa cập nhật"}
+              {headline ?? "Chưa cập nhật"}
             </p>
             <p className="text-sm">
-              {bio ? bio : "Chưa có tiểu sử cá nhân."}
+              {bio ?? "Chưa có tiểu sử cá nhân."}
             </p>
           </div>
         </div>

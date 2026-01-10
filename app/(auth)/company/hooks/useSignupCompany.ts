@@ -26,7 +26,7 @@ interface UseSignupCompanyReturn {
       province: string;
       fullAddress: string;
     }[];
-    website?: string | undefined;
+    website?: string;
   }>;
 }
 
@@ -46,7 +46,7 @@ const useSignupCompany = ({ setValue }: UseSignupCompanyReturn) => {
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [coverPhotoFile, setCoverPhotoFile] = useState<File | null>(null);
 
-  const { companySignUp, isSigningUpCompany } = useUser();
+  const { companySignUp } = useUser();
 
   const isSubmitting = isUploadingFile;
 

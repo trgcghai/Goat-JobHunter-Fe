@@ -10,6 +10,6 @@ interface JobsTableProps {
   columns: ColumnDef<Job>[];
 }
 
-export default function JobsTable({ jobs, onSelectionChange, columns }: JobsTableProps) {
+export default function JobsTable({ jobs, onSelectionChange, columns }: Readonly<JobsTableProps>) {
   return <DataTable columns={columns} data={jobs} onSelectionChange={onSelectionChange} />;
 }

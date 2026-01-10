@@ -23,7 +23,7 @@ interface CreateBlogDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function CreateBlogDialog({ open, onOpenChange }: CreateBlogDialogProps) {
+export function CreateBlogDialog({ open, onOpenChange }: Readonly<CreateBlogDialogProps>) {
   const { user } = useUser();
   const { handleCreateBlog, isCreating } = useBlogActions();
   const [content, setContent] = useState("");

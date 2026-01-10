@@ -24,7 +24,7 @@ export function UserHoverCard({
   username,
   bio,
   children
-}: UserHoverCardProps) {
+}: Readonly<UserHoverCardProps>) {
   return (
     <HoverCard openDelay={300}>
       <HoverCardTrigger asChild>

@@ -6,11 +6,11 @@ import type {
   ResendCodeRequest,
   ResendCodeResponse,
   SignInRequest,
-  SignInResponse,
   VerifyCodeRequest,
   VerifyCodeResponse,
 } from './authType';
 import { ApplicantResponse, RecruiterResponse, UserResponse } from '@/types/dto';
+import { IBackendRes } from "@/types/api";
 
 export const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -30,7 +30,7 @@ export const authApi = api.injectEndpoints({
       }),
     }),
 
-    signin: builder.mutation<SignInResponse, SignInRequest>({
+    signin: builder.mutation<IBackendRes<UserResponse>, SignInRequest>({
       query: ({ email, password }) => ({
         url: '/auth/login',
         method: 'POST',

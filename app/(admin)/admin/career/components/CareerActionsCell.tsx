@@ -8,7 +8,7 @@ import EditCareerDialog from "./EditCareerDialog";
 import useCareerActions from "@/hooks/useSkillAndCareerActions";
 
 interface CareerActionsCellProps {
-  career: Career;
+  readonly career: Career;
 }
 
 export default function CareerActionsCell({ career }: CareerActionsCellProps) {

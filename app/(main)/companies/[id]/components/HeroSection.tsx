@@ -18,7 +18,7 @@ interface HeroSectionProps {
     isReviewed: boolean;
 }
 
-export default function HeroSection({ company, totalJobs, citiesArray, isFollowed, isReviewed }: HeroSectionProps) {
+export default function HeroSection({ company, totalJobs, citiesArray, isFollowed, isReviewed }: Readonly<HeroSectionProps>) {
     const { handleToggleFollowCompany, isLoading: isLoadingFollow } = useCompanyActions();
     const { handleCreateReview, isCreating, user } = useReviewActions();
 

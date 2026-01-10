@@ -7,8 +7,8 @@ import { useUserConfirmDialog } from "@/app/(admin)/admin/user/hooks/useUserConf
 import ConfirmDialog from "@/components/common/ConfirmDialog";
 
 interface UserActionsProps {
-  selectedCount: number;
-  selectedIds: number[];
+  readonly selectedCount: number;
+  readonly selectedIds: number[];
 }
 
 export default function UserActions({

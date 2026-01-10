@@ -137,8 +137,8 @@ export default function JobsPage() {
                     : "flex flex-col gap-4"
                 }
               >
-                {Array.from({ length: itemsPerPage }).map((_, i) => (
-                  <Skeleton key={i} className="h-64 rounded-xl" />
+                {Array.from({ length: itemsPerPage }, () => crypto.randomUUID()).map((key) => (
+                  <Skeleton key={key} className="h-64 rounded-xl" />
                 ))}
               </div>
             )}

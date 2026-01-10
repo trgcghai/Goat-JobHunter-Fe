@@ -8,8 +8,8 @@ import {
   useUpdateSkillMutation,
   useDeleteSkillMutation
 } from "@/services/skill/skillApi";
-import type { CreateCareerRequest, UpdateCareerRequest } from "@/services/career/careerType";
-import type { CreateSkillRequest, UpdateSkillRequest } from "@/services/skill/skillType";
+import { CareerNameRequest, UpdateCareerRequest } from "@/services/career/careerType";
+import { SkillNameRequest, UpdateSkillRequest } from "@/services/skill/skillType";
 import { toast } from "sonner";
 
 export default function useSkillAndCareerActions() {
@@ -24,7 +24,7 @@ export default function useSkillAndCareerActions() {
   const [deleteSkill, { isLoading: isDeletingSkill }] = useDeleteSkillMutation();
 
   // Career handlers
-  const handleCreateCareer = async (data: CreateCareerRequest) => {
+  const handleCreateCareer = async (data: CareerNameRequest) => {
     try {
       const result = await createCareer(data).unwrap();
       if (result.statusCode === 201) {
@@ -59,7 +59,7 @@ export default function useSkillAndCareerActions() {
   };
 
   // Skill handlers
-  const handleCreateSkill = async (data: CreateSkillRequest) => {
+  const handleCreateSkill = async (data: SkillNameRequest) => {
     try {
       const result = await createSkill(data).unwrap();
       if (result.statusCode === 201) {
@@ -85,7 +85,7 @@ export default function useSkillAndCareerActions() {
 
   const handleDeleteSkills = async (skillIds: number[]) => {
     try {
-      await Promise.all(skillIds.map(async skillId => await deleteSkill(String(skillId))));
+      await Promise.all(skillIds.map(async skillId => await deleteSkill(skillId)));
       toast.success("Xóa kỹ năng thành công");
     } catch (error) {
       toast.error("Có lỗi xảy ra khi xóa kỹ năng. Vui lòng thử lại.");

@@ -14,13 +14,13 @@ import {
   FormMessage
 } from "@/components/ui/form";
 import type { Skill } from "@/types/model";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import useSkillAndCareerActions from "@/hooks/useSkillAndCareerActions";
 
 interface Props {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  skill: Skill | null;
+  readonly open: boolean;
+  readonly onOpenChange: (open: boolean) => void;
+  readonly skill: Skill | null;
 }
 
 const skillSchema = z.object({
@@ -69,6 +69,16 @@ export default function EditSkillDialog({ open, onOpenChange, skill }: Props) {
     }
   };
 
+  const buttonText = useMemo(() => {
+
+    const isSaving = isCreatingSkill || isUpdatingSkill;
+
+    if (isSaving && isEditMode) return "Đang cập nhật...";
+    if (isSaving && !isEditMode) return "Đang tạo...";
+    if (!isSaving && isEditMode) return "Cập nhật";
+    return "Tạo kỹ năng";
+  }, [isCreatingSkill, isUpdatingSkill, isEditMode]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="rounded-xl">
@@ -99,9 +109,7 @@ export default function EditSkillDialog({ open, onOpenChange, skill }: Props) {
                 Hủy
               </Button>
               <Button type="submit" className="rounded-xl" disabled={isCreatingSkill || isUpdatingSkill}>
-                {isCreatingSkill || isUpdatingSkill
-                  ? (isEditMode ? "Đang cập nhật..." : "Đang tạo...")
-                  : (isEditMode ? "Cập nhật" : "Tạo kỹ năng")}
+                {buttonText}
               </Button>
             </DialogFooter>
           </form>

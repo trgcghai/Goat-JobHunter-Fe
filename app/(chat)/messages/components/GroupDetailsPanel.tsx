@@ -39,7 +39,7 @@ export function GroupDetailsPanel({
   isOpen,
   onClose,
   currentUserId = "user-1"
-}: GroupDetailsPanelProps) {
+}: Readonly<GroupDetailsPanelProps>) {
   const [isMembersOpen, setIsMembersOpen] = useState(false);
 
   if (!isOpen) return null;

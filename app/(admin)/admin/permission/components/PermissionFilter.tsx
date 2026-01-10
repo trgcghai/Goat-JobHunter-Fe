@@ -9,9 +9,9 @@ import { debounce } from "lodash";
 import { METHOD_OPTIONS } from "@/constants/constant";
 
 interface PermissionFilterProps {
-  filters: PermissionFilters;
-  onFilterChange: (filters: Partial<PermissionFilters>) => void;
-  onResetFilters: () => void;
+  readonly filters: PermissionFilters;
+  readonly onFilterChange: (filters: Partial<PermissionFilters>) => void;
+  readonly onResetFilters: () => void;
 }
 
 export default function PermissionFilter({ filters, onFilterChange, onResetFilters }: PermissionFilterProps) {

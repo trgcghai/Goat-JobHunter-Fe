@@ -23,9 +23,9 @@ const permissionSchema = z.object({
 export type PermissionFormValues = z.infer<typeof permissionSchema>;
 
 interface Props {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  permission?: Permission;
+  readonly open: boolean;
+  readonly onOpenChange: (open: boolean) => void;
+  readonly permission?: Permission;
 }
 
 export default function EditPermissionDialog({ open, onOpenChange, permission }: Props) {

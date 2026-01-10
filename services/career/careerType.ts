@@ -1,15 +1,10 @@
 import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type { Career } from "@/types/model";
 
-// Base Request Types
-export type CareerIdRequest = number;
 
 export type CareerNameRequest = {
   name: string;
 };
-
-// Create & Update
-export type CreateCareerRequest = CareerNameRequest;
 
 export type UpdateCareerRequest = CareerNameRequest & {
   careerId: string;

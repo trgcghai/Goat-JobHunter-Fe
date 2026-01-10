@@ -1,18 +1,17 @@
 import { api } from '@/services/api';
 import { buildSpringQuery } from '@/utils/buildSpringQuery';
 import type {
-    CreateSkillRequest,
-    FetchSkillsRequest,
-    FetchSkillsResponse,
-    SkillIdRequest,
-    SkillMutationResponse,
-    UpdateSkillRequest,
-} from './skillType';
+  FetchSkillsRequest,
+  FetchSkillsResponse,
+  SkillMutationResponse,
+  SkillNameRequest,
+  UpdateSkillRequest
+} from "./skillType";
 
 export const skillApi = api.injectEndpoints({
     overrideExisting: true,
     endpoints: (builder) => ({
-        createSkill: builder.mutation<SkillMutationResponse, CreateSkillRequest>({
+        createSkill: builder.mutation<SkillMutationResponse, SkillNameRequest>({
             query: ({ name }) => ({
                 url: '/skills',
                 method: 'POST',
@@ -30,7 +29,7 @@ export const skillApi = api.injectEndpoints({
             invalidatesTags: ['Skill'],
         }),
 
-        deleteSkill: builder.mutation<SkillMutationResponse, SkillIdRequest>({
+        deleteSkill: builder.mutation<SkillMutationResponse, number>({
             query: (skillId) => ({
                 url: `/skills/${skillId}`,
                 method: 'DELETE',

@@ -21,7 +21,7 @@ interface ProfileHeaderProps {
   type: "applicant" | "recruiter";
 }
 
-export default function ProfileHeader({ fullPage = false, type }: ProfileHeaderProps) {
+export default function ProfileHeader({ fullPage = false, type }: Readonly<ProfileHeaderProps>) {
   const [imageError, setImageError] = useState(false);
   const [isAvatarDialogOpen, setIsAvatarDialogOpen] = useState(false);
   const { user } = useUser();
@@ -68,7 +68,7 @@ export default function ProfileHeader({ fullPage = false, type }: ProfileHeaderP
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-3 mb-2">
               <h1 className="text-3xl font-bold text-foreground">
-                {user?.fullName || user?.email}
+                {user?.fullName || user?.email || "Người dùng"}
               </h1>
 
               <HasApplicant user={user}>

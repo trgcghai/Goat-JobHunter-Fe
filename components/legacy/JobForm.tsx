@@ -23,6 +23,7 @@ import { Loader2 } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 import RichTextEditor from "@/components/RichText/Editor";
 import { JobFormData } from "@/components/legacy/schema";
+import { useMemo } from "react";
 
 interface JobFormProps {
   form: UseFormReturn<JobFormData>;
@@ -38,17 +39,37 @@ interface JobFormProps {
 }
 
 const JobForm = ({
-                   form,
-                   onSubmit,
-                   skillOptions,
-                   careerOptions,
-                   inputValue,
-                   handleInputValueChange,
-                   isFetchingSkills,
-                   isCreating,
-                   isUpdating,
-                   isEditMode
-                 }: JobFormProps) => {
+ form,
+ onSubmit,
+ skillOptions,
+ careerOptions,
+ inputValue,
+ handleInputValueChange,
+ isFetchingSkills,
+ isCreating,
+ isUpdating,
+ isEditMode
+}: Readonly<JobFormProps>) => {
+
+  const submitContent = useMemo(() => {
+    const isSaving = isCreating || isUpdating;
+
+    if (isSaving) {
+      return (
+        <>
+          <Loader2 className="h-4 w-4 animate-spin mr-2" />
+          {isEditMode ? "Đang cập nhật..." : "Đang tạo..."}
+        </>
+      );
+    }
+
+    if (isEditMode) {
+      return "Cập nhật công việc";
+    }
+
+    return "Tạo công việc";
+  }, [isCreating, isEditMode, isUpdating]);
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -194,7 +215,7 @@ const JobForm = ({
                         className="rounded-xl"
                         {...field}
                         onChange={(e) =>
-                          field.onChange(parseFloat(e.target.value))
+                          field.onChange(Number.parseFloat(e.target.value))
                         }
                       />
                     </FormControl>
@@ -216,7 +237,7 @@ const JobForm = ({
                         className="rounded-xl"
                         {...field}
                         onChange={(e) =>
-                          field.onChange(parseInt(e.target.value))
+                          field.onChange(Number.parseInt(e.target.value))
                         }
                       />
                     </FormControl>
@@ -361,16 +382,7 @@ const JobForm = ({
             className="rounded-xl"
             disabled={isCreating || isUpdating}
           >
-            {isCreating || isUpdating ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                {isEditMode ? "Đang cập nhật..." : "Đang tạo..."}
-              </>
-            ) : isEditMode ? (
-              "Cập nhật công việc"
-            ) : (
-              "Tạo công việc"
-            )}
+            {submitContent}
           </Button>
         </div>
       </form>

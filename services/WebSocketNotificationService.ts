@@ -12,7 +12,7 @@ export class WebSocketNotificationService {
   private client: Client | null = null;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(private dispatch: ThunkDispatch<any, any, UnknownAction>) {}
+  constructor(private readonly dispatch: ThunkDispatch<any, any, UnknownAction>) {}
 
   connect() {
     this.client = new Client({
@@ -35,9 +35,9 @@ export class WebSocketNotificationService {
     }
   }
 
-  private beforeConnect = () => {
+  private readonly beforeConnect = () => {
     const { isAuthenticated, user } = store.getState().auth;
-    return isAuthenticated && user ? Promise.resolve() : Promise.reject();
+    return isAuthenticated && user ? Promise.resolve() : Promise.reject(new Error("User is not authenticated"));
   };
 
   private setupHandlers() {

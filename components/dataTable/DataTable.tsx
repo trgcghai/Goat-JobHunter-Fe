@@ -15,7 +15,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   onSelectionChange
-}: DataTableProps<TData, TValue>) {
+}: Readonly<DataTableProps<TData, TValue>>) {
   const table = useDataTable({
     data,
     columns: columns as ColumnDef<TData>[],

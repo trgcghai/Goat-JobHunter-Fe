@@ -38,22 +38,23 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
       const result = await signIn(data);
 
       if (result.success) {
-        switch (result.user?.role.name) {
-          case 'SUPER_ADMIN':
-            router.push('/dashboard');
-            return;
-          default:
-            router.push('/');
+        if (result.user?.role.name === "SUPER_ADMIN") {
+          router.push('/dashboard');
+          return;
         }
-      } else {
-        // xử lý lỗi cụ thể
-        if (result.error === 'Bad credentials') {
-          setError('root', {
-            type: 'manual',
-            message: 'Email hoặc mật khẩu không đúng',
-          });
-        }
+        router.push("/")
+        return
       }
+
+      // xử lý lỗi cụ thể
+      if (result.error === 'Bad credentials') {
+        setError('root', {
+          type: 'manual',
+          message: 'Email hoặc mật khẩu không đúng',
+        });
+        return
+      }
+
     } catch (error) {
       console.error('Login error:', error);
     }

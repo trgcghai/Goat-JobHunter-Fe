@@ -7,10 +7,9 @@ import { Job } from "@/types/model";
 import { Ban, CheckCircle, Edit, Eye, EyeOff, FileText, Loader2, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useJobConfirmDialog } from "@/hooks/useJobConfirmDialog";
-import { ReactNode, useMemo } from "react";
+import { ReactNode } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useUser } from "@/hooks/useUser";
-import { ROLE } from "@/constants/constant";
 import { HasAdmin, HasRecruiter } from "@/components/common/HasRole";
 import DisableJobsDialog from "@/components/management/jobs/DisableJobsDialog";
 
@@ -67,19 +66,10 @@ const JobActionsCell = ({ job }: { job: Job }) => {
 
   const isExpired = job.endDate ? new Date(job.endDate) < new Date() : false;
 
-  const detailLink = useMemo<string>(() => {
-    switch (user?.role.name) {
-      case ROLE.SUPER_ADMIN:
-        return `/jobs/${job.jobId}`;
-      default:
-        return `/jobs/${job.jobId}`;
-    }
-  }, [job, user]);
-
   return (
     <>
       <div className="flex items-center gap-2">
-        <Link href={detailLink}>
+        <Link href={`/jobs/${job.jobId}`}>
           <Button
             variant="outline"
             size="icon"

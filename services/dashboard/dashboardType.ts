@@ -1,35 +1,26 @@
 import type { IBackendRes } from "@/types/api";
 
 // Base Request Types
-type DateRangeRequest = {
+export type DateRangeRequest = {
   startDate?: string;
   endDate?: string;
   status?: string;
 };
 
-type YearRequest = {
+export type YearRequest = {
   year: number;
 };
 
-type YearMonthRequest = {
+export type YearMonthRequest = {
   year: number;
   month: number;
 };
-
-// Statistics Requests
-export type StatisticsJobRequest = DateRangeRequest;
-
-export type StatisticsApplicationRequest = DateRangeRequest;
 
 export type StatisticsApplicationByYearRequest = {
   year?: number;
   status?: string;
   recruiterId?: number;
 };
-
-export type ApplicationsByYearRequest = YearRequest;
-
-export type Top10BlogsRequest = YearMonthRequest;
 
 // Response Data Types
 export type UserStatistics = {

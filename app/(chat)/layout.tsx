@@ -1,7 +1,7 @@
 import { Sidebar } from '@/app/(chat)/messages/components/Sidebar';
 
 interface ChatLayoutProps {
-  children: React.ReactNode;
+  readonly children: React.ReactNode;
 }
 
 export default function ChatLayout({ children }: ChatLayoutProps) {

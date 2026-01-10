@@ -1,7 +1,6 @@
 import { api } from "@/services/api";
 import { buildSpringQuery } from "@/utils/buildSpringQuery";
 import {
-  BlogIdRequest,
   BlogIdsRequest,
   BlogMutationResponse,
   BlogStatusResponse,
@@ -114,7 +113,7 @@ export const blogApi = api.injectEndpoints({
       providesTags: ["Blog"]
     }),
 
-    fetchBlogById: builder.query<FetchBlogByIdResponse, BlogIdRequest>({
+    fetchBlogById: builder.query<FetchBlogByIdResponse, number>({
       query: (blogId) => ({
         url: `/blogs/${blogId}`,
         method: "GET"
@@ -122,7 +121,7 @@ export const blogApi = api.injectEndpoints({
       providesTags: ["Blog"]
     }),
 
-    fetchBlogByIdRead: builder.query<FetchBlogByIdResponse, BlogIdRequest>({
+    fetchBlogByIdRead: builder.query<FetchBlogByIdResponse, number>({
       query: (blogId) => ({
         url: `/blogs/${blogId}`,
         method: "GET",

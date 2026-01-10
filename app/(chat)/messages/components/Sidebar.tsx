@@ -50,8 +50,8 @@ export function Sidebar() {
         <div className="space-y-1 pb-4">
           {isLoading && (
             <>
-              {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="flex items-center gap-3 p-3">
+              {Array.from({ length: 5 }, () => crypto.randomUUID()).map((value) => (
+                <div key={value} className="flex items-center gap-3 p-3">
                   <Skeleton className="h-12 w-12 rounded-full" />
                   <div className="flex-1 space-y-2">
                     <Skeleton className="h-4 w-3/4" />

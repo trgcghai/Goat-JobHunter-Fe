@@ -25,7 +25,7 @@ interface SocialBlogCardProps {
   initialReaction: string | null;
 }
 
-export function SocialBlogCard({ blog, isSaved, initialReaction }: SocialBlogCardProps) {
+export function SocialBlogCard({ blog, isSaved, initialReaction }: Readonly<SocialBlogCardProps>) {
   const dispatch = useAppDispatch();
   const { handleToggleSaveBlog, isLoading } = useBlogActions();
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
@@ -103,7 +103,7 @@ export function SocialBlogCard({ blog, isSaved, initialReaction }: SocialBlogCar
           {blog.tags.length > 0 && (
             <div className="mb-3 flex flex-wrap gap-2">
               {blog.tags.map((tag, index) => (
-                <Badge key={index} variant="secondary" className="text-xs">
+                <Badge key={index + tag} variant="secondary" className="text-xs">
                   #{tag}
                 </Badge>
               ))}

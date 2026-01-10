@@ -23,9 +23,9 @@ import { Badge } from "@/components/ui/badge";
 import { DollarSign } from "lucide-react";
 
 interface JobListDialogProps {
-  user: User;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  readonly user: User;
+  readonly open: boolean;
+  readonly onOpenChange: (open: boolean) => void;
 }
 
 export default function JobListDialog({ user, open, onOpenChange }: JobListDialogProps) {

@@ -20,7 +20,7 @@ export default function JobCard({
   isSaved,
   onLevelClick,
   onWorkingTypeClick,
-}: JobCardProps) {
+}: Readonly<JobCardProps>) {
 
   const router = useRouter()
 
@@ -59,7 +59,7 @@ export default function JobCard({
         job={job}
         isSaved={isSaved}
         handleSaveJob={handleSaveJob}
-        onLevelClick={onLevelClick ? onLevelClick : handleLevelClick}
+        onLevelClick={onLevelClick ?? handleLevelClick}
         onWorkingTypeClick={handleWorkingTypeClick}
       />
     );
@@ -71,8 +71,8 @@ export default function JobCard({
       job={job}
       isSaved={isSaved}
       handleSaveJob={handleSaveJob}
-      onLevelClick={onLevelClick ? onLevelClick : handleLevelClick}
-      onWorkingTypeClick={onWorkingTypeClick ? onWorkingTypeClick : handleWorkingTypeClick}
+      onLevelClick={onLevelClick ?? handleLevelClick}
+      onWorkingTypeClick={onWorkingTypeClick ?? handleWorkingTypeClick}
     />
   );
 }

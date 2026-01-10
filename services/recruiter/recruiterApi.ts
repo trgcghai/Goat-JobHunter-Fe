@@ -6,7 +6,6 @@ import {
   FetchRecruiterByIdResponse,
   FetchRecruitersRequest,
   FetchRecruitersResponse,
-  RecruiterIdRequest,
   RecruiterMutationResponse,
   UpdateRecruiterRequest
 } from "./recruiterType";
@@ -50,7 +49,7 @@ export const recruiterApi = api.injectEndpoints({
 
     deleteRecruiter: builder.mutation<
       RecruiterMutationResponse,
-      RecruiterIdRequest
+      number
     >({
       query: (recruiterId) => ({
         url: `/recruiters/${recruiterId}`,
@@ -108,7 +107,7 @@ export const recruiterApi = api.injectEndpoints({
 
     fetchRecruiterById: builder.query<
       FetchRecruiterByIdResponse,
-      RecruiterIdRequest
+      number
     >({
       query: (recruiterId) => ({
         url: `/recruiters/${recruiterId}`,

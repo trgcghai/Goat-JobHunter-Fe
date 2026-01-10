@@ -6,7 +6,7 @@ import { SharedFile } from '@/app/(chat)/messages/utils/types';
 import { Button } from '@/components/ui/button';
 
 interface SharedFilesListProps {
-  files: SharedFile[];
+  readonly files: SharedFile[];
 }
 
 export function SharedFilesList({ files }: SharedFilesListProps) {

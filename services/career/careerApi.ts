@@ -1,9 +1,8 @@
 import { api } from "@/services/api";
 import { buildSpringQuery } from "@/utils/buildSpringQuery";
-import type {
-  CareerIdRequest,
+import {
   CareerMutationResponse,
-  CreateCareerRequest,
+  CareerNameRequest,
   FetchCareersRequest,
   FetchCareersResponse,
   UpdateCareerRequest
@@ -12,7 +11,7 @@ import type {
 export const careerApi = api.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
-    createCareer: builder.mutation<CareerMutationResponse, CreateCareerRequest>({
+    createCareer: builder.mutation<CareerMutationResponse, CareerNameRequest>({
       query: ({ name }) => ({
         url: "/careers",
         method: "POST",
@@ -30,7 +29,7 @@ export const careerApi = api.injectEndpoints({
       invalidatesTags: ["Career"]
     }),
 
-    deleteCareer: builder.mutation<CareerMutationResponse, CareerIdRequest>({
+    deleteCareer: builder.mutation<CareerMutationResponse, number>({
       query: (careerId) => ({
         url: `/careers/${careerId}`,
         method: "DELETE"

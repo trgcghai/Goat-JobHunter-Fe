@@ -5,8 +5,8 @@ import { DataTable } from "@/components/dataTable/DataTable";
 import { userColumns } from "@/app/(admin)/admin/user/components/UserColumnConfig";
 
 interface UserTableProps {
-  users: User[];
-  onSelectionChange: (selectedItems: User[]) => void;
+  readonly users: User[];
+  readonly onSelectionChange: (selectedItems: User[]) => void;
 }
 
 export function UserTable({

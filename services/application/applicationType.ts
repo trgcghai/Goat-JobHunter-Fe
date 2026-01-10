@@ -2,9 +2,6 @@ import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type { Application } from "@/types/model";
 import { InterviewType } from "@/types/enum";
 
-// Base Request Types
-export type ApplicationIdRequest = string;
-
 export type ApplicationIdsRequest = {
   applicationIds: number[];
 };

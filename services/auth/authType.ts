@@ -45,7 +45,6 @@ export type ResendCodeRequest = {
 // Common Response Types
 type UserResponse = IBackendRes<LoginResponseDto>;
 
-export type SignInResponse = UserResponse;
 export type FetchAccountResponse = IBackendRes<UserResponse | ApplicantResponse | RecruiterResponse>;
 
 export type LogoutResponse = IBackendRes<string>;

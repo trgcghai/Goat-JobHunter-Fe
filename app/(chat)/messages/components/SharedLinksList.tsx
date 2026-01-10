@@ -5,7 +5,7 @@ import { ExternalLink } from "lucide-react"
 import { SharedLink } from "@/app/(chat)/messages/utils/types";
 
 interface SharedLinksListProps {
-  links: SharedLink[]
+  readonly links: SharedLink[]
 }
 
 export function SharedLinksList({ links }: SharedLinksListProps) {

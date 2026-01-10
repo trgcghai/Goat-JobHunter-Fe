@@ -17,7 +17,7 @@ interface JobActionsProps {
 export default function JobActions({
   selectedCount,
   selectedIds,
-}: JobActionsProps) {
+}: Readonly<JobActionsProps>) {
   const {
     handleDeactivateJobs,
     handleActivateJobs,

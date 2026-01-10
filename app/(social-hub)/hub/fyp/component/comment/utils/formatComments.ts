@@ -37,9 +37,10 @@ export const formatCommentsToNested = (
         // Keep actual level without max limit
         currentComment.level = parentComment.level + 1;
 
-        if (!parentComment.replies) {
-          parentComment.replies = [];
-        }
+        // Fallback for replies array if undefined
+        parentComment.replies ??= [];
+
+        // Add current comment to parent's replies
         parentComment.replies.push(currentComment);
       } else {
         rootComments.push(currentComment);

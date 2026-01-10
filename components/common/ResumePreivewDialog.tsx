@@ -22,7 +22,7 @@ export default function ResumePreviewDialog({
   open,
   onOpenChange,
   application,
-}: ResumePreviewDialogProps) {
+}: Readonly<ResumePreviewDialogProps>) {
   const [isIframeLoading, setIsIframeLoading] = useState(true);
 
   const resumeUrl = application.resumeUrl || "";
@@ -64,26 +64,24 @@ export default function ResumePreviewDialog({
 
         <div className="flex-1 relative flex flex-col">
           {isPdf ? (
-            <>
-              <div className="flex-1 relative px-6 pb-6">
-                {isIframeLoading && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-muted/50 z-10">
-                    <div className="flex flex-col items-center gap-2">
-                      <FileText className="h-12 w-12 text-muted-foreground animate-pulse" />
-                      <p className="text-sm text-muted-foreground">
-                        Đang tải CV...
-                      </p>
-                    </div>
+            <div className="flex-1 relative px-6 pb-6">
+              {isIframeLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-muted/50 z-10">
+                  <div className="flex flex-col items-center gap-2">
+                    <FileText className="h-12 w-12 text-muted-foreground animate-pulse" />
+                    <p className="text-sm text-muted-foreground">
+                      Đang tải CV...
+                    </p>
                   </div>
-                )}
-                <iframe
-                  src={`${resumeUrl}`}
-                  className="w-full h-full border-0 rounded-xl"
-                  title="Resume Preview"
-                  onLoad={() => setIsIframeLoading(false)}
-                />
-              </div>
-            </>
+                </div>
+              )}
+              <iframe
+                src={`${resumeUrl}`}
+                className="w-full h-full border-0 rounded-xl"
+                title="Resume Preview"
+                onLoad={() => setIsIframeLoading(false)}
+              />
+            </div>
           ) : (
             // Non-PDF preview
             <div className="flex-1 flex flex-col items-center justify-center px-6">

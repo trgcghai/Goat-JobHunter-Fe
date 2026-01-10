@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import type { User, Group } from '../utils/types';
 import { Info, Phone, Video, Users } from 'lucide-react';
+import { useMemo } from "react";
 
 interface ChatHeaderProps {
   user?: User;
@@ -14,11 +15,19 @@ interface ChatHeaderProps {
   isDetailsOpen?: boolean;
 }
 
-export function ChatHeader({ user, group, isGroup, onToggleDetails, isDetailsOpen }: ChatHeaderProps) {
+export function ChatHeader({ user, group, isGroup, onToggleDetails, isDetailsOpen }: Readonly<ChatHeaderProps>) {
   const displayName = isGroup ? group?.name : user?.name;
   const displayAvatar = isGroup ? group?.avatar : user?.avatar;
   const isOnline = !isGroup && user?.online;
   const memberCount = isGroup ? group?.members.length : undefined;
+
+  const statusText = useMemo(() => {
+    if (isGroup) return group?.description || `${memberCount} members`;
+
+    if (isOnline) return "Đang hoạt động";
+
+    return "Không hoạt động";
+  }, [group?.description, isGroup, isOnline, memberCount])
 
   return (
     <div className="h-16 border-b border-border bg-card flex items-center justify-between px-4">
@@ -43,7 +52,7 @@ export function ChatHeader({ user, group, isGroup, onToggleDetails, isDetailsOpe
             )}
           </div>
           <p className="text-xs text-muted-foreground">
-            {isGroup ? group?.description || `${memberCount} members` : isOnline ? 'Active now' : 'Offline'}
+            {statusText}
           </p>
         </div>
       </div>

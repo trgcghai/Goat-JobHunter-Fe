@@ -15,7 +15,7 @@ interface Props {
   open: boolean;
 }
 
-export default function ImageInsertModal({ getEditor, onCancel, open }: Props) {
+export default function ImageInsertModal({ getEditor, onCancel, open }: Readonly<Props>) {
   const [inputValue, setInputValue] = useState("");
 
   const handleInsert = () => {

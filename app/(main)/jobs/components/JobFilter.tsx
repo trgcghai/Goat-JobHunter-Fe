@@ -32,7 +32,7 @@ export default function JobFilter({
   isFetchingSkills,
   skillInputValue,
   onSkillInputChange
-}: JobFilterProps) {
+}: Readonly<JobFilterProps>) {
   // Convert API skills to options
   const skillOptions = useMemo<Option[]>(() => {
     if (!skillInputValue || skillInputValue.length < 2) return [];

@@ -39,7 +39,7 @@ const useSubscriberActions = (data?: UseSubscriberActionsProps) => {
         }
 
         // user already has a subscriber, so we just need to update it
-        if (data && data.subscriberId) {
+        if (data?.subscriberId) {
           await updateSubscriber({
             subscriberId: data.subscriberId,
             name,

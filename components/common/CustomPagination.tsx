@@ -28,7 +28,7 @@ export default function CustomPagination({
     hasNextPage,
     hasPreviousPage,
     visiblePageRange = 2,
-}: CustomPaginationProps) {
+}: Readonly<CustomPaginationProps>) {
     // Generate visible page numbers
     const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
     const visiblePages = pageNumbers.slice(

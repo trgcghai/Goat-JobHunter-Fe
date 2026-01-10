@@ -8,7 +8,7 @@ import { usePermissionConfirmDialog } from "../hooks/usePermissionConfirmDialog"
 import EditPermissionDialog from "./EditPermissionDialog";
 import useRoleAndPermissionActions from "@/hooks/useRoleAndPermissionActions";
 
-export default function PermissionActionsCell({ permission }: { permission: Permission }) {
+export default function PermissionActionsCell({ permission }: { readonly permission: Permission }) {
   const { handleDeletePermission, isDeletingPermission } = useRoleAndPermissionActions();
   const [isEditOpen, setIsEditOpen] = useState(false);
 

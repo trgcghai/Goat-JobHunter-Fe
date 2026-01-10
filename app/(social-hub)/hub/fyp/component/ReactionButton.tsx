@@ -19,7 +19,7 @@ export function ReactionButton({
  initialReaction = null,
  onReactionChange,
  totalReactions
-}: ReactionButtonProps) {
+}: Readonly<ReactionButtonProps>) {
 
   const [selectedReaction, setSelectedReaction] = useState<string | null>();
   const [open, setOpen] = useState(false);
@@ -53,7 +53,7 @@ export function ReactionButton({
           variant="ghost"
           size="icon"
           className="flex items-center rounded-full gap-1"
-          style={{ color: selectedReactionData && selectedReactionData.color }}
+          style={{ color: selectedReactionData?.color }}
         >
           {selectedReactionData ? (
             <>

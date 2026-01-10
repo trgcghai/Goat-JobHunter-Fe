@@ -12,6 +12,7 @@ import { DataTablePagination } from "@/components/dataTable/DataTablePagination"
 import SkillActions from "./components/SkillActions";
 import type { Skill } from "@/types/model";
 import { debounce } from "lodash";
+import ErrorMessage from "@/components/common/ErrorMessage";
 
 const SkillManagement = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -111,13 +112,17 @@ const SkillManagement = () => {
             </Button>
           </div>
 
-          {isLoading ? (
+          {isLoading &&
             <div className="flex justify-center py-8">
               <LoaderSpin />
             </div>
-          ) : isError ? (
-            <div className="text-destructive">Có lỗi khi tải kỹ năng</div>
-          ) : (
+          }
+
+          {isError &&
+            <ErrorMessage message={"Có lỗi khi tải kỹ năng"} />
+          }
+
+          {!isLoading && !isError && (
             <>
               <SkillActions selectedItems={selectedItems} />
               <SkillTable

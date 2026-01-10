@@ -3,11 +3,14 @@ import { BaseQueryFn, createApi } from "@reduxjs/toolkit/query/react";
 import { AxiosError, AxiosRequestConfig } from "axios";
 import { IBackendRes } from "@/types/api";
 
+const DEFAULT_BASE_QUERY_CONFIG = {
+  baseUrl:
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1",
+};
+
 const axiosBaseQuery =
   (
-    { baseUrl }: { baseUrl: string } = {
-      baseUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1"
-    }
+    { baseUrl }: { baseUrl: string } = DEFAULT_BASE_QUERY_CONFIG
   ): BaseQueryFn<
     {
       url: string;

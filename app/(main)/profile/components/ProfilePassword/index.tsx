@@ -46,14 +46,17 @@ export default function ProfilePassword() {
       if (result.success) {
         form.reset();
         toast.success("Cập nhật mật khẩu thành công!");
-      } else {
-        if (result.error === "Invalid old password") {
-          form.setError("oldPassword", {
-            type: "manual",
-            message: "Mật khẩu cũ không đúng",
-          });
-        }
+        return
       }
+
+      if (result.error === "Invalid old password") {
+        form.setError("oldPassword", {
+          type: "manual",
+          message: "Mật khẩu cũ không đúng",
+        });
+        return
+      }
+
     } catch (error) {
       console.error("Error updating password:", error);
       toast.error("Có lỗi xảy ra khi cập nhật mật khẩu");
