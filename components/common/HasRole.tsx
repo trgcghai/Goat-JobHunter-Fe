@@ -21,4 +21,6 @@ export const HasAdmin = (props: Omit<HasRoleProps, 'role'>) => <HasRole {...prop
 
 export const HasCompany = (props: Omit<HasRoleProps, 'role'>) => <HasRole {...props} role={ROLE.COMPANY} />;
 
+export const HasRecruiter = (props: Omit<HasRoleProps, 'role'>) => <HasRole {...props} role={ROLE.HR} />;
+
 export const HasApplicant = (props: Omit<HasRoleProps, 'role'>) => <HasRole {...props} role={ROLE.APPLICANT} />;
