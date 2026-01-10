@@ -6,14 +6,14 @@ export const ticketApi = api.injectEndpoints({
   endpoints: (builder) => ({
     createBlogTicket: builder.mutation<TicketMutationResponse, CreateTicketRequest>({
       query: (data) => ({
-        url: '/ticket/blog',
+        url: '/tickets/blog',
         method: 'POST',
         data,
       }),
     }),
     createCommentTicket: builder.mutation<TicketMutationResponse, CreateTicketRequest>({
       query: (data) => ({
-        url: '/ticket/comment',
+        url: '/tickets/comment',
         method: 'POST',
         data,
       }),
