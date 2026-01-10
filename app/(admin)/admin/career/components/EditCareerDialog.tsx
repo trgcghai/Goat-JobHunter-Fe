@@ -71,9 +71,12 @@ export default function EditCareerDialog({ open, onOpenChange, career }: Props) 
   };
 
   const buttonText = useMemo(() => {
-    return isLoading
-      ? (isEditMode ? "Đang cập nhật..." : "Đang tạo...")
-      : (isEditMode ? "Cập nhật" : "Tạo ngành nghề");
+
+    if (isLoading) return "Đang xử lý...";
+
+    if (isEditMode) return "Cập nhật";
+
+    return "Tạo ngành nghề";
   }, [isLoading, isEditMode]);
 
   return (
