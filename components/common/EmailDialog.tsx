@@ -9,10 +9,10 @@ import {
   DialogFooter
 } from "@/components/ui/dialog";
 import { Applicant, Application } from "@/types/model";
-import AcceptForm from "../../app/(recruiter-portal)/recruiter-portal/applications/components/AcceptForm";
-import RejectForm from "../../app/(recruiter-portal)/recruiter-portal/applications/components/RejectForm";
-import { AcceptFormData, RejectFormData } from "@/app/(recruiter-portal)/recruiter-portal/applications/components/schema";
 import { useMemo } from "react";
+import { AcceptFormData, RejectFormData } from "@/components/common/Form/schema";
+import AcceptForm from "@/components/common/Form/AcceptForm";
+import RejectForm from "@/components/common/Form/RejectForm";
 
 export type EmailDialogMode = "accept" | "reject" | "invite";
 
@@ -61,7 +61,7 @@ const Description = ({ isBulk, application, applicant }: DescriptionProps) => {
   if (applicant) {
     return (
       <p className="text-sm text-gray-500">
-        Email: {applicant.contact.email}
+        Email: {applicant.email}
       </p>
     );
   }

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Trash2, Ban, CheckCircle, Eye, EyeOff } from "lucide-react";
 import useJobActions from "@/hooks/useJobActions";
 import ConfirmDialog from "@/components/common/ConfirmDialog";
-import { useJobConfirmDialog } from "@/app/(recruiter-portal)/recruiter-portal/jobs/hooks/useJobConfirmDialog";
+import { useJobConfirmDialog } from "@/hooks/useJobConfirmDialog";
 import { useUser } from "@/hooks/useUser";
 import { HasAdmin, HasRecruiter } from "@/components/common/HasRole";
 import DisableJobsDialog from "@/components/management/jobs/DisableJobsDialog";

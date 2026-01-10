@@ -37,7 +37,6 @@ const userFormSchema = z.object({
   fullName: z.string().optional(),
   username: z.string().optional(),
   phone: z.string().optional(),
-  address: z.string().optional()
 });
 
 type UserFormData = z.infer<typeof userFormSchema>;
@@ -77,7 +76,6 @@ const UserFormPage = () => {
       fullName: "",
       username: "",
       phone: "",
-      address: ""
     }
   });
 
@@ -91,18 +89,16 @@ const UserFormPage = () => {
   useEffect(() => {
     if (user && isSuccess) {
       form.reset({
-        email: user.contact?.email || "",
+        email: user?.email || "",
         role: user.role?.name as typeof ROLE.APPLICANT | typeof ROLE.HR | typeof ROLE.SUPER_ADMIN,
         fullName: user.fullName || "",
         username: user.username || "",
-        phone: user.contact?.phone || "",
-        address: user.address || ""
+        phone: user?.phone || "",
       });
     }
   }, [form, user, isSuccess]);
 
   const handleSubmit = async (data: UserFormData) => {
-    console.log(data);
     try {
       if (userId) {
         switch (data.role) {
@@ -110,22 +106,16 @@ const UserFormPage = () => {
             await handleUpdateApplicant(Number(userId), {
               fullName: data.fullName,
               username: data.username,
-              address: data.address,
-              contact: {
-                phone: data.phone || "",
-                email: data.email
-              }
+              phone: data.phone,
+              email: data.email,
             });
             break;
           case ROLE.HR:
             await handleUpdateRecruiter(Number(userId), {
               fullName: data.fullName,
               username: data.username,
-              address: data.address,
-              contact: {
-                phone: data.phone || "",
-                email: data.email
-              }
+              phone: data.phone,
+              email: data.email,
             });
             break;
           case ROLE.SUPER_ADMIN:
@@ -144,7 +134,6 @@ const UserFormPage = () => {
           fullName: data.fullName,
           username: data.username,
           phone: data.phone,
-          address: data.address
         });
 
         toast.success("Thêm người dùng thành công!");
@@ -330,28 +319,6 @@ const UserFormPage = () => {
                             placeholder="0123456789"
                             className="rounded-xl"
                             maxLength={10}
-                            disabled={isLoading}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="address"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="capitalize">
-                          Địa chỉ
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="text"
-                            placeholder="123 Đường ABC, Quận 1"
-                            className="rounded-xl"
                             disabled={isLoading}
                             {...field}
                           />

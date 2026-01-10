@@ -1,44 +1,78 @@
 'use client';
 
-import type { Message, User, SharedMedia, SharedLink } from '../utils/types';
+import type { Message, User, Group, SharedMedia, SharedLink, SharedFile } from '../utils/types';
 import { ChatHeader } from './ChatHeader';
 import { MessageInput } from './MessageInput';
 import { MessageList } from './MessageList';
 import { ChatDetailsPanel } from './ChatDetailsPanel';
-import { useState } from 'react';
+import { GroupDetailsPanel } from './GroupDetailsPanel';
+import { useDetailsPanelState } from '../hooks/useDetailsPanelState';
 
 interface ChatWindowProps {
-  user: User;
+  user?: User;
+  group?: Group;
+  isGroup?: boolean;
   messages: Message[];
   onSendMessage: (text: string) => void;
   sharedMedia: SharedMedia[];
   sharedLinks: SharedLink[];
+  sharedFiles?: SharedFile[];
+  currentUserId?: string;
 }
 
-export function ChatWindow({ user, messages, onSendMessage, sharedMedia, sharedLinks }: ChatWindowProps) {
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+export function ChatWindow({
+  user,
+  group,
+  isGroup = false,
+  messages,
+  onSendMessage,
+  sharedMedia,
+  sharedLinks,
+  sharedFiles = [],
+  currentUserId = 'me',
+}: ChatWindowProps) {
+  const { isOpen: isDetailsOpen, toggle, close } = useDetailsPanelState();
 
   return (
     <>
-      <div className="flex-1 flex flex-col bg-background min-w-0">
-        <ChatHeader user={user} onToggleDetails={() => setIsDetailsOpen(!isDetailsOpen)} isDetailsOpen={isDetailsOpen} />
-        <MessageList messages={messages} />
+      <div className="flex-1 flex flex-col bg-background min-w-0 min-h-0">
+        <ChatHeader
+          user={user}
+          group={group}
+          isGroup={isGroup}
+          onToggleDetails={toggle}
+          isDetailsOpen={isDetailsOpen}
+        />
+        <MessageList messages={messages} currentUserId={currentUserId} isGroup={isGroup} />
         <MessageInput onSendMessage={onSendMessage} />
       </div>
 
-      <div
-        className={`transition-all duration-300 ease-in-out ${
-          isDetailsOpen ? 'w-[450px] opacity-100' : 'w-0 opacity-0 overflow-hidden'
-        }`}
-      >
-        <ChatDetailsPanel
-          user={user}
-          sharedMedia={sharedMedia}
-          sharedLinks={sharedLinks}
-          isOpen={isDetailsOpen}
-          onClose={() => setIsDetailsOpen(false)}
-        />
-      </div>
+      {isDetailsOpen && (
+        <div className="shrink-0 h-full min-h-0">
+          {isGroup && group ? (
+            <GroupDetailsPanel
+              group={group}
+              sharedMedia={sharedMedia}
+              sharedLinks={sharedLinks}
+              sharedFiles={sharedFiles}
+              isOpen={isDetailsOpen}
+              onClose={close}
+              currentUserId={currentUserId}
+            />
+          ) : (
+            user && (
+              <ChatDetailsPanel
+                user={user}
+                sharedMedia={sharedMedia}
+                sharedLinks={sharedLinks}
+                sharedFiles={sharedFiles}
+                isOpen={isDetailsOpen}
+                onClose={close}
+              />
+            )
+          )}
+        </div>
+      )}
     </>
   );
 }

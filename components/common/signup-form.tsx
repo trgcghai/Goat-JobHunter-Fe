@@ -1,25 +1,44 @@
-'use client';
+"use client";
 
-import { SignUpType, SignUpTypeOptions, TUserSignUpSchema, UserSignUpSchema } from '@/app/(auth)/components/schemas';
-import CheckPasswordStrength from '@/components/common/CheckPasswordStrength';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { FieldDescription } from '@/components/ui/field';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useUser } from '@/hooks/useUser';
-import { cn } from '@/lib/utils';
-import { zodResolver } from '@hookform/resolvers/zod';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { useFetchAllCompanyNamesQuery } from '@/services/company/companyApi';
+import {
+  SignUpType,
+  SignUpTypeOptions,
+  TUserSignUpSchema,
+  UserSignUpSchema
+} from "@/app/(auth)/components/schemas";
+import CheckPasswordStrength from "@/components/common/CheckPasswordStrength";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card";
+import { FieldDescription } from "@/components/ui/field";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useUser } from "@/hooks/useUser";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 
-export function SignupForm({ className, ...props }: React.ComponentProps<'div'>) {
+export function SignupForm({
+ className,
+ ...props
+}: React.ComponentProps<"div">) {
   const router = useRouter();
   const { userSignUp, isSigningUp } = useUser();
   const { data: companyNamesResponse } = useFetchAllCompanyNamesQuery();

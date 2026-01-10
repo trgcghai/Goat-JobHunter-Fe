@@ -30,8 +30,9 @@ const careerSchema = z.object({
 export type CareerFormValues = z.infer<typeof careerSchema>;
 
 export default function EditCareerDialog({ open, onOpenChange, career }: Props) {
-  const { handleCreateCareer, handleUpdateCareer, isCreating, isUpdating } = useCareerActions();
+  const { handleCreateCareer, handleUpdateCareer, isCreatingCareer, isUpdatingCareer } = useCareerActions();
   const isEditMode = !!career;
+  const isLoading = isCreatingCareer || isUpdatingCareer;
 
   const form = useForm<CareerFormValues>({
     resolver: zodResolver(careerSchema),
@@ -98,8 +99,8 @@ export default function EditCareerDialog({ open, onOpenChange, career }: Props) 
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="rounded-xl">
                 Hủy
               </Button>
-              <Button type="submit" className="rounded-xl" disabled={isCreating || isUpdating}>
-                {isCreating || isUpdating
+              <Button type="submit" className="rounded-xl" disabled={isLoading}>
+                {isLoading
                   ? (isEditMode ? "Đang cập nhật..." : "Đang tạo...")
                   : (isEditMode ? "Cập nhật" : "Tạo ngành nghề")}
               </Button>

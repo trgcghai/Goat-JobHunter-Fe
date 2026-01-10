@@ -94,11 +94,11 @@ const useUpdateAvatar = (type: "applicant" | "recruiter") => {
         }
 
         if (type == "applicant") {
-          await handleUpdateApplicant(user?.accountId, {
+          await handleUpdateApplicant(user.accountId, {
             avatar: avatarUrl
           });
         } else {
-          await handleUpdateRecruiter(user?.accountId, {
+          await handleUpdateRecruiter(user.accountId, {
             avatar: avatarUrl
           });
         }

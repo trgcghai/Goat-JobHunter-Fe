@@ -82,3 +82,19 @@ export enum ReactionType {
   INSIGHTFUL = 'INSIGHTFUL',
   FUNNY = 'FUNNY',
 }
+
+export enum ReportReason {
+  SPAM = 'SPAM',
+  HARASSMENT = 'Quấy rối',
+  HATE_SPEECH = 'Lời nói bậy',
+  VIOLENCE = 'Bạo lực',
+  FALSE_INFO = 'Tin giả',
+  OTHER = 'Lý do khác',
+}
+
+export enum ChatRoomType {
+  DIRECT = "DIRECT",
+  GROUP = "GROUP",
+  BROADCAST = "BROADCAST",
+  AI = "AI",
+}

@@ -1,4 +1,3 @@
-import { JobFormData } from "@/app/(recruiter-portal)/recruiter-portal/jobs/form/components/schema";
 import { useUser } from "@/hooks/useUser";
 import {
   useActivateJobsMutation,
@@ -17,6 +16,7 @@ import { Job } from "@/types/model";
 import { useCallback } from "react";
 import { toast } from "sonner";
 import { JobActionType } from "@/types/enum";
+import { JobFormData } from "@/components/legacy/schema";
 
 const useJobActions = () => {
   const { user, isSignedIn } = useUser();

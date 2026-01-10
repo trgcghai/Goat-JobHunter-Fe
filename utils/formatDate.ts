@@ -1,4 +1,6 @@
 import dayjs from 'dayjs';
+import { differenceInHours, format, isToday, isYesterday } from "date-fns";
+import { vi } from "date-fns/locale";
 
 function formatDate(dateString: string): string {
     const date = new Date(dateString);
@@ -35,4 +37,25 @@ function getTimeLabel(createdAt?: string): string {
     return `${days} ngày trước`;
 }
 
-export { formatDate, formatDateTime, getDaysSinceCreation, getTimeLabel };
+function formatLastMessageTime(timestamp: string | null): string {
+  if (!timestamp) return "";
+
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diffInHours = differenceInHours(now, date);
+
+  // Nếu trong vòng 24h → hiển thị giờ:phút
+  if (diffInHours < 24) {
+    if (isToday(date)) {
+      return format(date, 'HH:mm', { locale: vi });
+    }
+    if (isYesterday(date)) {
+      return 'Hôm qua';
+    }
+  }
+
+  // Nếu xa hơn → hiển thị dd/MM
+  return format(date, 'dd/MM', { locale: vi });
+}
+
+export { formatDate, formatDateTime, getDaysSinceCreation, getTimeLabel, formatLastMessageTime };

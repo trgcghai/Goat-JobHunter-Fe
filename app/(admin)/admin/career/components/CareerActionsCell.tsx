@@ -14,7 +14,7 @@ interface CareerActionsCellProps {
 export default function CareerActionsCell({ career }: CareerActionsCellProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const { handleDeleteCareers, isDeleting } = useCareerActions();
+  const { handleDeleteCareers, isDeletingCareer } = useCareerActions();
 
   const handleConfirmDelete = async () => {
     try {
@@ -61,8 +61,8 @@ export default function CareerActionsCell({ career }: CareerActionsCellProps) {
         confirmText="Xóa"
         confirmBtnClass="bg-destructive text-white"
         onConfirm={handleConfirmDelete}
-        isLoading={isDeleting}
-        disableCancel={isDeleting}
+        isLoading={isDeletingCareer}
+        disableCancel={isDeletingCareer}
       />
     </>
   );

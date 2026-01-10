@@ -1,24 +1,25 @@
 'use client';
 
-import NotificationPopup from '@/app/(main)/components/NotificationPopup';
-import UserPopup from '@/app/(main)/components/UserPopup';
-import { Button } from '@/components/ui/button';
-import { useUser } from '@/hooks/useUser';
-import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
-import Image from 'next/image';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Home, Users, Briefcase, Building2, FileText, BookOpen } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
+import NotificationPopup from "@/app/(main)/components/NotificationPopup";
+import UserPopup from "@/app/(main)/components/UserPopup";
+import { Button } from "@/components/ui/button";
+import { useUser } from "@/hooks/useUser";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
+  Home,
+  Briefcase,
+  Building2,
+} from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 const NAV_LINKS = [
-  { href: '/', label: 'Trang Chủ', icon: Home },
-  { href: '/jobs', label: 'Việc Làm', icon: Briefcase },
-  { href: '/recruiters', label: 'Nhà Tuyển Dụng', icon: Users },
-  { href: '/companies', label: 'Công Ty', icon: Building2 },
-  { href: '/blogs', label: 'Blog', icon: FileText },
-  { href: '/hub', label: 'Story Hub', icon: BookOpen },
+  { href: "/hub", label: "Trang chủ", icon: Home },
+  { href: "/jobs", label: "Việc Làm", icon: Briefcase },
+  { href: "/companies", label: "Công Ty", icon: Building2 },
 ] as const;
 
 export default function Header() {

@@ -134,7 +134,7 @@ export function AIChatPopup() {
               <Button
                 size="icon"
                 className="rounded-xl"
-                onClick={handleChat}
+                onClick={() => handleChat()}
                 disabled={isLoading || !inputMessage.trim()}
               >
                 {isLoading ? (

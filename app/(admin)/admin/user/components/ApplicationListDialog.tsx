@@ -66,7 +66,7 @@ export default function ApplicationListDialog({ user, open, onOpenChange }: Appl
   const [page, setPage] = useState(1);
   const { data, isLoading, isError } = useFetchApplicationsByApplicantQuery(
     {
-      applicantId: user.userId,
+      applicantId: user.accountId,
       page,
       size: 10
     }, {
@@ -89,7 +89,7 @@ export default function ApplicationListDialog({ user, open, onOpenChange }: Appl
       <DialogContent className="max-w-2xl! rounded-xl">
         <DialogHeader>
           <DialogTitle>
-            Đơn ứng tuyển của {user.fullName || user.contact.email}
+            Đơn ứng tuyển của {user.fullName || user.email}
           </DialogTitle>
           <DialogDescription />
         </DialogHeader>
