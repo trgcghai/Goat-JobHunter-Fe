@@ -3,7 +3,7 @@ import { useUploadSingleFileMutation } from "@/services/upload/uploadApi";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+export const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 export const ACCEPTED_IMAGE_TYPES = {
   "image/jpeg": [".jpg", ".jpeg"],
   "image/png": [".png"],

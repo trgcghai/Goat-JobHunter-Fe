@@ -13,11 +13,11 @@ const AdminPage = () => {
   const { user } = useUser();
 
   useEffect(() => {
-    // Check if user has recruiter role
-    const isRecruiter = user?.role?.name === ROLE.SUPER_ADMIN;
+    // Check if user has company role
+    const isCompany = user?.role?.name === ROLE.COMPANY;
 
-    if (!isRecruiter) {
-      // Not recruiter, redirect to home
+    if (!isCompany) {
+      // Not company, redirect to home
       router.replace("/");
     } else {
       router.replace("/dashboard");

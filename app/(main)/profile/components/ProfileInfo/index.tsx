@@ -13,7 +13,7 @@ import ErrorMessage from "@/components/common/ErrorMessage";
 import { formatDate } from "@/utils/formatDate";
 import { useUser } from "@/hooks/useUser";
 import { ApplicantResponse, RecruiterResponse } from "@/types/dto";
-import { HasApplicant, HasRecruiter } from "@/components/common/HasRole";
+import { HasApplicant, HasCompany } from "@/components/common/HasRole";
 
 export default function ProfileInfo() {
   const [showModal, setShowModal] = useState(false);
@@ -165,7 +165,7 @@ export default function ProfileInfo() {
             </div>
           </HasApplicant>
 
-          <HasRecruiter user={user}>
+          <HasCompany user={user}>
             <div className="space-y-2">
               <Label className="capitalize" htmlFor="position">
                 Vị trí
@@ -177,7 +177,7 @@ export default function ProfileInfo() {
                 className="rounded-xl text-gray-800"
               />
             </div>
-          </HasRecruiter>
+          </HasCompany>
         </div>
       </Card>
       <UserForm

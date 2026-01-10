@@ -1,55 +1,36 @@
-"use client";
+'use client';
 
-import {
-  SignInSchema,
-  type TSignInSchema
-} from "@/app/(auth)/components/schemas";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card";
-import { FieldDescription } from "@/components/ui/field";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useUser } from "@/hooks/useUser";
-import { cn } from "@/lib/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import Image from "next/image";
+import { SignInSchema, type TSignInSchema } from '@/app/(auth)/components/schemas';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { FieldDescription } from '@/components/ui/field';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useUser } from '@/hooks/useUser';
+import { cn } from '@/lib/utils';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import Image from 'next/image';
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
   const { signIn } = useUser();
   const router = useRouter();
 
   const signInForm = useForm<TSignInSchema>({
     resolver: zodResolver(SignInSchema),
     defaultValues: {
-      email: "",
-      password: ""
-    }
+      email: '',
+      password: '',
+    },
   });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { isSubmitting }
+    formState: { isSubmitting },
   } = signInForm;
 
   const onSubmit = async (data: TSignInSchema) => {
@@ -57,47 +38,36 @@ export function LoginForm({
       const result = await signIn(data);
 
       if (result.success) {
-
-        console.log(result);
-
         switch (result.user?.role.name) {
-          case "SUPER_ADMIN":
-            router.push("/dashboard");
+          case 'SUPER_ADMIN':
+            router.push('/dashboard');
             return;
           default:
-            router.push("/");
+            router.push('/');
         }
       } else {
         // xử lý lỗi cụ thể
-        if (result.error === "Bad credentials") {
-          setError("root", {
-            type: "manual",
-            message: "Email hoặc mật khẩu không đúng"
+        if (result.error === 'Bad credentials') {
+          setError('root', {
+            type: 'manual',
+            message: 'Email hoặc mật khẩu không đúng',
           });
         }
       }
     } catch (error) {
-      console.error("Login error:", error);
+      console.error('Login error:', error);
     }
   };
 
   return (
-    <div className={cn("flex flex-col gap-6 w-md", className)} {...props}>
+    <div className={cn('flex flex-col gap-6 w-md', className)} {...props}>
       <Card>
         <CardHeader>
           <Link href="/" className="flex items-center gap-2 mb-4">
-            <Image
-              src="/logo.png"
-              alt="GOAT Logo"
-              className=""
-              width={120}
-              height={80}
-            />
+            <Image src="/logo.png" alt="GOAT Logo" className="" width={120} height={80} />
           </Link>
           <CardTitle>Đăng nhập vào tài khoản của bạn</CardTitle>
-          <CardDescription>
-            Nhập email của bạn bên dưới để đăng nhập vào tài khoản của bạn.
-          </CardDescription>
+          <CardDescription>Nhập email của bạn bên dưới để đăng nhập vào tài khoản của bạn.</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...signInForm}>
@@ -107,13 +77,11 @@ export function LoginForm({
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className={"text-base"} required>Email</FormLabel>
+                    <FormLabel className={'text-base'} required>
+                      Email
+                    </FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="you@example.com"
-                        className="rounded-xl"
-                        {...field}
-                      />
+                      <Input placeholder="you@example.com" className="rounded-xl" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -124,19 +92,19 @@ export function LoginForm({
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <div className={"flex items-center justify-between"}>
-                      <FormLabel className={"text-base"} required>Mật khẩu</FormLabel>
-                      <Link href={"/reset-password"}
-                            className={"text-muted-foreground text-sm hover:underline hover:text-primary"}>Quên mật khẩu
-                        ?</Link>
+                    <div className={'flex items-center justify-between'}>
+                      <FormLabel className={'text-base'} required>
+                        Mật khẩu
+                      </FormLabel>
+                      <Link
+                        href={'/reset-password'}
+                        className={'text-muted-foreground text-sm hover:underline hover:text-primary'}
+                      >
+                        Quên mật khẩu ?
+                      </Link>
                     </div>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="*********"
-                        className="rounded-xl"
-                        {...field}
-                      />
+                      <Input type="password" placeholder="*********" className="rounded-xl" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -147,18 +115,14 @@ export function LoginForm({
                   {signInForm.formState.errors.root.message}
                 </div>
               )}
-              <Button
-                type="submit"
-                className="rounded-xl w-full"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Đang đăng nhập..." : "Đăng nhập"}
+              <Button type="submit" className="rounded-xl w-full" disabled={isSubmitting}>
+                {isSubmitting ? 'Đang đăng nhập...' : 'Đăng nhập'}
               </Button>
               <FieldDescription className="text-center text-gray-400">
-                Chưa có tài khoản?{" "}
+                Chưa có tài khoản?{' '}
                 <Link
-                  href={isSubmitting ? "#" : "/signup"}
-                  className={`text-primary hover:underline underline underline-offset-2 ${isSubmitting ? "pointer-events-none" : ""}`}
+                  href={isSubmitting ? '#' : '/signup'}
+                  className={`text-primary hover:underline underline underline-offset-2 ${isSubmitting ? 'pointer-events-none' : ''}`}
                 >
                   Đăng ký
                 </Link>

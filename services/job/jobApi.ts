@@ -96,7 +96,7 @@ export const jobApi = api.injectEndpoints({
                 });
 
                 return {
-                    url: '/jobs',
+                    url: '/jobs/available',
                     method: 'GET',
                     params: queryParams,
                 };

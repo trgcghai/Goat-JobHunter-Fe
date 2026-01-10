@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import NotificationPopup from "@/app/(main)/components/NotificationPopup";
 import UserPopup from "@/app/(main)/components/UserPopup";
@@ -27,25 +27,18 @@ export default function Header() {
   const pathname = usePathname();
 
   const isActive = (href: string) => {
-    if (href === "/") {
-      return pathname === "/";
+    if (href === '/') {
+      return pathname === '/';
     }
     return pathname.startsWith(href);
   };
 
   return (
-    <header
-      className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-14 items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <Image
-              src="/logo.png"
-              alt="GOAT Logo"
-              className=""
-              width={80}
-              height={80}
-            />
+            <Image src="/logo.png" alt="GOAT Logo" className="" width={80} height={80} />
           </Link>
 
           <div className="flex items-center gap-4 h-full">
@@ -55,10 +48,8 @@ export default function Header() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "relative text-sm font-medium transition-colors flex flex-col items-center gap-1",
-                    isActive(link.href)
-                      ? "text-primary"
-                      : "text-muted-foreground hover:text-primary"
+                    'relative text-sm font-medium transition-colors flex flex-col items-center gap-1',
+                    isActive(link.href) ? 'text-primary' : 'text-muted-foreground hover:text-primary',
                   )}
                 >
                   <link.icon className="h-5 w-5" />
@@ -68,9 +59,9 @@ export default function Header() {
                       layoutId="navbar-indicator"
                       className="absolute -bottom-1.5 left-0 right-0 h-0.5 bg-primary"
                       transition={{
-                        type: "spring",
+                        type: 'spring',
                         stiffness: 380,
-                        damping: 30
+                        damping: 30,
                       }}
                     />
                   )}
@@ -98,6 +89,15 @@ export default function Header() {
                       className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl text-sm"
                     >
                       Đăng Ký
+                    </Button>
+                  </Link>
+                  <Link href="/company">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-xl text-sm"
+                    >
+                      Đăng Ký Tài Khoản Công Ty
                     </Button>
                   </Link>
                 </>
