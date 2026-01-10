@@ -80,7 +80,11 @@ export const CompanySignUpSchema = z
     description: z.string().min(50, 'Mô tả công ty phải có ít nhất 50 ký tự'),
     logo: z.string().nonempty('Logo không được để trống'),
     coverPhoto: z.string().nonempty('Ảnh bìa không được để trống'),
-    website: z.string().url('URL không hợp lệ').optional().or(z.literal('')),
+    website: z
+      .string()
+      .regex(/^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/\S*)?$/, 'Website không hợp lệ')
+      .optional()
+      .or(z.literal('')),
     phone: z.string().regex(/^\d{10}$/, 'Số điện thoại không hợp lệ'),
     size: z.enum(['STARTUP', 'SMALL', 'MEDIUM', 'LARGE', 'ENTERPRISE'], {
       message: 'Vui lòng chọn quy mô công ty',
