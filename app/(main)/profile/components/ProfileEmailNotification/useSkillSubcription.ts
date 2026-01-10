@@ -89,7 +89,7 @@ const useSkillSubscription = () => {
         return;
       }
 
-      await handleAddSkills(user?.contact.email || "", user?.fullName || "", selectedSkills.map(skill => Number(skill.value)));
+      await handleAddSkills(user?.email || "", user?.fullName || "", selectedSkills.map(skill => Number(skill.value)));
 
       setSelectedSkills([]);
       setInputValue("");

@@ -70,7 +70,7 @@ const AdminUserPage = () => {
             <>
               <UserActions
                 selectedCount={selectedItems.length}
-                selectedIds={selectedItems.map((item) => item.userId)}
+                selectedIds={selectedItems.map((item) => item.accountId)}
               />
 
               <UserTable

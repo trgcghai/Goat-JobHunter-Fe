@@ -11,7 +11,7 @@ interface SharedMediaGridProps {
 export function SharedMediaGrid({ media }: SharedMediaGridProps) {
   if (media.length === 0) {
     return (
-      <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">No shared media yet</div>
+      <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">Chưa có phương tiện nào</div>
     )
   }
 

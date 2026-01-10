@@ -71,8 +71,6 @@ const JobTable = () => {
           <TableHeader>
             <TableRow>
               <TableHead>Tiêu đề</TableHead>
-              <TableHead>Nhà tuyển dụng</TableHead>
-              <TableHead>Địa điểm</TableHead>
               <TableHead>Mức lương</TableHead>
               <TableHead>Ngày bắt đầu</TableHead>
               <TableHead>Ngày kết thúc</TableHead>
@@ -83,8 +81,6 @@ const JobTable = () => {
             {isSuccess &&
               jobs &&
               jobs.map((job) => {
-                const recruiter = typeof job.recruiter === "object" ? job.recruiter : undefined;
-
                 return (
                   <TableRow key={job.jobId}>
                     <TableCell>
@@ -99,36 +95,9 @@ const JobTable = () => {
                     </TableCell>
                     <TableCell>
                       <div className="max-w-xs">
-                        {recruiter ? (
-                          <Link
-                            href={`/recruiters/${recruiter.userId}`}
-                            className="hover:text-primary hover:underline truncate block"
-                          >
-                            {recruiter.fullName}
-                          </Link>
-                        ) : (
-                          <span className="text-muted-foreground">
-                                                  Chưa có thông tin
-                                              </span>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1 max-w-xs">
-                        <span className="truncate">{job.location || "N/A"}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="max-w-xs">
-                        {job.salary ? (
-                          <span className="font-medium text-green-600">
-                                                  {formatCurrency(job.salary)}
-                                              </span>
-                        ) : (
-                          <span className="text-muted-foreground">
-                                                  Thỏa thuận
-                                              </span>
-                        )}
+                        <span className="font-medium text-green-600">
+                          {formatCurrency(job.salary)}
+                        </span>
                       </div>
                     </TableCell>
                     <TableCell>

@@ -28,3 +28,5 @@ export type FetchGroupedAddressesByCompanyResponse = IBackendRes<Record<string, 
 export type FetchSkillsByCompanyResponse = IBackendRes<Record<number, string>>;
 
 export type FetchJobsByCompanyResponse = IBackendRes<Job[]>;
+
+export type FetchAllCompanyNames = IBackendRes<string[]>;

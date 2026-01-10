@@ -10,13 +10,14 @@ import { UserHoverCard } from '@/app/(social-hub)/hub/fyp/component/UserHoverCar
 import Link from 'next/link';
 import { RowsPhotoAlbum } from 'react-photo-album';
 import { RenderBlogImage } from '@/components/common/Photo/RenderNextImage';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import RichTextPreview from '@/components/RichText/Preview';
 import formatImageUrlsForPhotoView from '@/utils/formatImageUrlsForPhotoView';
 import { useAppDispatch } from '@/lib/hooks';
 import { openBlogDetail } from '@/lib/features/blogDetailSlice';
 import BlogActivity from '@/app/(social-hub)/hub/fyp/component/BlogActivity';
 import useBlogActions from '@/hooks/useBlogActions';
+import ReportTicketDialog from '@/components/management/blogs/ReportTicketDialog';
 
 interface SocialBlogCardProps {
   blog: Blog;
@@ -27,6 +28,7 @@ interface SocialBlogCardProps {
 export function SocialBlogCard({ blog, isSaved, initialReaction }: SocialBlogCardProps) {
   const dispatch = useAppDispatch();
   const { handleToggleSaveBlog, isLoading } = useBlogActions();
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
   const timeAgo = formatDistanceToNow(new Date(blog.createdAt), {
     addSuffix: true,
@@ -43,66 +45,81 @@ export function SocialBlogCard({ blog, isSaved, initialReaction }: SocialBlogCar
     await handleToggleSaveBlog(e, blog.blogId, isSaved);
   };
 
+  const handleReportClick = () => {
+    localStorage.setItem('selectedReportItem', blog.blogId.toString());
+    localStorage.setItem('selectedReportType', 'blog');
+    setIsReportModalOpen(true);
+  };
+
   return (
-    <Card className="overflow-hidden border border-border bg-card py-0 gap-0">
-      <div className="p-4">
-        <div className="flex items-center gap-3 mb-4">
-          <Avatar className="h-10 w-10 border">
-            <AvatarImage src={blog.author.avatar} alt={blog.author.fullName} />
-            <AvatarFallback>{blog.author.fullName[0]}</AvatarFallback>
-          </Avatar>
-          <div className="flex-1">
-            <UserHoverCard
-              userId={blog.author.accountId}
-              fullName={blog.author.fullName}
-              avatar={blog.author.avatar}
-              username={blog.author.username}
-              bio={blog.author.bio}
-            >
-              <Link
-                href={`/hub/users/${blog.author.accountId}`}
-                className="text-sm font-semibold hover:underline cursor-pointer"
+    <>
+      <Card className="overflow-hidden border border-border bg-card py-0 gap-0">
+        <div className="p-4">
+          <div className="flex items-center gap-3 mb-4">
+            <Avatar className="h-10 w-10 border">
+              <AvatarImage src={blog.author.avatar} alt={blog.author.fullName} />
+              <AvatarFallback>{blog.author.fullName[0]}</AvatarFallback>
+            </Avatar>
+            <div className="flex-1">
+              <UserHoverCard
+                userId={blog.author.accountId}
+                fullName={blog.author.fullName}
+                avatar={blog.author.avatar}
+                username={blog.author.username}
+                bio={blog.author.bio}
               >
-                {blog.author.fullName}
-              </Link>
-            </UserHoverCard>
-            <div className="text-xs text-muted-foreground">{timeAgo}</div>
+                <Link
+                  href={`/hub/users/${blog.author.accountId}`}
+                  className="text-sm font-semibold hover:underline cursor-pointer"
+                >
+                  {blog.author.fullName}
+                </Link>
+              </UserHoverCard>
+              <div className="text-xs text-muted-foreground">{timeAgo}</div>
+            </div>
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8 rounded-full"
+              title="Lưu bài viết"
+              onClick={handleSaveClick}
+              disabled={isLoading}
+            >
+              <Bookmark className={`h-4 w-4 ${isSaved ? 'fill-primary text-primary' : 'fill-white text-foreground'}`} />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-8 w-8 rounded-full"
+              title="Báo cáo bài viết"
+              onClick={handleReportClick}
+            >
+              <Flag className="h-4 w-4" />
+            </Button>
           </div>
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8 rounded-full"
-            title="Lưu bài viết"
-            onClick={handleSaveClick}
-            disabled={isLoading}
-          >
-            <Bookmark className={`h-4 w-4 ${isSaved ? 'fill-primary text-primary' : 'fill-white text-foreground'}`} />
-          </Button>
-          <Button variant="outline" size="icon" className="h-8 w-8 rounded-full" title="Báo cáo bài viết">
-            <Flag className="h-4 w-4" />
-          </Button>
+
+          <RichTextPreview content={blog.content} className="mb-3 text-sm" />
+
+          {blog.tags.length > 0 && (
+            <div className="mb-3 flex flex-wrap gap-2">
+              {blog.tags.map((tag, index) => (
+                <Badge key={index} variant="secondary" className="text-xs">
+                  #{tag}
+                </Badge>
+              ))}
+            </div>
+          )}
         </div>
 
-        <RichTextPreview content={blog.content} className="mb-3 text-sm" />
-
-        {blog.tags.length > 0 && (
-          <div className="mb-3 flex flex-wrap gap-2">
-            {blog.tags.map((tag, index) => (
-              <Badge key={index} variant="secondary" className="text-xs">
-                #{tag}
-              </Badge>
-            ))}
+        {formattedImageUrls.length > 0 && (
+          <div className="border-t">
+            <RowsPhotoAlbum photos={formattedImageUrls} render={{ image: RenderBlogImage }} spacing={0} />
           </div>
         )}
-      </div>
 
-      {formattedImageUrls.length > 0 && (
-        <div className="border-t">
-          <RowsPhotoAlbum photos={formattedImageUrls} render={{ image: RenderBlogImage }} spacing={0} />
-        </div>
-      )}
-
-      <BlogActivity blog={blog} onCommentClick={handleOpenDetail} initialReaction={initialReaction} />
-    </Card>
+        <BlogActivity blog={blog} onCommentClick={handleOpenDetail} initialReaction={initialReaction} />
+      </Card>
+      <ReportTicketDialog isOpen={isReportModalOpen} onClose={() => setIsReportModalOpen(false)} />
+    </>
   );
 }

@@ -54,7 +54,7 @@ export function UserActionsCell({ user }: UserActionsCellProps) {
 
   return (
     <div className={"flex gap-2 items-center"}>
-      <Link href={`/admin/user/form?userId=${user.userId}`}>
+      <Link href={`/admin/user/form?userId=${user.accountId}`}>
         <Button
           variant="outline"
           size="icon"
@@ -90,7 +90,7 @@ export function UserActionsCell({ user }: UserActionsCellProps) {
         <Button
           variant="outline"
           size="icon"
-          onClick={() => openDialog("deactivate", [user.userId], `${user.fullName || user.username || user.contact.email}`)}
+          onClick={() => openDialog("deactivate", [user.accountId], `${user.fullName || user.username || user.email}`)}
           className="rounded-xl text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/20"
           title={"Vô hiệu hóa người dùng"}
         >
@@ -100,7 +100,7 @@ export function UserActionsCell({ user }: UserActionsCellProps) {
         <Button
           variant="outline"
           size="icon"
-          onClick={() => openDialog("activate", [user.userId], `${user.fullName || user.username || user.contact.email}`)}
+          onClick={() => openDialog("activate", [user.accountId], `${user.fullName || user.username || user.email}`)}
           className="rounded-xl text-green-600 hover:text-green-700 hover:bg-green-50 border-green-200"
           title={"Kích hoạt người dùng"}
         >

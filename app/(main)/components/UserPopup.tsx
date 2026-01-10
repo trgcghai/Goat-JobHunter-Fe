@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,13 +8,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useUser } from "@/hooks/useUser";
-import { LogOut, Shield, User } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
-import { HasAdmin, HasRecruiter } from "@/components/common/HasRole";
+} from '@/components/ui/dropdown-menu';
+import { useUser } from '@/hooks/useUser';
+import { LogOut, Shield, User } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useState } from 'react';
+import { HasAdmin, HasCompany } from '@/components/common/HasRole';
 
 export default function UserPopup() {
   const { user, signOut, isSigningOut, isSignedIn } = useUser();
@@ -38,7 +38,7 @@ export default function UserPopup() {
             <div className="h-10 w-10 rounded-full overflow-hidden bg-muted flex items-center justify-center">
               <Image
                 src={user.avatar}
-                alt={user.fullName || "User"}
+                alt={user.fullName || 'User'}
                 width={40}
                 height={40}
                 className="h-full w-full object-cover"
@@ -59,7 +59,7 @@ export default function UserPopup() {
               <div className="h-12 w-12 rounded-full overflow-hidden bg-muted shrink-0 flex items-center justify-center">
                 <Image
                   src={user.avatar}
-                  alt={user.fullName || "User"}
+                  alt={user.fullName || 'User'}
                   width={48}
                   height={48}
                   className="h-full w-full object-cover"
@@ -74,11 +74,9 @@ export default function UserPopup() {
 
             <div className="flex flex-col space-y-1 min-w-0">
               <p className="text-sm font-semibold leading-none truncate">
-                {user?.fullName ? user.fullName : "Người Dùng"}
+                {user?.fullName ? user.fullName : 'Người Dùng'}
               </p>
-              <p className="text-xs leading-none text-muted-foreground truncate">
-                {user?.email}
-              </p>
+              <p className="text-xs leading-none text-muted-foreground truncate">{user?.email}</p>
             </div>
           </div>
         </DropdownMenuLabel>
@@ -86,10 +84,7 @@ export default function UserPopup() {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem asChild>
-          <Link
-            href="/profile"
-            className="flex items-center cursor-pointer rounded-xl"
-          >
+          <Link href="/profile" className="flex items-center cursor-pointer rounded-xl">
             <User className="mr-2 h-4 w-4" />
             <span>Hồ Sơ Cá Nhân</span>
           </Link>
@@ -97,27 +92,21 @@ export default function UserPopup() {
 
         <HasAdmin user={user}>
           <DropdownMenuItem asChild>
-            <Link
-              href="/dashboard"
-              className="flex items-center cursor-pointer rounded-xl"
-            >
+            <Link href="/dashboard" className="flex items-center cursor-pointer rounded-xl">
               <Shield className="mr-2 h-4 w-4" />
               <span>Bảng Điều Khiển</span>
             </Link>
           </DropdownMenuItem>
         </HasAdmin>
 
-        <HasRecruiter user={user}>
+        <HasCompany user={user}>
           <DropdownMenuItem asChild>
-            <Link
-              href="/recruiter-portal"
-              className="flex items-center cursor-pointer rounded-xl"
-            >
+            <Link href="/recruiter-portal" className="flex items-center cursor-pointer rounded-xl">
               <Shield className="mr-2 h-4 w-4" />
               <span>Bảng Điều Khiển</span>
             </Link>
           </DropdownMenuItem>
-        </HasRecruiter>
+        </HasCompany>
 
         <DropdownMenuSeparator />
 
@@ -127,7 +116,7 @@ export default function UserPopup() {
           disabled={isSigningOut}
         >
           <LogOut className="mr-2 h-4 w-4 text-destructive" />
-          <span>{isSigningOut ? "Đang đăng xuất..." : "Đăng Xuất"}</span>
+          <span>{isSigningOut ? 'Đang đăng xuất...' : 'Đăng Xuất'}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

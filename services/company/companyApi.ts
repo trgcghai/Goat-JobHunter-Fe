@@ -1,6 +1,6 @@
 import { api } from '@/services/api';
 import {
-    CompanyIdRequest,
+    CompanyIdRequest, FetchAllCompanyNames,
     FetchCompaniesRequest,
     FetchCompaniesResponse,
     FetchCompanyByIdResponse,
@@ -109,6 +109,16 @@ export const companyApi = api.injectEndpoints({
             },
             providesTags: ['Job'],
         }),
+
+        fetchAllCompanyNames: builder.query<FetchAllCompanyNames, void>({
+            query: () => {
+                return {
+                    url: `/companies/name`,
+                    method: 'GET',
+                };
+            },
+            providesTags: ['Company'],
+        }),
     }),
 });
 
@@ -120,4 +130,5 @@ export const {
     useFetchGroupedAddressesByCompanyQuery,
     useFetchSkillsByCompanyQuery,
     useFetchAvailableJobsByCompanyQuery,
+    useFetchAllCompanyNamesQuery,
 } = companyApi;

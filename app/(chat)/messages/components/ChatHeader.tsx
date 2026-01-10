@@ -1,32 +1,50 @@
 'use client';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import type { User } from '../utils/types';
-import { Info, Phone, Video } from 'lucide-react';
+import type { User, Group } from '../utils/types';
+import { Info, Phone, Video, Users } from 'lucide-react';
 
 interface ChatHeaderProps {
-  user: User;
+  user?: User;
+  group?: Group;
+  isGroup?: boolean;
   onToggleDetails?: () => void;
   isDetailsOpen?: boolean;
 }
 
-export function ChatHeader({ user, onToggleDetails, isDetailsOpen }: ChatHeaderProps) {
+export function ChatHeader({ user, group, isGroup, onToggleDetails, isDetailsOpen }: ChatHeaderProps) {
+  const displayName = isGroup ? group?.name : user?.name;
+  const displayAvatar = isGroup ? group?.avatar : user?.avatar;
+  const isOnline = !isGroup && user?.online;
+  const memberCount = isGroup ? group?.members.length : undefined;
+
   return (
     <div className="h-16 border-b border-border bg-card flex items-center justify-between px-4">
       <div className="flex items-center gap-3">
         <div className="relative">
           <Avatar className="h-10 w-10">
-            <AvatarImage src={user.avatar || '/placeholder.svg'} alt={user.name} />
-            <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+            <AvatarImage src={displayAvatar || '/placeholder.svg'} alt={displayName} />
+            <AvatarFallback>{displayName?.charAt(0)}</AvatarFallback>
           </Avatar>
-          {user.online && (
+          {isOnline && (
             <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-primary border-2 border-card" />
           )}
         </div>
         <div>
-          <h2 className="font-semibold text-sm">{user.name}</h2>
-          <p className="text-xs text-muted-foreground">{user.online ? 'Active now' : 'Offline'}</p>
+          <div className="flex items-center gap-2">
+            <h2 className="font-semibold text-sm">{displayName}</h2>
+            {isGroup && (
+              <Badge variant="secondary" className="text-xs flex items-center gap-1">
+                <Users className="h-3 w-3" />
+                {memberCount}
+              </Badge>
+            )}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {isGroup ? group?.description || `${memberCount} members` : isOnline ? 'Active now' : 'Offline'}
+          </p>
         </div>
       </div>
       <div className="flex items-center gap-1">
