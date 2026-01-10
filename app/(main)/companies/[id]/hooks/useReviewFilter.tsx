@@ -15,7 +15,7 @@ export const useReviewFilter = (options?: UseReviewFilterOptions) => {
     const { initialPage = 1, itemsPerPage = 10, initialFilters = {} } = options || {};
 
     const [currentPage, setCurrentPage] = useState(initialPage);
-    const [filters, setFilters] = useState<ReviewsFilters>(initialFilters);
+    const [filters] = useState<ReviewsFilters>(initialFilters);
 
     const queryParams = useMemo(() => {
         const params: Record<string, string | number> = {

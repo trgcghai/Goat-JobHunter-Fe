@@ -102,7 +102,7 @@ export function BlogDetailDialog() {
               {blog.tags.length > 0 && (
                 <div className="mb-4 flex flex-wrap gap-2">
                   {blog.tags.map((tag, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
+                    <Badge key={index + tag} variant="secondary" className="text-xs">
                       #{tag}
                     </Badge>
                   ))}

@@ -1,15 +1,9 @@
 import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type { Skill } from "@/types/model";
 
-// Base Request Types
-export type SkillIdRequest = string;
-
 export type SkillNameRequest = {
   name: string;
 };
-
-// Create & Update
-export type CreateSkillRequest = SkillNameRequest;
 
 export type UpdateSkillRequest = SkillNameRequest & {
   skillId: string;

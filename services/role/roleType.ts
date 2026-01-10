@@ -1,9 +1,6 @@
 import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type { Role } from "@/types/model";
 
-// Base Request Types
-export type RoleIdRequest = number;
-
 // Create & Update
 export type CreateRoleRequest = {
   name: string;

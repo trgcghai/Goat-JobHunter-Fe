@@ -5,7 +5,7 @@ import Image from "next/image"
 import { SharedMedia } from "@/app/(chat)/messages/utils/types";
 
 interface SharedMediaGridProps {
-  media: SharedMedia[]
+  readonly media: SharedMedia[]
 }
 
 export function SharedMediaGrid({ media }: SharedMediaGridProps) {

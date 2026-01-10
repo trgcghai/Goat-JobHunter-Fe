@@ -12,7 +12,7 @@ interface MessageBubbleProps {
   showAvatar?: boolean;
 }
 
-export function MessageBubble({ message, isOwn, showAvatar = false }: MessageBubbleProps) {
+export function MessageBubble({ message, isOwn, showAvatar = false }: Readonly<MessageBubbleProps>) {
   const timeAgo = formatDistanceToNow(new Date(message.timestamp), {
     addSuffix: true,
     locale: vi,

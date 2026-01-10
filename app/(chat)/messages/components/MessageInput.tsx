@@ -6,7 +6,7 @@ import { Paperclip, Send, Smile } from "lucide-react"
 import { useState, type KeyboardEvent } from "react"
 
 interface MessageInputProps {
-  onSendMessage: (text: string) => void
+  readonly onSendMessage: (text: string) => void
 }
 
 export function MessageInput({ onSendMessage }: MessageInputProps) {

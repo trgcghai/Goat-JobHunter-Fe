@@ -1,17 +1,14 @@
 import { api } from "@/services/api";
-import type {
+import {
   ApplicationsByStatusResponse,
-  ApplicationsByYearRequest,
+  DateRangeRequest,
   StatisticsApplicationByYearRequest,
   StatisticsApplicationByYearResponse,
-  StatisticsApplicationRequest,
   StatisticsApplicationResponse,
-  StatisticsJobRequest,
   StatisticsJobResponse,
   StatisticsUserResponse,
-  Top10BlogsRequest,
   TopBlogsResponse,
-  TotalStatisticsResponse
+  TotalStatisticsResponse, YearMonthRequest, YearRequest
 } from "./dashboardType";
 
 export const dashboardApi = api.injectEndpoints({
@@ -23,7 +20,7 @@ export const dashboardApi = api.injectEndpoints({
       })
     }),
 
-    statisticsJob: builder.query<StatisticsJobResponse, StatisticsJobRequest>({
+    statisticsJob: builder.query<StatisticsJobResponse, DateRangeRequest>({
       query: (params) => ({
         url: "/dashboard/jobs",
         method: "GET",
@@ -33,7 +30,7 @@ export const dashboardApi = api.injectEndpoints({
 
     statisticsApplication: builder.query<
       StatisticsApplicationResponse,
-      StatisticsApplicationRequest
+      DateRangeRequest
     >({
       query: (params) => ({
         url: "/dashboard/applications",
@@ -62,7 +59,7 @@ export const dashboardApi = api.injectEndpoints({
 
     getApplicationsByYear: builder.query<
       ApplicationsByStatusResponse,
-      ApplicationsByYearRequest
+      YearRequest
     >({
       query: ({ year }) => ({
         url: "/dashboard/applications/year",
@@ -71,7 +68,7 @@ export const dashboardApi = api.injectEndpoints({
       })
     }),
 
-    getTop10Blogs: builder.query<TopBlogsResponse, Top10BlogsRequest>({
+    getTop10Blogs: builder.query<TopBlogsResponse, YearMonthRequest>({
       query: ({ year, month }) => ({
         url: "/dashboard/blogs/top10",
         method: "GET",

@@ -24,7 +24,7 @@ interface SidebarProps {
   logoHref: string;
 }
 
-export default function Sidebar({ tabs, logoHref }: SidebarProps) {
+export default function Sidebar({ tabs, logoHref }: Readonly<SidebarProps>) {
   const pathname = usePathname();
   const { signOut, user } = useUser();
   const [backup, { isLoading }] = useLazyBackupQuery();

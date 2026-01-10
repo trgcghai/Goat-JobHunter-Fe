@@ -4,8 +4,8 @@ import { permissionColumns } from "./PermissionColumnConfig";
 import { Permission } from "@/types/model";
 
 interface PermissionsTableProps {
-  permissions: Permission[];
-  onSelectionChange: (selected: Permission[]) => void;
+  readonly permissions: Permission[];
+  readonly onSelectionChange: (selected: Permission[]) => void;
 }
 
 export default function PermissionsTable({ permissions, onSelectionChange }: PermissionsTableProps) {

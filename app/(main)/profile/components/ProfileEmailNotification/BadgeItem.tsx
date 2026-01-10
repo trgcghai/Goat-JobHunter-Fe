@@ -15,7 +15,7 @@ export default function BadgeItem({
   item,
   onRemove,
   disabled = false,
-}: BadgeItemProps) {
+}: Readonly<BadgeItemProps>) {
   return (
     <Badge
       variant="default"

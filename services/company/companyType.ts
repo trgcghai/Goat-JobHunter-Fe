@@ -1,8 +1,6 @@
 import type { IBackendRes, IModelPaginate } from '@/types/api';
 import { Company, Job } from '@/types/model';
 
-export type CompanyIdRequest = number;
-
 export type FetchCompaniesRequest = {
     page?: number;
     size?: number;

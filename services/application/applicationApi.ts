@@ -2,8 +2,9 @@ import { api } from "@/services/api";
 import { buildSpringQuery } from "@/utils/buildSpringQuery";
 import {
   AcceptApplicationStatusRequest,
-  ApplicationIdRequest,
-  ApplicationMutationResponse, CountApplicationsRequest, CountApplicationsResponse,
+  ApplicationMutationResponse,
+  CountApplicationsRequest,
+  CountApplicationsResponse,
   CreateApplicationRequest,
   FetchApplicationByIdResponse,
   FetchApplicationsByApplicantRequest,
@@ -59,7 +60,7 @@ export const applicationApi = api.injectEndpoints({
 
     deleteApplication: builder.mutation<
       ApplicationMutationResponse,
-      ApplicationIdRequest
+      string
     >({
       query: (applicationId) => ({
         url: `/applications/${applicationId}`,
@@ -70,7 +71,7 @@ export const applicationApi = api.injectEndpoints({
 
     fetchApplicationById: builder.query<
       FetchApplicationByIdResponse,
-      ApplicationIdRequest
+      string
     >({
       query: (applicationId) => ({
         url: `/applications/${applicationId}`,

@@ -7,7 +7,7 @@ import { usePermissionConfirmDialog } from "@/app/(admin)/admin/permission/hooks
 import useRoleAndPermissionActions from "@/hooks/useRoleAndPermissionActions";
 
 interface Props {
-  selectedItems: Permission[];
+  readonly selectedItems: Permission[];
 }
 
 export default function PermissionActions({ selectedItems }: Props) {

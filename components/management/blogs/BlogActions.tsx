@@ -15,9 +15,9 @@ interface BlogActionsProps {
 }
 
 export default function BlogActions({
-                                      selectedCount,
-                                      selectedIds
-                                    }: BlogActionsProps) {
+  selectedCount,
+  selectedIds
+}: Readonly<BlogActionsProps>) {
   const {
     handleDeleteBlogs,
     handleDisableBlogs,

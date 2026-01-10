@@ -24,7 +24,7 @@ export default function AdminBlogFilter({
                                           filters,
                                           onFilterChange,
                                           onResetFilters
-                                        }: AdminBlogFilterProps) {
+                                        }: Readonly<AdminBlogFilterProps>) {
   const [searchTerm, setSearchTerm] = useState(filters.title || "");
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

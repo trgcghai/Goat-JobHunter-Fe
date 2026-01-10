@@ -7,7 +7,7 @@ import { formatDate } from "@/utils/formatDate";
 import RoleActionsCell from "./RoleActionsCell";
 import { DataTableColumnHeader } from "@/components/dataTable/DataTableColumnHeader";
 
-export function RoleTable({ roles }: { roles: Role[] }) {
+export function RoleTable({ roles }: { readonly roles: Role[] }) {
   const columns = [
     {
       accessorKey: "name",

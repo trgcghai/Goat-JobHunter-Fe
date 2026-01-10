@@ -44,7 +44,7 @@ export default function RichTextEditor({
  onChange,
  placeholder = "Nhập nội dung...",
  allowImage = true
-}: RichTextEditorProps) {
+}: Readonly<RichTextEditorProps>) {
   const quillRef = useRef<ReactQuill>(null);
   const [showImageModal, setShowImageModal] = useState(false);
 

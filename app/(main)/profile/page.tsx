@@ -35,8 +35,11 @@ const ProfilePage = () => {
   // Sync activeTab -> URL (replace to avoid history entries)
   useEffect(() => {
     const params = new URLSearchParams(Array.from(searchParams?.entries?.() ?? []));
+
     params.set("tab", activeTab);
+
     const newUrl = `${pathname}${params.toString() ? `?${params.toString()}` : ""}`;
+
     router.replace(newUrl);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);

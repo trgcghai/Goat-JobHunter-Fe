@@ -8,8 +8,8 @@ import { DataTableColumnHeader } from "@/components/dataTable/DataTableColumnHea
 import { Checkbox } from "@/components/ui/checkbox";
 
 interface CareerTableProps {
-  careers: Career[];
-  onSelectionChange: (selected: Career[]) => void;
+  readonly careers: Career[];
+  readonly onSelectionChange: (selected: Career[]) => void;
 }
 
 export function CareerTable({ careers, onSelectionChange }: CareerTableProps) {

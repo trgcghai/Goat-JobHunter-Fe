@@ -92,8 +92,7 @@ export default function NotificationPopup() {
             >
               <div className="divide-y divide-border">
                 {isSuccess &&
-                  notifications &&
-                  notifications.map((notification) => (
+                  notifications?.map((notification) => (
                     <NotificationCard
                       key={notification.notificationId}
                       notification={notification}

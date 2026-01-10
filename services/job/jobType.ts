@@ -2,9 +2,6 @@ import type { IBackendRes, IModelPaginate } from '@/types/api';
 import type { Applicant, Job } from '@/types/model';
 import { JobActionType } from '@/types/enum';
 
-// Base Request Types
-export type JobIdRequest = string;
-
 export type JobIdsRequest = {
     jobIds: number[];
 };
@@ -55,8 +52,6 @@ export type FetchJobsRequest = {
 export type FetchJobByRecruiterRequest = {
     recruiterId: number;
 } & Omit<FetchJobsRequest, 'active'>;
-
-export type FetchJobByCurrentRecruiterRequest = FetchJobsRequest;
 
 export type FetchSuitableApplicantsRequest = {
     jobId?: number;

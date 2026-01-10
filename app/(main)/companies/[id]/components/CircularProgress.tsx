@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-export default function CircularProgress({ percentage }: { percentage: number }) {
+export default function CircularProgress({ percentage }: { readonly percentage: number }) {
     const [displayPercentage, setDisplayPercentage] = useState(0);
     const radius = 36;
     const circumference = 2 * Math.PI * radius;

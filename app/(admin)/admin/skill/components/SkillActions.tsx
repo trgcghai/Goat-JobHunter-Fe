@@ -7,7 +7,7 @@ import useSkillAndCareerActions from "@/hooks/useSkillAndCareerActions";
 import type { Skill } from "@/types/model";
 
 interface SkillActionsProps {
-  selectedItems: Skill[];
+  readonly selectedItems: Skill[];
 }
 
 export default function SkillActions({ selectedItems }: SkillActionsProps) {

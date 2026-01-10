@@ -8,7 +8,7 @@ import EditSkillDialog from "./EditSkillDialog";
 import useSkillAndCareerActions from "@/hooks/useSkillAndCareerActions";
 
 interface SkillActionsCellProps {
-  skill: Skill;
+  readonly skill: Skill;
 }
 
 export default function SkillActionsCell({ skill }: SkillActionsCellProps) {

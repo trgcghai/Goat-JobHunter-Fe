@@ -5,7 +5,6 @@ import type {
   FetchPermissionByIdResponse,
   FetchPermissionsRequest,
   FetchPermissionsResponse,
-  PermissionIdRequest,
   PermissionMutationResponse,
   UpdatePermissionRequest
 } from "./permissionType";
@@ -38,7 +37,7 @@ export const permissionApi = api.injectEndpoints({
 
     deletePermission: builder.mutation<
       PermissionMutationResponse,
-      PermissionIdRequest
+      number
     >({
       query: (permissionId) => ({
         url: `/permissions/${permissionId}`,
@@ -71,7 +70,7 @@ export const permissionApi = api.injectEndpoints({
 
     fetchPermissionById: builder.query<
       FetchPermissionByIdResponse,
-      PermissionIdRequest
+      number
     >({
       query: (permissionId) => ({
         url: `/permissions/${permissionId}`,

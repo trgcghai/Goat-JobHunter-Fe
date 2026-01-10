@@ -12,6 +12,7 @@ import { DataTablePagination } from "@/components/dataTable/DataTablePagination"
 import CareerActions from "./components/CareerActions";
 import type { Career } from "@/types/model";
 import { debounce } from "lodash";
+import ErrorMessage from "@/components/common/ErrorMessage";
 
 const CareerManagement = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -111,13 +112,17 @@ const CareerManagement = () => {
             </Button>
           </div>
 
-          {isLoading ? (
+          {isLoading &&
             <div className="flex justify-center py-8">
               <LoaderSpin />
             </div>
-          ) : isError ? (
-            <div className="text-destructive">Có lỗi khi tải ngành nghề</div>
-          ) : (
+          }
+
+          {isError &&
+            <ErrorMessage message={"Có lỗi khi tải ngành nghề"} />
+          }
+
+          {!isLoading && !isError && (
             <>
               <CareerActions selectedItems={selectedItems} />
               <CareerTable

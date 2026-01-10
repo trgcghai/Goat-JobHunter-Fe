@@ -1,9 +1,6 @@
 import type { IBackendRes, IModelPaginate } from "@/types/api";
 import type { Skill, Subscriber } from "@/types/model";
 
-// Base Request Types
-export type SubscriberIdRequest = string;
-
 // Create & Update
 export type CreateSubscriberRequest = {
   name: string;

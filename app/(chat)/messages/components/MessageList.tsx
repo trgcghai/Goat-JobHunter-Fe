@@ -11,7 +11,7 @@ interface MessageListProps {
   isGroup?: boolean;
 }
 
-export function MessageList({ messages, currentUserId = 'me', isGroup = false }: MessageListProps) {
+export function MessageList({ messages, currentUserId = 'me', isGroup = false }: Readonly<MessageListProps>) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

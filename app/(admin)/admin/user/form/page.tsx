@@ -24,7 +24,7 @@ import * as z from "zod";
 import { ROLE } from "@/constants/constant";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useFetchUserByIdQuery } from "@/services/user/userApi";
@@ -148,6 +148,14 @@ const UserFormPage = () => {
       );
     }
   };
+
+  const buttonText = useMemo(() => {
+    if (isLoading) return "Đang xử lý...";
+
+    if (userId) return "Cập nhật";
+
+    return "Tạo tài khoản";
+  }, [isLoading, userId])
 
   if (isLoadingUser || isFetchingUser) {
     return <LoaderSpin />;
@@ -334,16 +342,7 @@ const UserFormPage = () => {
                   className="rounded-xl w-full"
                   disabled={isLoading}
                 >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                      Đang xử lý...
-                    </>
-                  ) : userId ? (
-                    "Cập nhật"
-                  ) : (
-                    "Tạo tài khoản"
-                  )}
+                  {buttonText}
                 </Button>
               </form>
             </Form>

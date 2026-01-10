@@ -5,7 +5,6 @@ import type {
   FetchSubscribersRequest,
   FetchSubscribersResponse,
   GetSubscriberSkillsResponse,
-  SubscriberIdRequest,
   SubscriberMutationResponse,
   UpdateSubscriberRequest
 } from "./subcriberType";
@@ -38,7 +37,7 @@ export const subscriberApi = api.injectEndpoints({
 
     deleteSubscriber: builder.mutation<
       SubscriberMutationResponse,
-      SubscriberIdRequest
+      number
     >({
       query: (id) => ({
         url: `/subscribers/${id}`,
@@ -49,7 +48,7 @@ export const subscriberApi = api.injectEndpoints({
 
     fetchSubscriberById: builder.query<
       FetchSubscriberByIdResponse,
-      SubscriberIdRequest
+      number
     >({
       query: (id) => ({
         url: `/subscribers/${id}`,

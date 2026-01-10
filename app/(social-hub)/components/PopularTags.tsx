@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Tag } from "lucide-react";
 
 interface PopularTagsProps {
-  popularTags: [string, number][];
+  readonly popularTags: [string, number][];
 }
 
 export function PopularTags({

@@ -3,9 +3,6 @@ import type { Contact, Recruiter } from "@/types/model";
 import { Gender } from "@/types/enum";
 import { FetchCurrentRecruiterDto, RecruiterResponse } from "@/types/dto";
 
-// Base Request Types
-export type RecruiterIdRequest = number;
-
 // Create & Update
 export type CreateRecruiterRequest = {
   fullName: string;

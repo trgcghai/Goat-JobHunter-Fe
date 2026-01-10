@@ -4,7 +4,6 @@ import type {
   FetchRoleByIdResponse,
   FetchRolesRequest,
   FetchRolesResponse,
-  RoleIdRequest,
   RoleMutationResponse,
   UpdateRoleRequest
 } from "./roleType";
@@ -30,7 +29,7 @@ export const roleApi = api.injectEndpoints({
       invalidatesTags: ["Role"]
     }),
 
-    activateRole: builder.mutation<RoleMutationResponse, RoleIdRequest>({
+    activateRole: builder.mutation<RoleMutationResponse, number>({
       query: (roleId) => ({
         url: `/roles/${roleId}/activate`,
         method: "PUT"
@@ -38,7 +37,7 @@ export const roleApi = api.injectEndpoints({
       invalidatesTags: ["Role"]
     }),
 
-    deactivateRole: builder.mutation<RoleMutationResponse, RoleIdRequest>({
+    deactivateRole: builder.mutation<RoleMutationResponse, number>({
       query: (roleId) => ({
         url: `/roles/${roleId}/deactivate`,
         method: "PUT"
@@ -46,7 +45,7 @@ export const roleApi = api.injectEndpoints({
       invalidatesTags: ["Role"]
     }),
 
-    deleteRole: builder.mutation<RoleMutationResponse, RoleIdRequest>({
+    deleteRole: builder.mutation<RoleMutationResponse, number>({
       query: (roleId) => ({
         url: `/roles/${roleId}`,
         method: "DELETE"
@@ -63,7 +62,7 @@ export const roleApi = api.injectEndpoints({
       providesTags: ["Role"]
     }),
 
-    fetchRoleById: builder.query<FetchRoleByIdResponse, RoleIdRequest>({
+    fetchRoleById: builder.query<FetchRoleByIdResponse, number>({
       query: (roleId) => ({
         url: `/roles/${roleId}`,
         method: "GET"

@@ -2,9 +2,6 @@ import type { IBackendRes, IModelPaginate } from "@/types/api";
 import { Blog, CommentType } from "@/types/model";
 import { BlogActionType } from "@/types/enum";
 
-// Base Request Types
-export type BlogIdRequest = string;
-
 export type BlogIdsRequest = {
   blogIds: number[];
   reason?: string;

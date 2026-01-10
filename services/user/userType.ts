@@ -33,30 +33,20 @@ export type JobIdsRequest = {
     jobIds: number[];
 };
 
-export type CheckSavedJobsRequest = JobIdsRequest;
-
 // Saved Blogs
 export type BlogIdsRequest = {
     blogIds: number[];
 };
-
-export type CheckLikedBlogsRequest = BlogIdsRequest;
 
 // Follow Recruiters
 export type RecruiterIdsRequest = {
     recruiterIds: number[];
 };
 
-export type FollowRecruitersRequest = RecruiterIdsRequest;
-
 // Follow Companies
 export type CompanyIdsRequest = {
     companyIds: number[];
 };
-
-export type FollowCompaniesRequest = CompanyIdsRequest;
-
-export type ReviewedCompanyIdsRequest = CompanyIdsRequest;
 
 // Fetch with Pagination
 export type FetchUsersRequest = {

@@ -1,5 +1,6 @@
 import { Progress } from "@/components/ui/progress";
 import { Check, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const useCheckPasswordStrength = () => {
   const checkPasswordStrength = (password: string) => {
@@ -45,7 +46,11 @@ const CheckPasswordStrengthItem = ({
 }: CheckPasswordStrengthItemProps) => {
   return (
     <div
-      className={`flex items-center gap-2 ${checks[item.key] ? "text-green-500" : "text-muted-foreground"}${item.colSpan ? ` col-span-${item.colSpan}` : ""}`}
+      className={cn(
+        "flex items-center gap-2",
+        checks[item.key] ? "text-green-500" : "text-muted-foreground",
+        item.colSpan && `col-span-${item.colSpan}`
+      )}
     >
       {checks[item.key] ? (
         <Check className="w-4 h-4" />

@@ -45,7 +45,7 @@ export const ApplicationsByYearChart = () => {
   }
 
   const chartData = MONTH_NAMES.map((month, index) => {
-    // eslint-disable-next-line
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const monthData: any = { month };
     Object.keys(data).forEach((status) => {
       monthData[status] = data[status][index + 1] || 0;

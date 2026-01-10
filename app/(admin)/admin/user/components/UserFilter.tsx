@@ -16,16 +16,16 @@ import { Button } from "@/components/ui/button";
 import { ROLE_LIST } from "@/constants/constant";
 
 interface UserFilterProps {
-  filters: UserFilterType;
-  onFilterChange: (filters: Partial<UserFilterType>) => void;
-  onResetFilters: () => void;
+  readonly filters: UserFilterType;
+  readonly onFilterChange: (filters: Partial<UserFilterType>) => void;
+  readonly onResetFilters: () => void;
 }
 
 export function UserFilter({
-                             filters,
-                             onFilterChange,
-                             onResetFilters
-                           }: UserFilterProps) {
+ filters,
+ onFilterChange,
+ onResetFilters
+}: UserFilterProps) {
   const [email, setEmail] = useState(filters.email || "");
   const [phone, setPhone] = useState(filters.phone || "");
 

@@ -3,7 +3,6 @@ import { buildSpringQuery } from '@/utils/buildSpringQuery';
 import {
     CountJobsByCompanyResponse,
     CreateJobRequest,
-    FetchJobByCurrentRecruiterRequest,
     FetchJobByIdResponse,
     FetchJobByRecruiterRequest,
     FetchJobsRequest,
@@ -11,7 +10,6 @@ import {
     FetchSuitableApplicantsRequest,
     FetchSuitableApplicantsResponse,
     JobApplicationCountResponse,
-    JobIdRequest,
     JobIdsRequest,
     JobMutationResponse,
     ToggleJobActiveResponse,
@@ -40,7 +38,7 @@ export const jobApi = api.injectEndpoints({
             invalidatesTags: ['Job'],
         }),
 
-        deleteJob: builder.mutation<JobMutationResponse, JobIdRequest>({
+        deleteJob: builder.mutation<JobMutationResponse, number>({
             query: (jobId) => ({
                 url: `/jobs/${jobId}`,
                 method: 'DELETE',
@@ -70,7 +68,7 @@ export const jobApi = api.injectEndpoints({
             providesTags: ['Job'],
         }),
 
-        fetchJobById: builder.query<FetchJobByIdResponse, JobIdRequest>({
+        fetchJobById: builder.query<FetchJobByIdResponse, number>({
             query: (jobId) => ({
                 url: `/jobs/${jobId}`,
                 method: 'GET',
@@ -158,7 +156,7 @@ export const jobApi = api.injectEndpoints({
             providesTags: ['Job'],
         }),
 
-        fetchJobsByCurrentRecruiter: builder.query<FetchJobsResponse, FetchJobByCurrentRecruiterRequest>({
+        fetchJobsByCurrentRecruiter: builder.query<FetchJobsResponse, FetchJobsRequest>({
             query: (params) => {
                 const { params: queryParams } = buildSpringQuery({
                     params,

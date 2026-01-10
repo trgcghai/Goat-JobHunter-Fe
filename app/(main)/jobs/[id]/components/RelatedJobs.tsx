@@ -29,7 +29,7 @@ interface RelatedJobsProps {
   setPage: (page: number) => void;
 }
 
-function RelatedJobs({ jobs, isLoading, isError, savedJobs, meta, page, setPage }: RelatedJobsProps) {
+function RelatedJobs({ jobs, isLoading, isError, savedJobs, meta, page, setPage }: Readonly<RelatedJobsProps>) {
   return (
     <Card className="p-6">
       <h3 className="text-xl font-bold text-foreground">Việc Làm Liên Quan</h3>
@@ -50,7 +50,7 @@ function RelatedJobs({ jobs, isLoading, isError, savedJobs, meta, page, setPage 
       }
 
       <div className="grid grid-cols-3 gap-4">
-        {jobs && jobs.map((relatedJob) => (
+        {jobs?.map((relatedJob) => (
           <JobCard
             key={relatedJob.jobId}
             job={relatedJob}

@@ -28,13 +28,7 @@ import { useFetchApplicationsByApplicantQuery } from "@/services/application/app
 import { formatDate } from "@/utils/formatDate";
 import { Badge } from "@/components/ui/badge";
 
-interface ApplicationListDialogProps {
-  user: User;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}
-
-function StatusBadge({ status }: { status: Application["status"] }) {
+function StatusBadge({ status }: { readonly status: Application["status"] }) {
   const map = {
     PENDING: {
       text: "Chờ xử lý",
@@ -60,6 +54,12 @@ function StatusBadge({ status }: { status: Application["status"] }) {
       {s.text}
     </Badge>
   );
+}
+
+interface ApplicationListDialogProps {
+  readonly user: User;
+  readonly open: boolean;
+  readonly onOpenChange: (open: boolean) => void;
 }
 
 export default function ApplicationListDialog({ user, open, onOpenChange }: ApplicationListDialogProps) {

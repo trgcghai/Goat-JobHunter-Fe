@@ -30,7 +30,7 @@ export function ChatWindow({
   sharedLinks,
   sharedFiles = [],
   currentUserId = 'me',
-}: ChatWindowProps) {
+}: Readonly<ChatWindowProps>) {
   const { isOpen: isDetailsOpen, toggle, close } = useDetailsPanelState();
 
   return (

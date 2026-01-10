@@ -15,7 +15,7 @@ interface CommentInputProps {
   onCancelReply?: () => void;
 }
 
-export default function CommentInput({ replyTo, onCancelReply }: CommentInputProps) {
+export default function CommentInput({ replyTo, onCancelReply }: Readonly<CommentInputProps>) {
   const { user } = useUser();
   const [input, setInput] = useState("");
   const { blog } = useAppSelector((state) => state.blogDetail);

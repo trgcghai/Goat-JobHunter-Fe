@@ -89,8 +89,7 @@ const ApplicationTable = () => {
           </TableHeader>
           <TableBody>
             {isSuccess &&
-              applications &&
-              applications.map((application) => {
+              applications?.map((application) => {
                 const job =
                   typeof application.job === "object"
                     ? application.job

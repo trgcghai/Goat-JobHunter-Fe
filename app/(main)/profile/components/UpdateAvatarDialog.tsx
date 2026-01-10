@@ -28,7 +28,7 @@ export default function UpdateAvatarDialog({
   open,
   onOpenChange,
   type,
-}: UpdateAvatarDialogProps) {
+}: Readonly<UpdateAvatarDialogProps>) {
   const {
     selectedImage,
     previewUrl,

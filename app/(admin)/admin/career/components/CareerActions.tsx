@@ -7,7 +7,7 @@ import useCareerActions from "@/hooks/useSkillAndCareerActions";
 import type { Career } from "@/types/model";
 
 interface CareerActionsProps {
-  selectedItems: Career[];
+  readonly selectedItems: Career[];
 }
 
 export default function CareerActions({ selectedItems }: CareerActionsProps) {

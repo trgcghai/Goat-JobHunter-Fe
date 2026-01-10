@@ -74,7 +74,7 @@ export default function ResumeDialog({
   job,
   userEmail,
   userId,
-}: ResumeDialogProps) {
+}: Readonly<ResumeDialogProps>) {
   const [createApplication, { isLoading: isCreatingApplication }] =
     useCreateApplicationMutation();
   const [uploadFile, { isLoading: isUploadingFile }] =

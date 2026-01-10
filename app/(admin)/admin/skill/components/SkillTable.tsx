@@ -8,8 +8,8 @@ import { DataTableColumnHeader } from "@/components/dataTable/DataTableColumnHea
 import { Checkbox } from "@/components/ui/checkbox";
 
 interface SkillTableProps {
-  skills: Skill[];
-  onSelectionChange: (selected: Skill[]) => void;
+  readonly skills: Skill[];
+  readonly onSelectionChange: (selected: Skill[]) => void;
 }
 
 export function SkillTable({ skills, onSelectionChange }: SkillTableProps) {

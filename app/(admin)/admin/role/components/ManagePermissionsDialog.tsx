@@ -25,9 +25,9 @@ import { capitalize } from "lodash";
 import useManagePermissions from "@/app/(admin)/admin/role/hooks/useManagementPermissions";
 
 interface ManagementPermissionDialogProps {
-  role: Role;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  readonly role: Role;
+  readonly open: boolean;
+  readonly onOpenChange: (open: boolean) => void;
 }
 
 export default function ManagePermissionsDialog({ role, open, onOpenChange }: ManagementPermissionDialogProps) {

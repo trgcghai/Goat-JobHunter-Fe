@@ -16,7 +16,7 @@ interface CommentItemProps {
   comment: NestedComment;
 }
 
-export default function CommentItem({ comment }: CommentItemProps) {
+export default function CommentItem({ comment }: Readonly<CommentItemProps>) {
   const { user } = useUser();
   const { blog } = useAppSelector((state) => state.blogDetail);
   const { handleReplyComment, handleDeleteComment, isCommenting } = useCommentActions();

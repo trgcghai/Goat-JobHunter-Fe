@@ -9,7 +9,7 @@ import useRoleAndPermissionActions from "@/hooks/useRoleAndPermissionActions";
 import RoleDialog from "./RoleDialog";
 
 interface RoleActionsCellProps {
-  role: Role;
+  readonly role: Role;
 }
 
 export default function RoleActionsCell({ role }: RoleActionsCellProps) {

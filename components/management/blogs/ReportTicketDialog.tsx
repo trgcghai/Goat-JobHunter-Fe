@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { ReportReason } from '@/types/enum';
-import { da } from 'date-fns/locale';
-import { useForm } from 'react-hook-form';
 import useTicketActions from '@/hooks/useTicketActions';
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 interface Props {
   isOpen: boolean;
@@ -24,6 +24,11 @@ const ReportTicketDialog = ({ isOpen, onClose }: Props) => {
   const [error, setError] = useState('');
   const { handleCreateBlogTicket, handleCreateCommentTicket, isLoading } = useTicketActions();
 
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setDescription(e.target.value);
+    setError('');
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!reason) return setError('Vui lòng chọn một lý do báo cáo.');
@@ -35,12 +40,12 @@ const ReportTicketDialog = ({ isOpen, onClose }: Props) => {
     const selectedId = localStorage.getItem('selectedReportItem');
     const selectedType = localStorage.getItem('selectedReportType');
 
-    if (!selectedId || isNaN(Number(selectedId))) {
+    if (!selectedId || Number.isNaN(Number(selectedId))) {
       return setError('Không tìm thấy ID bài viết hợp lệ');
     }
 
     const payload = {
-      targetId: parseInt(selectedId, 10),
+      targetId: Number.parseInt(selectedId, 10),
       reason: reason,
       description: description.trim(),
       //   description: reason === ReportReason.OTHER ? description : `Báo cáo: ${reason}`,
@@ -48,7 +53,7 @@ const ReportTicketDialog = ({ isOpen, onClose }: Props) => {
     };
 
     try {
-      let success = false;
+      let success;
       if (selectedType === 'blog') {
         success = (await handleCreateBlogTicket(payload)) ?? false;
       } else {
@@ -97,20 +102,18 @@ const ReportTicketDialog = ({ isOpen, onClose }: Props) => {
             ))}
           </div>
           <div
-            className={`transition-all duration-300 ${reason === ReportReason.OTHER ? 'opacity-100' : 'opacity-100'}`}
+            className={`transition-all duration-300 ${reason === ReportReason.OTHER && 'opacity-100'}`}
           >
-            <label className="block text-sm font-medium mb-2">
+            <Label className="block text-sm font-medium mb-2">
               Mô tả chi tiết <span className="text-red-500">*</span>
-            </label>
-            <textarea
+            </Label>
+            <Textarea
               className="w-full border border-border bg-background p-3 rounded-lg h-24 focus:ring-2 focus:ring-primary outline-none text-sm"
               placeholder={
                 reason === ReportReason.OTHER ? 'Vui lòng mô tả rõ vi phạm...' : 'Thông tin bổ sung (không bắt buộc)'
               }
               value={description}
-              onChange={(e) => {
-                (setDescription(e.target.value), setError(''));
-              }}
+              onChange={handleDescriptionChange}
             />
           </div>
           {error && <p className="text-red-500 text-xs font-medium italic">{error}</p>}

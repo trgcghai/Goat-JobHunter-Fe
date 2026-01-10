@@ -10,6 +10,6 @@ interface BlogsTableProps {
   columns: ColumnDef<Blog>[];
 }
 
-export default function BlogsTable({ blogs, onSelectionChange, columns}: BlogsTableProps) {
+export default function BlogsTable({ blogs, onSelectionChange, columns}: Readonly<BlogsTableProps>) {
   return <DataTable columns={columns} data={blogs} onSelectionChange={onSelectionChange} />;
 }

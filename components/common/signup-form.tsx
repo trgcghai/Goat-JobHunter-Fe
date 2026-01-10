@@ -149,7 +149,7 @@ export function SignupForm({
                         </FormControl>
                         <SelectContent position="popper" className="w-full">
                           {companyNamesResponse?.data?.map((company: string, index: number) => (
-                            <SelectItem key={index} value={company}>
+                            <SelectItem key={company + index} value={company}>
                               {company}
                             </SelectItem>
                           ))}

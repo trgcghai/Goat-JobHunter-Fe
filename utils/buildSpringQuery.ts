@@ -1,4 +1,3 @@
-// utils/buildSpringQuery.ts
 import { sfEqual, sfIn, sfLike } from 'spring-filter-query-builder';
 
 interface BuildQueryOptions {

@@ -95,7 +95,7 @@ export const getCurrencySymbol = (): string => {
 export const parseCurrency = (currencyString: string): number => {
     // Remove currency symbol, spaces, and dots (thousand separators)
     const numericString = currencyString.replace(/[₫\s.]/g, '').replace(/,/g, '.');
-    return parseFloat(numericString) || 0;
+    return Number.parseFloat(numericString) || 0;
 };
 
 /**
@@ -104,7 +104,7 @@ export const parseCurrency = (currencyString: string): number => {
  * @returns Formatted salary range (e.g., "10Tr - 20Tr")
  */
 export const formatSalaryRange = (salaryRange: string): string => {
-    const [min, max] = salaryRange.split('-').map((s) => parseInt(s.trim()));
+    const [min, max] = salaryRange.split('-').map((s) => Number.parseInt(s.trim()));
 
     if (!min || !max) {
         return 'Thỏa thuận';

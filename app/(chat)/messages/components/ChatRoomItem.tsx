@@ -10,14 +10,14 @@ interface ConversationItemProps {
   onClick: () => void;
 }
 
-export function ChatRoomItem({ chatRoom, active, onClick }: ConversationItemProps) {
+export function ChatRoomItem({ chatRoom, active, onClick }: Readonly<ConversationItemProps>) {
   const isGroup = chatRoom.type === ChatRoomType.GROUP;
   const displayName = chatRoom.name;
   const avatarFallback = displayName.charAt(0).toUpperCase();
   const formattedTime = formatLastMessageTime(chatRoom.lastMessageTime);
 
   return (
-    <div
+    <button
       onClick={onClick}
       className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
         active
@@ -50,6 +50,6 @@ export function ChatRoomItem({ chatRoom, active, onClick }: ConversationItemProp
           {chatRoom.lastMessagePreview || "No messages yet"}
         </p>
       </div>
-    </div>
+    </button>
   );
 }

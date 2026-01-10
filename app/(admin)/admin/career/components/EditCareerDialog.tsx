@@ -14,13 +14,13 @@ import {
   FormMessage
 } from "@/components/ui/form";
 import type { Career } from "@/types/model";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import useCareerActions from "@/hooks/useSkillAndCareerActions";
 
 interface Props {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  career: Career | null;
+  readonly open: boolean;
+  readonly onOpenChange: (open: boolean) => void;
+  readonly career: Career | null;
 }
 
 const careerSchema = z.object({
@@ -70,6 +70,12 @@ export default function EditCareerDialog({ open, onOpenChange, career }: Props) 
     }
   };
 
+  const buttonText = useMemo(() => {
+    return isLoading
+      ? (isEditMode ? "Đang cập nhật..." : "Đang tạo...")
+      : (isEditMode ? "Cập nhật" : "Tạo ngành nghề");
+  }, [isLoading, isEditMode]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="rounded-xl">
@@ -100,9 +106,7 @@ export default function EditCareerDialog({ open, onOpenChange, career }: Props) 
                 Hủy
               </Button>
               <Button type="submit" className="rounded-xl" disabled={isLoading}>
-                {isLoading
-                  ? (isEditMode ? "Đang cập nhật..." : "Đang tạo...")
-                  : (isEditMode ? "Cập nhật" : "Tạo ngành nghề")}
+                {buttonText}
               </Button>
             </DialogFooter>
           </form>

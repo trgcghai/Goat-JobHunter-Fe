@@ -5,7 +5,7 @@ import { capitalize } from "lodash";
 import { Building2 } from "lucide-react";
 
 interface JobInfoSidebarProps {
-  job: Job;
+  readonly job: Job;
 }
 
 function JobInfoSidebar({ job }: JobInfoSidebarProps) {
@@ -16,18 +16,18 @@ function JobInfoSidebar({ job }: JobInfoSidebarProps) {
         <Badge variant="secondary" className="capitalize">
           {capitalize(job.level)}
         </Badge>
-      ),
+      )
     },
     {
       label: "Hình thức",
-      value: <Badge variant="outline">{capitalize(job.workingType)}</Badge>,
+      value: <Badge variant="outline">{capitalize(job.workingType)}</Badge>
     },
     { label: "Số lượng", value: `${job.quantity} vị trí` },
     {
       label: "Mức lương",
       value: `${formatCurrency(job.salary)}`,
-      highlight: true,
-    },
+      highlight: true
+    }
   ];
 
   return (
@@ -39,7 +39,7 @@ function JobInfoSidebar({ job }: JobInfoSidebarProps) {
       <div className="flex flex-col">
         <div className="flex-1 space-y-3 mb-4">
           {infoItems.map((item, index) => (
-            <div key={index} className="flex justify-between items-center">
+            <div key={index + item.label} className="flex justify-between items-center">
               <span className="text-muted-foreground">{item.label}</span>
               <span
                 className={item.highlight ? "text-primary font-semibold" : ""}
@@ -53,4 +53,5 @@ function JobInfoSidebar({ job }: JobInfoSidebarProps) {
     </div>
   );
 }
+
 export default JobInfoSidebar;

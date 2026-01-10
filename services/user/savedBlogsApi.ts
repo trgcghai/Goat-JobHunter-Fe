@@ -1,6 +1,5 @@
 import { userApi } from "@/services/user/userApi";
 import {
-  CheckLikedBlogsRequest,
   CheckSavedBlogsResponse,
   GetSavedBlogsResponse,
   BlogIdsRequest,
@@ -28,7 +27,7 @@ export const savedBlogsApi = userApi.injectEndpoints({
 
     checkSavedBlogs: builder.query<
       CheckSavedBlogsResponse,
-      CheckLikedBlogsRequest
+      BlogIdsRequest
     >({
       query: (params) => ({
         url: "/users/me/saved-blogs/contains",
