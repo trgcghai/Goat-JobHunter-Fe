@@ -19,14 +19,14 @@ export function ChatRoomItem({ chatRoom, active, onClick }: Readonly<Conversatio
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors ${
+      className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors w-full ${
         active
-          ? "bg-accent"
+          ? "bg-accent/50"
           : "hover:bg-accent/50"
       }`}
     >
       <div className="relative">
-        <Avatar className="h-12 w-12">
+        <Avatar className="h-12 w-12 border">
           <AvatarImage src={chatRoom.avatar || undefined} alt={displayName} />
           <AvatarFallback>{avatarFallback}</AvatarFallback>
         </Avatar>
@@ -46,8 +46,8 @@ export function ChatRoomItem({ chatRoom, active, onClick }: Readonly<Conversatio
             </span>
           )}
         </div>
-        <p className="text-sm text-muted-foreground truncate">
-          {chatRoom.lastMessagePreview || "No messages yet"}
+        <p className="text-sm text-muted-foreground truncate text-start">
+          {chatRoom.lastMessagePreview || "Chưa có tin nhắn"}
         </p>
       </div>
     </button>

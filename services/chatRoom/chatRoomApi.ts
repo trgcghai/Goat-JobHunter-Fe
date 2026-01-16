@@ -6,7 +6,7 @@ export const chatRoomApi = api.injectEndpoints({
   endpoints: (builder) => ({
     fetchChatRooms: builder.query<FetchChatRoomsResponse, FetchChatRoomsRequest>({
       query: () => ({
-        url: "/chat-rooms/me",
+        url: "/chatrooms/me",
         method: "GET"
       }),
       providesTags: ["ChatRoom"]
