@@ -1,8 +1,9 @@
-import { ChatRoom } from "@/types/model";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Users } from "lucide-react";
-import { ChatRoomType } from "@/types/enum";
-import { formatLastMessageTime } from "@/utils/formatDate";
+import { ChatRoom } from '@/types/model';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Users } from 'lucide-react';
+import { ChatRoomType } from '@/types/enum';
+import { formatLastMessageTime } from '@/utils/formatDate';
+import { cn } from '@/lib/utils';
 
 interface ConversationItemProps {
   chatRoom: ChatRoom;
@@ -19,14 +20,13 @@ export function ChatRoomItem({ chatRoom, active, onClick }: Readonly<Conversatio
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors w-full ${
-        active
-          ? "bg-accent/50"
-          : "hover:bg-accent/50"
-      }`}
+      className={cn('flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors w-full',
+        active && 'bg-accent/50',
+        !active && 'hover:bg-accent/50',
+      )}
     >
       <div className="relative">
-        <Avatar className="h-12 w-12 border">
+        <Avatar className={cn("h-12 w-12 border", active && "border-gray-300")}>
           <AvatarImage src={chatRoom.avatar || undefined} alt={displayName} />
           <AvatarFallback>{avatarFallback}</AvatarFallback>
         </Avatar>
@@ -47,7 +47,7 @@ export function ChatRoomItem({ chatRoom, active, onClick }: Readonly<Conversatio
           )}
         </div>
         <p className="text-sm text-muted-foreground truncate text-start">
-          {chatRoom.lastMessagePreview || "Chưa có tin nhắn"}
+          {chatRoom.lastMessagePreview || 'Chưa có tin nhắn'}
         </p>
       </div>
     </button>
