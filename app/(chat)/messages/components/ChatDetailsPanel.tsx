@@ -5,23 +5,24 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import type { SharedFile, SharedLink, SharedMedia, User } from "../utils/types";
-import { Bell, ShieldBan, UserCircle, X } from 'lucide-react';
+import { ChatRoom } from '@/types/model';
+import { ChatRoomType } from '@/types/enum';
+import { Bell, ShieldBan, UserCircle, X, Users } from 'lucide-react';
 import { SharedLinksList } from './SharedLinksList';
 import { SharedMediaGrid } from './SharedMediaGrid';
-import { SharedFilesList } from "@/app/(chat)/messages/components/SharedFilesList";
+import { SharedFilesList } from './SharedFilesList';
+import { Badge } from '@/components/ui/badge';
 
 interface ChatDetailsPanelProps {
-  user: User;
-  sharedMedia: SharedMedia[];
-  sharedLinks: SharedLink[];
-  sharedFiles: SharedFile[];
+  chatRoom: ChatRoom;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function ChatDetailsPanel({ user, sharedMedia, sharedLinks, sharedFiles, isOpen, onClose }: ChatDetailsPanelProps) {
+export function ChatDetailsPanel({ chatRoom, isOpen, onClose }: Readonly<ChatDetailsPanelProps>) {
   if (!isOpen) return null;
+
+  const isGroup = chatRoom.type === ChatRoomType.GROUP;
 
   return (
     <div className="w-[450px] border-l border-border bg-card shrink-0 flex flex-col h-full min-h-0">
@@ -37,15 +38,22 @@ export function ChatDetailsPanel({ user, sharedMedia, sharedLinks, sharedFiles, 
           <div className="flex flex-col items-center text-center">
             <div className="relative">
               <Avatar className="h-20 w-20">
-                <AvatarImage src={user.avatar || '/placeholder.svg'} alt={user.name} />
-                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                <AvatarImage src={chatRoom.avatar || '/placeholder.svg'} alt={chatRoom.name} />
+                <AvatarFallback>{chatRoom.name.charAt(0)}</AvatarFallback>
               </Avatar>
-              {user.online && (
-                <div className="absolute bottom-1 right-1 h-4 w-4 rounded-full bg-primary border-2 border-card" />
+              {isGroup && (
+                <div className="absolute -bottom-1 -right-1 bg-primary rounded-full p-1.5">
+                  <Users className="h-4 w-4 text-primary-foreground" />
+                </div>
               )}
             </div>
-            <h3 className="font-semibold text-lg mt-3">{user.name}</h3>
-            <p className="text-sm text-muted-foreground">{user.online ? 'Active now' : 'Offline'}</p>
+            <h3 className="font-semibold text-lg mt-3">{chatRoom.name}</h3>
+            {isGroup && (
+              <Badge variant="secondary" className="mt-2 flex items-center gap-1">
+                <Users className="h-3 w-3" />
+                {chatRoom.memberCount} thành viên
+              </Badge>
+            )}
           </div>
 
           <div className="grid grid-cols-3 gap-2">
@@ -55,11 +63,11 @@ export function ChatDetailsPanel({ user, sharedMedia, sharedLinks, sharedFiles, 
             </Button>
             <Button variant="outline" className="flex flex-col h-auto py-3 gap-1 bg-transparent" size="sm">
               <Bell className="h-5 w-5" />
-              <span className="text-xs">Mute</span>
+              <span className="text-xs">Tắt thông báo</span>
             </Button>
             <Button variant="outline" className="flex flex-col h-auto py-3 gap-1 bg-transparent" size="sm">
               <ShieldBan className="h-5 w-5" />
-              <span className="text-xs">Block</span>
+              <span className="text-xs">Chặn</span>
             </Button>
           </div>
 
@@ -72,13 +80,13 @@ export function ChatDetailsPanel({ user, sharedMedia, sharedLinks, sharedFiles, 
               <TabsTrigger value="files">Files</TabsTrigger>
             </TabsList>
             <TabsContent value="media" className="mt-4">
-              <SharedMediaGrid media={sharedMedia} />
+              <SharedMediaGrid media={[]} />
             </TabsContent>
             <TabsContent value="links" className="mt-4">
-              <SharedLinksList links={sharedLinks} />
+              <SharedLinksList links={[]} />
             </TabsContent>
             <TabsContent value="files" className="mt-4">
-              <SharedFilesList files={sharedFiles} />
+              <SharedFilesList files={[]} />
             </TabsContent>
           </Tabs>
         </div>

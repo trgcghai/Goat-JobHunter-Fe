@@ -1,37 +1,71 @@
 'use client';
 
 import { ChatWindow } from '@/app/(chat)/messages/components/ChatWindow';
-import useConversations from '@/app/(chat)/messages/hooks/useConversations';
 import { useParams } from 'next/navigation';
+import { useFetchChatRoomsQuery, useFetchMessagesInChatRoomQuery } from '@/services/chatRoom/chatRoomApi';
+import { useEffect, useMemo } from 'react';
+import { subscribeToChatRoom, unsubscribeFromChatRoom } from '@/services/chatRoom/message/messageApi';
+import { useUser } from '@/hooks/useUser';
 
-export default function ConversationPage() {
+export default function ChatRoomPage() {
   const params = useParams();
-  const conversationId = params?.id as string;
+  const chatRoomId = params?.id as string;
+  const { user } = useUser();
 
-  const { activeConversation, messages, sharedMedia, sharedLinks, sharedFiles, sendMessage } =
-    useConversations(conversationId);
+  // Subscribe vào chat room khi component mount
+  useEffect(() => {
+    if (chatRoomId && !isNaN(Number(chatRoomId))) {
+      subscribeToChatRoom(Number(chatRoomId));
 
-  if (!activeConversation) {
+      return () => {
+        unsubscribeFromChatRoom(Number(chatRoomId));
+      };
+    }
+  }, [chatRoomId]);
+
+  const { data: messagesData, isLoading } = useFetchMessagesInChatRoomQuery({
+    chatRoomId: Number(chatRoomId),
+    size: 50,
+    page: 1,
+  }, { skip: !chatRoomId || isNaN(Number(chatRoomId)) });
+
+  const { data: chatRoomsData } = useFetchChatRoomsQuery({});
+
+  const currentChatRoom = useMemo(() => {
+    return chatRoomsData?.data?.result?.find(
+      (room) => room.chatRoomId === Number(chatRoomId)
+    );
+  }, [chatRoomsData, chatRoomId]);
+
+  const messages = useMemo(() => {
+    return messagesData?.data || [];
+  }, [messagesData]);
+
+  if (isLoading) {
     return (
       <div className="flex-1 flex items-center justify-center bg-background">
-        <div className="text-center text-muted-foreground">
-          <p className="text-lg">Không tìm thấy đoạn chat</p>
-        </div>
+        <p className="text-muted-foreground">Đang tải...</p>
+      </div>
+    );
+  }
+
+  if (!currentChatRoom) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-background">
+        <p className="text-lg text-muted-foreground">Không tìm thấy đoạn chat</p>
       </div>
     );
   }
 
   return (
     <ChatWindow
-      user={activeConversation.user}
-      group={activeConversation.group}
-      isGroup={activeConversation.isGroup}
+      chatRoom={currentChatRoom}
       messages={messages}
-      onSendMessage={sendMessage}
-      sharedMedia={sharedMedia}
-      sharedLinks={sharedLinks}
-      sharedFiles={sharedFiles}
-      currentUserId="user-1"
+      currentUserId={user?.accountId?.toString()}
+      onSendMessage={(text) => {
+        // TODO: Implement send message via WebSocket
+        console.log('Send message:', text);
+      }}
     />
   );
 }
