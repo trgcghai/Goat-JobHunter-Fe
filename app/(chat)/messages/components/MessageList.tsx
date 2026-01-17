@@ -12,26 +12,27 @@ interface MessageListProps {
 }
 
 export function MessageList({ messages, currentUserId, isGroup = false }: Readonly<MessageListProps>) {
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   return (
-    <ScrollArea className="px-4 h-full" ref={scrollRef}>
-      <div className="py-4 space-y-1">
-        {messages.map((message) => (
-          <MessageBubble
-            key={message.messageId}
-            message={message}
-            isOwn={message.senderId === currentUserId}
-            showAvatar={isGroup}
-          />
-        ))}
-      </div>
-    </ScrollArea>
+    <div className="flex-1 overflow-hidden">
+      <ScrollArea className="h-full px-4">
+        <div className="py-4 space-y-1">
+          {messages.map((message) => (
+            <MessageBubble
+              key={message.messageId}
+              message={message}
+              isOwn={message.senderId === currentUserId}
+              showAvatar={isGroup}
+            />
+          ))}
+          <div ref={bottomRef} />
+        </div>
+      </ScrollArea>
+    </div>
   );
 }
