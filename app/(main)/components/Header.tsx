@@ -13,13 +13,15 @@ import {
   Home,
   Briefcase,
   Building2,
-} from "lucide-react";
+  MessageCircleMore,
+} from 'lucide-react';
 import { Separator } from "@/components/ui/separator";
 
 const NAV_LINKS = [
   { href: "/hub", label: "Trang chủ", icon: Home },
   { href: "/jobs", label: "Việc Làm", icon: Briefcase },
   { href: "/companies", label: "Công Ty", icon: Building2 },
+  { href: "/messages", label: "Tin nhắn", icon: MessageCircleMore },
 ] as const;
 
 export default function Header() {

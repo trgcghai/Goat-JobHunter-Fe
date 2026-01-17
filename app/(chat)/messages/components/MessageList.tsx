@@ -1,37 +1,38 @@
 'use client';
 
 import { ScrollArea } from '@/components/ui/scroll-area';
-import type { Message } from '../utils/types';
+import { MessageType } from '@/types/model';
 import { useEffect, useRef } from 'react';
 import { MessageBubble } from './MessageBubble';
 
 interface MessageListProps {
-  messages: Message[];
+  messages: MessageType[];
   currentUserId?: string;
   isGroup?: boolean;
 }
 
-export function MessageList({ messages, currentUserId = 'me', isGroup = false }: Readonly<MessageListProps>) {
-  const scrollRef = useRef<HTMLDivElement>(null);
+export function MessageList({ messages, currentUserId, isGroup = false }: Readonly<MessageListProps>) {
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   return (
-    <ScrollArea className="flex-1 px-4" ref={scrollRef}>
-      <div className="py-4 space-y-1">
-        {messages.map((message) => (
-          <MessageBubble
-            key={message.id}
-            message={message}
-            isOwn={message.senderId === currentUserId}
-            showAvatar={isGroup}
-          />
-        ))}
-      </div>
-    </ScrollArea>
+    <div className="flex-1 overflow-hidden">
+      <ScrollArea className="h-full px-4">
+        <div className="py-4 space-y-1">
+          {messages.map((message) => (
+            <MessageBubble
+              key={message.messageId}
+              message={message}
+              isOwn={message.senderId === currentUserId}
+              showAvatar={isGroup}
+            />
+          ))}
+          <div ref={bottomRef} />
+        </div>
+      </ScrollArea>
+    </div>
   );
 }
