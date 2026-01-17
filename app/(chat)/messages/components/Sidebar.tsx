@@ -16,7 +16,7 @@ export function Sidebar() {
   const { chatRooms, isLoading, isError } = useChatRooms();
   const router = useRouter();
   const params = useParams();
-  const activeConversationId = params?.id as string | undefined;
+  const activeChatRoomId = params?.id as string | undefined;
 
   if (!currentUser) return null;
 
@@ -75,7 +75,7 @@ export function Sidebar() {
             <ChatRoomItem
               key={chatRoom.chatRoomId}
               chatRoom={chatRoom}
-              active={activeConversationId === String(chatRoom.chatRoomId)}
+              active={activeChatRoomId === String(chatRoom.chatRoomId)}
               onClick={() => handleSelectConversation(chatRoom.chatRoomId)}
             />
           ))}

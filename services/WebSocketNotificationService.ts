@@ -16,7 +16,7 @@ export class WebSocketNotificationService {
 
   connect() {
     this.client = new Client({
-      webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
+      webSocketFactory: () => new SockJS(process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:5000/ws"),
       reconnectDelay: 5000,
       heartbeatIncoming: 10000,
       heartbeatOutgoing: 10000,

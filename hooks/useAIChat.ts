@@ -29,15 +29,15 @@ export function useAIChat() {
         return;
       }
 
-      setMessages(prevMessages => [
-        ...prevMessages,
-        {
-          messageId: new Date().getDate() + Math.floor(Math.random() * 1000000),
-          content: inputMessage,
-          role: MessageTypeRole.User,
-          createdAt: new Date().toISOString()
-        }
-      ]);
+      // setMessages(prevMessages => [
+      //   ...prevMessages,
+      //   {
+      //     messageId: new Date().getDate() + Math.floor(Math.random() * 1000000),
+      //     content: inputMessage,
+      //     role: MessageTypeRole.User,
+      //     createdAt: new Date().toISOString()
+      //   }
+      // ]);
 
       let result: string;
       if (conversationId) {
@@ -47,15 +47,15 @@ export function useAIChat() {
       }
 
 
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          messageId: new Date().getDate() + Math.floor(Math.random() * 1000000),
-          content: result,
-          role: MessageTypeRole.AI,
-          createdAt: new Date().toISOString()
-        }
-      ]);
+      // setMessages((prevMessages) => [
+      //   ...prevMessages,
+      //   {
+      //     messageId: new Date().getDate() + Math.floor(Math.random() * 1000000),
+      //     content: result,
+      //     role: MessageTypeRole.AI,
+      //     createdAt: new Date().toISOString()
+      //   }
+      // ]);
 
       setInputMessage("");
 

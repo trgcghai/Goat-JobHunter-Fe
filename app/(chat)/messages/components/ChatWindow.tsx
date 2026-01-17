@@ -1,77 +1,51 @@
 'use client';
 
-import type { Message, User, Group, SharedMedia, SharedLink, SharedFile } from '../utils/types';
+import { MessageType, ChatRoom } from '@/types/model';
 import { ChatHeader } from './ChatHeader';
 import { MessageInput } from './MessageInput';
 import { MessageList } from './MessageList';
 import { ChatDetailsPanel } from './ChatDetailsPanel';
-import { GroupDetailsPanel } from './GroupDetailsPanel';
 import { useDetailsPanelState } from '../hooks/useDetailsPanelState';
+import { ChatRoomType } from '@/types/enum';
 
 interface ChatWindowProps {
-  user?: User;
-  group?: Group;
-  isGroup?: boolean;
-  messages: Message[];
-  onSendMessage: (text: string) => void;
-  sharedMedia: SharedMedia[];
-  sharedLinks: SharedLink[];
-  sharedFiles?: SharedFile[];
+  chatRoom: ChatRoom;
+  messages: MessageType[];
   currentUserId?: string;
+  onSendMessage: (text: string) => void;
 }
 
 export function ChatWindow({
-  user,
-  group,
-  isGroup = false,
+  chatRoom,
   messages,
+  currentUserId,
   onSendMessage,
-  sharedMedia,
-  sharedLinks,
-  sharedFiles = [],
-  currentUserId = 'me',
 }: Readonly<ChatWindowProps>) {
   const { isOpen: isDetailsOpen, toggle, close } = useDetailsPanelState();
+  const isGroup = chatRoom.type === ChatRoomType.GROUP;
 
   return (
     <>
-      <div className="flex-1 flex flex-col bg-background min-w-0 min-h-0">
+      <div className="flex-1 flex flex-col bg-background h-full overflow-hidden">
         <ChatHeader
-          user={user}
-          group={group}
-          isGroup={isGroup}
+          chatRoom={chatRoom}
           onToggleDetails={toggle}
           isDetailsOpen={isDetailsOpen}
         />
-        <MessageList messages={messages} currentUserId={currentUserId} isGroup={isGroup} />
+        <MessageList
+          messages={messages}
+          currentUserId={currentUserId}
+          isGroup={isGroup}
+        />
         <MessageInput onSendMessage={onSendMessage} />
       </div>
 
       {isDetailsOpen && (
-        <div className="shrink-0 h-full min-h-0">
-          {isGroup && group ? (
-            <GroupDetailsPanel
-              group={group}
-              sharedMedia={sharedMedia}
-              sharedLinks={sharedLinks}
-              sharedFiles={sharedFiles}
-              isOpen={isDetailsOpen}
-              onClose={close}
-              currentUserId={currentUserId}
-            />
-          ) : (
-            user && (
-              <ChatDetailsPanel
-                user={user}
-                sharedMedia={sharedMedia}
-                sharedLinks={sharedLinks}
-                sharedFiles={sharedFiles}
-                isOpen={isDetailsOpen}
-                onClose={close}
-              />
-            )
-          )}
-        </div>
+        <ChatDetailsPanel
+          chatRoom={chatRoom}
+          isOpen={isDetailsOpen}
+          onClose={close}
+        />
       )}
     </>
   );
