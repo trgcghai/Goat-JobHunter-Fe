@@ -5,6 +5,7 @@ import {
   FetchMessagesInChatRoomRequest,
   FetchMessagesInChatRoomResponse,
 } from '@/services/chatRoom/chatRoomType';
+import { MessageType } from '@/types/model';
 
 
 export const chatRoomApi = api.injectEndpoints({
@@ -25,7 +26,19 @@ export const chatRoomApi = api.injectEndpoints({
       }),
       providesTags: ['ChatRoom'],
     }),
+    sendMessageToChatRoom: builder.mutation<MessageType, { chatRoomId: number; content: string }>({
+      query: ({ chatRoomId, content }) => ({
+        url: `/chatrooms/${chatRoomId}/messages`,
+        method: 'POST',
+        data: { content },
+      }),
+      invalidatesTags: ['ChatRoom'],
+    }),
   }),
 });
 
-export const { useFetchChatRoomsQuery, useFetchMessagesInChatRoomQuery } = chatRoomApi;
+export const {
+  useFetchChatRoomsQuery,
+  useFetchMessagesInChatRoomQuery,
+  useSendMessageToChatRoomMutation,
+} = chatRoomApi;

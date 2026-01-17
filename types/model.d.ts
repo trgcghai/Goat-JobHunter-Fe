@@ -322,6 +322,7 @@ export type MessageType = {
   isHidden: boolean;
   createdAt: string;
   updatedAt: string;
+  role?: MessageTypeRole; // temporary field to avoid error for build in chat container
 };
 
 export type Reaction = {

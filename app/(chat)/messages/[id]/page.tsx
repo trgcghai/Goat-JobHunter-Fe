@@ -6,11 +6,13 @@ import { useFetchChatRoomsQuery, useFetchMessagesInChatRoomQuery } from '@/servi
 import { useEffect, useMemo } from 'react';
 import { subscribeToChatRoom, unsubscribeFromChatRoom } from '@/services/chatRoom/message/messageApi';
 import { useUser } from '@/hooks/useUser';
+import useChatRoomAndMessageActions from '@/hooks/useChatRoomAndMessageActions';
 
 export default function ChatRoomPage() {
   const params = useParams();
   const chatRoomId = params?.id as string;
   const { user } = useUser();
+  const { handleSendMessage } = useChatRoomAndMessageActions();
 
   // Subscribe vào chat room khi component mount
   useEffect(() => {
@@ -63,8 +65,7 @@ export default function ChatRoomPage() {
       messages={messages}
       currentUserId={user?.accountId?.toString()}
       onSendMessage={(text) => {
-        // TODO: Implement send message via WebSocket
-        console.log('Send message:', text);
+        handleSendMessage(Number(chatRoomId), text);
       }}
     />
   );
