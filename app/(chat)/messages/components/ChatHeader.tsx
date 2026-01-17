@@ -17,7 +17,7 @@ export function ChatHeader({ chatRoom, onToggleDetails, isDetailsOpen }: Readonl
   const isGroup = chatRoom.type === ChatRoomType.GROUP;
 
   return (
-    <div className="h-24 border-b border-border bg-card flex items-center justify-between px-4">
+    <div className="h-16 border-b border-border bg-card flex items-center justify-between px-4">
       <div className="flex items-center gap-3">
         <Avatar className="h-10 w-10">
           <AvatarImage src={chatRoom.avatar || '/placeholder.svg'} alt={chatRoom.name} />
