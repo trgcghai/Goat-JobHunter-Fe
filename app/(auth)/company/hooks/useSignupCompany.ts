@@ -7,27 +7,7 @@ import { TCompanySignUpSchema } from '../../components/schemas';
 import { useRouter } from 'next/navigation';
 
 interface UseSignupCompanyReturn {
-  setValue: UseFormSetValue<{
-    username: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-    name: string;
-    description: string;
-    logo: string;
-    coverPhoto: string;
-    phone: string;
-    size: 'STARTUP' | 'SMALL' | 'MEDIUM' | 'LARGE' | 'ENTERPRISE';
-    country: string;
-    industry: string;
-    workingDays: string;
-    overtimePolicy: string;
-    addresses: {
-      province: string;
-      fullAddress: string;
-    }[];
-    website?: string;
-  }>;
+  setValue: UseFormSetValue<TCompanySignUpSchema>;
 }
 
 export const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
@@ -59,7 +39,7 @@ const useSignupCompany = ({ setValue }: UseSignupCompanyReturn) => {
       }
 
       setLogoFile(file);
-      setValue('logo', 'pending-upload', { shouldValidate: true });
+      setValue('logo', file, { shouldValidate: true });
 
       // Create preview URL
       const reader = new FileReader();
@@ -79,7 +59,7 @@ const useSignupCompany = ({ setValue }: UseSignupCompanyReturn) => {
       }
 
       setCoverPhotoFile(file);
-      setValue('coverPhoto', 'pending-upload', { shouldValidate: true });
+      setValue('coverPhoto', file, { shouldValidate: true });
 
       // Create preview URL
       const reader = new FileReader();
@@ -93,13 +73,13 @@ const useSignupCompany = ({ setValue }: UseSignupCompanyReturn) => {
   const handleRemoveLogo = () => {
     setLogoFile(null);
     setLogoPreview(null);
-    setValue('logo', '');
+    setValue('logo', undefined);
   };
 
   const handleRemoveCoverPhoto = () => {
     setCoverPhotoFile(null);
     setCoverPhotoPreview(null);
-    setValue('coverPhoto', '');
+    setValue('coverPhoto', undefined);
   };
 
   const handleError = (error: Error) => {
@@ -124,45 +104,27 @@ const useSignupCompany = ({ setValue }: UseSignupCompanyReturn) => {
         return;
       }
 
-      const uploadLogo = toast.loading('Đang tải ảnh lên...', {
-        duration: 2000,
-      });
-      try {
-        const uploadResponse = await uploadFile({
-          file: logoFile,
-          folderType: 'company-logos',
-        }).unwrap();
-
-        if (uploadResponse?.data?.url) {
-          data.logo = uploadResponse.data.url;
-          toast.success('Tải logo lên thành công!', { id: uploadLogo });
-        }
-      } catch (error) {
-        console.error('Error uploading logo:', error);
-        toast.error('Không thể tải logo lên', { id: uploadLogo, duration: 2000 });
-        return;
+      const formData = new FormData();
+      formData.append('logo', data.logo as File);
+      formData.append('coverPhoto', data.coverPhoto as File);
+      formData.append('username', data.username);
+      formData.append('email', data.email);
+      formData.append('password', data.password);
+      formData.append('confirmPassword', data.confirmPassword);
+      formData.append('name', data.name);
+      formData.append('description', data.description);
+      formData.append('phone', data.phone);
+      formData.append('size', data.size);
+      formData.append('country', data.country);
+      formData.append('industry', data.industry);
+      formData.append('workingDays', data.workingDays);
+      formData.append('overtimePolicy', data.overtimePolicy);
+      if (data.website) {
+        formData.append('website', data.website);
       }
+      formData.append('addresses', JSON.stringify(data.addresses));
 
-      const uploadCoverPhoto = toast.loading('Đang tải ảnh lên...', {
-        duration: 2000,
-      });
-      try {
-        const uploadResponse = await uploadFile({
-          file: coverPhotoFile,
-          folderType: 'company-covers',
-        }).unwrap();
-
-        if (uploadResponse?.data?.url) {
-          data.coverPhoto = uploadResponse.data.url;
-          toast.success('Tải ảnh bìa lên thành công!', { id: uploadCoverPhoto });
-        }
-      } catch (error) {
-        console.error('Error uploading cover photo:', error);
-        toast.error('Không thể tải ảnh bìa lên', { id: uploadCoverPhoto });
-        return;
-      }
-
-      const result = await companySignUp(data);
+      const result = await companySignUp(formData);
 
       if (result.success) {
         router.push('/otp?email=' + encodeURIComponent(data.email));

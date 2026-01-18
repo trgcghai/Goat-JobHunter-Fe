@@ -154,7 +154,7 @@ export function useUser() {
    * Sign up new company
    */
   const companySignUp = useCallback(
-    async (params: TCompanySignUpSchema) => {
+    async (params: FormData) => {
       try {
         const response = await companySignUpMutation(params).unwrap();
 
