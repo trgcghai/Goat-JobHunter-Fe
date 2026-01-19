@@ -1,5 +1,4 @@
 import { useUser } from '@/hooks/useUser';
-import { useUploadSingleFileMutation } from '@/services/upload/uploadApi';
 import { useState } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -19,16 +18,15 @@ export const ACCEPTED_IMAGE_TYPES = {
 
 const useSignupCompany = ({ setValue }: UseSignupCompanyReturn) => {
   const router = useRouter();
-  const [uploadFile, { isLoading: isUploadingFile }] = useUploadSingleFileMutation();
 
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [coverPhotoPreview, setCoverPhotoPreview] = useState<string | null>(null);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [coverPhotoFile, setCoverPhotoFile] = useState<File | null>(null);
 
-  const { companySignUp } = useUser();
+  const { companySignUp, isSigningUpCompany } = useUser();
 
-  const isSubmitting = isUploadingFile;
+  const isSubmitting = isSigningUpCompany;
 
   const handleLogoDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -141,7 +139,6 @@ const useSignupCompany = ({ setValue }: UseSignupCompanyReturn) => {
     logoPreview,
     coverPhotoPreview,
 
-    isUploadingFile,
     isSubmitting,
 
     handleLogoDrop,
