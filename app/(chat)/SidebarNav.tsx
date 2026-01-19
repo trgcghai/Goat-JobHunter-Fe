@@ -20,10 +20,10 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { id: "home", label: "Home", href: "/", icon: <Home size={20} /> },
-  { id: "jobs", label: "Jobs", href: "/jobs", icon: <Briefcase size={20} /> },
-  { id: "companies", label: "Companies", href: "/companies", icon: <Building2 size={20} /> },
-  { id: "messages", label: "Messages", href: "/messages", icon: <MessageCircleMore size={20} /> }
+  { id: "home", label: "Trang chủ", href: "/", icon: <Home size={20} /> },
+  { id: "jobs", label: "Việc làm", href: "/jobs", icon: <Briefcase size={20} /> },
+  { id: "companies", label: "Công ty", href: "/companies", icon: <Building2 size={20} /> },
+  { id: "messages", label: "Tin nhắn", href: "/messages", icon: <MessageCircleMore size={20} /> }
 ];
 
 export function SidebarNav() {
