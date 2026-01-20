@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Permission, Role } from "@/types/model";
 import useRoleAndPermissionActions from "@/hooks/useRoleAndPermissionActions";
 
@@ -60,6 +60,25 @@ export default function useManagePermissions(
     });
   };
 
+  const toggleModulePermissions = useCallback((moduleName: string, checked: boolean) => {
+    const modulePerms = modules[moduleName];
+    if (!modulePerms) return;
+
+    setCurrent(prev => {
+      const prevIds = new Set(prev.map(p => p.permissionId));
+
+      if (checked) {
+        // Add all permissions in this module that aren't already selected
+        const toAdd = modulePerms.permissions.filter(p => !prevIds.has(p.permissionId));
+        return [...prev, ...toAdd];
+      } else {
+        // Remove all permissions in this module
+        const modulePermIds = new Set(modulePerms.permissions.map(p => p.permissionId));
+        return prev.filter(p => !modulePermIds.has(p.permissionId));
+      }
+    });
+  }, [modules]);
+
   const handleSave = async () => {
     if (!role) return;
     const updatedRole: Role = { ...role, permissions: current };
@@ -71,9 +90,10 @@ export default function useManagePermissions(
     current,
     added,
     removed,
+    isUpdating,
     hasPermission,
     togglePermission,
+    toggleModulePermissions,
     handleSave,
-    isUpdating,
   };
 }
