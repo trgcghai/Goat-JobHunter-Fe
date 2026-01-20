@@ -91,10 +91,10 @@ export function Sidebar() {
 
           {!isLoading && !isError && chatRooms.map((chatRoom) => (
             <ChatRoomItem
-              key={chatRoom.chatRoomId}
+              key={chatRoom.roomId}
               chatRoom={chatRoom}
-              active={activeChatRoomId === String(chatRoom.chatRoomId)}
-              onClick={() => handleSelectConversation(chatRoom.chatRoomId)}
+              active={activeChatRoomId === String(chatRoom.roomId)}
+              onClick={() => handleSelectConversation(chatRoom.roomId)}
             />
           ))}
         </div>

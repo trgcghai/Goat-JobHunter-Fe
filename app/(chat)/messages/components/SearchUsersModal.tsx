@@ -42,10 +42,12 @@ export function SearchUsersModal({ open, onOpenChange }: SearchUsersModalProps) 
       // Check if chat room already exists
       const { data: existingRoom } = await checkExistingRoom(user?.accountId).unwrap();
 
-      if (existingRoom?.chatRoomId) {
+      console.log(existingRoom);
+
+      if (existingRoom?.roomId) {
 
         // Navigate to existing room
-        router.push(`/messages/${existingRoom.chatRoomId}`);
+        router.push(`/messages/${existingRoom.roomId}`);
         onOpenChange(false);
       } else {
 

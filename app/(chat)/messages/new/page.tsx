@@ -23,7 +23,7 @@ export default function NewChatRoomPage() {
 
   const chatRoom: ChatRoom = useMemo(() => {
     return {
-      chatRoomId: 1000, // Temporary ID for client-side only
+      roomId: 1000, // Temporary ID for client-side only
       avatar: data?.data?.avatar || '',
       lastMessagePreview: 'Chưa có tin nhắn',
       name: data?.data?.fullName || data?.data?.username || 'C',
@@ -53,10 +53,10 @@ export default function NewChatRoomPage() {
       content: text,
     }).unwrap();
 
-    const chatRoomId = response?.data?.chatRoomId;
+    const roomId = response?.data?.roomId;
 
-    if (chatRoomId) {
-      router.replace(`/messages/${chatRoomId}`);
+    if (roomId) {
+      router.replace(`/messages/${roomId}`);
     }
   };
 
