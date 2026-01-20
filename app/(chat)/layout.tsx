@@ -14,6 +14,8 @@ export default function ChatLayout({ children }: ChatLayoutProps) {
 
   useSubscribeToMessagesQuery(undefined, { skip: !isSignedIn });
 
+  console.log("Test");
+
   return (
     <div className="h-screen flex overflow-hidden">
       <div className="w-full md:w-[450px] shrink-0 border-r border-border">
