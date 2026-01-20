@@ -15,7 +15,7 @@ import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import { toast } from 'sonner';
 import { useUpdateRecruiterMutation } from '@/services/recruiter/recruiterApi';
-import { TCompanySignUpSchema, TUserSignUpSchema } from '@/app/(auth)/components/schemas';
+import { TUserSignUpSchema } from '@/app/(auth)/components/schemas';
 import { ApplicantUpdateDto, RecruiterUpdateDto } from '@/types/dto';
 
 export function useUser() {
@@ -154,7 +154,7 @@ export function useUser() {
    * Sign up new company
    */
   const companySignUp = useCallback(
-    async (params: TCompanySignUpSchema) => {
+    async (params: FormData) => {
       try {
         const response = await companySignUpMutation(params).unwrap();
 

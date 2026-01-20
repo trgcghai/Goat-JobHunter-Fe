@@ -10,7 +10,7 @@ import type {
   VerifyCodeResponse,
 } from './authType';
 import { ApplicantResponse, RecruiterResponse, UserResponse } from '@/types/dto';
-import { IBackendRes } from "@/types/api";
+import { IBackendRes } from '@/types/api';
 
 export const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -23,10 +23,10 @@ export const authApi = api.injectEndpoints({
     }),
 
     companySignUp: builder.mutation({
-      query: (args) => ({
+      query: (formData: FormData) => ({
         url: '/auth/register/companies',
         method: 'POST',
-        data: args,
+        data: formData,
       }),
     }),
 
