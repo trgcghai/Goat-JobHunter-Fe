@@ -34,6 +34,15 @@ export const chatRoomApi = api.injectEndpoints({
       }),
       invalidatesTags: ['ChatRoom'],
     }),
+
+    // Check if chat room exists between two users
+    checkExistingChatRoom: builder.query<{ chatRoomId: number | null }, number>({
+      query: (userId) => ({
+        url: `/chat/rooms/check`,
+        params: { userId }
+      }),
+      providesTags: ["ChatRoom"]
+    })
   }),
 });
 
@@ -41,4 +50,5 @@ export const {
   useFetchChatRoomsQuery,
   useFetchMessagesInChatRoomQuery,
   useSendMessageToChatRoomMutation,
+  useLazyCheckExistingChatRoomQuery
 } = chatRoomApi;
