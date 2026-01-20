@@ -18,6 +18,8 @@ export function Sidebar() {
   const params = useParams();
   const activeChatRoomId = params?.id as string | undefined;
 
+  console.log("chatRooms", chatRooms);
+
   if (!currentUser) return null;
 
   const handleSelectConversation = (id: number) => {
@@ -79,6 +81,10 @@ export function Sidebar() {
               onClick={() => handleSelectConversation(chatRoom.chatRoomId)}
             />
           ))}
+
+          {!isLoading && !isError && chatRooms.length === 0 && (
+           <ErrorMessage message="Không có đoạn chat nào" severity="info" />
+          )}
         </div>
       </ScrollArea>
     </div>
