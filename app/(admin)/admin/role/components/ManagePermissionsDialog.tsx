@@ -14,7 +14,6 @@ import {
   DialogTitle
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Accordion,
   AccordionItem,
@@ -55,11 +54,11 @@ export default function ManagePermissionsDialog({
         className="
           max-w-4xl!
           max-h-[85vh]
-          h-[85vh]
           flex
           flex-col
           gap-0
           p-0
+          overflow-hidden
         "
       >
         <DialogHeader className="flex-shrink-0 px-6 pt-6 pb-4 border-b">
@@ -68,8 +67,58 @@ export default function ManagePermissionsDialog({
           </DialogTitle>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 px-6 overflow-y-scroll">
+        <div className="flex-1 overflow-y-auto px-6">
           <div className="py-4 space-y-6">
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-semibold mb-2 text-sm uppercase tracking-wide text-muted-foreground">
+                  Quyền được thêm ({added.length})
+                </h3>
+                {added.length === 0 ? (
+                  <p className="text-sm text-muted-foreground italic">Không có</p>
+                ) : (
+                  <div className="max-h-32 overflow-y-auto rounded-lg border bg-muted/30 p-3">
+                    <ul className="space-y-1 text-sm">
+                      {added.map((p) => (
+                        <li key={p.permissionId} className="flex items-start gap-2">
+                          <span className="text-green-600 font-medium">+</span>
+                          <span className="flex-1">
+                            <span className="font-medium">{p.name}</span>
+                            <span className="text-muted-foreground"> — {p.method} {p.apiPath}</span>
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <h3 className="font-semibold mb-2 text-sm uppercase tracking-wide text-muted-foreground">
+                  Quyền bị bỏ ({removed.length})
+                </h3>
+                {removed.length === 0 ? (
+                  <p className="text-sm text-muted-foreground italic">Không có</p>
+                ) : (
+                  <div className="max-h-32 overflow-y-auto rounded-lg border bg-muted/30 p-3">
+                    <ul className="space-y-1 text-sm">
+                      {removed.map((p) => (
+                        <li key={p.permissionId} className="flex items-start gap-2">
+                          <span className="text-red-600 font-medium">−</span>
+                          <span className="flex-1">
+                            <span className="font-medium">{p.name}</span>
+                            <span className="text-muted-foreground"> — {p.method} {p.apiPath}</span>
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="border-t" />
+
             {isError && <ErrorMessage message="Có lỗi xảy ra khi tải quyền." />}
 
             {isLoading && (
@@ -124,19 +173,7 @@ export default function ManagePermissionsDialog({
                         {perms.permissions.map((per) => (
                           <div
                             key={per.permissionId}
-                            className="
-                              p-3
-                              border
-                              rounded-lg
-                              flex
-                              items-start
-                              justify-between
-                              gap-3
-                              hover:bg-muted/50
-                              hover:border-primary/50
-                              transition-colors
-                              group
-                            "
+                            className="p-3 border rounded-lg flex items-start justify-between gap-3 hover:bg-muted/50 hover:border-primary/50 transition-colors group"
                           >
                             <div className="flex flex-col gap-1 min-w-0 flex-1">
                               <Label
@@ -173,33 +210,44 @@ export default function ManagePermissionsDialog({
               </Accordion>
             )}
           </div>
-        </ScrollArea>
+        </div>
 
-        {/* FOOTER - Sticky at bottom */}
-        <DialogFooter className="flex-shrink-0 px-6 py-4 border-t">
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isUpdating}
-              className="rounded-xl"
-            >
-              Hủy
-            </Button>
-            <Button
-              onClick={handleSave}
-              disabled={isUpdating || (added.length === 0 && removed.length === 0)}
-              className="rounded-xl min-w-[120px]"
-            >
-              {isUpdating ? (
-                <>
-                  <LoaderSpin />
-                  Đang lưu...
-                </>
-              ) : (
-                "Xác nhận"
+        <DialogFooter className="flex-shrink-0 px-6 py-4 border-t bg-muted/10">
+          <div className="flex items-center justify-between w-full gap-4">
+            <div className="text-sm text-muted-foreground">
+              {added.length > 0 && (
+                <span className="text-green-600 font-medium">+{added.length}</span>
               )}
-            </Button>
+              {added.length > 0 && removed.length > 0 && <span className="mx-2">•</span>}
+              {removed.length > 0 && (
+                <span className="text-red-600 font-medium">−{removed.length}</span>
+              )}
+            </div>
+
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={isUpdating}
+                className="rounded-xl"
+              >
+                Hủy
+              </Button>
+              <Button
+                onClick={handleSave}
+                disabled={isUpdating || (added.length === 0 && removed.length === 0)}
+                className="rounded-xl min-w-[120px]"
+              >
+                {isUpdating ? (
+                  <>
+                    <LoaderSpin />
+                    Đang lưu...
+                  </>
+                ) : (
+                  "Xác nhận"
+                )}
+              </Button>
+            </div>
           </div>
         </DialogFooter>
       </DialogContent>
