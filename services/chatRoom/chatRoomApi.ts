@@ -5,7 +5,8 @@ import {
   FetchMessagesInChatRoomRequest,
   FetchMessagesInChatRoomResponse,
 } from '@/services/chatRoom/chatRoomType';
-import { MessageType } from '@/types/model';
+import { ChatRoom, MessageType } from '@/types/model';
+import { IBackendRes } from '@/types/api';
 
 
 export const chatRoomApi = api.injectEndpoints({
@@ -18,6 +19,7 @@ export const chatRoomApi = api.injectEndpoints({
       }),
       providesTags: ['ChatRoom'],
     }),
+
     fetchMessagesInChatRoom: builder.query<FetchMessagesInChatRoomResponse, FetchMessagesInChatRoomRequest>({
       query: ({ chatRoomId, page = 1, size = 50 }) => ({
         url: `/chatrooms/${chatRoomId}`,
@@ -26,6 +28,8 @@ export const chatRoomApi = api.injectEndpoints({
       }),
       providesTags: ['ChatRoom'],
     }),
+
+    // Send message to a existed chat room
     sendMessageToChatRoom: builder.mutation<MessageType, { chatRoomId: number; content: string }>({
       query: ({ chatRoomId, content }) => ({
         url: `/chatrooms/${chatRoomId}/messages`,
@@ -35,14 +39,25 @@ export const chatRoomApi = api.injectEndpoints({
       invalidatesTags: ['ChatRoom'],
     }),
 
-    // Check if chat room exists between two users
-    checkExistingChatRoom: builder.query<{ chatRoomId: number | null }, number>({
-      query: (userId) => ({
-        url: `/chat/rooms/check`,
-        params: { userId }
+    // Send message to a new chat room
+    sendMessageToNewChatRoom: builder.mutation<IBackendRes<ChatRoom>, { accountId: number; content: string }>({
+      query: ({ accountId, content }) => ({
+        url: `/chatrooms/messages`,
+        method: 'POST',
+        data: { content, accountId },
       }),
-      providesTags: ["ChatRoom"]
-    })
+      invalidatesTags: ['ChatRoom'],
+    }),
+
+    // Check if chat room exists between two users, type of chat room is DIRECT
+    checkExistingChatRoom: builder.query<IBackendRes<ChatRoom | null>, number>({
+      query: (accountId) => ({
+        url: `/chatrooms/direct/exists`,
+        method: 'GET',
+        params: { accountId },
+      }),
+      providesTags: ['ChatRoom'],
+    }),
   }),
 });
 
@@ -50,5 +65,6 @@ export const {
   useFetchChatRoomsQuery,
   useFetchMessagesInChatRoomQuery,
   useSendMessageToChatRoomMutation,
-  useLazyCheckExistingChatRoomQuery
+  useSendMessageToNewChatRoomMutation,
+  useLazyCheckExistingChatRoomQuery,
 } = chatRoomApi;
