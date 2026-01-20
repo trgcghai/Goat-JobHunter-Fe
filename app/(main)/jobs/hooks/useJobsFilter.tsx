@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export interface JobFilters {
-    location?: string[];
+    provinces?: string[];
     skills?: string[];
     level?: string[];
     workingType?: string[];
@@ -67,8 +67,8 @@ export const useJobsFilter = (options?: UseJobsFilterOptions) => {
             size: itemsPerPage,
         };
 
-        if (filters.location && filters.location.length > 0) {
-            params.location = filters.location.join(',');
+        if (filters.provinces && filters.provinces.length > 0) {
+            params.provinces = filters.provinces;
         }
 
         if (filters.level && filters.level.length > 0) {
@@ -117,7 +117,7 @@ export const useJobsFilter = (options?: UseJobsFilterOptions) => {
         setFilters({
             level: [],
             skills: [],
-            location: [],
+            provinces: [],
             workingType: [],
         });
         setCurrentPage(1);

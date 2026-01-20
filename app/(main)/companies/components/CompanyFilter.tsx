@@ -5,7 +5,7 @@ import MultipleSelector, { Option } from "@/components/ui/MultipleSelector";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { SingleCommand } from "@/components/ui/SingleCommand";
-import { JOBFILTER_CONFIG, LOCATION_OPTIONS } from "@/constants/constant";
+import { JOBFILTER_CONFIG, PROVINCE_OPTIONS } from "@/constants/constant";
 import { toast } from "sonner";
 
 interface CompanyFilterProps {
@@ -78,7 +78,7 @@ export default function CompanyFilter({
         />
 
         <MultipleSelector
-          options={LOCATION_OPTIONS}
+          options={PROVINCE_OPTIONS}
           value={selectedAddresses}
           onChange={handleAddressChange}
           placeholder="Chọn địa điểm..."
@@ -87,9 +87,9 @@ export default function CompanyFilter({
           }
           className="rounded-xl"
           hidePlaceholderWhenSelected
-          maxSelected={JOBFILTER_CONFIG.location.maxSelected}
+          maxSelected={JOBFILTER_CONFIG.provinces.maxSelected}
           onMaxSelected={() => {
-            toast.error(JOBFILTER_CONFIG.location.maxSelectedMessage);
+            toast.error(JOBFILTER_CONFIG.provinces.maxSelectedMessage);
           }}
         />
       </div>

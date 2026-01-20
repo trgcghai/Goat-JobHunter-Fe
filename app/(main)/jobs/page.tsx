@@ -52,7 +52,7 @@ export default function JobsPage() {
   } = useJobsFilter({
     itemsPerPage,
     initialFilters: {
-      location: [],
+      provinces: [],
       skills: initSkills,
       level: initLevel,
       workingType: initWorkingType,

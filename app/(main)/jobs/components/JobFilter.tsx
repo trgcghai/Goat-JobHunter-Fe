@@ -49,9 +49,9 @@ export default function JobFilter({
     });
   };
 
-  const handleLocationChange = (options: Option[]) => {
+  const handleProvinceChange = (options: Option[]) => {
     onFilterChange({
-      location: options.map((opt) => opt.value)
+      provinces: options.map((opt) => opt.value)
     });
   };
 
@@ -73,10 +73,10 @@ export default function JobFilter({
       label: skill
     })) || [];
 
-  const selectedLocation: Option[] =
-    filters.location?.map((location) => ({
-      value: location,
-      label: location
+  const selectedProvinces: Option[] =
+    filters.provinces?.map((province) => ({
+      value: province,
+      label: province
     })) || [];
 
   const selectedLevel: Option[] =
@@ -145,9 +145,9 @@ export default function JobFilter({
         />
 
         <MultipleSelector
-          options={JOBFILTER_CONFIG.location.option}
-          value={selectedLocation}
-          onChange={handleLocationChange}
+          options={JOBFILTER_CONFIG.provinces.option}
+          value={selectedProvinces}
+          onChange={handleProvinceChange}
           placeholder="Chọn địa điểm..."
           emptyIndicator={
             <p className="text-center text-sm text-muted-foreground">
@@ -156,9 +156,9 @@ export default function JobFilter({
           }
           className="rounded-xl"
           hidePlaceholderWhenSelected
-          maxSelected={JOBFILTER_CONFIG.location.maxSelected}
+          maxSelected={JOBFILTER_CONFIG.provinces.maxSelected}
           onMaxSelected={() => {
-            toast.error(JOBFILTER_CONFIG.location.maxSelectedMessage);
+            toast.error(JOBFILTER_CONFIG.provinces.maxSelectedMessage);
           }}
         />
 
