@@ -20,7 +20,7 @@ export function ChatRoomItem({ chatRoom, active, onClick }: Readonly<Conversatio
   return (
     <button
       onClick={onClick}
-      className={cn('flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors w-full',
+      className={cn('flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-colors w-full',
         active && 'bg-accent/50',
         !active && 'hover:bg-accent/50',
       )}

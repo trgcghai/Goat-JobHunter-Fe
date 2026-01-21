@@ -4,6 +4,8 @@ import { Sidebar } from '@/app/(chat)/messages/components/Sidebar';
 import { useSubscribeToMessagesQuery } from '@/services/chatRoom/message/messageApi';
 import { useUser } from '@/hooks/useUser';
 import { SidebarNav } from "@/app/(chat)/SidebarNav";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 interface ChatLayoutProps {
   readonly children: React.ReactNode;
@@ -12,6 +14,15 @@ interface ChatLayoutProps {
 export default function ChatLayout({ children }: ChatLayoutProps) {
 
   const { isSignedIn } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+
+    if (!isSignedIn) {
+      router.push("/hub/fyp");
+    }
+
+  }, [isSignedIn, router]);
 
   useSubscribeToMessagesQuery(undefined, { skip: !isSignedIn });
 

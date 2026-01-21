@@ -29,11 +29,6 @@ export const userApi = api.injectEndpoints({
           params,
           filterFields: ["email", "phone", "role", "enabled"],
           textSearchFields: ["email", "phone"],
-          nestedFields: {
-            role: "role.name",
-            email: "contact.email",
-            phone: "contact.phone"
-          },
           defaultSort: "createdAt,desc",
           sortableFields: ["createdAt", "updatedAt"]
         });
@@ -181,6 +176,7 @@ export const userApi = api.injectEndpoints({
 
 export const {
   useFetchUsersQuery,
+  useLazyFetchUsersQuery,
   useFetchUserByIdQuery,
 
   useCreateUserMutation,

@@ -35,7 +35,7 @@ export default function ChatRoomPage() {
 
   const currentChatRoom = useMemo(() => {
     return chatRoomsData?.data?.result?.find(
-      (room) => room.chatRoomId === Number(chatRoomId)
+      (room) => room.roomId === Number(chatRoomId)
     );
   }, [chatRoomsData, chatRoomId]);
 

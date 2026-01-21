@@ -117,7 +117,7 @@ export class WebSocketMessageService {
       chatRoomApi.util.updateQueryData('fetchChatRooms', {}, (draft) => {
 
         if (draft?.data) {
-          const chatRoom = draft.data?.result?.find((cr) => cr.chatRoomId === chatRoomId);
+          const chatRoom = draft.data?.result?.find((cr) => cr.roomId === chatRoomId);
 
           if (chatRoom) {
             chatRoom.lastMessagePreview = message.content;
@@ -127,7 +127,7 @@ export class WebSocketMessageService {
             if (draft?.data?.result) {
               draft.data.result = [
                 chatRoom,
-                ...draft?.data?.result?.filter((cr) => cr.chatRoomId !== chatRoomId),
+                ...draft?.data?.result?.filter((cr) => cr.roomId !== chatRoomId),
               ];
             }
           }
