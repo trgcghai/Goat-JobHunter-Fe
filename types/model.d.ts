@@ -334,7 +334,7 @@ export type Reaction = {
 };
 
 export type ChatRoom = {
-  chatRoomId: number
+  roomId: number
   type: ChatRoomType
   name: string
   avatar: string | null

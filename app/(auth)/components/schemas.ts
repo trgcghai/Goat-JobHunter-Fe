@@ -78,8 +78,8 @@ export const CompanySignUpSchema = z
 
     name: z.string().nonempty('Tên công ty không được để trống'),
     description: z.string().min(50, 'Mô tả công ty phải có ít nhất 50 ký tự'),
-    logo: z.string().nonempty('Logo không được để trống'),
-    coverPhoto: z.string().nonempty('Ảnh bìa không được để trống'),
+    logo: z.instanceof(File).optional(),
+    coverPhoto: z.instanceof(File).optional(),
     website: z
       .string()
       .regex(/^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/\S*)?$/, 'Website không hợp lệ')
@@ -102,6 +102,14 @@ export const CompanySignUpSchema = z
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Mật khẩu và xác nhận mật khẩu không khớp',
     path: ['confirmPassword'],
+  })
+  .refine((data) => data.logo !== undefined, {
+    message: 'Logo không được để trống',
+    path: ['logo'],
+  })
+  .refine((data) => data.coverPhoto !== undefined, {
+    message: 'Ảnh bìa không được để trống',
+    path: ['coverPhoto'],
   });
 
 export type TCompanySignUpSchema = z.infer<typeof CompanySignUpSchema>;

@@ -16,7 +16,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { useState } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Loader2 } from 'lucide-react';
 import { COMPANY_INDUSTRY_OPTIONS, COMPANY_SIZE_OPTIONS, COUNTRY_OPTIONS } from '@/constants/constant';
 import useSignupCompany from '@/app/(auth)/company/hooks/useSignupCompany';
 
@@ -40,8 +40,8 @@ export function CompanySignupForm({ className, ...props }: React.ComponentProps<
       confirmPassword: '',
       name: '',
       description: '',
-      logo: '',
-      coverPhoto: '',
+      logo: undefined,
+      coverPhoto: undefined,
       website: '',
       phone: '',
       size: undefined,
@@ -66,7 +66,6 @@ export function CompanySignupForm({ className, ...props }: React.ComponentProps<
     logoPreview,
     coverPhotoPreview,
 
-    isUploadingFile,
     isSubmitting,
 
     handleLogoDrop,
@@ -212,7 +211,7 @@ export function CompanySignupForm({ className, ...props }: React.ComponentProps<
                           maxSize={MAX_FILE_SIZE}
                           onDrop={handleLogoDrop}
                           onError={handleError}
-                          disabled={isSubmitting || isUploadingFile}
+                          disabled={isSubmitting}
                           className="rounded-xl h-[180px]"
                         >
                           <DropzoneEmptyState customCaption>
@@ -254,7 +253,7 @@ export function CompanySignupForm({ className, ...props }: React.ComponentProps<
                           maxSize={MAX_FILE_SIZE}
                           onDrop={handleCoverPhotoDrop}
                           onError={handleError}
-                          disabled={isSubmitting || isUploadingFile}
+                          disabled={isSubmitting}
                           className="rounded-xl h-[180px]"
                         >
                           <DropzoneEmptyState customCaption>
@@ -540,8 +539,15 @@ export function CompanySignupForm({ className, ...props }: React.ComponentProps<
                     <Button type="button" variant="outline" onClick={handlePrevStep} className="rounded-xl flex-1">
                       Quay lại
                     </Button>
-                    <Button type="submit" className="rounded-xl flex-1" disabled={isSubmitting || isUploadingFile}>
-                      {isSubmitting || isUploadingFile ? 'Đang tạo tài khoản...' : 'Tạo tài khoản công ty'}
+                    <Button type="submit" className="rounded-xl flex-1" disabled={isSubmitting}>
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Đang tạo tài khoản...
+                        </>
+                      ) : (
+                        'Tạo tài khoản công ty'
+                      )}
                     </Button>
                   </div>
                 </div>
