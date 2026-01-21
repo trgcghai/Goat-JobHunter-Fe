@@ -83,7 +83,7 @@ export function SearchUsersModal({ open, onOpenChange }: SearchUsersModalProps) 
               placeholder="Nhập email người dùng (tối thiểu 2 ký tự)..."
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              className="pl-9 bg-accent/50 border focus-visible:ring-1 rounded-xl"
+              className="pl-9 bg-accent/50 border focus-visible:ring-1 rounded-full"
               autoFocus
             />
           </div>

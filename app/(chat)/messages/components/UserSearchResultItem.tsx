@@ -17,7 +17,7 @@ export function UserSearchResultItem({
   isLoadingMessage
 }: UserSearchResultItemProps) {
   return (
-    <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50 transition-colors">
+    <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-accent/50 transition-colors">
       <Avatar className="h-12 w-12 border">
         <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.fullName} />
         <AvatarFallback>{user.fullName?.charAt(0) || "U"}</AvatarFallback>
