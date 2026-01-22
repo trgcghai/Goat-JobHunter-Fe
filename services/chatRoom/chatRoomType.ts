@@ -24,6 +24,6 @@ export type SendMessageToChatRoomRequest = {
 
 export type SendMessageToNewChatRoomRequest = {
   accountId: number
-  content: string
-  files: File[]
+  content?: string
+  files?: File[]
 }
