@@ -62,11 +62,35 @@ export const chatRoomApi = api.injectEndpoints({
 
     // Send message to a new chat room
     sendMessageToNewChatRoom: builder.mutation<IBackendRes<ChatRoom>, SendMessageToNewChatRoomRequest>({
-      query: ({ accountId, content }) => ({
-        url: `/chatrooms/messages`,
-        method: 'POST',
-        data: { content, accountId },
-      }),
+      query: ({ accountId, content, files }) => {
+
+        const formData = new FormData();
+
+        // Add files nếu có
+        if (files && files.length > 0) {
+          files.forEach((file) => {
+            formData.append('files', file);
+          });
+        }
+
+        const requestData: { accountId: number, content?: string } = { accountId };
+        if (content && content.trim()) {
+          requestData.content = content;
+        }
+
+        // Add content nếu có (dưới dạng JSON part)
+        const requestBlob = new Blob(
+          [JSON.stringify(requestData)],
+          { type: 'application/json' },
+        );
+        formData.append('request', requestBlob);
+
+        return {
+          url: `/chatrooms/messages`,
+          method: 'POST',
+          data: formData,
+        };
+      },
       invalidatesTags: ['ChatRoom'],
     }),
 
