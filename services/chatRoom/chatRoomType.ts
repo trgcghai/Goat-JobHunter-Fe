@@ -15,3 +15,15 @@ export type FetchMessagesInChatRoomRequest = {
 export type FetchChatRoomsResponse = IBackendRes<IModelPaginate<ChatRoom>>
 
 export type FetchMessagesInChatRoomResponse = IBackendRes<MessageType[]>
+
+export type SendMessageToChatRoomRequest = {
+  chatRoomId: number
+  content?: string
+  files?: File[]
+}
+
+export type SendMessageToNewChatRoomRequest = {
+  accountId: number
+  content: string
+  files: File[]
+}

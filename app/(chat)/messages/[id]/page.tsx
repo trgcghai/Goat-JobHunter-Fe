@@ -64,8 +64,8 @@ export default function ChatRoomPage() {
       chatRoom={currentChatRoom}
       messages={messages}
       currentUserId={user?.accountId?.toString()}
-      onSendMessage={(text) => {
-        handleSendMessage(Number(chatRoomId), text);
+      onSendMessage={(text, files) => {
+        handleSendMessage(Number(chatRoomId), text, files);
       }}
     />
   );
