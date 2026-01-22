@@ -12,7 +12,7 @@ interface ChatWindowProps {
   chatRoom: ChatRoom;
   messages: MessageType[];
   currentUserId?: string;
-  onSendMessage: (text: string) => void;
+  onSendMessage: (text?: string, files?: File[]) => void;
 }
 
 export function ChatWindow({

@@ -3,7 +3,7 @@ import {
   FetchChatRoomsRequest,
   FetchChatRoomsResponse,
   FetchMessagesInChatRoomRequest,
-  FetchMessagesInChatRoomResponse,
+  FetchMessagesInChatRoomResponse, SendMessageToChatRoomRequest, SendMessageToNewChatRoomRequest,
 } from '@/services/chatRoom/chatRoomType';
 import { ChatRoom, MessageType } from '@/types/model';
 import { IBackendRes } from '@/types/api';
@@ -30,17 +30,38 @@ export const chatRoomApi = api.injectEndpoints({
     }),
 
     // Send message to a existed chat room
-    sendMessageToChatRoom: builder.mutation<MessageType, { chatRoomId: number; content: string }>({
-      query: ({ chatRoomId, content }) => ({
-        url: `/chatrooms/${chatRoomId}/messages`,
-        method: 'POST',
-        data: { content },
-      }),
+    sendMessageToChatRoom: builder.mutation<MessageType, SendMessageToChatRoomRequest>({
+      query: ({ chatRoomId, content, files }) => {
+
+        const formData = new FormData();
+
+        // Add files nếu có
+        if (files && files.length > 0) {
+          files.forEach((file) => {
+            formData.append('files', file);
+          });
+        }
+
+        // Add content nếu có (dưới dạng JSON part)
+        if (content && content.trim()) {
+          const requestBlob = new Blob(
+            [JSON.stringify({ content })],
+            { type: 'application/json' },
+          );
+          formData.append('request', requestBlob);
+        }
+
+        return {
+          url: `/chatrooms/${chatRoomId}/messages`,
+          method: 'POST',
+          data: formData,
+        };
+      },
       invalidatesTags: ['ChatRoom'],
     }),
 
     // Send message to a new chat room
-    sendMessageToNewChatRoom: builder.mutation<IBackendRes<ChatRoom>, { accountId: number; content: string }>({
+    sendMessageToNewChatRoom: builder.mutation<IBackendRes<ChatRoom>, SendMessageToNewChatRoomRequest>({
       query: ({ accountId, content }) => ({
         url: `/chatrooms/messages`,
         method: 'POST',
