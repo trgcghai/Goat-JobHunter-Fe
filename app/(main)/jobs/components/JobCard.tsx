@@ -1,17 +1,19 @@
-"use client";
+'use client';
 
-import JobGridCard from "@/app/(main)/jobs/components/JobGridCard";
-import JobListCard from "@/app/(main)/jobs/components/JobListCard";
-import useJobActions from "@/hooks/useJobActions";
-import { Job } from "@/types/model";
-import { useRouter } from "next/navigation";
+import JobGridCard from '@/app/(main)/jobs/components/JobGridCard';
+import JobListCard from '@/app/(main)/jobs/components/JobListCard';
+import useJobActions from '@/hooks/useJobActions';
+import { Job } from '@/types/model';
+import { useRouter } from 'next/navigation';
 
 interface JobCardProps {
   job: Job;
-  viewMode: "list" | "grid";
+  viewMode: 'list' | 'grid';
   isSaved: boolean;
   onLevelClick?: (level: string) => void;
   onWorkingTypeClick?: (workingType: string) => void;
+  onJobClick?: (jobId: number) => void;
+  isSelected?: boolean;
 }
 
 export default function JobCard({
@@ -20,13 +22,14 @@ export default function JobCard({
   isSaved,
   onLevelClick,
   onWorkingTypeClick,
+  onJobClick,
+  isSelected,
 }: Readonly<JobCardProps>) {
-
-  const router = useRouter()
+  const router = useRouter();
 
   const handleLevelClick = (level: string) => {
     const params = new URLSearchParams();
-    params.set("level", level);
+    params.set('level', level);
     router.push(`/jobs?${params.toString()}`);
 
     if (onLevelClick) {
@@ -36,7 +39,7 @@ export default function JobCard({
 
   const handleWorkingTypeClick = (workingType: string) => {
     const params = new URLSearchParams();
-    params.set("workingType", workingType);
+    params.set('workingType', workingType);
     router.push(`/jobs?${params.toString()}`);
 
     if (onWorkingTypeClick) {
@@ -53,7 +56,7 @@ export default function JobCard({
     await handleToggleSaveJob(e, job, isSaved);
   };
 
-  if (viewMode === "grid") {
+  if (viewMode === 'grid') {
     return (
       <JobGridCard
         job={job}
@@ -73,6 +76,8 @@ export default function JobCard({
       handleSaveJob={handleSaveJob}
       onLevelClick={onLevelClick ?? handleLevelClick}
       onWorkingTypeClick={onWorkingTypeClick ?? handleWorkingTypeClick}
+      onJobClick={onJobClick}
+      isSelected={isSelected}
     />
   );
 }
