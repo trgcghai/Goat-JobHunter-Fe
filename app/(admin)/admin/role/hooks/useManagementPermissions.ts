@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Permission, Role } from "@/types/model";
 import useRoleAndPermissionActions from "@/hooks/useRoleAndPermissionActions";
 
@@ -15,8 +15,21 @@ export default function useManagePermissions(
 ) {
   const { handleUpdateRole, isUpdating } = useRoleAndPermissionActions();
 
+  const initialPermissions = useMemo(() => role?.permissions || [], [role?.permissions]);
+  const [current, setCurrent] = useState<Permission[]>(initialPermissions);
+
+  useEffect(() => {
+    if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setCurrent(initialPermissions);
+    }
+  }, [open, initialPermissions]);
+
+  // KEY FIX: Derive modules from current state, not role.permissions
   const modules = useMemo(() => {
     const mods: Record<string, ModuleGroup> = {};
+    const currentIds = new Set(current.map(p => p.permissionId));
+
     permissions.forEach((per) => {
       const moduleName = per.module || "Chung";
       if (!mods[moduleName]) {
@@ -24,21 +37,13 @@ export default function useManagePermissions(
       }
       mods[moduleName].permissions.push(per);
       mods[moduleName].total += 1;
-      mods[moduleName].has += (role?.permissions?.some(rp => rp.permissionId === per.permissionId) ? 1 : 0);
+      // Use current state instead of role.permissions
+      if (currentIds.has(per.permissionId)) {
+        mods[moduleName].has += 1;
+      }
     });
     return mods;
-  }, [permissions, role?.permissions]);
-
-  const initialPermissions = useMemo(() => role?.permissions || [], [role?.permissions]);
-  const [current, setCurrent] = useState<Permission[]>(initialPermissions);
-
-  useEffect(() => {
-    if (open) {
-      // reset current to role permissions when dialog opens or role changes
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setCurrent(initialPermissions);
-    }
-  }, [open, initialPermissions]);
+  }, [permissions, current]); // Add current to dependencies
 
   const { added, removed } = useMemo(() => {
     const initialIds = new Set(initialPermissions.map(p => p.permissionId));
@@ -50,15 +55,37 @@ export default function useManagePermissions(
     return { added: addedList, removed: removedList };
   }, [current, initialPermissions]);
 
-  const hasPermission = (id: number) => current.some(p => p.permissionId === id);
+  const hasPermission = useCallback(
+    (id: number) => current.some(p => p.permissionId === id),
+    [current]
+  );
 
-  const togglePermission = (per: Permission) => {
+  const togglePermission = useCallback((per: Permission) => {
     setCurrent(prev => {
       const exists = prev.some(p => p.permissionId === per.permissionId);
-      if (exists) return prev.filter(p => p.permissionId !== per.permissionId);
+      if (exists) {
+        return prev.filter(p => p.permissionId !== per.permissionId);
+      }
       return [...prev, per];
     });
-  };
+  }, []);
+
+  const toggleModulePermissions = useCallback((moduleName: string, checked: boolean) => {
+    const modulePerms = modules[moduleName];
+    if (!modulePerms) return;
+
+    setCurrent(prev => {
+      const prevIds = new Set(prev.map(p => p.permissionId));
+
+      if (checked) {
+        const toAdd = modulePerms.permissions.filter(p => !prevIds.has(p.permissionId));
+        return [...prev, ...toAdd];
+      } else {
+        const modulePermIds = new Set(modulePerms.permissions.map(p => p.permissionId));
+        return prev.filter(p => !modulePermIds.has(p.permissionId));
+      }
+    });
+  }, [modules]);
 
   const handleSave = async () => {
     if (!role) return;
@@ -71,9 +98,10 @@ export default function useManagePermissions(
     current,
     added,
     removed,
+    isUpdating,
     hasPermission,
     togglePermission,
+    toggleModulePermissions,
     handleSave,
-    isUpdating,
   };
 }

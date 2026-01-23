@@ -1,15 +1,18 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 import { ChatRoomItem } from "@/app/(chat)/messages/components/ChatRoomItem";
+import { SearchUsersModal } from "@/app/(chat)/messages/components/SearchUsersModal";
 import { useUser } from "@/hooks/useUser";
 import { useChatRooms } from "@/app/(chat)/messages/hooks/useChatRooms";
 import { useRouter, useParams } from "next/navigation";
 import ErrorMessage from "@/components/common/ErrorMessage";
+import { useState } from "react";
 
 export function Sidebar() {
   const { user: currentUser } = useUser();
@@ -17,6 +20,8 @@ export function Sidebar() {
   const router = useRouter();
   const params = useParams();
   const activeChatRoomId = params?.id as string | undefined;
+
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
 
   if (!currentUser) return null;
 
@@ -34,14 +39,27 @@ export function Sidebar() {
           </Avatar>
           <span className="font-semibold text-lg">Chats</span>
         </div>
+
+        <Button
+          size="icon"
+          variant="ghost"
+          onClick={() => setSearchModalOpen(true)}
+          className="rounded-full"
+        >
+          <Plus className="h-5 w-5" />
+        </Button>
       </div>
 
       <div className="p-2 shrink-0">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <div
+          className="relative cursor-pointer"
+          onClick={() => setSearchModalOpen(true)}
+        >
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
           <Input
             placeholder="Tìm người dùng..."
-            className="pl-9 bg-accent/50 border-0 focus-visible:ring-1 rounded-full"
+            className="pl-9 bg-accent/50 border-0 focus-visible:ring-1 rounded-full cursor-pointer"
+            readOnly
           />
         </div>
       </div>
@@ -66,21 +84,23 @@ export function Sidebar() {
 
           {!isLoading && !isError && chatRooms.length === 0 && (
             <div className="text-center py-8 text-muted-foreground">
-              <p>No conversations yet</p>
-              <p className="text-sm mt-1">Start a new chat to get started</p>
+              <p>Chưa có cuộc trò chuyện nào</p>
+              <p className="text-sm mt-1">Nhấn nút + để bắt đầu</p>
             </div>
           )}
 
           {!isLoading && !isError && chatRooms.map((chatRoom) => (
             <ChatRoomItem
-              key={chatRoom.chatRoomId}
+              key={chatRoom.roomId}
               chatRoom={chatRoom}
-              active={activeChatRoomId === String(chatRoom.chatRoomId)}
-              onClick={() => handleSelectConversation(chatRoom.chatRoomId)}
+              active={activeChatRoomId === String(chatRoom.roomId)}
+              onClick={() => handleSelectConversation(chatRoom.roomId)}
             />
           ))}
         </div>
       </ScrollArea>
+
+      <SearchUsersModal open={searchModalOpen} onOpenChange={setSearchModalOpen} />
     </div>
   );
 }

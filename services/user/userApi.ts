@@ -30,15 +30,10 @@ export const userApi = api.injectEndpoints({
       query: (params) => {
         const { params: queryParams } = buildSpringQuery({
           params,
-          filterFields: ['email', 'phone', 'role', 'enabled'],
-          textSearchFields: ['email', 'phone'],
-          nestedFields: {
-            role: 'role.name',
-            email: 'contact.email',
-            phone: 'contact.phone',
-          },
-          defaultSort: 'createdAt,desc',
-          sortableFields: ['createdAt', 'updatedAt'],
+          filterFields: ["email", "phone", "role", "enabled"],
+          textSearchFields: ["email", "phone"],
+          defaultSort: "createdAt,desc",
+          sortableFields: ["createdAt", "updatedAt"]
         });
 
         return {
@@ -239,6 +234,7 @@ export const userApi = api.injectEndpoints({
 
 export const {
   useFetchUsersQuery,
+  useLazyFetchUsersQuery,
   useFetchUserByIdQuery,
 
   useCreateUserMutation,
