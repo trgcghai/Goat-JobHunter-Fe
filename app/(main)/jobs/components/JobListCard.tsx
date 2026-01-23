@@ -4,6 +4,8 @@ import { Job } from '@/types/model';
 import { formatDate } from '@/utils/formatDate';
 import { capitalize } from 'lodash';
 import { Calendar, MapPin } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface JobListCardProps {
   job: Job;
@@ -16,18 +18,28 @@ interface JobListCardProps {
 }
 
 const JobListCard = ({ job, onLevelClick, onWorkingTypeClick, onJobClick, isSelected }: JobListCardProps) => {
+  const router = useRouter();
+  const isMobile = useIsMobile();
+
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (onJobClick) {
+    if (isMobile) {
+      router.push(`/jobs/${job.jobId}`);
+    } else if (onJobClick) {
       onJobClick(job.jobId);
     }
   };
 
   return (
-    <div onClick={handleClick} className="block cursor-pointer">
+    <div onClick={handleClick} className="block cursor-pointer relative">
       <Card
-        className={`overflow-hidden hover:shadow-lg transition-all py-0 mb-3 relative ${isSelected ? 'border-l-4 border-l-primary shadow-lg' : ''}`}
+        className={`overflow-visible hover:shadow-lg transition-all py-0 mb-3 relative ${isSelected ? 'border-2 border-primary shadow-lg' : ''}`}
       >
+        {isSelected && (
+          <div className="absolute -right-3 top-1/2 -translate-y-1/2 z-10">
+            <div className="w-0 h-0 border-t-[10px] border-t-transparent border-b-[10px] border-b-transparent border-l-[10px] border-l-primary"></div>
+          </div>
+        )}
         <div className="flex gap-4 p-4">
           <div className="flex-1">
             <CardHeader className="p-0 gap-0">
