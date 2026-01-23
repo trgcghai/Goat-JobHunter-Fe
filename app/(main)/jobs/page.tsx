@@ -194,7 +194,7 @@ export default function JobsPage() {
                           className="gap-2 rounded-full px-4 py-2 cursor-pointer transition-colors duration-200 hover:bg-muted border-0 relative z-10 data-[state=active]:text-primary data-[state=active]:bg-transparent"
                         >
                           <Sparkles className="h-4 w-4" />
-                          Liên quan
+                          Đề xuất
                         </TabsTrigger>
                       </>
                     )}
