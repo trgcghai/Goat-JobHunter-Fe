@@ -3,9 +3,10 @@ import {
   FetchChatRoomsRequest,
   FetchChatRoomsResponse,
   FetchMessagesInChatRoomRequest,
-  FetchMessagesInChatRoomResponse,
+  FetchMessagesInChatRoomResponse, SendMessageToChatRoomRequest, SendMessageToNewChatRoomRequest,
 } from '@/services/chatRoom/chatRoomType';
-import { MessageType } from '@/types/model';
+import { ChatRoom, MessageType } from '@/types/model';
+import { IBackendRes } from '@/types/api';
 
 
 export const chatRoomApi = api.injectEndpoints({
@@ -18,6 +19,7 @@ export const chatRoomApi = api.injectEndpoints({
       }),
       providesTags: ['ChatRoom'],
     }),
+
     fetchMessagesInChatRoom: builder.query<FetchMessagesInChatRoomResponse, FetchMessagesInChatRoomRequest>({
       query: ({ chatRoomId, page = 1, size = 50 }) => ({
         url: `/chatrooms/${chatRoomId}`,
@@ -26,13 +28,80 @@ export const chatRoomApi = api.injectEndpoints({
       }),
       providesTags: ['ChatRoom'],
     }),
-    sendMessageToChatRoom: builder.mutation<MessageType, { chatRoomId: number; content: string }>({
-      query: ({ chatRoomId, content }) => ({
-        url: `/chatrooms/${chatRoomId}/messages`,
-        method: 'POST',
-        data: { content },
-      }),
+
+    // Send message to a existed chat room
+    sendMessageToChatRoom: builder.mutation<MessageType, SendMessageToChatRoomRequest>({
+      query: ({ chatRoomId, content, files }) => {
+
+        const formData = new FormData();
+
+        // Add files nếu có
+        if (files && files.length > 0) {
+          files.forEach((file) => {
+            formData.append('files', file);
+          });
+        }
+
+        // Add content nếu có (dưới dạng JSON part)
+        if (content && content.trim()) {
+          const requestBlob = new Blob(
+            [JSON.stringify({ content })],
+            { type: 'application/json' },
+          );
+          formData.append('request', requestBlob);
+        }
+
+        return {
+          url: `/chatrooms/${chatRoomId}/messages`,
+          method: 'POST',
+          data: formData,
+        };
+      },
       invalidatesTags: ['ChatRoom'],
+    }),
+
+    // Send message to a new chat room
+    sendMessageToNewChatRoom: builder.mutation<IBackendRes<ChatRoom>, SendMessageToNewChatRoomRequest>({
+      query: ({ accountId, content, files }) => {
+
+        const formData = new FormData();
+
+        // Add files nếu có
+        if (files && files.length > 0) {
+          files.forEach((file) => {
+            formData.append('files', file);
+          });
+        }
+
+        const requestData: { accountId: number, content?: string } = { accountId };
+        if (content && content.trim()) {
+          requestData.content = content;
+        }
+
+        // Add content nếu có (dưới dạng JSON part)
+        const requestBlob = new Blob(
+          [JSON.stringify(requestData)],
+          { type: 'application/json' },
+        );
+        formData.append('request', requestBlob);
+
+        return {
+          url: `/chatrooms/messages`,
+          method: 'POST',
+          data: formData,
+        };
+      },
+      invalidatesTags: ['ChatRoom'],
+    }),
+
+    // Check if chat room exists between two users, type of chat room is DIRECT
+    checkExistingChatRoom: builder.query<IBackendRes<ChatRoom | null>, number>({
+      query: (accountId) => ({
+        url: `/chatrooms/direct/exists`,
+        method: 'GET',
+        params: { accountId },
+      }),
+      providesTags: ['ChatRoom'],
     }),
   }),
 });
@@ -41,4 +110,6 @@ export const {
   useFetchChatRoomsQuery,
   useFetchMessagesInChatRoomQuery,
   useSendMessageToChatRoomMutation,
+  useSendMessageToNewChatRoomMutation,
+  useLazyCheckExistingChatRoomQuery,
 } = chatRoomApi;

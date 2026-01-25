@@ -35,12 +35,18 @@ export default function ChatRoomPage() {
 
   const currentChatRoom = useMemo(() => {
     return chatRoomsData?.data?.result?.find(
-      (room) => room.chatRoomId === Number(chatRoomId)
+      (room) => room.roomId === Number(chatRoomId)
     );
   }, [chatRoomsData, chatRoomId]);
 
   const messages = useMemo(() => {
-    return messagesData?.data || [];
+    // Manually sort messages by createdAt ascending, fallback to empty array if no messages
+    return (
+      [...(messagesData?.data || [])].sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      )
+    );
   }, [messagesData]);
 
   if (isLoading) {
@@ -64,8 +70,8 @@ export default function ChatRoomPage() {
       chatRoom={currentChatRoom}
       messages={messages}
       currentUserId={user?.accountId?.toString()}
-      onSendMessage={(text) => {
-        handleSendMessage(Number(chatRoomId), text);
+      onSendMessage={(text, files) => {
+        handleSendMessage(Number(chatRoomId), text, files);
       }}
     />
   );

@@ -1,17 +1,17 @@
-import { useUser } from "@/hooks/useUser";
-import { useCountApplicationsQuery, useFetchJobByIdQuery, useFetchRelatedJobsQuery } from "@/services/job/jobApi";
-import { useCheckSavedJobsQuery } from "@/services/user/savedJobsApi";
-import { useMemo, useState } from "react";
-import { toast } from "sonner";
-import { useFetchCompanyByIdQuery } from "@/services/company/companyApi";
+import { useUser } from '@/hooks/useUser';
+import { useCountApplicationsQuery, useFetchJobByIdQuery, useFetchRelatedJobsQuery } from '@/services/job/jobApi';
+import { useCheckSavedJobsQuery } from '@/services/user/savedJobsApi';
+import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
+import { useFetchCompanyByIdQuery } from '@/services/company/companyApi';
 
 const useDetailJob = (id: string) => {
   const { user, isSignedIn } = useUser();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [page, setPage] = useState(1);
 
-  const { data, isLoading, isError, isSuccess } = useFetchJobByIdQuery(Number.parseInt(id), {
-    skip: !id
+  const { data, isLoading, isFetching, isError, isSuccess } = useFetchJobByIdQuery(Number.parseInt(id), {
+    skip: !id,
   });
 
   const job = useMemo(() => data?.data, [data]);
@@ -19,20 +19,20 @@ const useDetailJob = (id: string) => {
   const {
     data: companyData,
     isLoading: isLoadingCompany,
-    isError: isErrorCompany
+    isError: isErrorCompany,
   } = useFetchCompanyByIdQuery(job?.company.accountId || -1, {
-    skip: !job || !job.company || !job.company.accountId
+    skip: !job || !job.company || !job.company.accountId,
   });
 
   const company = useMemo(() => companyData?.data, [companyData]);
 
   const { data: checkSavedJobData, isSuccess: isCheckSavedSuccess } = useCheckSavedJobsQuery(
     {
-      jobIds: [Number(id)]
+      jobIds: [Number(id)],
     },
     {
-      skip: !id || !isSignedIn || !user
-    }
+      skip: !id || !isSignedIn || !user,
+    },
   );
 
   const isSaved = useMemo(() => {
@@ -45,30 +45,30 @@ const useDetailJob = (id: string) => {
   const {
     data: relatedJobsData,
     isLoading: isRelatedJobsLoading,
-    isError: isRelatedJobsError
+    isError: isRelatedJobsError,
   } = useFetchRelatedJobsQuery(
     {
       skills: job?.skills.map((skill) => skill.skillId) || [],
       page,
-      size: 9
+      size: 9,
     },
-    { skip: !id || !job || !job.skills }
+    { skip: !id || !job || !job.skills },
   );
 
   const relatedJobs = useMemo(
     () => (relatedJobsData?.data?.result || []).filter((job) => job.jobId.toString() != id),
-    [id, relatedJobsData?.data?.result]
+    [id, relatedJobsData?.data?.result],
   );
 
   const relatedJobMeta = useMemo(() => relatedJobsData?.data?.meta, [relatedJobsData?.data?.meta]);
 
   const { data: checkSavedJobsData } = useCheckSavedJobsQuery(
     {
-      jobIds: relatedJobs.map((j) => j.jobId)
+      jobIds: relatedJobs.map((j) => j.jobId),
     },
     {
-      skip: !relatedJobs || relatedJobs.length === 0 || !isSignedIn || !user // Skip if job is not available or user is not signed in
-    }
+      skip: !relatedJobs || relatedJobs.length === 0 || !isSignedIn || !user, // Skip if job is not available or user is not signed in
+    },
   );
 
   const savedJobs = useMemo(() => checkSavedJobsData?.data || [], [checkSavedJobsData]);
@@ -76,8 +76,8 @@ const useDetailJob = (id: string) => {
   const { data: countApplicationsData } = useCountApplicationsQuery(
     { jobIds: job ? [job.jobId] : [] },
     {
-      skip: !job
-    }
+      skip: !job,
+    },
   );
 
   const numberOfApplications = useMemo(() => {
@@ -89,12 +89,12 @@ const useDetailJob = (id: string) => {
 
   const handleOpenCVDialog = () => {
     if (!isSignedIn || !user) {
-      toast.error("Bạn phải đăng nhập để thực hiện chức năng này.");
+      toast.error('Bạn phải đăng nhập để thực hiện chức năng này.');
       return;
     }
 
     if (!job) {
-      toast.error("Có lỗi khi ứng tuyển công việc. Vui lòng thử lại sau.");
+      toast.error('Có lỗi khi ứng tuyển công việc. Vui lòng thử lại sau.');
       return;
     }
 
@@ -109,7 +109,7 @@ const useDetailJob = (id: string) => {
 
     // data from api
     job,
-    isLoading,
+    isLoading: isLoading || isFetching,
     isError,
     isSuccess,
 
@@ -129,7 +129,7 @@ const useDetailJob = (id: string) => {
     numberOfApplications,
 
     // handlers and functions
-    handleOpenCVDialog
+    handleOpenCVDialog,
   };
 };
 

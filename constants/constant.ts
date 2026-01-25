@@ -25,7 +25,7 @@ export const ROLE_LIST = [
   { label: 'Ứng viên', value: 'APPLICANT' },
 ];
 
-export const LOCATION_OPTIONS: Option[] = [
+export const PROVINCE_OPTIONS: Option[] = [
   { label: 'Hà Nội', value: 'Hà Nội' },
   { label: 'Hải Phòng', value: 'Hải Phòng' },
   { label: 'Đà Nẵng', value: 'Đà Nẵng' },
@@ -68,8 +68,8 @@ export const LOCATION_OPTIONS: Option[] = [
 ];
 
 export const JOBFILTER_CONFIG = {
-  location: {
-    option: LOCATION_OPTIONS,
+  provinces: {
+    option: PROVINCE_OPTIONS,
     maxSelected: 3,
     maxSelectedMessage: 'Bạn chỉ có thể chọn tối đa 3 địa điểm',
   },
@@ -86,8 +86,8 @@ export const JOBFILTER_CONFIG = {
 };
 
 export const RECRUITERFILTER_CONFIG = {
-  location: {
-    option: LOCATION_OPTIONS,
+  provinces: {
+    option: PROVINCE_OPTIONS,
     maxSelected: 1,
     maxSelectedMessage: 'Bạn chỉ có thể chọn tối đa 1 địa điểm',
   },

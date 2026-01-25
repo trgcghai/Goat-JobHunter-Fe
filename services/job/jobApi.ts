@@ -81,13 +81,14 @@ export const jobApi = api.injectEndpoints({
                 const { params: queryParams } = buildSpringQuery({
                     params: {
                         ...params,
-                        active: true,
-                        enabled: true,
                     },
-                    filterFields: ['title', 'location', 'salary', 'active', 'level', 'workingType', 'enabled'],
-                    textSearchFields: ['title', 'location'],
+                    filterFields: ['title', 'salary', 'active', 'level', 'workingType', 'enabled'],
+                    textSearchFields: ['title'],
                     nestedArrayFields: {
                         skills: 'skills.skillId',
+                    },
+                    nestedFields: {
+                        provinces: 'address.province',
                     },
                     defaultSort: 'createdAt,desc',
                     sortableFields: ['title', 'salary', 'createdAt', 'updatedAt'],
