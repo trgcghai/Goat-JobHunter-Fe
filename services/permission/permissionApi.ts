@@ -20,7 +20,7 @@ export const permissionApi = api.injectEndpoints({
         method: "POST",
         data: permission
       }),
-      invalidatesTags: ["Permission"]
+      invalidatesTags: [{ type: "Permission", id: "LIST" }]
     }),
 
     updatePermission: builder.mutation<
@@ -32,7 +32,10 @@ export const permissionApi = api.injectEndpoints({
         method: "PUT",
         data
       }),
-      invalidatesTags: ["Permission"]
+      invalidatesTags: (_, __, arg) => [
+        { type: "Permission", id: arg.permissionId },
+        { type: "Permission", id: "LIST" }
+      ]
     }),
 
     deletePermission: builder.mutation<
@@ -43,7 +46,10 @@ export const permissionApi = api.injectEndpoints({
         url: `/permissions/${permissionId}`,
         method: "DELETE"
       }),
-      invalidatesTags: ["Permission"]
+      invalidatesTags: (_, __, permissionId) => [
+        { type: "Permission", id: permissionId },
+        { type: "Permission", id: "LIST" }
+      ]
     }),
 
     fetchPermissions: builder.query<
@@ -65,7 +71,16 @@ export const permissionApi = api.injectEndpoints({
           params: queryParams
         };
       },
-      providesTags: ["Permission"]
+      providesTags: (result) =>
+        result?.data
+          ? [
+              ...result.data.result.map((permission) => ({
+                type: "Permission" as const,
+                id: permission.permissionId
+              })),
+              { type: "Permission", id: "LIST" }
+            ]
+          : [{ type: "Permission", id: "LIST" }]
     }),
 
     fetchPermissionById: builder.query<
@@ -76,7 +91,9 @@ export const permissionApi = api.injectEndpoints({
         url: `/permissions/${permissionId}`,
         method: "GET"
       }),
-      providesTags: ["Permission"]
+      providesTags: (_, __, permissionId) => [
+        { type: "Permission", id: permissionId }
+      ]
     })
   })
 });

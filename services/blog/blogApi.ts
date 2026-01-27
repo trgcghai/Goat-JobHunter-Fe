@@ -30,9 +30,12 @@ export const blogApi = api.injectEndpoints({
       query: (data) => ({
         url: "/blogs",
         method: "PUT",
-        data,
+        data
       }),
-      invalidatesTags: ["Blog"]
+      invalidatesTags: (_, __, arg) => [
+        { type: "Blog", id: arg.blogId },
+        { type: "Blog", id: "LIST" }
+      ]
     }),
 
     deleteBlog: builder.mutation<BlogMutationResponse, BlogIdsRequest>({
@@ -41,7 +44,10 @@ export const blogApi = api.injectEndpoints({
         method: "DELETE",
         data
       }),
-      invalidatesTags: ["Blog"]
+      invalidatesTags: (_, __, arg) => [
+        ...arg.blogIds.map((id) => ({ type: "Blog" as const, id })),
+        { type: "Blog", id: "LIST" }
+      ]
     }),
 
     fetchBlogs: builder.query<FetchBlogsResponse, FetchBlogsRequest>({
@@ -59,7 +65,13 @@ export const blogApi = api.injectEndpoints({
           params: queryParams
         };
       },
-      providesTags: ["Blog"]
+      providesTags: (result) =>
+        result?.data
+          ? [
+            ...result.data.result.map((blog) => ({ type: "Blog" as const, id: blog.blogId })),
+            { type: "Blog", id: "LIST" }
+          ]
+          : [{ type: "Blog", id: "LIST" }]
     }),
 
     fetchAvailableBlogs: builder.query<FetchBlogsResponse, FetchBlogsRequest>({
@@ -69,7 +81,7 @@ export const blogApi = api.injectEndpoints({
           filterFields: ["title", "content"],
           textSearchFields: ["title", "content"],
           arrayFields: ["tags"],
-          defaultSort: "createdAt,desc",
+          defaultSort: "createdAt,desc"
         });
 
         return {
@@ -78,7 +90,13 @@ export const blogApi = api.injectEndpoints({
           params: queryParams
         };
       },
-      providesTags: ["Blog"]
+      providesTags: (result) =>
+        result?.data
+          ? [
+            ...result.data.result.map((blog) => ({ type: "Blog" as const, id: blog.blogId })),
+            { type: "Blog", id: "LIST" }
+          ]
+          : [{ type: "Blog", id: "LIST" }]
     }),
 
     fetchPopularBlogs: builder.query<FetchBlogsResponse, FetchBlogsRequest>({
@@ -163,7 +181,10 @@ export const blogApi = api.injectEndpoints({
         method: "PUT",
         data: blogIds
       }),
-      invalidatesTags: ["Blog"]
+      invalidatesTags: (_, __, arg) => [
+        ...arg.blogIds.map((id) => ({ type: "Blog" as const, id })),
+        { type: "Blog", id: "LIST" }
+      ]
     }),
 
     disableBlogs: builder.mutation<BlogStatusResponse, BlogIdsRequest>({
@@ -172,7 +193,10 @@ export const blogApi = api.injectEndpoints({
         method: "PUT",
         data: blogIds
       }),
-      invalidatesTags: ["Blog"]
+      invalidatesTags: (_, __, arg) => [
+        ...arg.blogIds.map((id) => ({ type: "Blog" as const, id })),
+        { type: "Blog", id: "LIST" }
+      ]
     }),
 
     // comments endpoints
@@ -191,7 +215,7 @@ export const blogApi = api.injectEndpoints({
           params
         };
       },
-      providesTags: ["Blog", "Comment"]
+      providesTags: (_, __, blogId) => [{ type: "Comment", id: blogId }]
     }),
 
     createComment: builder.mutation<unknown, CreateCommentRequest>({
@@ -200,7 +224,10 @@ export const blogApi = api.injectEndpoints({
         method: "POST",
         data
       }),
-      invalidatesTags: ["Blog", "Comment"]
+      invalidatesTags: (_, __, arg) => [
+        { type: "Comment", id: arg.blogId },
+        { type: "Blog", id: arg.blogId } // Chỉ update blog cụ thể
+      ]
     }),
 
     deleteComment: builder.mutation<unknown, number>({
@@ -208,7 +235,7 @@ export const blogApi = api.injectEndpoints({
         url: `/comments/${commentId}`,
         method: "DELETE"
       }),
-      invalidatesTags: ["Blog", "Comment"]
+      invalidatesTags: (_, __, arg) => [{ type: "Comment", id: arg }]
     })
   })
 });

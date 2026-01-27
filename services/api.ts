@@ -72,7 +72,9 @@ export const api = createApi({
     "SavedBlog",
     "Message",
     "Review",
-    "ChatRoom"
+    "ChatRoom",
+    "Reaction",
+    "Ticket"
   ],
   endpoints: (builder) => ({
     ping: builder.query<string, void>({
