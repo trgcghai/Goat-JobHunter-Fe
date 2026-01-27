@@ -17,7 +17,16 @@ export const chatRoomApi = api.injectEndpoints({
         method: 'GET',
         params: { page, size },
       }),
-      providesTags: ['ChatRoom'],
+      providesTags: (result) =>
+        result?.data?.result
+          ? [
+            ...result.data.result.map(({ roomId }) => ({
+              type: 'ChatRoom' as const,
+              id: roomId,
+            })),
+            { type: 'ChatRoom', id: 'LIST' },
+          ]
+          : [{ type: 'ChatRoom', id: 'LIST' }],
     }),
 
     fetchMessagesInChatRoom: builder.query<FetchMessagesInChatRoomResponse, FetchMessagesInChatRoomRequest>({
@@ -26,7 +35,9 @@ export const chatRoomApi = api.injectEndpoints({
         method: 'GET',
         params: { size, page },
       }),
-      providesTags: ['ChatRoom'],
+      providesTags: (_, __, { chatRoomId }) => [
+        { type: 'ChatRoom', id: `MESSAGES_${chatRoomId}` },
+      ],
     }),
 
     // Send message to a existed chat room
@@ -57,7 +68,10 @@ export const chatRoomApi = api.injectEndpoints({
           data: formData,
         };
       },
-      invalidatesTags: ['ChatRoom'],
+      invalidatesTags: (result, error, { chatRoomId }) => [
+        { type: 'ChatRoom', id: `MESSAGES_${chatRoomId}` },
+        { type: 'ChatRoom', id: 'LIST' }, // Update last message in list
+      ],
     }),
 
     // Send message to a new chat room
@@ -91,7 +105,7 @@ export const chatRoomApi = api.injectEndpoints({
           data: formData,
         };
       },
-      invalidatesTags: ['ChatRoom'],
+      invalidatesTags: [{ type: 'ChatRoom', id: 'LIST' }],
     }),
 
     // Check if chat room exists between two users, type of chat room is DIRECT
@@ -101,7 +115,9 @@ export const chatRoomApi = api.injectEndpoints({
         method: 'GET',
         params: { accountId },
       }),
-      providesTags: ['ChatRoom'],
+      providesTags: (_, __, accountId) => [
+        { type: 'ChatRoom', id: `EXISTS_${accountId}` },
+      ],
     }),
   }),
 });
