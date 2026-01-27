@@ -68,7 +68,7 @@ export function SearchUsersModal({ open, onOpenChange }: SearchUsersModalProps) 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-xl! max-h-[80vh] flex flex-col gap-0 p-0 rounded-xl">
+      <DialogContent className="max-w-xl! h-[80vh] flex flex-col gap-0 p-0 rounded-xl">
         <DialogHeader className="px-6 pt-6 pb-4 border-b shrink-0">
           <DialogTitle>Tìm kiếm người dùng</DialogTitle>
           <DialogDescription>
@@ -80,7 +80,7 @@ export function SearchUsersModal({ open, onOpenChange }: SearchUsersModalProps) 
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Nhập email người dùng (tối thiểu 2 ký tự)..."
+              placeholder="Tìm kiếm theo email hoặc tên người dùng..."
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               className="pl-9 bg-accent/50 border focus-visible:ring-1 rounded-full"
@@ -95,12 +95,12 @@ export function SearchUsersModal({ open, onOpenChange }: SearchUsersModalProps) 
           )}
         </div>
 
-        <ScrollArea className="flex-1 px-6">
+        <ScrollArea className="flex-1 px-6 h-[60vh]">
           <div className="space-y-2 pb-6">
             {!shouldShowResults && (
               <div className="text-center py-12 text-muted-foreground">
                 <Search className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p className="text-sm">Nhập email để tìm kiếm người dùng</p>
+                <p className="text-sm">Nhập để tìm kiếm người dùng</p>
               </div>
             )}
 
