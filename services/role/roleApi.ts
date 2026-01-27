@@ -17,7 +17,7 @@ export const roleApi = api.injectEndpoints({
         method: "POST",
         data: role
       }),
-      invalidatesTags: ["Role"]
+      invalidatesTags: [{ type: "Role", id: "LIST" }]
     }),
 
     updateRole: builder.mutation<RoleMutationResponse, UpdateRoleRequest>({
@@ -26,7 +26,10 @@ export const roleApi = api.injectEndpoints({
         method: "PUT",
         data
       }),
-      invalidatesTags: ["Role"]
+      invalidatesTags: (_, __, arg) => [
+        { type: "Role", id: arg.roleId },
+        { type: "Role", id: "LIST" }
+      ]
     }),
 
     activateRole: builder.mutation<RoleMutationResponse, number>({
@@ -34,7 +37,10 @@ export const roleApi = api.injectEndpoints({
         url: `/roles/${roleId}/activate`,
         method: "PUT"
       }),
-      invalidatesTags: ["Role"]
+      invalidatesTags: (_, __, roleId) => [
+        { type: "Role", id: roleId },
+        { type: "Role", id: "LIST" }
+      ]
     }),
 
     deactivateRole: builder.mutation<RoleMutationResponse, number>({
@@ -42,7 +48,10 @@ export const roleApi = api.injectEndpoints({
         url: `/roles/${roleId}/deactivate`,
         method: "PUT"
       }),
-      invalidatesTags: ["Role"]
+      invalidatesTags: (_, __, roleId) => [
+        { type: "Role", id: roleId },
+        { type: "Role", id: "LIST" }
+      ]
     }),
 
     deleteRole: builder.mutation<RoleMutationResponse, number>({
@@ -50,7 +59,10 @@ export const roleApi = api.injectEndpoints({
         url: `/roles/${roleId}`,
         method: "DELETE"
       }),
-      invalidatesTags: ["Role"]
+      invalidatesTags: (_, __, roleId) => [
+        { type: "Role", id: roleId },
+        { type: "Role", id: "LIST" }
+      ]
     }),
 
     fetchRoles: builder.query<FetchRolesResponse, FetchRolesRequest>({
@@ -59,7 +71,16 @@ export const roleApi = api.injectEndpoints({
         method: "GET",
         params
       }),
-      providesTags: ["Role"]
+      providesTags: (result) =>
+        result?.data
+          ? [
+              ...result.data.result.map((role) => ({
+                type: "Role" as const,
+                id: role.roleId
+              })),
+              { type: "Role", id: "LIST" }
+            ]
+          : [{ type: "Role", id: "LIST" }]
     }),
 
     fetchRoleById: builder.query<FetchRoleByIdResponse, number>({
@@ -67,7 +88,7 @@ export const roleApi = api.injectEndpoints({
         url: `/roles/${roleId}`,
         method: "GET"
       }),
-      providesTags: ["Role"]
+      providesTags: (_, __, roleId) => [{ type: "Role", id: roleId }]
     })
   })
 });
