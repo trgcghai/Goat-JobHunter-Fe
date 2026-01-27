@@ -1,43 +1,43 @@
-import { api } from '@/services/api';
+import { api } from "@/services/api";
 import {
   FetchChatRoomsRequest,
   FetchChatRoomsResponse,
   FetchMessagesInChatRoomRequest,
-  FetchMessagesInChatRoomResponse, SendMessageToChatRoomRequest, SendMessageToNewChatRoomRequest,
-} from '@/services/chatRoom/chatRoomType';
-import { ChatRoom, MessageType } from '@/types/model';
-import { IBackendRes } from '@/types/api';
+  FetchMessagesInChatRoomResponse, SendMessageToChatRoomRequest, SendMessageToNewChatRoomRequest
+} from "@/services/chatRoom/chatRoomType";
+import { ChatRoom, MessageType } from "@/types/model";
+import { IBackendRes } from "@/types/api";
 
 
 export const chatRoomApi = api.injectEndpoints({
   endpoints: (builder) => ({
     fetchChatRooms: builder.query<FetchChatRoomsResponse, FetchChatRoomsRequest>({
       query: ({ page = 1, size = 50 }) => ({
-        url: '/chatrooms/me',
-        method: 'GET',
-        params: { page, size },
+        url: "/chatrooms/me",
+        method: "GET",
+        params: { page, size }
       }),
       providesTags: (result) =>
         result?.data?.result
           ? [
             ...result.data.result.map(({ roomId }) => ({
-              type: 'ChatRoom' as const,
-              id: roomId,
+              type: "ChatRoom" as const,
+              id: roomId
             })),
-            { type: 'ChatRoom', id: 'LIST' },
+            { type: "ChatRoom", id: "LIST" }
           ]
-          : [{ type: 'ChatRoom', id: 'LIST' }],
+          : [{ type: "ChatRoom", id: "LIST" }]
     }),
 
     fetchMessagesInChatRoom: builder.query<FetchMessagesInChatRoomResponse, FetchMessagesInChatRoomRequest>({
       query: ({ chatRoomId, page = 1, size = 50 }) => ({
         url: `/chatrooms/${chatRoomId}`,
-        method: 'GET',
-        params: { size, page },
+        method: "GET",
+        params: { size, page }
       }),
       providesTags: (_, __, { chatRoomId }) => [
-        { type: 'ChatRoom', id: `MESSAGES_${chatRoomId}` },
-      ],
+        { type: "ChatRoom", id: `MESSAGES_${chatRoomId}` }
+      ]
     }),
 
     // Send message to a existed chat room
@@ -49,7 +49,7 @@ export const chatRoomApi = api.injectEndpoints({
         // Add files nếu có
         if (files && files.length > 0) {
           files.forEach((file) => {
-            formData.append('files', file);
+            formData.append("files", file);
           });
         }
 
@@ -57,21 +57,49 @@ export const chatRoomApi = api.injectEndpoints({
         if (content && content.trim()) {
           const requestBlob = new Blob(
             [JSON.stringify({ content })],
-            { type: 'application/json' },
+            { type: "application/json" }
           );
-          formData.append('request', requestBlob);
+          formData.append("request", requestBlob);
         }
 
         return {
           url: `/chatrooms/${chatRoomId}/messages`,
-          method: 'POST',
-          data: formData,
+          method: "POST",
+          data: formData
         };
       },
-      invalidatesTags: (result, error, { chatRoomId }) => [
-        { type: 'ChatRoom', id: `MESSAGES_${chatRoomId}` },
-        { type: 'ChatRoom', id: 'LIST' }, // Update last message in list
-      ],
+      async onQueryStarted({ chatRoomId }, { dispatch, queryFulfilled }) {
+        try {
+          const { data: newMessage } = await queryFulfilled;
+
+          // Update chat rooms list cache
+          dispatch(
+            chatRoomApi.util.updateQueryData("fetchChatRooms", { page: 1, size: 50 }, (draft) => {
+              if (draft?.data?.result) {
+                const chatRoomIndex = draft.data.result.findIndex(
+                  (room) => room.roomId === chatRoomId
+                );
+
+                if (chatRoomIndex !== -1) {
+                  const chatRoom = draft.data.result[chatRoomIndex];
+
+                  // Update last message info
+                  chatRoom.lastMessagePreview = newMessage.content;
+                  chatRoom.lastMessageTime = newMessage.createdAt;
+
+                  // Move to top if not already first
+                  if (chatRoomIndex !== 0) {
+                    draft.data.result.splice(chatRoomIndex, 1);
+                    draft.data.result.unshift(chatRoom);
+                  }
+                }
+              }
+            })
+          );
+        } catch (error) {
+          console.error("Failed to update cache after sending message:", error);
+        }
+      }
     }),
 
     // Send message to a new chat room
@@ -83,7 +111,7 @@ export const chatRoomApi = api.injectEndpoints({
         // Add files nếu có
         if (files && files.length > 0) {
           files.forEach((file) => {
-            formData.append('files', file);
+            formData.append("files", file);
           });
         }
 
@@ -95,31 +123,58 @@ export const chatRoomApi = api.injectEndpoints({
         // Add content nếu có (dưới dạng JSON part)
         const requestBlob = new Blob(
           [JSON.stringify(requestData)],
-          { type: 'application/json' },
+          { type: "application/json" }
         );
-        formData.append('request', requestBlob);
+        formData.append("request", requestBlob);
 
         return {
           url: `/chatrooms/messages`,
-          method: 'POST',
-          data: formData,
+          method: "POST",
+          data: formData
         };
       },
-      invalidatesTags: [{ type: 'ChatRoom', id: 'LIST' }],
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data: response } = await queryFulfilled;
+
+          if (response?.data) {
+            const newChatRoom = response.data;
+
+            // Update chat rooms list cache - add new chat room at the top
+            dispatch(
+              chatRoomApi.util.updateQueryData('fetchChatRooms', { page: 1, size: 50 }, (draft) => {
+                if (draft?.data?.result) {
+                  // Check if chat room already exists
+                  const exists = draft.data.result.some(
+                    (room) => room.roomId === newChatRoom.roomId
+                  );
+
+                  if (!exists) {
+                    // Add new chat room at the top
+                    draft.data.result.unshift(newChatRoom);
+                  }
+                }
+              })
+            );
+          }
+        } catch (error) {
+          console.error('Failed to update cache after creating new chat room:', error);
+        }
+      },
     }),
 
     // Check if chat room exists between two users, type of chat room is DIRECT
     checkExistingChatRoom: builder.query<IBackendRes<ChatRoom | null>, number>({
       query: (accountId) => ({
         url: `/chatrooms/direct/exists`,
-        method: 'GET',
-        params: { accountId },
+        method: "GET",
+        params: { accountId }
       }),
       providesTags: (_, __, accountId) => [
-        { type: 'ChatRoom', id: `EXISTS_${accountId}` },
-      ],
-    }),
-  }),
+        { type: "ChatRoom", id: `EXISTS_${accountId}` }
+      ]
+    })
+  })
 });
 
 export const {
@@ -127,5 +182,5 @@ export const {
   useFetchMessagesInChatRoomQuery,
   useSendMessageToChatRoomMutation,
   useSendMessageToNewChatRoomMutation,
-  useLazyCheckExistingChatRoomQuery,
+  useLazyCheckExistingChatRoomQuery
 } = chatRoomApi;
