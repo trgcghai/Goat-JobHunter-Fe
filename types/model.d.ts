@@ -337,8 +337,9 @@ export type ChatRoom = {
   roomId: number
   type: ChatRoomType
   name: string
-  avatar: string | null
+  avatar: string
   memberCount: number
-  lastMessagePreview: string | null
-  lastMessageTime: string | null
+  lastMessagePreview: string
+  lastMessageTime: string
+  currentUserSentLastMessage: boolean;
 }
