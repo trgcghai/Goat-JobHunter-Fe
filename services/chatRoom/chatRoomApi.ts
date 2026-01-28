@@ -11,6 +11,7 @@ import { IBackendRes } from "@/types/api";
 
 export const chatRoomApi = api.injectEndpoints({
   endpoints: (builder) => ({
+    // Fetch chat rooms of the current user
     fetchChatRooms: builder.query<FetchChatRoomsResponse, FetchChatRoomsRequest>({
       query: ({ page = 1, size = 50 }) => ({
         url: "/chatrooms/me",
@@ -29,11 +30,34 @@ export const chatRoomApi = api.injectEndpoints({
           : [{ type: "ChatRoom", id: "LIST" }]
     }),
 
+    // Fetch messages in a specific chat room
     fetchMessagesInChatRoom: builder.query<FetchMessagesInChatRoomResponse, FetchMessagesInChatRoomRequest>({
       query: ({ chatRoomId, page = 1, size = 50 }) => ({
         url: `/chatrooms/${chatRoomId}`,
         method: "GET",
         params: { size, page }
+      }),
+      providesTags: (_, __, { chatRoomId }) => [
+        { type: "ChatRoom", id: `MESSAGES_${chatRoomId}` }
+      ]
+    }),
+
+    fetchFilesInChatRoom: builder.query<FetchMessagesInChatRoomResponse, { chatRoomId: number, page?: number }>({
+      query: ({ chatRoomId, page = 1 }) => ({
+        url: `/chatrooms/${chatRoomId}/file`,
+        method: "GET",
+        params: { page }
+      }),
+      providesTags: (_, __, { chatRoomId }) => [
+        { type: "ChatRoom", id: `MESSAGES_${chatRoomId}` }
+      ]
+    }),
+
+    fetchMediaInChatRoom: builder.query<FetchMessagesInChatRoomResponse, { chatRoomId: number, page?: number }>({
+      query: ({ chatRoomId, page = 1 }) => ({
+        url: `/chatrooms/${chatRoomId}/media`,
+        method: "GET",
+        params: { page }
       }),
       providesTags: (_, __, { chatRoomId }) => [
         { type: "ChatRoom", id: `MESSAGES_${chatRoomId}` }
@@ -142,7 +166,7 @@ export const chatRoomApi = api.injectEndpoints({
 
             // Update chat rooms list cache - add new chat room at the top
             dispatch(
-              chatRoomApi.util.updateQueryData('fetchChatRooms', { page: 1, size: 50 }, (draft) => {
+              chatRoomApi.util.updateQueryData("fetchChatRooms", { page: 1, size: 50 }, (draft) => {
                 if (draft?.data?.result) {
                   // Check if chat room already exists
                   const exists = draft.data.result.some(
@@ -158,9 +182,9 @@ export const chatRoomApi = api.injectEndpoints({
             );
           }
         } catch (error) {
-          console.error('Failed to update cache after creating new chat room:', error);
+          console.error("Failed to update cache after creating new chat room:", error);
         }
-      },
+      }
     }),
 
     // Check if chat room exists between two users, type of chat room is DIRECT
@@ -180,6 +204,8 @@ export const chatRoomApi = api.injectEndpoints({
 export const {
   useFetchChatRoomsQuery,
   useFetchMessagesInChatRoomQuery,
+  useFetchFilesInChatRoomQuery,
+  useFetchMediaInChatRoomQuery,
   useSendMessageToChatRoomMutation,
   useSendMessageToNewChatRoomMutation,
   useLazyCheckExistingChatRoomQuery
