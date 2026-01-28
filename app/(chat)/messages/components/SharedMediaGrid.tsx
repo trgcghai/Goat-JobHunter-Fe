@@ -1,12 +1,30 @@
-import { Play } from "lucide-react";
+import { Play, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { MessageType } from "@/types/model";
 
 interface SharedMediaGridProps {
   readonly media: MessageType[];
+  readonly isLoading: boolean;
+  readonly isError: boolean;
 }
 
-export function SharedMediaGrid({ media }: SharedMediaGridProps) {
+export function SharedMediaGrid({ media, isLoading, isError }: SharedMediaGridProps) {
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex items-center justify-center py-8 text-sm text-destructive">
+        Không thể tải phương tiện
+      </div>
+    );
+  }
+
   if (media.length === 0) {
     return (
       <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">
