@@ -3,7 +3,8 @@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { MessageType } from '@/types/model';
 import { useEffect, useRef } from 'react';
-import { MessageBubble } from './MessageBubble';
+import { MessageBubble, MessageBubbleLoading } from "./MessageBubble";
+import { usePendingMessages } from "@/contexts/PendingMessagesContext";
 
 interface MessageListProps {
   messages: MessageType[];
@@ -13,6 +14,7 @@ interface MessageListProps {
 
 export function MessageList({ messages, currentUserId, isGroup = false }: Readonly<MessageListProps>) {
   const bottomRef = useRef<HTMLDivElement>(null);
+  const { pendingMessages } = usePendingMessages();
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -29,6 +31,9 @@ export function MessageList({ messages, currentUserId, isGroup = false }: Readon
               isOwn={message.senderId === currentUserId}
               showAvatar={isGroup}
             />
+          ))}
+          {pendingMessages.map((pending) => (
+            <MessageBubbleLoading key={pending.id} />
           ))}
           <div ref={bottomRef} />
         </div>

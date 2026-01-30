@@ -105,3 +105,22 @@ export function MessageBubble({ message, isOwn, showAvatar = false, senderName, 
     </div>
   );
 }
+
+export function MessageBubbleLoading() {
+  return (
+    <div className="flex justify-end">
+      <div
+        className={cn(
+          'max-w-[70%] rounded-2xl px-4 py-2',
+          'bg-primary text-primary-foreground rounded-2xl'
+        )}
+      >
+        <div className="flex items-center gap-1">
+          <div className="w-2 h-2 bg-primary-foreground/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+          <div className="w-2 h-2 bg-primary-foreground/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+          <div className="w-2 h-2 bg-primary-foreground/60 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+        </div>
+      </div>
+    </div>
+  );
+}
