@@ -1,5 +1,7 @@
+import { ticketApi } from './../services/ticket/ticketApi';
 import {
-  ApplicationStatus, ChatRoomType,
+  ApplicationStatus,
+  ChatRoomType,
   CompanySize,
   Education,
   Gender,
@@ -334,11 +336,32 @@ export type Reaction = {
 };
 
 export type ChatRoom = {
-  roomId: number
-  type: ChatRoomType
-  name: string
-  avatar: string | null
-  memberCount: number
-  lastMessagePreview: string | null
-  lastMessageTime: string | null
-}
+  roomId: number;
+  type: ChatRoomType;
+  name: string;
+  avatar: string | null;
+  memberCount: number;
+  lastMessagePreview: string | null;
+  lastMessageTime: string | null;
+};
+
+export type Resume = {
+  resumeId: number;
+  title: string;
+  fileUrl: string;
+  fileName: string;
+  fileSize: number;
+  isDefault: boolean;
+  isPublic: boolean;
+  aiScore?: number;
+  aiAnalysis?: string;
+  aiSuggestions?: string;
+  analyzeAt?: string;
+
+  applicant: Applicant;
+
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+  updatedBy: string;
+};

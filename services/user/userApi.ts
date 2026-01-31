@@ -22,6 +22,7 @@ import {
   UserStatusResponse,
 } from './userType';
 import { FetchJobsRequest, FetchJobsResponse } from '../job/jobType';
+import { FetchResumesRequest, FetchResumesResponse } from '../resume/resumeType';
 
 export const userApi = api.injectEndpoints({
   overrideExisting: true,
@@ -30,10 +31,10 @@ export const userApi = api.injectEndpoints({
       query: (params) => {
         const { params: queryParams } = buildSpringQuery({
           params,
-          filterFields: ["email", "phone", "role", "enabled"],
-          textSearchFields: ["email", "phone"],
-          defaultSort: "createdAt,desc",
-          sortableFields: ["createdAt", "updatedAt"]
+          filterFields: ['email', 'phone', 'role', 'enabled'],
+          textSearchFields: ['email', 'phone'],
+          defaultSort: 'createdAt,desc',
+          sortableFields: ['createdAt', 'updatedAt'],
         });
 
         return {
@@ -229,6 +230,26 @@ export const userApi = api.injectEndpoints({
       },
       providesTags: ['Job'],
     }),
+
+    // Resume APIs
+    fetchResumesByCurrentUser: builder.query<FetchResumesResponse, FetchResumesRequest>({
+      query: (params) => {
+        const { params: queryParams } = buildSpringQuery({
+          params: {
+            ...params,
+          },
+          filterFields: [],
+          defaultSort: 'createdAt,desc',
+        });
+
+        return {
+          url: '/users/me/resumes',
+          method: 'GET',
+          params: queryParams,
+        };
+      },
+      providesTags: ['Resume'],
+    }),
   }),
 });
 
@@ -258,4 +279,6 @@ export const {
 
   useFetchJobSubscribersByCurrentUserQuery,
   useFetchRelatedJobsByCurrentUserQuery,
+
+  useFetchResumesByCurrentUserQuery,
 } = userApi;
