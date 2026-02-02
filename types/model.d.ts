@@ -1,4 +1,3 @@
-import { ticketApi } from './../services/ticket/ticketApi';
 import {
   ApplicationStatus,
   ChatRoomType,
@@ -343,6 +342,7 @@ export type ChatRoom = {
   memberCount: number;
   lastMessagePreview: string | null;
   lastMessageTime: string | null;
+  currentUserSentLastMessage: boolean | null;
 };
 
 export type Resume = {
