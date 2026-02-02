@@ -14,9 +14,8 @@ export const reactionApi = api.injectEndpoints({
         data
       }),
       invalidatesTags: (_, __, arg) => [
-        { type: "Blog", id: "LIST" },
-        arg.blogId ? { type: "Blog", id: arg.blogId } : undefined
-      ].filter(Boolean) as { type: "Blog"; id: number | "LIST" }[]
+        { type: "Blog", id: `REACTION-${arg.blogId}` }
+      ]
     }),
 
     unreactBlog: builder.mutation<void, BlogIdsRequest>({
@@ -25,13 +24,11 @@ export const reactionApi = api.injectEndpoints({
         method: "DELETE",
         data
       }),
-      invalidatesTags: (_, __, arg) => [
-        { type: "Blog", id: "LIST" },
-        ...(arg.blogIds ?? []).map((blogId) => ({
+      invalidatesTags: (_, __, arg) =>
+        (arg.blogIds ?? []).map((blogId) => ({
           type: "Blog" as const,
-          id: blogId
+          id: `REACTION-${blogId}`
         }))
-      ]
     }),
 
     checkReactBlog: builder.query<CheckReactionBlogResponse, BlogIdsRequest>({
@@ -41,15 +38,10 @@ export const reactionApi = api.injectEndpoints({
         params
       }),
       providesTags: (_, __, arg) =>
-        (arg.blogIds ?? []).length
-          ? [
-            ...arg.blogIds.map((blogId) => ({
-              type: "Blog" as const,
-              id: blogId
-            })),
-            { type: "Blog", id: "LIST" }
-          ]
-          : [{ type: "Blog", id: "LIST" }]
+        (arg.blogIds ?? []).map((blogId) => ({
+          type: "Blog" as const,
+          id: `REACTION-${blogId}`
+        }))
     })
   })
 });

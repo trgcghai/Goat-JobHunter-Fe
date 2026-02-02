@@ -26,8 +26,9 @@ export default function NewChatRoomPage() {
       lastMessagePreview: 'Chưa có tin nhắn',
       name: data?.data?.fullName || data?.data?.username || 'C',
       type: ChatRoomType.DIRECT,
-      lastMessageTime: null,
+      lastMessageTime: new Date().toISOString(),
       memberCount: 2,
+      currentUserSentLastMessage: true
     };
   }, [data?.data?.avatar, data?.data?.fullName, data?.data?.username]);
 

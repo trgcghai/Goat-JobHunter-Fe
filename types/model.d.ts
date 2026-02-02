@@ -5,11 +5,11 @@ import {
   CompanySize,
   Education,
   Gender,
-  Level,
+  Level, MessageTypeEnum,
   MessageTypeRole,
   NotificationTypeEnum,
-  WorkingType,
-} from '@/types/enum';
+  WorkingType
+} from "@/types/enum";
 import { LucideIcon } from 'lucide-react';
 
 export type Address = {
@@ -319,7 +319,7 @@ export type MessageType = {
   messageId: string;
   senderId: string;
   content: string;
-  messageType: string;
+  messageType: MessageTypeEnum;
   replyTo?: string;
   isHidden: boolean;
   createdAt: string;

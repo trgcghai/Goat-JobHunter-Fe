@@ -40,7 +40,13 @@ export default function ChatRoomPage() {
   }, [chatRoomsData, chatRoomId]);
 
   const messages = useMemo(() => {
-    return messagesData?.data || [];
+    // Manually sort messages by createdAt ascending, fallback to empty array if no messages
+    return (
+      [...(messagesData?.data || [])].sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      )
+    );
   }, [messagesData]);
 
   if (isLoading) {
@@ -64,8 +70,8 @@ export default function ChatRoomPage() {
       chatRoom={currentChatRoom}
       messages={messages}
       currentUserId={user?.accountId?.toString()}
-      onSendMessage={(text, files) => {
-        handleSendMessage(Number(chatRoomId), text, files);
+      onSendMessage={async (text, files) => {
+        await handleSendMessage(Number(chatRoomId), text, files);
       }}
     />
   );

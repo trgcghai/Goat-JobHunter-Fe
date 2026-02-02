@@ -26,7 +26,11 @@ export const jobApi = api.injectEndpoints({
                 method: 'POST',
                 data: job,
             }),
-            invalidatesTags: ['Job'],
+            invalidatesTags: [
+                { type: 'Job', id: 'LIST' },
+                { type: 'Job', id: 'AVAILABLE' },
+                { type: 'Job', id: 'COMPANY_COUNT' }
+            ],
         }),
 
         updateJob: builder.mutation<JobMutationResponse, UpdateJobRequest>({
@@ -35,7 +39,11 @@ export const jobApi = api.injectEndpoints({
                 method: 'PUT',
                 data: { ...job, jobId },
             }),
-            invalidatesTags: ['Job'],
+            invalidatesTags: (_, __, arg) => [
+                { type: 'Job', id: arg.jobId },
+                { type: 'Job', id: 'LIST' },
+                { type: 'Job', id: 'AVAILABLE' }
+            ],
         }),
 
         deleteJob: builder.mutation<JobMutationResponse, number>({
@@ -43,7 +51,12 @@ export const jobApi = api.injectEndpoints({
                 url: `/jobs/${jobId}`,
                 method: 'DELETE',
             }),
-            invalidatesTags: ['Job'],
+            invalidatesTags: (_, __, jobId) => [
+                { type: 'Job', id: jobId },
+                { type: 'Job', id: 'LIST' },
+                { type: 'Job', id: 'AVAILABLE' },
+                { type: 'Job', id: 'COMPANY_COUNT' }
+            ],
         }),
 
         fetchJobs: builder.query<FetchJobsResponse, FetchJobsRequest>({
@@ -65,7 +78,16 @@ export const jobApi = api.injectEndpoints({
                     params: queryParams,
                 };
             },
-            providesTags: ['Job'],
+            providesTags: (result) =>
+                result?.data
+                    ? [
+                          ...result.data.result.map((job) => ({
+                              type: 'Job' as const,
+                              id: job.jobId,
+                          })),
+                          { type: 'Job', id: 'LIST' },
+                      ]
+                    : [{ type: 'Job', id: 'LIST' }],
         }),
 
         fetchJobById: builder.query<FetchJobByIdResponse, number>({
@@ -73,7 +95,7 @@ export const jobApi = api.injectEndpoints({
                 url: `/jobs/${jobId}`,
                 method: 'GET',
             }),
-            providesTags: ['Job'],
+            providesTags: (_, __, jobId) => [{ type: 'Job', id: jobId }],
         }),
 
         fetchJobsAvailable: builder.query<FetchJobsResponse, Omit<FetchJobsRequest, 'active'>>({
@@ -100,7 +122,16 @@ export const jobApi = api.injectEndpoints({
                     params: queryParams,
                 };
             },
-            providesTags: ['Job'],
+            providesTags: (result) =>
+                result?.data
+                    ? [
+                          ...result.data.result.map((job) => ({
+                              type: 'Job' as const,
+                              id: job.jobId,
+                          })),
+                          { type: 'Job', id: 'AVAILABLE' },
+                      ]
+                    : [{ type: 'Job', id: 'AVAILABLE' }],
         }),
 
         fetchRelatedJobs: builder.query<
@@ -133,7 +164,13 @@ export const jobApi = api.injectEndpoints({
                     params: queryParams,
                 };
             },
-            providesTags: ['Job'],
+            providesTags: (result) =>
+                result?.data
+                    ? result.data.result.map((job) => ({
+                          type: 'Job' as const,
+                          id: job.jobId,
+                      }))
+                    : [],
         }),
 
         fetchJobsByRecruiter: builder.query<FetchJobsResponse, FetchJobByRecruiterRequest>({
@@ -154,7 +191,16 @@ export const jobApi = api.injectEndpoints({
                     params: queryParams,
                 };
             },
-            providesTags: ['Job'],
+            providesTags: (result, _, arg) =>
+                result?.data
+                    ? [
+                          ...result.data.result.map((job) => ({
+                              type: 'Job' as const,
+                              id: job.jobId,
+                          })),
+                          { type: 'Job', id: `RECRUITER-${arg.recruiterId}` },
+                      ]
+                    : [{ type: 'Job', id: `RECRUITER-${arg.recruiterId}` }],
         }),
 
         fetchJobsByCurrentRecruiter: builder.query<FetchJobsResponse, FetchJobsRequest>({
@@ -176,7 +222,16 @@ export const jobApi = api.injectEndpoints({
                     params: queryParams,
                 };
             },
-            providesTags: ['Job'],
+            providesTags: (result) =>
+                result?.data
+                    ? [
+                          ...result.data.result.map((job) => ({
+                              type: 'Job' as const,
+                              id: job.jobId,
+                          })),
+                          { type: 'Job', id: 'MY_JOBS' },
+                      ]
+                    : [{ type: 'Job', id: 'MY_JOBS' }],
         }),
 
         activateJobs: builder.mutation<ToggleJobActiveResponse, JobIdsRequest>({
@@ -185,7 +240,12 @@ export const jobApi = api.injectEndpoints({
                 method: 'PUT',
                 data,
             }),
-            invalidatesTags: ['Job'],
+            invalidatesTags: (_, __, arg) => [
+                ...arg.jobIds.map((id) => ({ type: 'Job' as const, id })),
+                { type: 'Job', id: 'LIST' },
+                { type: 'Job', id: 'MY_JOBS' },
+                { type: 'Job', id: 'AVAILABLE' }
+            ],
         }),
 
         deactivateJobs: builder.mutation<ToggleJobActiveResponse, JobIdsRequest>({
@@ -194,7 +254,12 @@ export const jobApi = api.injectEndpoints({
                 method: 'PUT',
                 data,
             }),
-            invalidatesTags: ['Job'],
+            invalidatesTags: (_, __, arg) => [
+                ...arg.jobIds.map((id) => ({ type: 'Job' as const, id })),
+                { type: 'Job', id: 'LIST' },
+                { type: 'Job', id: 'MY_JOBS' },
+                { type: 'Job', id: 'AVAILABLE' }
+            ],
         }),
 
         enabledJobs: builder.mutation<ToggleJobEnabledResponse, ToggleJobEnabledRequest>({
@@ -203,7 +268,11 @@ export const jobApi = api.injectEndpoints({
                 method: 'PUT',
                 data,
             }),
-            invalidatesTags: ['Job'],
+            invalidatesTags: (_, __, arg) => [
+                ...arg.jobIds.map((id) => ({ type: 'Job' as const, id })),
+                { type: 'Job', id: 'LIST' },
+                { type: 'Job', id: 'AVAILABLE' }
+            ],
         }),
 
         disabledJobs: builder.mutation<ToggleJobEnabledResponse, ToggleJobEnabledRequest>({
@@ -212,7 +281,11 @@ export const jobApi = api.injectEndpoints({
                 method: 'PUT',
                 data,
             }),
-            invalidatesTags: ['Job'],
+            invalidatesTags: (_, __, arg) => [
+                ...arg.jobIds.map((id) => ({ type: 'Job' as const, id })),
+                { type: 'Job', id: 'LIST' },
+                { type: 'Job', id: 'AVAILABLE' }
+            ],
         }),
 
         countApplications: builder.query<JobApplicationCountResponse, JobIdsRequest>({
@@ -225,7 +298,8 @@ export const jobApi = api.injectEndpoints({
                     },
                 };
             },
-            providesTags: ['Job'],
+            providesTags: (_, __, arg) =>
+                arg.jobIds.map((id) => ({ type: 'Job' as const, id: `COUNT-${id}` })),
         }),
 
         countAvailableJobsByCompany: builder.query<CountJobsByCompanyResponse, void>({
@@ -233,7 +307,7 @@ export const jobApi = api.injectEndpoints({
                 url: `/jobs/companies/count`,
                 method: 'GET',
             }),
-            providesTags: ['Job'],
+            providesTags: [{ type: 'Job', id: 'COMPANY_COUNT' }],
         }),
 
         fetchApplicantsSuitableForJob: builder.query<FetchSuitableApplicantsResponse, FetchSuitableApplicantsRequest>({
@@ -254,7 +328,10 @@ export const jobApi = api.injectEndpoints({
                     params: queryParams,
                 };
             },
-            providesTags: ['Job', 'Applicant'],
+            providesTags: (_, __, arg) => [
+                { type: 'Job', id: `APPLICANTS-${arg.jobId}` },
+                { type: 'Applicant', id: 'LIST' }
+            ],
         }),
     }),
 });

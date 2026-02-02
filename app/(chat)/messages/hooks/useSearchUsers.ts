@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDebounce } from "@/components/ui/MultipleSelector";
-import { useLazyFetchUsersQuery } from "@/services/user/userApi";
+import { useLazySearchUsersQuery } from "@/services/user/userApi";
 import { useUser } from "@/hooks/useUser";
 
 export function useSearchUsers() {
@@ -8,11 +8,11 @@ export function useSearchUsers() {
   const [keyword, setKeyword] = useState("");
   const debouncedKeyword = useDebounce(keyword, 500);
 
-  const [trigger, { data, isLoading, isFetching, isError }] = useLazyFetchUsersQuery()
+  const [trigger, { data, isLoading, isFetching, isError }] = useLazySearchUsersQuery();
 
   useEffect(() => {
     if (debouncedKeyword.length >= 2) {
-      trigger({ email: debouncedKeyword });
+      trigger(debouncedKeyword);
     }
   }, [debouncedKeyword, trigger]);
 

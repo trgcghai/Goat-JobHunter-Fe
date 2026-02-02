@@ -1,5 +1,3 @@
-'use client';
-
 import { MessageType } from '@/types/model';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -7,6 +5,8 @@ import { formatDistanceToNow } from 'date-fns';
 import { vi } from 'date-fns/locale';
 import { FileIcon } from 'lucide-react';
 import Image from 'next/image';
+import { MessageTypeEnum } from '@/types/enum';
+import { useMemo } from "react";
 
 interface MessageBubbleProps {
   message: MessageType;
@@ -21,23 +21,44 @@ export function MessageBubble({ message, isOwn, showAvatar = false, senderName, 
     addSuffix: true,
     locale: vi,
   });
+  const type = useMemo(() => message.messageType, [message.messageType]);
+
+  const isMedia = useMemo(() => type === MessageTypeEnum.IMAGE || type === MessageTypeEnum.VIDEO || type === MessageTypeEnum.AUDIO, [type]);
 
   const renderContent = () => {
-    const type = message.messageType?.toLowerCase();
-
-    if (type === 'image') {
+    if (type === MessageTypeEnum.IMAGE) {
       return (
         <Image
           src={message.content}
           alt="Hình ảnh"
-          className="max-w-xs max-h-96 rounded-lg object-cover"
+          className="max-w-xs max-h-96 rounded-xl object-cover border"
           width={300}
           height={300}
         />
       );
     }
 
-    if (type === 'file') {
+    if (type === MessageTypeEnum.VIDEO) {
+      return (
+        <video
+          src={message.content}
+          controls
+          className="max-w-xs max-h-96 rounded-xl"
+        />
+      );
+    }
+
+    if (type === MessageTypeEnum.AUDIO) {
+      return (
+        <audio
+          src={message.content}
+          controls
+          className="max-w-xs"
+        />
+      );
+    }
+
+    if (type === MessageTypeEnum.FILE) {
       const fileName = message.content.split('/').pop() || 'file';
       return (
         <a
@@ -52,7 +73,6 @@ export function MessageBubble({ message, isOwn, showAvatar = false, senderName, 
       );
     }
 
-    // Default: text
     return <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{message.content}</p>;
   };
 
@@ -68,15 +88,38 @@ export function MessageBubble({ message, isOwn, showAvatar = false, senderName, 
         {!isOwn && showAvatar && senderName && (
           <span className="text-xs font-medium text-muted-foreground mb-1 px-1">{senderName}</span>
         )}
-        <div
-          className={cn(
-            'rounded-2xl px-4 py-2',
-            isOwn ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'
-          )}
-        >
-          {renderContent()}
-        </div>
+        {isMedia ? (
+          renderContent()
+        ) : (
+          <div
+            className={cn(
+              'rounded-2xl px-4 py-2',
+              isOwn ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'
+            )}
+          >
+            {renderContent()}
+          </div>
+        )}
         <span className="text-xs text-muted-foreground mt-1 px-1">{timeAgo}</span>
+      </div>
+    </div>
+  );
+}
+
+export function MessageBubbleLoading() {
+  return (
+    <div className="flex justify-end">
+      <div
+        className={cn(
+          'max-w-[70%] rounded-2xl px-4 py-2',
+          'bg-primary text-primary-foreground rounded-2xl'
+        )}
+      >
+        <div className="flex items-center gap-1">
+          <div className="w-2 h-2 bg-primary-foreground/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+          <div className="w-2 h-2 bg-primary-foreground/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+          <div className="w-2 h-2 bg-primary-foreground/60 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+        </div>
       </div>
     </div>
   );

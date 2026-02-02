@@ -47,7 +47,7 @@ export function ChatRoomItem({ chatRoom, active, onClick }: Readonly<Conversatio
           )}
         </div>
         <p className="text-sm text-muted-foreground truncate text-start">
-          {chatRoom.lastMessagePreview || 'Chưa có tin nhắn'}
+          {chatRoom.currentUserSentLastMessage ? "Bạn" : displayName}: {chatRoom.lastMessagePreview}
         </p>
       </div>
     </button>
