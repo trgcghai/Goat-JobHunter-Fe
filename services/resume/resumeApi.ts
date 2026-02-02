@@ -13,7 +13,7 @@ export const resumeApi = api.injectEndpoints({
       invalidatesTags: ['Resume'],
     }),
 
-    deleteResume: builder.mutation<void, void>({
+    deleteResume: builder.mutation<void, { resumeId: string }>({
       query: (params) => ({
         url: `/resumes`,
         method: 'DELETE',
@@ -22,7 +22,7 @@ export const resumeApi = api.injectEndpoints({
       invalidatesTags: ['Resume'],
     }),
 
-    defaultResume: builder.mutation<ResumeStatusResponse, void>({
+    defaultResume: builder.mutation<ResumeStatusResponse, { resumeId: string }>({
       query: (params) => ({
         url: `/resumes/default`,
         method: 'PUT',
@@ -31,7 +31,7 @@ export const resumeApi = api.injectEndpoints({
       invalidatesTags: ['Resume'],
     }),
 
-    unDefaultResume: builder.mutation<ResumeStatusResponse, void>({
+    unDefaultResume: builder.mutation<ResumeStatusResponse, { resumeId: string }>({
       query: (params) => ({
         url: `/resumes/default`,
         method: 'DELETE',
@@ -40,7 +40,7 @@ export const resumeApi = api.injectEndpoints({
       invalidatesTags: ['Resume'],
     }),
 
-    publicResume: builder.mutation<ResumeStatusResponse, void>({
+    publicResume: builder.mutation<ResumeStatusResponse, { resumeId: string }>({
       query: (params) => ({
         url: `/resumes/public`,
         method: 'PUT',
@@ -49,7 +49,7 @@ export const resumeApi = api.injectEndpoints({
       invalidatesTags: ['Resume'],
     }),
 
-    privateResume: builder.mutation<ResumeStatusResponse, void>({
+    privateResume: builder.mutation<ResumeStatusResponse, { resumeId: string }>({
       query: (params) => ({
         url: `/resumes/public`,
         method: 'DELETE',
@@ -67,12 +67,13 @@ export const resumeApi = api.injectEndpoints({
       invalidatesTags: ['Resume'],
     }),
 
-    downloadResume: builder.query<Blob, string>({
+    downloadResume: builder.mutation<Blob, string>({
       query: (resumeId) => ({
         url: `/resumes/${resumeId}/file`,
         method: 'GET',
         responseType: 'blob',
       }),
+      transformResponse: (response: Blob) => response,
     }),
   }),
 });
@@ -85,6 +86,5 @@ export const {
   usePublicResumeMutation,
   usePrivateResumeMutation,
   useUpdateTitleMutation,
-  useDownloadResumeQuery,
-  useLazyDownloadResumeQuery,
+  useDownloadResumeMutation,
 } = resumeApi;

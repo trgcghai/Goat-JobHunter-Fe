@@ -1,26 +1,127 @@
 'use client';
 
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from '@/components/ui/empty';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useUser } from '@/hooks/useUser';
 import { useGetMyAccountQuery } from '@/services/auth/authApi';
+import { Resume } from '@/types/model';
+import { useState } from 'react';
+import { EditResumeTitleDialog } from './components/EditResumeTitleDialog';
+import { JobSearchSettings } from './components/JobSearchSettings';
+import { ResumeList } from './components/ResumeList';
+import { UploadResumeDialog } from './components/UploadResumeDialog';
+import { useResumeAction } from './hooks/useResumeAction';
 
 const ResumePage = () => {
   useGetMyAccountQuery();
 
   const { user, isSignedIn } = useUser();
+  const {
+    resumes,
+    isFetchingResumes,
+    isProcessing,
+    handleCreateResume,
+    handleDeleteResume,
+    handleToggleDefaultResume,
+    handleTogglePublicResume,
+    handleDownloadResume,
+    handleUpdateTitle,
+  } = useResumeAction();
+
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [selectedResume, setSelectedResume] = useState<Resume | null>(null);
+
+  const handleEditTitle = (resume: Resume) => {
+    setSelectedResume(resume);
+    setEditDialogOpen(true);
+  };
 
   if (!user || !isSignedIn) {
     return (
       <Empty>
         <EmptyHeader>
-          <EmptyTitle>Không tìm thấy CV</EmptyTitle>
-          <EmptyDescription>CV bạn đang tìm kiếm không tồn tại hoặc đã xảy ra lỗi. Hãy thử lại sau.</EmptyDescription>
+          <EmptyTitle>Vui lòng đăng nhập</EmptyTitle>
+          <EmptyDescription>Bạn cần đăng nhập để quản lý CV của mình.</EmptyDescription>
         </EmptyHeader>
       </Empty>
     );
   }
 
-  return <div>CV</div>;
+  if (isFetchingResumes) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <div className="space-y-6">
+              <Skeleton className="h-8 w-64" />
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {[1, 2, 3].map((i) => (
+                  <Skeleton key={i} className="h-96 w-full" />
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="space-y-4">
+            <Skeleton className="h-32 w-full" />
+            <Skeleton className="h-64 w-full" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex-1 max-w-7xl mx-auto gap-0 py-8">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <div className="space-y-8">
+            <ResumeList
+              resumes={resumes}
+              title="CV đã tải lên"
+              emptyMessage="Tải lên CV của bạn để ứng tuyển công việc nhanh chóng hơn"
+              onUploadClick={() => setUploadDialogOpen(true)}
+              onDelete={handleDeleteResume}
+              onToggleDefault={handleToggleDefaultResume}
+              onTogglePublic={handleTogglePublicResume}
+              onDownload={handleDownloadResume}
+              onEditTitle={handleEditTitle}
+              isProcessing={isProcessing}
+              uploadButtonText="Tải CV lên"
+            />
+          </div>
+        </div>
+
+        <div className="lg:col-span-1">
+          <JobSearchSettings
+            isJobSearchActive={false}
+            isProfilePublic={false}
+            onToggleJobSearch={(active) => {
+              console.log('Toggle job search:', active);
+            }}
+            onToggleProfilePublic={(isPublic) => {
+              console.log('Toggle profile public:', isPublic);
+            }}
+          />
+        </div>
+      </div>
+
+      <UploadResumeDialog
+        open={uploadDialogOpen}
+        onOpenChange={setUploadDialogOpen}
+        onUpload={handleCreateResume}
+        isUploading={isProcessing}
+      />
+
+      <EditResumeTitleDialog
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+        resume={selectedResume}
+        onUpdate={handleUpdateTitle}
+        isUpdating={isProcessing}
+      />
+    </div>
+  );
 };
 
 export default ResumePage;

@@ -351,8 +351,8 @@ export type Resume = {
   fileUrl: string;
   fileName: string;
   fileSize: number;
-  isDefault: boolean;
-  isPublic: boolean;
+  default: boolean;
+  public: boolean;
   aiScore?: number;
   aiAnalysis?: string;
   aiSuggestions?: string;

@@ -18,11 +18,12 @@ const axiosBaseQuery =
       data?: AxiosRequestConfig["data"];
       params?: AxiosRequestConfig["params"];
       headers?: AxiosRequestConfig["headers"];
+      responseType?: AxiosRequestConfig["responseType"];
     },
     unknown,
     unknown
   > =>
-    async ({ url, method, data, params, headers }) => {
+    async ({ url, method, data, params, headers, responseType }) => {
       try {
         const result = await axiosInstance({
           url: baseUrl + url,
@@ -30,8 +31,11 @@ const axiosBaseQuery =
           data,
           params,
           headers,
-          responseType: headers?.responseType || "json"
+          responseType: responseType || "json",
         });
+        if (responseType === 'blob' && result.data instanceof Blob) {
+          return { data: result.data };
+        }
         return { data: result.data };
       } catch (axiosError) {
         const err = axiosError as AxiosError;

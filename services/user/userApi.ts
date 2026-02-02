@@ -239,7 +239,7 @@ export const userApi = api.injectEndpoints({
             ...params,
           },
           filterFields: [],
-          defaultSort: 'createdAt,desc',
+          defaultSort: 'isDefault,updatedAt,desc',
         });
 
         return {

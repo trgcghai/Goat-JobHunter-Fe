@@ -1,25 +1,16 @@
-import { api } from "@/services/api";
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import {
-  FLUSH,
-  PAUSE,
-  PERSIST,
-  persistReducer,
-  persistStore,
-  PURGE,
-  REGISTER,
-  REHYDRATE,
-} from "redux-persist";
-import storage from "redux-persist/lib/storage";
-import authReducer from "./features/authSlice";
-import sendMailReducer from "./features/sendMailSlice";
-import blogDetailReducer from "./features/blogDetailSlice";
+import { api } from '@/services/api';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import authReducer from './features/authSlice';
+import sendMailReducer from './features/sendMailSlice';
+import blogDetailReducer from './features/blogDetailSlice';
 
 const persistConfig = {
-  key: "root",
+  key: 'root',
   version: 1,
   storage,
-  whitelist: ["auth"], // Only persist auth state
+  whitelist: ['auth'], // Only persist auth state
 };
 
 const rootReducer = combineReducers({
@@ -37,6 +28,8 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        ignoredActionPaths: ['meta.arg', 'payload', 'meta.baseQueryMeta'],
+        ignoredPaths: ['api.mutations', 'api.queries'],
       },
     }).concat(api.middleware),
 });
