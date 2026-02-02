@@ -1,4 +1,5 @@
 import { useUser } from '@/hooks/useUser';
+import { useToggleAvailableStatusMutation } from '@/services/applicant/applicantApi';
 import {
   useCreateResumeMutation,
   useDefaultResumeMutation,
@@ -30,6 +31,8 @@ export const useResumeAction = () => {
       skip: !isSignedIn,
     },
   );
+
+  const [toggleAvailableStatus, { isLoading: isTogglingAvailableStatus }] = useToggleAvailableStatusMutation();
 
   const [createResume, { isLoading: isCreating }] = useCreateResumeMutation();
   const [deleteResume, { isLoading: isDeleting }] = useDeleteResumeMutation();
@@ -271,6 +274,25 @@ export const useResumeAction = () => {
     [downloadResume],
   );
 
+  const handleToggleAvailableStatus = useCallback(async () => {
+    try {
+      if (!isSignedIn || !user) {
+        toast.error('Bạn phải đăng nhập để thực hiện chức năng này.');
+        return;
+      }
+
+      const response = await toggleAvailableStatus().unwrap();
+
+      if (response.data) {
+        const newStatus = response.data.availableStatus;
+        toast.success(newStatus ? 'Đã bật trạng thái sẵn sàng nhận việc!' : 'Đã tắt trạng thái sẵn sàng nhận việc!');
+        return response.data;
+      }
+    } catch (error) {
+      toast.error('Không thể thay đổi trạng thái. Vui lòng thử lại sau.');
+    }
+  }, [toggleAvailableStatus, user, isSignedIn]);
+
   const getDefaultResume = useCallback((): Resume | undefined => {
     return resumesData?.data?.result?.find((resume) => resume.default);
   }, [resumesData]);
@@ -296,6 +318,7 @@ export const useResumeAction = () => {
     isSettingPublic,
     isSettingPrivate,
     isDownloading,
+    isTogglingAvailableStatus,
     isProcessing:
       isCreating ||
       isDeleting ||
@@ -304,7 +327,8 @@ export const useResumeAction = () => {
       isUnsettingDefault ||
       isSettingPublic ||
       isSettingPrivate ||
-      isDownloading,
+      isDownloading ||
+      isTogglingAvailableStatus,
 
     // Actions
     handleCreateResume,
@@ -317,6 +341,7 @@ export const useResumeAction = () => {
     handleSetPrivateResume,
     handleTogglePublicResume,
     handleDownloadResume,
+    handleToggleAvailableStatus,
     refetchResumes,
   };
 };

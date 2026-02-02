@@ -1,91 +1,93 @@
-import { api } from "@/services/api";
-import dayjs from "dayjs";
+import { api } from '@/services/api';
+import dayjs from 'dayjs';
 import {
   ApplicantMutationResponse,
   CreateApplicantRequest,
   FetchApplicantByIdResponse,
   FetchApplicantsResponse,
-  UpdateApplicantRequest
-} from "./applicantType";
-import { setUser } from "@/lib/features/authSlice";
+  UpdateApplicantRequest,
+} from './applicantType';
+import { setUser } from '@/lib/features/authSlice';
 
 export const applicantApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    createApplicant: builder.mutation<
-      ApplicantMutationResponse,
-      CreateApplicantRequest
-    >({
+    createApplicant: builder.mutation<ApplicantMutationResponse, CreateApplicantRequest>({
       query: (data) => ({
-        url: "/applicants",
-        method: "POST",
+        url: '/applicants',
+        method: 'POST',
         data: {
           ...data,
-          dob: data.dob ? dayjs(data.dob).format("YYYY-MM-DD") : undefined,
-          type: "applicant"
-        }
+          dob: data.dob ? dayjs(data.dob).format('YYYY-MM-DD') : undefined,
+          type: 'applicant',
+        },
       }),
-      invalidatesTags: ["Applicant"]
+      invalidatesTags: ['Applicant'],
     }),
 
-    updateApplicant: builder.mutation<
-      ApplicantMutationResponse,
-      UpdateApplicantRequest
-    >({
+    updateApplicant: builder.mutation<ApplicantMutationResponse, UpdateApplicantRequest>({
       query: (data) => ({
         url: `/applicants`,
-        method: "PUT",
-        data
+        method: 'PUT',
+        data,
       }),
-      invalidatesTags: ["Applicant", "Account", "User"],
+      invalidatesTags: ['Applicant', 'Account', 'User'],
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
           // Dispatch action to save user data to slice
           dispatch(setUser({ user: data?.data }));
         } catch (error) {
-          console.error("Failed to fetch account:", error);
+          console.error('Failed to fetch account:', error);
         }
       },
     }),
 
-    deleteApplicant: builder.mutation<
-      ApplicantMutationResponse,
-      number
-    >({
+    deleteApplicant: builder.mutation<ApplicantMutationResponse, number>({
       query: (applicantId) => ({
         url: `/applicants/${applicantId}`,
-        method: "DELETE"
+        method: 'DELETE',
       }),
-      invalidatesTags: ["Applicant"]
+      invalidatesTags: ['Applicant'],
     }),
 
-    fetchApplicant: builder.query<
-      FetchApplicantsResponse,
-      void
-    >({
-      query: () => ({ url: `/applicants`, method: "GET" }),
-      providesTags: ["Applicant"]
+    fetchApplicant: builder.query<FetchApplicantsResponse, void>({
+      query: () => ({ url: `/applicants`, method: 'GET' }),
+      providesTags: ['Applicant'],
     }),
 
-    fetchApplicantById: builder.query<
-      FetchApplicantByIdResponse,
-      number
-    >({
+    fetchApplicantById: builder.query<FetchApplicantByIdResponse, number>({
       query: (applicantId) => ({
         url: `/applicants/${applicantId}`,
-        method: "GET"
+        method: 'GET',
       }),
-      providesTags: ["Applicant"]
+      providesTags: ['Applicant'],
     }),
 
     fetchCurrentApplicant: builder.query<FetchApplicantByIdResponse, void>({
       query: () => ({
         url: `/applicants/me`,
-        method: "GET"
+        method: 'GET',
       }),
-      providesTags: ["Applicant"]
-    })
-  })
+      providesTags: ['Applicant'],
+    }),
+
+    toggleAvailableStatus: builder.mutation<ApplicantMutationResponse, void>({
+      query: () => ({
+        url: `/applicants/availableStatus`,
+        method: 'PUT',
+      }),
+      invalidatesTags: ['Applicant', 'Account', 'User'],
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          // Dispatch action to save user data to slice
+          dispatch(setUser({ user: data?.data }));
+        } catch (error) {
+          console.error('Failed to fetch account:', error);
+        }
+      },
+    }),
+  }),
 });
 
 export const {
@@ -94,5 +96,6 @@ export const {
   useDeleteApplicantMutation,
   useFetchApplicantQuery,
   useFetchApplicantByIdQuery,
-  useFetchCurrentApplicantQuery
+  useFetchCurrentApplicantQuery,
+  useToggleAvailableStatusMutation,
 } = applicantApi;

@@ -26,6 +26,7 @@ const ResumePage = () => {
     handleTogglePublicResume,
     handleDownloadResume,
     handleUpdateTitle,
+    handleToggleAvailableStatus,
   } = useResumeAction();
 
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
@@ -93,16 +94,7 @@ const ResumePage = () => {
         </div>
 
         <div className="lg:col-span-1">
-          <JobSearchSettings
-            isJobSearchActive={false}
-            isProfilePublic={false}
-            onToggleJobSearch={(active) => {
-              console.log('Toggle job search:', active);
-            }}
-            onToggleProfilePublic={(isPublic) => {
-              console.log('Toggle profile public:', isPublic);
-            }}
-          />
+          <JobSearchSettings isToggling={isProcessing} onToggleProfilePublic={handleToggleAvailableStatus} />
         </div>
       </div>
 
