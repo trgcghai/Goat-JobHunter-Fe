@@ -10,6 +10,7 @@ export const ticketApi = api.injectEndpoints({
         method: 'POST',
         data,
       }),
+      invalidatesTags: [{ type: 'Ticket', id: 'LIST' }]
     }),
     createCommentTicket: builder.mutation<TicketMutationResponse, CreateTicketRequest>({
       query: (data) => ({
@@ -17,6 +18,7 @@ export const ticketApi = api.injectEndpoints({
         method: 'POST',
         data,
       }),
+      invalidatesTags: [{ type: 'Ticket', id: 'LIST' }]
     }),
   }),
 });

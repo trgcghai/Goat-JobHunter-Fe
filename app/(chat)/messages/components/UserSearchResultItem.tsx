@@ -25,7 +25,7 @@ export function UserSearchResultItem({
 
       <div className="flex-1 min-w-0">
         <p className="font-medium truncate">{user.fullName}</p>
-        <p className="text-sm text-muted-foreground truncate">{user.email}</p>
+        <p className="text-sm text-muted-foreground truncate">@{user.username}</p>
       </div>
 
       <div className="flex gap-2 shrink-0">

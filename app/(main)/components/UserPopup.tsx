@@ -10,11 +10,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useUser } from '@/hooks/useUser';
-import { LogOut, Shield, User } from 'lucide-react';
+import { FileText, LogOut, Shield, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-import { HasAdmin, HasCompany } from '@/components/common/HasRole';
+import { HasAdmin, HasApplicant, HasCompany } from '@/components/common/HasRole';
 
 export default function UserPopup() {
   const { user, signOut, isSigningOut, isSignedIn } = useUser();
@@ -89,6 +89,15 @@ export default function UserPopup() {
             <span>Hồ Sơ Cá Nhân</span>
           </Link>
         </DropdownMenuItem>
+
+        <HasApplicant user={user}>
+          <DropdownMenuItem asChild>
+            <Link href="/resumes" className="flex items-center cursor-pointer rounded-xl">
+              <FileText className="mr-2 h-4 w-4" />
+              <span>CV của tôi</span>
+            </Link>
+          </DropdownMenuItem>
+        </HasApplicant>
 
         <HasAdmin user={user}>
           <DropdownMenuItem asChild>

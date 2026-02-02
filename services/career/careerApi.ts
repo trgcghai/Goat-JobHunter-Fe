@@ -17,7 +17,7 @@ export const careerApi = api.injectEndpoints({
         method: "POST",
         data: { name }
       }),
-      invalidatesTags: ["Career"]
+      invalidatesTags: [{ type: "Career", id: "LIST" }]
     }),
 
     updateCareer: builder.mutation<CareerMutationResponse, UpdateCareerRequest>({
@@ -26,7 +26,10 @@ export const careerApi = api.injectEndpoints({
         method: "PUT",
         data: { careerId, name }
       }),
-      invalidatesTags: ["Career"]
+      invalidatesTags: (_, __, arg) => [
+        { type: "Career", id: arg.careerId },
+        { type: "Career", id: "LIST" }
+      ]
     }),
 
     deleteCareer: builder.mutation<CareerMutationResponse, number>({
@@ -34,7 +37,10 @@ export const careerApi = api.injectEndpoints({
         url: `/careers/${careerId}`,
         method: "DELETE"
       }),
-      invalidatesTags: ["Career"]
+      invalidatesTags: (_, __, arg) => [
+        { type: "Career", id: arg },
+        { type: "Career", id: "LIST" }
+      ]
     }),
 
     fetchCareers: builder.query<FetchCareersResponse, FetchCareersRequest>({
@@ -53,7 +59,16 @@ export const careerApi = api.injectEndpoints({
           params: queryParams
         };
       },
-      providesTags: ["Career"]
+      providesTags: (result) =>
+        result?.data
+          ? [
+            ...result.data.result.map((career) => ({
+              type: "Career" as const,
+              id: career.careerId
+            })),
+            { type: "Career", id: "LIST" }
+          ]
+          : [{ type: "Career", id: "LIST" }]
     })
   })
 });

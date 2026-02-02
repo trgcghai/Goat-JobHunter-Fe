@@ -32,14 +32,14 @@ interface GroupDetailsPanelProps {
 }
 
 export function GroupDetailsPanel({
-  group,
-  sharedMedia,
-  sharedLinks,
-  sharedFiles,
-  isOpen,
-  onClose,
-  currentUserId = "user-1"
-}: Readonly<GroupDetailsPanelProps>) {
+                                    group,
+                                    sharedMedia,
+                                    sharedLinks,
+                                    sharedFiles,
+                                    isOpen,
+                                    onClose,
+                                    currentUserId = "user-1"
+                                  }: Readonly<GroupDetailsPanelProps>) {
   const [isMembersOpen, setIsMembersOpen] = useState(false);
 
   if (!isOpen) return null;
@@ -197,13 +197,13 @@ export function GroupDetailsPanel({
               <TabsTrigger value="files">Files</TabsTrigger>
             </TabsList>
             <TabsContent value="media" className="mt-4">
-              <SharedMediaGrid media={sharedMedia} />
+              <SharedMediaGrid media={[]} isError={false} isLoading={false} />
             </TabsContent>
             <TabsContent value="links" className="mt-4">
               <SharedLinksList links={sharedLinks} />
             </TabsContent>
             <TabsContent value="files" className="mt-4">
-              <SharedFilesList files={sharedFiles} />
+              <SharedFilesList files={[]} isError={false} isLoading={false} />
             </TabsContent>
           </Tabs>
         </div>

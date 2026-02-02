@@ -1,13 +1,14 @@
 import {
-  ApplicationStatus, ChatRoomType,
+  ApplicationStatus,
+  ChatRoomType,
   CompanySize,
   Education,
   Gender,
-  Level,
+  Level, MessageTypeEnum,
   MessageTypeRole,
   NotificationTypeEnum,
-  WorkingType,
-} from '@/types/enum';
+  WorkingType
+} from "@/types/enum";
 import { LucideIcon } from 'lucide-react';
 
 export type Address = {
@@ -317,7 +318,7 @@ export type MessageType = {
   messageId: string;
   senderId: string;
   content: string;
-  messageType: string;
+  messageType: MessageTypeEnum;
   replyTo?: string;
   isHidden: boolean;
   createdAt: string;
@@ -334,11 +335,33 @@ export type Reaction = {
 };
 
 export type ChatRoom = {
-  roomId: number
-  type: ChatRoomType
-  name: string
-  avatar: string | null
-  memberCount: number
-  lastMessagePreview: string | null
-  lastMessageTime: string | null
-}
+  roomId: number;
+  type: ChatRoomType;
+  name: string;
+  avatar: string | null;
+  memberCount: number;
+  lastMessagePreview: string | null;
+  lastMessageTime: string | null;
+  currentUserSentLastMessage: boolean | null;
+};
+
+export type Resume = {
+  resumeId: number;
+  title: string;
+  fileUrl: string;
+  fileName: string;
+  fileSize: number;
+  default: boolean;
+  public: boolean;
+  aiScore?: number;
+  aiAnalysis?: string;
+  aiSuggestions?: string;
+  analyzeAt?: string;
+
+  applicant: Applicant;
+
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+  updatedBy: string;
+};

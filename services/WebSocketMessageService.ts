@@ -99,7 +99,6 @@ export class WebSocketMessageService {
   private handleMessage(chatRoomId: number, message: MessageType) {
     console.log(`💬 Received message in chat room ${chatRoomId}:`, message);
 
-    // Update cache for messages list
     this.dispatch(
       chatRoomApi.util.updateQueryData('fetchMessagesInChatRoom', {
         chatRoomId,
@@ -107,28 +106,31 @@ export class WebSocketMessageService {
         size: 50,
       }, (draft) => {
         if (draft?.data) {
-          draft.data.push(message);
+          const exists = draft.data.some((m) => m.messageId === message.messageId);
+          if (!exists) {
+            draft.data.push(message);
+          }
         }
       }),
     );
 
     // Update last message in chat rooms list
     this.dispatch(
-      chatRoomApi.util.updateQueryData('fetchChatRooms', {}, (draft) => {
+      chatRoomApi.util.updateQueryData('fetchChatRooms', { page: 1, size: 50 }, (draft) => {
+        if (draft?.data?.result) {
+          const chatRoomIndex = draft.data.result.findIndex((cr) => cr.roomId === chatRoomId);
 
-        if (draft?.data) {
-          const chatRoom = draft.data?.result?.find((cr) => cr.roomId === chatRoomId);
+          if (chatRoomIndex !== -1) {
+            const chatRoom = draft.data.result[chatRoomIndex];
 
-          if (chatRoom) {
+            // Update last message info
             chatRoom.lastMessagePreview = message.content;
             chatRoom.lastMessageTime = message.createdAt;
 
-            // Move chat room to top
-            if (draft?.data?.result) {
-              draft.data.result = [
-                chatRoom,
-                ...draft?.data?.result?.filter((cr) => cr.roomId !== chatRoomId),
-              ];
+            // Move to top if not already first
+            if (chatRoomIndex !== 0) {
+              draft.data.result.splice(chatRoomIndex, 1);
+              draft.data.result.unshift(chatRoom);
             }
           }
         }

@@ -74,6 +74,14 @@ export enum MessageTypeRole {
   AI = 'AI',
 }
 
+export enum MessageTypeEnum {
+  TEXT = 'TEXT',
+  IMAGE = 'IMAGE',
+  VIDEO = 'VIDEO',
+  AUDIO = 'AUDIO',
+  FILE = 'FILE',
+}
+
 export enum ReactionType {
   LIKE = 'LIKE',
   CELEBRATE = 'CELEBRATE',
