@@ -21,12 +21,14 @@ export function GroupInfoModal({ open, onOpenChange, selectedUsers }: GroupInfoM
   const router = useRouter();
   const [groupName, setGroupName] = useState("");
   const [avatarPreview, setAvatarPreview] = useState<string>("");
+  const [avatar, setAvatar] = useState<File | null>(null);
 
   const [createGroupChat, { isLoading }] = useCreateGroupChatMutation();
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setAvatar(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setAvatarPreview(reader.result as string);
@@ -38,26 +40,41 @@ export function GroupInfoModal({ open, onOpenChange, selectedUsers }: GroupInfoM
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!groupName.trim()) {
-      toast.error("Vui lòng nhập tên nhóm");
-      return;
-    }
-
     try {
+
+      if (selectedUsers.length < 2) {
+        toast.error("Nhóm chat cần có ít nhất 2 thành viên");
+        return;
+      }
+
+      if (!groupName.trim()) {
+        toast.error("Vui lòng nhập tên nhóm");
+        return;
+      }
+
+      if (!avatar) {
+        toast.error("Vui lòng chọn ảnh đại diện cho nhóm");
+        return;
+      }
+
       const result = await createGroupChat({
         accountIds: selectedUsers.map((u) => u.accountId),
         name: groupName.trim(),
-        avatar: avatarPreview || undefined,
+        avatar,
       }).unwrap();
 
-      if (result.data?.id) {
+      if (result.data?.roomId) {
         toast.success("Tạo nhóm chat thành công");
         onOpenChange(false);
-        router.push(`/messages/${result.data.id}`);
+        router.push(`/messages/${result.data.roomId}`);
       }
     } catch (error) {
       toast.error("Không thể tạo nhóm chat");
       console.error(error);
+    } finally {
+      setGroupName("");
+      setAvatar(null);
+      setAvatarPreview("");
     }
   };
 
