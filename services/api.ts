@@ -77,6 +77,7 @@ export const api = createApi({
     "Message",
     "Review",
     "ChatRoom",
+    "ChatMember",
     "Resume",
     "Reaction",
     "Ticket"
