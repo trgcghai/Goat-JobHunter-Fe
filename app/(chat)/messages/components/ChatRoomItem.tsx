@@ -4,6 +4,7 @@ import { Users } from 'lucide-react';
 import { ChatRoomType } from '@/types/enum';
 import { formatLastMessageTime } from '@/utils/formatDate';
 import { cn } from '@/lib/utils';
+import { useMemo } from "react";
 
 interface ConversationItemProps {
   chatRoom: ChatRoom;
@@ -13,9 +14,30 @@ interface ConversationItemProps {
 
 export function ChatRoomItem({ chatRoom, active, onClick }: Readonly<ConversationItemProps>) {
   const isGroup = chatRoom.type === ChatRoomType.GROUP;
-  const displayName = chatRoom.name;
-  const avatarFallback = displayName.charAt(0).toUpperCase();
+  const chatRoomTitle = chatRoom.name;
+  const avatarFallback = chatRoomTitle.charAt(0).toUpperCase();
   const formattedTime = formatLastMessageTime(chatRoom.lastMessageTime);
+
+  const chatRoomPreview = useMemo(() => {
+
+    // Nếu không có lastMessagePreview
+    if (!chatRoom.lastMessagePreview) {
+      return "Chưa có tin nhắn nào";
+    }
+
+    // Nhóm chat thì hiện tên nhóm
+    if (isGroup) {
+      return `${chatRoom.name}: ${chatRoom.lastMessagePreview}`;
+    }
+
+    // Không phải nhóm chat, hiện tên người gửi cuối cùng, nếu là người dùng hiện tại thì hiển thị "Bạn"
+    if (chatRoom.currentUserSentLastMessage) {
+      return `Bạn: ${chatRoom.lastMessagePreview}`;
+    }
+
+    // Ngược lại hiện tên người gửi cuối cùng
+    return `${chatRoomTitle}: ${chatRoom.lastMessagePreview}`;
+  }, [chatRoom.currentUserSentLastMessage, chatRoom.lastMessagePreview, chatRoom.name, chatRoomTitle, isGroup]);
 
   return (
     <button
@@ -27,7 +49,7 @@ export function ChatRoomItem({ chatRoom, active, onClick }: Readonly<Conversatio
     >
       <div className="relative">
         <Avatar className={cn("h-12 w-12 border", active && "border-gray-300")}>
-          <AvatarImage src={chatRoom.avatar || undefined} alt={displayName} />
+          <AvatarImage src={chatRoom.avatar || undefined} alt={chatRoomTitle} />
           <AvatarFallback>{avatarFallback}</AvatarFallback>
         </Avatar>
         {isGroup && (
@@ -39,7 +61,7 @@ export function ChatRoomItem({ chatRoom, active, onClick }: Readonly<Conversatio
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2 mb-1">
-          <span className="font-medium truncate">{displayName}</span>
+          <span className="font-medium truncate">{chatRoomTitle}</span>
           {formattedTime && (
             <span className="text-xs text-muted-foreground shrink-0">
               {formattedTime}
@@ -47,7 +69,7 @@ export function ChatRoomItem({ chatRoom, active, onClick }: Readonly<Conversatio
           )}
         </div>
         <p className="text-sm text-muted-foreground truncate text-start">
-          {chatRoom.currentUserSentLastMessage ? "Bạn" : displayName}: {chatRoom.lastMessagePreview}
+          {chatRoomPreview}
         </p>
       </div>
     </button>
