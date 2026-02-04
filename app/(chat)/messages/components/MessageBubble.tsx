@@ -79,7 +79,7 @@ export function MessageBubble({ message, isOwn, showAvatar = false, senderName, 
   return (
     <div className={cn('flex w-full mb-2', isOwn ? 'justify-end' : 'justify-start')}>
       {!isOwn && showAvatar && (
-        <Avatar className="h-10 w-10 mr-2 flex-shrink-0">
+        <Avatar className="h-10 w-10 mr-2 flex-shrink-0 border">
           <AvatarImage src={senderAvatar || '/placeholder.svg'} alt={senderName} />
           <AvatarFallback>{senderName?.charAt(0) || 'U'}</AvatarFallback>
         </Avatar>

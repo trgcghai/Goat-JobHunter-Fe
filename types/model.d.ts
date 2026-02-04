@@ -316,7 +316,13 @@ export type MessageType = {
   messageSk: string;
   chatRoomId: string;
   messageId: string;
-  senderId: string;
+  sender: {
+    accountId: number
+    fullName: string;
+    username: string;
+    email: string
+    avatar: string;
+  }
   content: string;
   messageType: MessageTypeEnum;
   replyTo?: string;
