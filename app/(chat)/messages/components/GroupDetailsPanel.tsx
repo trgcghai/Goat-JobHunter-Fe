@@ -11,6 +11,9 @@ import { SharedFilesList } from "./SharedFilesList";
 import { useMemo, useState } from "react";
 import { ChatRoom } from "@/types/model";
 import { useFetchFilesInChatRoomQuery, useFetchMediaInChatRoomQuery } from "@/services/chatRoom/chatRoomApi";
+import { useGetMemberInGroupChatQuery } from "@/services/chatRoom/groupChat/groupChatApi";
+import { ChatMemberItem } from "@/app/(chat)/messages/components/ChatMemberItem";
+import { useUser } from "@/hooks/useUser";
 
 interface GroupDetailsPanelProps {
   chatRoom: ChatRoom;
@@ -19,10 +22,10 @@ interface GroupDetailsPanelProps {
 }
 
 export function GroupDetailsPanel({
-  chatRoom,
-  isOpen,
-  onClose,
-}: Readonly<GroupDetailsPanelProps>) {
+                                    chatRoom,
+                                    isOpen,
+                                    onClose
+                                  }: Readonly<GroupDetailsPanelProps>) {
   const [isMembersOpen, setIsMembersOpen] = useState(false);
 
   const {
@@ -37,6 +40,14 @@ export function GroupDetailsPanel({
     isError: isErrorMedia
   } = useFetchMediaInChatRoomQuery({ chatRoomId: chatRoom.roomId }, { skip: !isOpen || !chatRoom });
 
+  const { data: memberData } = useGetMemberInGroupChatQuery(chatRoom.roomId, { skip: !isOpen || !chatRoom });
+
+  const { user } = useUser();
+
+  const members = useMemo(() => {
+    return memberData?.data || [];
+  }, [memberData]);
+
   const media = useMemo(() => {
     return mediaData?.data || [];
   }, [mediaData]);
@@ -44,6 +55,14 @@ export function GroupDetailsPanel({
   const files = useMemo(() => {
     return filesData?.data || [];
   }, [filesData]);
+
+  const { currentUserRole, currentUserId } = useMemo(() => {
+    const currentMember = members.find(member => member.accountId === user?.accountId);
+    return {
+      currentUserRole: currentMember ? currentMember.role : "MEMBER",
+      currentUserId: user?.accountId || 0
+    };
+  }, [members, user?.accountId]);
 
   if (!isOpen) return null;
 
@@ -91,12 +110,24 @@ export function GroupDetailsPanel({
                 </Button>
               </CollapsibleTrigger>
 
-              <CollapsibleContent className="data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up">
+              <CollapsibleContent
+                className="data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up">
                 <div className="px-2 pb-2 space-y-1">
-                  {/* TODO: Fetch real member list from API */}
-                  <div className="text-center py-4 text-sm text-muted-foreground">
-                    Tính năng quản lý thành viên đang được phát triển
-                  </div>
+                  {members && members.length > 0 ? (
+                    members.map((member) => (
+                      <ChatMemberItem
+                        key={member.chatMemberId}
+                        member={member}
+                        chatroomId={chatRoom.roomId.toString()}
+                        currentUserRole={currentUserRole}
+                        currentUserId={currentUserId}
+                      />
+                    ))
+                  ) : (
+                    <div className="text-center py-4 text-sm text-muted-foreground">
+                      Không có thành viên
+                    </div>
+                  )}
                 </div>
               </CollapsibleContent>
             </div>
