@@ -191,7 +191,7 @@ export default function JobDetailView({ jobId }: JobDetailViewProps) {
           open={isDialogOpen}
           onOpenChange={setIsDialogOpen}
           job={job}
-          userId={user?.accountId}
+          accountId={user?.accountId}
           userEmail={user?.email}
         />
       )}
