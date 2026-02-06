@@ -4,7 +4,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Search, Loader2 } from "lucide-react";
 import { useState } from "react";
-import { useLazyCheckExistingChatRoomQuery, useSendMessageToNewChatRoomMutation } from "@/services/chatRoom/chatRoomApi";
+import {
+  useLazyCheckExistingChatRoomQuery,
+  useSendMessageToNewChatRoomMutation
+} from "@/services/chatRoom/chatRoomApi";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { User } from "@/types/model";
@@ -17,9 +20,10 @@ interface UserSearchModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   mode?: "single" | "multi";
+  onUserSelect?: (user: User) => void;
 }
 
-export function SearchUsersModal({ open, onOpenChange, mode = "single" }: UserSearchModalProps) {
+export function SearchUsersModal({ open, onOpenChange, mode = "single", onUserSelect }: UserSearchModalProps) {
   const router = useRouter();
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [groupInfoModalOpen, setGroupInfoModalOpen] = useState(false);
@@ -38,6 +42,13 @@ export function SearchUsersModal({ open, onOpenChange, mode = "single" }: UserSe
   const [sendMessageToNewChatRoom, { isLoading: isCreatingChat }] = useSendMessageToNewChatRoomMutation();
 
   const handleSelectUser = async (user: User) => {
+    if (onUserSelect) {
+      // External handler provided - use it
+      onUserSelect(user);
+      return;
+    }
+
+
     if (mode === "single") {
       try {
         const { data: existingChatRoom } = await checkExistingChatRoom(user.accountId).unwrap();
