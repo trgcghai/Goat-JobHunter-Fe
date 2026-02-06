@@ -19,11 +19,18 @@ import { useSearchUsers } from "@/app/(chat)/messages/hooks/useSearchUsers";
 interface UserSearchModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  mode?: "single" | "multi";
+  mode?: "single" | "multi" | "add-to-group";
   onUserSelect?: (user: User) => void;
+  existingMemberIds?: number[];
 }
 
-export function SearchUsersModal({ open, onOpenChange, mode = "single", onUserSelect }: UserSearchModalProps) {
+export function SearchUsersModal({
+  open,
+  onOpenChange,
+  mode = "single",
+  onUserSelect,
+  existingMemberIds = []
+}: UserSearchModalProps) {
   const router = useRouter();
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [groupInfoModalOpen, setGroupInfoModalOpen] = useState(false);
@@ -41,14 +48,47 @@ export function SearchUsersModal({ open, onOpenChange, mode = "single", onUserSe
   const [checkExistingChatRoom] = useLazyCheckExistingChatRoomQuery();
   const [sendMessageToNewChatRoom, { isLoading: isCreatingChat }] = useSendMessageToNewChatRoomMutation();
 
+  const isAddToGroupMode = mode === "add-to-group";
+
+  // Filter out existing members when in add-to-group mode
+  const filteredUsers = isAddToGroupMode
+    ? users.filter(user => !existingMemberIds.includes(user.accountId))
+    : users;
+
+  const getDialogTitle = () => {
+    if (isAddToGroupMode) return "Thêm thành viên vào nhóm";
+    if (mode === "multi") return "Chọn thành viên";
+    return "Tìm người dùng";
+  };
+
+  const getButtonText = () => {
+    if (isAddToGroupMode) {
+      return selectedUsers.length > 0
+        ? `Thêm (${selectedUsers.length})`
+        : "Chọn người để thêm";
+    }
+    return `Tiếp theo (${selectedUsers.length})`;
+  };
+
   const handleSelectUser = async (user: User) => {
+    // Add-to-group mode: multi-select, no immediate action
+    if (isAddToGroupMode) {
+      setSelectedUsers((prev) => {
+        const isSelected = prev.some((u) => u.accountId === user.accountId);
+        return isSelected
+          ? prev.filter((u) => u.accountId !== user.accountId)
+          : [...prev, user];
+      });
+      return;
+    }
+
+    // External handler (used by GroupDetailsPanel)
     if (onUserSelect) {
-      // External handler provided - use it
       onUserSelect(user);
       return;
     }
 
-
+    // Default single mode behavior
     if (mode === "single") {
       try {
         const { data: existingChatRoom } = await checkExistingChatRoom(user.accountId).unwrap();
@@ -68,9 +108,12 @@ export function SearchUsersModal({ open, onOpenChange, mode = "single", onUserSe
         console.error(error);
       }
     } else {
+      // Multi mode for group creation
       setSelectedUsers((prev) => {
         const isSelected = prev.some((u) => u.accountId === user.accountId);
-        return isSelected ? prev.filter((u) => u.accountId !== user.accountId) : [...prev, user];
+        return isSelected
+          ? prev.filter((u) => u.accountId !== user.accountId)
+          : [...prev, user];
       });
     }
   };
@@ -79,12 +122,29 @@ export function SearchUsersModal({ open, onOpenChange, mode = "single", onUserSe
     setSelectedUsers((prev) => prev.filter((u) => u.accountId !== userId));
   };
 
-  const handleNext = () => {
-    if (selectedUsers.length < 2) {
-      toast.error("Vui lòng chọn ít nhất 2 người");
-      return;
+  const handleNext = async () => {
+    if (isAddToGroupMode) {
+      if (selectedUsers.length === 0) {
+        toast.error("Vui lòng chọn ít nhất 1 người");
+        return;
+      }
+
+      // Add all selected users using external handler
+      if (onUserSelect) {
+        for (const user of selectedUsers) {
+          await onUserSelect(user);
+        }
+        onOpenChange(false);
+        setSelectedUsers([]);
+        setKeyword("");
+      }
+    } else {
+      if (selectedUsers.length < 2) {
+        toast.error("Vui lòng chọn ít nhất 2 người");
+        return;
+      }
+      setGroupInfoModalOpen(true);
     }
-    setGroupInfoModalOpen(true);
   };
 
   const handleCloseGroupInfoModal = (open: boolean) => {
@@ -104,14 +164,14 @@ export function SearchUsersModal({ open, onOpenChange, mode = "single", onUserSe
     }
   };
 
+  const showMultiSelectUI = mode === "multi" || isAddToGroupMode;
+
   return (
     <>
       <Dialog open={open} onOpenChange={handleModalClose}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md rounded-xl">
           <DialogHeader>
-            <DialogTitle>
-              {mode === "single" ? "Tìm người dùng" : "Chọn thành viên"}
-            </DialogTitle>
+            <DialogTitle>{getDialogTitle()}</DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4">
@@ -121,11 +181,11 @@ export function SearchUsersModal({ open, onOpenChange, mode = "single", onUserSe
                 placeholder="Tìm kiếm theo tên..."
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
-                className="pl-9"
+                className="pl-9 rounded-xl"
               />
             </div>
 
-            {mode === "multi" && selectedUsers.length > 0 && (
+            {showMultiSelectUI && selectedUsers.length > 0 && (
               <SelectedUsersList users={selectedUsers} onRemove={handleRemoveUser} />
             )}
 
@@ -142,17 +202,19 @@ export function SearchUsersModal({ open, onOpenChange, mode = "single", onUserSe
                 <div className="text-center py-8 text-muted-foreground">
                   Nhập ít nhất 2 ký tự để tìm kiếm
                 </div>
-              ) : isEmpty ? (
+              ) : isEmpty || (isAddToGroupMode && filteredUsers.length === 0) ? (
                 <div className="text-center py-8 text-muted-foreground">
-                  Không tìm thấy người dùng
+                  {isAddToGroupMode
+                    ? "Không tìm thấy người dùng mới"
+                    : "Không tìm thấy người dùng"}
                 </div>
               ) : (
                 <div className="space-y-1">
-                  {users.map((user) => (
+                  {filteredUsers.map((user) => (
                     <UserSearchItem
                       key={user.accountId}
                       user={user}
-                      mode={mode}
+                      mode={showMultiSelectUI ? "multi" : "single"}
                       isSelected={selectedUsers.some((u) => u.accountId === user.accountId)}
                       onAction={handleSelectUser}
                     />
@@ -161,24 +223,30 @@ export function SearchUsersModal({ open, onOpenChange, mode = "single", onUserSe
               )}
             </ScrollArea>
 
-            {mode === "multi" && (
+            {showMultiSelectUI && (
               <Button
-                className="w-full"
+                className="w-full rounded-xl"
                 onClick={handleNext}
-                disabled={selectedUsers.length < 2 || isCreatingChat}
+                disabled={
+                  (isAddToGroupMode && selectedUsers.length === 0) ||
+                  (!isAddToGroupMode && selectedUsers.length < 2) ||
+                  isCreatingChat
+                }
               >
-                Tiếp theo ({selectedUsers.length})
+                {getButtonText()}
               </Button>
             )}
           </div>
         </DialogContent>
       </Dialog>
 
-      <GroupInfoModal
-        open={groupInfoModalOpen}
-        onOpenChange={handleCloseGroupInfoModal}
-        selectedUsers={selectedUsers}
-      />
+      {mode === "multi" && (
+        <GroupInfoModal
+          open={groupInfoModalOpen}
+          onOpenChange={handleCloseGroupInfoModal}
+          selectedUsers={selectedUsers}
+        />
+      )}
     </>
   );
 }

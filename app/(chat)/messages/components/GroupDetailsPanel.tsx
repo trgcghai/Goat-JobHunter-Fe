@@ -84,6 +84,8 @@ export function GroupDetailsPanel({
     } catch (error) {
       console.error("Error adding member:", error);
       toast.error("Không thể thêm thành viên vào nhóm");
+
+      throw error
     }
   };
 
@@ -136,7 +138,7 @@ export function GroupDetailsPanel({
 
                 <CollapsibleContent
                   className="data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up">
-                  <div className="px-2 pb-2 space-y-1">
+                  <div className="px-2 pb-2 space-y-1 mt-2">
                     {canAddMember && (
                       <Button
                         variant="default"
@@ -197,8 +199,9 @@ export function GroupDetailsPanel({
       <SearchUsersModal
         open={addMemberModalOpen}
         onOpenChange={setAddMemberModalOpen}
-        mode="multi"
+        mode="add-to-group"
         onUserSelect={handleAddMember}
+        existingMemberIds={members.map(m => m.accountId)}
       />
     </>
   );

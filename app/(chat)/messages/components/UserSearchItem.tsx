@@ -12,7 +12,7 @@ interface UserSearchItemProps {
 
 export function UserSearchItem({ user, mode, isSelected, onAction }: UserSearchItemProps) {
   return (
-    <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent cursor-pointer transition-colors">
+    <div className="flex items-center gap-3 p-3 hover:bg-accent cursor-pointer transition-colors rounded-xl">
       <Avatar className="h-10 w-10 border">
         <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.fullName} />
         <AvatarFallback>{user.fullName.charAt(0)}</AvatarFallback>
@@ -24,7 +24,7 @@ export function UserSearchItem({ user, mode, isSelected, onAction }: UserSearchI
       </div>
 
       {mode === "single" ? (
-        <Button size="sm" onClick={() => onAction(user)}>
+        <Button size="sm" onClick={() => onAction(user)} className="rounded-xl">
           Nhắn tin
         </Button>
       ) : (
@@ -32,6 +32,7 @@ export function UserSearchItem({ user, mode, isSelected, onAction }: UserSearchI
           size="sm"
           variant={isSelected ? "default" : "outline"}
           onClick={() => onAction(user)}
+          className="rounded-xl"
         >
           {isSelected ? (
             <>

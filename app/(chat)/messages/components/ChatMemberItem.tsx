@@ -166,8 +166,8 @@ export function ChatMemberItem({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Hủy</AlertDialogCancel>
-            <AlertDialogAction onClick={handleRemove} disabled={isRemoving}>
+            <AlertDialogCancel className="rounded-xl">Hủy</AlertDialogCancel>
+            <AlertDialogAction onClick={handleRemove} disabled={isRemoving} className="rounded-xl">
               {isRemoving ? "Đang xóa..." : "Xóa"}
             </AlertDialogAction>
           </AlertDialogFooter>
