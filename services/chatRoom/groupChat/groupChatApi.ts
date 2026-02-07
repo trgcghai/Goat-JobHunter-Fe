@@ -1,4 +1,3 @@
-// Request/Response Types
 import { api } from "@/services/api";
 import { IBackendRes } from "@/types/api";
 

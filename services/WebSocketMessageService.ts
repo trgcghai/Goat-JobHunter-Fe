@@ -5,7 +5,6 @@ import SockJS from "sockjs-client";
 import { store } from "@/lib/store";
 import { chatRoomApi } from "@/services/chatRoom/chatRoomApi";
 import { MessageType } from "@/types/model";
-import { MessageEvent } from "@/types/enum";
 import { groupChatApi } from "@/services/chatRoom/groupChat/groupChatApi";
 
 export class WebSocketMessageService {
