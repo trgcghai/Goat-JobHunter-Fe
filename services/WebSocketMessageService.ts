@@ -104,6 +104,7 @@ export class WebSocketMessageService {
   private handleMessage(chatRoomId: number, message: MessageType) {
     console.log(`💬 Received message in chat room ${chatRoomId}:`, message);
 
+    // Update messages list
     this.dispatch(
       chatRoomApi.util.updateQueryData("fetchMessagesInChatRoom", {
         chatRoomId,
@@ -119,28 +120,42 @@ export class WebSocketMessageService {
       })
     );
 
-    // Update last message in chat rooms list
+    // Update sidebar: last message preview & move to top
     this.dispatch(
-      chatRoomApi.util.updateQueryData("fetchChatRooms", { page: 1, size: 50 }, (draft) => {
-        if (draft?.data?.result) {
-          const chatRoomIndex = draft.data.result.findIndex((cr) => cr.roomId === chatRoomId);
-
-          if (chatRoomIndex !== -1) {
-            const chatRoom = draft.data.result[chatRoomIndex];
-
-            // Update last message info
-            chatRoom.lastMessagePreview = message.content;
-            chatRoom.lastMessageTime = message.createdAt;
-
-            // Move to top if not already first
-            if (chatRoomIndex !== 0) {
-              draft.data.result.splice(chatRoomIndex, 1);
-              draft.data.result.unshift(chatRoom);
-            }
-          }
-        }
-      })
+      chatRoomApi.util.invalidateTags([{ type: "ChatRoom", id: "LIST" }])
     );
+
+    // this.dispatch(
+    //   chatRoomApi.util.updateQueryData("fetchChatRooms", { page: 1, size: 50 }, (draft) => {
+    //     if (draft?.data?.result) {
+    //
+    //       console.log("Updating chat room list for new message...");
+    //
+    //       const chatRoomIndex = draft.data.result.findIndex((cr) => cr.roomId === chatRoomId);
+    //
+    //       if (chatRoomIndex !== -1) {
+    //         const chatRoom = draft.data.result[chatRoomIndex];
+    //         const currentUserId = store.getState().auth.user?.accountId;
+    //
+    //         // Update last message info
+    //         chatRoom.lastMessagePreview = message.content;
+    //         chatRoom.lastMessageTime = message.createdAt;
+    //         chatRoom.currentUserSentLastMessage = message.sender.accountId === currentUserId;
+    //
+    //         // Move to top if not already first
+    //         if (chatRoomIndex !== 0) {
+    //           draft.data.result.splice(chatRoomIndex, 1);
+    //           draft.data.result.unshift(chatRoom);
+    //         }
+    //       } else {
+    //         // New chat room, invalidate to refetch
+    //         this.dispatch(
+    //           chatRoomApi.util.invalidateTags([{ type: "ChatRoom", id: "LIST" }])
+    //         );
+    //       }
+    //     }
+    //   })
+    // );
   }
 
   private handleGroupEvent(chatRoomId: number, message: MessageType) {
@@ -177,8 +192,7 @@ export class WebSocketMessageService {
             }
           })
         );
-      }
-      else if (content.includes("đã rời khỏi nhóm")) {
+      } else if (content.includes("đã rời khỏi nhóm")) {
         // Extract actor name: "{actor} đã rời khỏi nhóm"
         const match = content.match(/(.+?) đã rời khỏi nhóm/);
         const actorName = match?.[1];

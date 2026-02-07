@@ -2,7 +2,10 @@
 
 import { ChatWindow } from '@/app/(chat)/messages/components/ChatWindow';
 import { useParams } from 'next/navigation';
-import { useFetchChatRoomsQuery, useFetchMessagesInChatRoomQuery } from '@/services/chatRoom/chatRoomApi';
+import {
+  useFetchChatRoomsByIdQuery,
+  useFetchMessagesInChatRoomQuery
+} from "@/services/chatRoom/chatRoomApi";
 import { useEffect, useMemo } from 'react';
 import { subscribeToChatRoom, unsubscribeFromChatRoom } from '@/services/chatRoom/message/messageApi';
 import { useUser } from '@/hooks/useUser';
@@ -31,13 +34,11 @@ export default function ChatRoomPage() {
     page: 1,
   }, { skip: !chatRoomId || isNaN(Number(chatRoomId)) });
 
-  const { data: chatRoomsData } = useFetchChatRoomsQuery({});
+  const { data: chatRoomsData } = useFetchChatRoomsByIdQuery(Number(chatRoomId), { skip: !chatRoomId || isNaN(Number(chatRoomId)) });
 
   const currentChatRoom = useMemo(() => {
-    return chatRoomsData?.data?.result?.find(
-      (room) => room.roomId === Number(chatRoomId)
-    );
-  }, [chatRoomsData, chatRoomId]);
+    return chatRoomsData?.data || null;
+  }, [chatRoomsData]);
 
   const messages = useMemo(() => {
     // Manually sort messages by createdAt ascending, fallback to empty array if no messages
