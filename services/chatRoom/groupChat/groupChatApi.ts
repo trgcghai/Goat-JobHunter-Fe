@@ -4,12 +4,12 @@ import { IBackendRes } from "@/types/api";
 interface CreateGroupChatRequest {
   accountIds: number[];
   name: string;
-  avatar: File;
+  avatar: string;
 }
 
 interface UpdateGroupInfoRequest {
   name?: string;
-  avatar?: File;
+  avatar?: string;
 }
 
 interface AddMemberRequest {
@@ -29,7 +29,7 @@ interface ChatRoomResponse {
   createdBy: string;
   deletedAt: string | null;
   deleteBy: string | null;
-  name: string
+  name: string;
   roomId: number;
   type: "GROUP";
   updatedAt: string;
@@ -50,43 +50,20 @@ export interface ChatMemberResponse {
 export const groupChatApi = api.injectEndpoints({
   endpoints: (builder) => ({
     createGroupChat: builder.mutation<IBackendRes<ChatRoomResponse>, CreateGroupChatRequest>({
-      query: (data) => {
-
-        const formData = new FormData();
-        formData.append("name", data.name);
-        formData.append("avatar", data.avatar);
-        data.accountIds.forEach((id) => {
-          formData.append("accountIds", id.toString());
-        });
-
-        return {
-          url: "/chatrooms/group",
-          method: "POST",
-          headers: {
-            "Content-Type": "multipart/form-data"
-          },
-          data: formData
-        };
-      },
+      query: (data) => ({
+        url: "/chatrooms/group",
+        method: "POST",
+        data
+      }),
       invalidatesTags: ["ChatRoom"]
     }),
 
     updateGroupInfo: builder.mutation<IBackendRes<ChatRoomResponse>, { chatroomId: string } & UpdateGroupInfoRequest>({
-      query: ({ chatroomId, ...data }) => {
-
-        const formData = new FormData();
-        if (data.name) formData.append("name", data.name);
-        if (data.avatar) formData.append("avatar", data.avatar);
-
-        return {
-          url: `/chatrooms/group/${chatroomId}`,
-          method: "PUT",
-          headers: {
-            "Content-Type": "multipart/form-data"
-          },
-          data
-        };
-      },
+      query: ({ chatroomId, ...data }) => ({
+        url: `/chatrooms/group/${chatroomId}`,
+        method: "PUT",
+        data
+      }),
       invalidatesTags: (result, error, { chatroomId }) => [
         { type: "ChatRoom", id: chatroomId }
       ]

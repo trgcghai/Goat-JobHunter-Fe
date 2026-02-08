@@ -9,6 +9,7 @@ import { Upload, Loader2 } from "lucide-react";
 import { useUpdateGroupInfoMutation } from "@/services/chatRoom/groupChat/groupChatApi";
 import { toast } from "sonner";
 import Image from "next/image";
+import { useUploadSingleFileMutation } from "@/services/upload/uploadApi";
 
 interface EditGroupModalProps {
   open: boolean;
@@ -22,6 +23,7 @@ export function EditGroupModal({ open, onOpenChange, chatRoom }: EditGroupModalP
   const [avatar, setAvatar] = useState<File | null>(null);
 
   const [updateGroupInfo, { isLoading }] = useUpdateGroupInfoMutation();
+  const [uploadFile] = useUploadSingleFileMutation();
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -44,14 +46,26 @@ export function EditGroupModal({ open, onOpenChange, chatRoom }: EditGroupModalP
         return;
       }
 
-      const updateData: { name?: string; avatar?: File } = {};
+      const updateData: { name?: string; avatar?: string } = {};
 
       if (groupName.trim() !== chatRoom.name) {
         updateData.name = groupName.trim();
       }
 
+      // Nếu có avatar mới, upload trước
       if (avatar) {
-        updateData.avatar = avatar;
+        toast.loading("Đang tải ảnh lên...");
+        const uploadResult = await uploadFile({
+          file: avatar,
+          folderType: "/chatgroup/avatars"
+        }).unwrap();
+
+        if (!uploadResult.data?.url) {
+          toast.error("Không thể tải ảnh lên. Vui lòng kiểm tra định dạng ảnh và thử lại.");
+          return;
+        }
+
+        updateData.avatar = uploadResult.data.url;
       }
 
       if (Object.keys(updateData).length === 0) {
@@ -60,6 +74,8 @@ export function EditGroupModal({ open, onOpenChange, chatRoom }: EditGroupModalP
         return;
       }
 
+      // Cập nhật thông tin group
+      toast.loading("Đang cập nhật...");
       await updateGroupInfo({
         chatroomId: chatRoom.roomId.toString(),
         ...updateData

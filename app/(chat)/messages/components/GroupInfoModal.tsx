@@ -10,6 +10,7 @@ import { useCreateGroupChatMutation } from "@/services/chatRoom/groupChat/groupC
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Image from "next/image";
+import { useUploadSingleFileMutation } from "@/services/upload/uploadApi";
 
 interface GroupInfoModalProps {
   open: boolean;
@@ -24,6 +25,7 @@ export function GroupInfoModal({ open, onOpenChange, selectedUsers }: GroupInfoM
   const [avatar, setAvatar] = useState<File | null>(null);
 
   const [createGroupChat, { isLoading }] = useCreateGroupChatMutation();
+  const [uploadFile] = useUploadSingleFileMutation();
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -41,7 +43,6 @@ export function GroupInfoModal({ open, onOpenChange, selectedUsers }: GroupInfoM
     e.preventDefault();
 
     try {
-
       if (selectedUsers.length < 2) {
         toast.error("Nhóm chat cần có ít nhất 2 thành viên");
         return;
@@ -57,10 +58,24 @@ export function GroupInfoModal({ open, onOpenChange, selectedUsers }: GroupInfoM
         return;
       }
 
+      // Upload avatar trước
+      toast.loading("Đang tải ảnh lên...");
+      const uploadResult = await uploadFile({
+        file: avatar,
+        folderType: "/chatgroup/avatars"
+      }).unwrap();
+
+      if (!uploadResult.data?.url) {
+        toast.error("Không thể tải ảnh lên. Vui lòng kiểm tra định dạng ảnh và thử lại.");
+        return;
+      }
+
+      // Tạo group với avatar URL
+      toast.loading("Đang tạo nhóm...");
       const result = await createGroupChat({
         accountIds: selectedUsers.map((u) => u.accountId),
         name: groupName.trim(),
-        avatar,
+        avatar: uploadResult.data.url
       }).unwrap();
 
       if (result.data?.roomId) {
