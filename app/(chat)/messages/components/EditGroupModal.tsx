@@ -21,6 +21,7 @@ export function EditGroupModal({ open, onOpenChange, chatRoom }: EditGroupModalP
   const [groupName, setGroupName] = useState(chatRoom.name);
   const [avatarPreview, setAvatarPreview] = useState<string>(chatRoom.avatar || "");
   const [avatar, setAvatar] = useState<File | null>(null);
+  const [avatarError, setAvatarError] = useState<string>("");
 
   const [updateGroupInfo, { isLoading }] = useUpdateGroupInfoMutation();
   const [uploadFile] = useUploadSingleFileMutation();
@@ -28,6 +29,19 @@ export function EditGroupModal({ open, onOpenChange, chatRoom }: EditGroupModalP
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+
+      if (!file.type.startsWith("image/")) {
+        setAvatarError("Chỉ chấp nhận file ảnh");
+        return;
+      }
+
+      // Kiểm tra kích thước file (2MB = 2 * 1024 * 1024 bytes)
+      if (file.size > 2 * 1024 * 1024) {
+        setAvatarError("Kích thước ảnh tối đa 2MB");
+        return;
+      }
+
+      setAvatarError("");
       setAvatar(file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -63,7 +77,7 @@ export function EditGroupModal({ open, onOpenChange, chatRoom }: EditGroupModalP
         }).unwrap();
 
         if (!uploadResult.data?.url) {
-          toast.dismiss(toastId)
+          toast.dismiss(toastId);
           toast.error("Không thể tải ảnh lên. Vui lòng kiểm tra định dạng ảnh và thử lại.");
           return;
         }
@@ -102,8 +116,9 @@ export function EditGroupModal({ open, onOpenChange, chatRoom }: EditGroupModalP
 
   const handleClose = () => {
     setGroupName(chatRoom.name);
-    setAvatarPreview(chatRoom.avatar || "");
     setAvatar(null);
+    setAvatarPreview(chatRoom.avatar || "");
+    setAvatarError("");
     onOpenChange(false);
   };
 
@@ -146,6 +161,12 @@ export function EditGroupModal({ open, onOpenChange, chatRoom }: EditGroupModalP
                 />
               </Label>
             </div>
+            <p className="text-xs text-muted-foreground text-center">
+              Chỉ chấp nhận file ảnh, tối đa 2MB
+            </p>
+            {avatarError && (
+              <p className="text-xs text-destructive">{avatarError}</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -156,8 +177,12 @@ export function EditGroupModal({ open, onOpenChange, chatRoom }: EditGroupModalP
               value={groupName}
               className={"rounded-xl"}
               onChange={(e) => setGroupName(e.target.value)}
-              maxLength={50}
+              maxLength={100}
             />
+            <p
+              className={`text-xs ${groupName.length > 100 ? "text-destructive" : "text-muted-foreground"} text-right`}>
+              {groupName.length}/100 ký tự
+            </p>
           </div>
 
           <div className="flex gap-2">

@@ -23,6 +23,7 @@ export function GroupInfoModal({ open, onOpenChange, selectedUsers }: GroupInfoM
   const [groupName, setGroupName] = useState("");
   const [avatarPreview, setAvatarPreview] = useState<string>("");
   const [avatar, setAvatar] = useState<File | null>(null);
+  const [avatarError, setAvatarError] = useState<string>("");
 
   const [createGroupChat, { isLoading }] = useCreateGroupChatMutation();
   const [uploadFile] = useUploadSingleFileMutation();
@@ -30,6 +31,19 @@ export function GroupInfoModal({ open, onOpenChange, selectedUsers }: GroupInfoM
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Kiểm tra loại file
+      if (!file.type.startsWith("image/")) {
+        setAvatarError("Chỉ chấp nhận file ảnh");
+        return;
+      }
+
+      // Kiểm tra kích thước file (2MB = 2 * 1024 * 1024 bytes)
+      if (file.size > 2 * 1024 * 1024) {
+        setAvatarError("Kích thước ảnh tối đa 2MB");
+        return;
+      }
+
+      setAvatarError("");
       setAvatar(file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -87,7 +101,7 @@ export function GroupInfoModal({ open, onOpenChange, selectedUsers }: GroupInfoM
         router.push(`/messages/${result.data.roomId}`);
       }
     } catch (error) {
-      toast.dismiss()
+      toast.dismiss();
       toast.error("Không thể tạo nhóm chat");
       console.error(error);
     } finally {
@@ -97,9 +111,17 @@ export function GroupInfoModal({ open, onOpenChange, selectedUsers }: GroupInfoM
     }
   };
 
+  const handleClose = () => {
+    setGroupName("");
+    setAvatar(null);
+    setAvatarPreview("");
+    setAvatarError("");
+    onOpenChange(false);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent className="sm:max-w-md rounded-xl">
         <DialogHeader>
           <DialogTitle>Tạo nhóm chat</DialogTitle>
         </DialogHeader>
@@ -130,24 +152,34 @@ export function GroupInfoModal({ open, onOpenChange, selectedUsers }: GroupInfoM
                 />
               </label>
             </div>
+            <p className="text-xs text-muted-foreground text-center">
+              Chỉ chấp nhận file ảnh, tối đa 2MB
+            </p>
+            {avatarError && (
+              <p className="text-xs text-destructive">{avatarError}</p>
+            )}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="group-name">Tên nhóm *</Label>
+            <Label htmlFor="group-name" className="font-bold" required>Tên nhóm</Label>
             <Input
               id="group-name"
               placeholder="Nhập tên nhóm..."
+              className="rounded-xl"
               value={groupName}
               onChange={(e) => setGroupName(e.target.value)}
-              maxLength={50}
+              maxLength={100}
             />
+            <p className={`text-xs ${groupName.length > 100 ? 'text-destructive' : 'text-muted-foreground'} text-right`}>
+              {groupName.length}/100 ký tự
+            </p>
           </div>
 
           <div className="space-y-2">
             <Label>Thành viên ({selectedUsers.length})</Label>
             <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto p-2 bg-accent/30 rounded-lg">
               {selectedUsers.map((user) => (
-                <div key={user.accountId} className="flex items-center gap-1 text-sm">
+                <div key={user.accountId} className="flex items-center gap-1 text-sm rounded-xl">
                   <Avatar className="h-5 w-5">
                     <AvatarFallback className="text-xs">
                       {user.fullName.charAt(0)}
@@ -163,13 +195,13 @@ export function GroupInfoModal({ open, onOpenChange, selectedUsers }: GroupInfoM
             <Button
               type="button"
               variant="outline"
-              className="flex-1"
+              className="flex-1 rounded-xl"
               onClick={() => onOpenChange(false)}
               disabled={isLoading}
             >
               Hủy
             </Button>
-            <Button type="submit" className="flex-1" disabled={isLoading || !groupName.trim()}>
+            <Button type="submit" className="flex-1 rounded-xl" disabled={isLoading || !groupName.trim()}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
