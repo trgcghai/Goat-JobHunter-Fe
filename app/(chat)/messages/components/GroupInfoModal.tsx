@@ -59,24 +59,27 @@ export function GroupInfoModal({ open, onOpenChange, selectedUsers }: GroupInfoM
       }
 
       // Upload avatar trước
-      toast.loading("Đang tải ảnh lên...");
+      const toastId = toast.loading("Đang tải ảnh lên...");
       const uploadResult = await uploadFile({
         file: avatar,
         folderType: "/chatgroup/avatars"
       }).unwrap();
 
       if (!uploadResult.data?.url) {
+        toast.dismiss(toastId);
         toast.error("Không thể tải ảnh lên. Vui lòng kiểm tra định dạng ảnh và thử lại.");
         return;
       }
 
       // Tạo group với avatar URL
-      toast.loading("Đang tạo nhóm...");
+      toast.loading("Đang tạo nhóm...", { id: toastId });
       const result = await createGroupChat({
         accountIds: selectedUsers.map((u) => u.accountId),
         name: groupName.trim(),
         avatar: uploadResult.data.url
       }).unwrap();
+
+      toast.dismiss(toastId);
 
       if (result.data?.roomId) {
         toast.success("Tạo nhóm chat thành công");
@@ -84,6 +87,7 @@ export function GroupInfoModal({ open, onOpenChange, selectedUsers }: GroupInfoM
         router.push(`/messages/${result.data.roomId}`);
       }
     } catch (error) {
+      toast.dismiss()
       toast.error("Không thể tạo nhóm chat");
       console.error(error);
     } finally {

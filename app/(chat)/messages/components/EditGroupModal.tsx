@@ -52,15 +52,18 @@ export function EditGroupModal({ open, onOpenChange, chatRoom }: EditGroupModalP
         updateData.name = groupName.trim();
       }
 
+      let toastId: string | number | undefined; // Lưu ID toast để cập nhật trạng thái
+
       // Nếu có avatar mới, upload trước
       if (avatar) {
-        toast.loading("Đang tải ảnh lên...");
+        toastId = toast.loading("Đang tải ảnh lên...");
         const uploadResult = await uploadFile({
           file: avatar,
           folderType: "/chatgroup/avatars"
         }).unwrap();
 
         if (!uploadResult.data?.url) {
+          toast.dismiss(toastId)
           toast.error("Không thể tải ảnh lên. Vui lòng kiểm tra định dạng ảnh và thử lại.");
           return;
         }
@@ -75,15 +78,23 @@ export function EditGroupModal({ open, onOpenChange, chatRoom }: EditGroupModalP
       }
 
       // Cập nhật thông tin group
-      toast.loading("Đang cập nhật...");
+
+      if (!toastId) {
+        toastId = toast.loading("Đang cập nhật thông tin nhóm...");
+      } else {
+        toast.loading("Đang cập nhật thông tin nhóm...", { id: toastId });
+      }
+
       await updateGroupInfo({
         chatroomId: chatRoom.roomId.toString(),
         ...updateData
       }).unwrap();
 
+      toast.dismiss(toastId);
       toast.success("Cập nhật thông tin nhóm thành công");
       onOpenChange(false);
     } catch (error) {
+      toast.dismiss();
       toast.error("Không thể cập nhật thông tin nhóm");
       console.error(error);
     }
