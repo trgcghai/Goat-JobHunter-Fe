@@ -32,7 +32,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger
 } from "@/components/ui/alert-dialog";
 
 interface GroupDetailsPanelProps {
@@ -67,7 +66,11 @@ export function GroupDetailsPanel({
     isError: isErrorMedia
   } = useFetchMediaInChatRoomQuery({ chatRoomId: chatRoom.roomId }, { skip: !isOpen || !chatRoom });
 
-  const { data: memberData } = useGetMemberInGroupChatQuery(chatRoom.roomId, { skip: !isOpen || !chatRoom });
+  const {
+    data: memberData,
+    isLoading: isLoadingMembers,
+    isError: isErrorMembers
+  } = useGetMemberInGroupChatQuery(chatRoom.roomId, { skip: !isOpen || !chatRoom });
 
   const [addMember, { isLoading: isAddingMember }] = useAddMemberToGroupMutation();
 
@@ -248,7 +251,17 @@ export function GroupDetailsPanel({
                         Thêm thành viên
                       </Button>
                     )}
-                    {members && members.length > 0 ? (
+                    {isLoadingMembers && (
+                      <div className="flex items-center justify-center py-4">
+                        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                      </div>
+                    )}
+                    {isErrorMembers && (
+                      <div className="text-center py-4 text-sm text-destructive">
+                        Có lỗi xảy ra khi tải thành viên. Vui lòng thử lại sau.
+                      </div>
+                    )}
+                    {members && members.length > 0 && !isLoadingMembers && !isErrorMembers && (
                       members.map((member) => (
                         <ChatMemberItem
                           key={member.chatMemberId}
@@ -258,7 +271,8 @@ export function GroupDetailsPanel({
                           currentUserId={currentUserId}
                         />
                       ))
-                    ) : (
+                    )}
+                    {members.length == 0 && !isLoadingMembers && !isErrorMembers && (
                       <div className="text-center py-4 text-sm text-muted-foreground">
                         Không có thành viên
                       </div>
