@@ -1,19 +1,14 @@
 import {
-  ProfileApplication,
   ProfileEmailNotification,
   ProfileInfo,
   ProfileNotifications,
-  ProfilePassword
-} from "@/app/(main)/profile/components";
-import { TabsContent } from "@/components/ui/tabs";
+  ProfilePassword,
+} from '@/app/(main)/profile/components';
+import { TabsContent } from '@/components/ui/tabs';
 
 const ProfileTabContents = () => {
   return (
     <>
-      <TabsContent value="applications" className="space-y-4">
-        <ProfileApplication />
-      </TabsContent>
-
       <TabsContent value="notifications" className="space-y-4">
         <ProfileNotifications />
       </TabsContent>

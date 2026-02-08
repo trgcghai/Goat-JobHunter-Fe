@@ -1,85 +1,144 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useFetchApplicationsByCurrentApplicantQuery } from '@/services/application/applicationApi';
 import { useGetSavedJobsQuery } from '@/services/user/savedJobsApi';
+import { useDownloadResumeMutation } from '@/services/resume/resumeApi';
+import { toast } from 'sonner';
 
-export const useMyJob = () => {
+export interface UseMyJobFilterOptions {
+  initialPage?: number;
+  itemsPerPage?: number;
+}
+
+export const useMyJob = (options?: UseMyJobFilterOptions) => {
+  const { initialPage = 1, itemsPerPage = 6 } = options || {};
+  const [page, setPage] = useState(initialPage);
   const [mainTab, setMainTab] = useState<'saved' | 'applied'>('applied');
-  const [page, setPage] = useState(1);
-  const pageSize = 10;
 
-  // Fetch applications
+  const [downloadResume, { isLoading: isDownloading }] = useDownloadResumeMutation();
+
   const {
-    data: applicationsData,
-    isLoading: isLoadingApplications,
-    isError: isErrorApplications,
+    data: appliedJobsResponse,
+    isLoading: isLoadingAppliedJobs,
+    isError: isErrorAppliedJobs,
   } = useFetchApplicationsByCurrentApplicantQuery(
     {
-      page: page - 1,
-      size: pageSize,
+      page: page,
+      size: itemsPerPage,
     },
-    {
-      skip: mainTab !== 'applied',
-    },
+    { skip: mainTab !== 'applied' },
   );
 
-  const applications = useMemo(() => applicationsData?.data?.result || [], [applicationsData?.data?.result]);
-
-  const totalPagesApplications = useMemo(
-    () => applicationsData?.data?.meta?.pages || 1,
-    [applicationsData?.data?.meta?.pages],
-  );
-
-  const totalElementsApplications = useMemo(
-    () => applicationsData?.data?.meta?.total || 0,
-    [applicationsData?.data?.meta?.total],
-  );
-
-  // Fetch saved jobs
   const {
-    data: savedJobsData,
+    data: savedJobsResponse,
     isLoading: isLoadingSavedJobs,
     isError: isErrorSavedJobs,
-  } = useGetSavedJobsQuery(undefined, {
-    skip: mainTab !== 'saved',
-  });
+  } = useGetSavedJobsQuery(undefined, { skip: mainTab !== 'saved' });
 
-  const savedJobs = useMemo(() => savedJobsData?.data?.result || [], [savedJobsData?.data?.result]);
+  const myJobsResponse = mainTab === 'applied' ? appliedJobsResponse : savedJobsResponse;
+  const isLoadingMyJobs = mainTab === 'applied' ? isLoadingAppliedJobs : isLoadingSavedJobs;
+  const isErrorMyJobs = mainTab === 'applied' ? isErrorAppliedJobs : isErrorSavedJobs;
 
-  const totalPagesSavedJobs = useMemo(() => savedJobsData?.data?.meta?.pages || 1, [savedJobsData?.data?.meta?.pages]);
+  const myJobs = useMemo(() => myJobsResponse?.data?.result || [], [myJobsResponse?.data?.result]);
+  const meta = myJobsResponse?.data?.meta || {
+    current: 1,
+    pageSize: itemsPerPage,
+    pages: 0,
+    total: 0,
+  };
+  const totalPages = meta.pages;
+  const totalItems = meta.total;
 
-  const totalElementsSavedJobs = useMemo(
-    () => savedJobsData?.data?.meta?.total || 0,
-    [savedJobsData?.data?.meta?.total],
-  );
+  const goToPage = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setPage(page);
+    }
+  };
+  const nextPage = () => {
+    if (page < totalPages) {
+      setPage((prev) => prev + 1);
+    }
+  };
+  const previousPage = () => {
+    if (page > 1) {
+      setPage((prev) => prev - 1);
+    }
+  };
+  const hasNextPage = page < totalPages;
+  const hasPreviousPage = page > 1;
 
-  // Handlers
   const handleMainTabChange = (tab: string) => {
     setMainTab(tab as 'saved' | 'applied');
     setPage(1);
   };
 
+  const handleDownloadResume = useCallback(
+    async (resumeId: string, fileName: string) => {
+      try {
+        const response = await downloadResume(resumeId).unwrap();
+
+        let fileExtension = fileName.split('.').pop()?.toLowerCase();
+
+        if (!fileExtension || fileExtension === fileName || fileExtension.length > 5) {
+          fileExtension = 'pdf';
+        }
+
+        const mimeTypes: Record<string, string> = {
+          pdf: 'application/pdf',
+          doc: 'application/msword',
+          docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          png: 'image/png',
+          jpg: 'image/jpeg',
+          jpeg: 'image/jpeg',
+        };
+
+        const mimeType = mimeTypes[fileExtension] || 'application/octet-stream';
+        const blob = new Blob([response], { type: mimeType });
+
+        const finalFileName = fileName.includes('.') ? fileName : `${fileName}.${fileExtension}`;
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = finalFileName;
+        document.body.appendChild(a);
+        a.click();
+
+        a.remove();
+        URL.revokeObjectURL(url);
+
+        toast.success('Tải CV thành công');
+      } catch (e) {
+        console.error('Download error:', e);
+        toast.error('Không thể tải CV');
+      }
+    },
+    [downloadResume],
+  );
+
   return {
     // State
     mainTab,
+    meta,
+    totalPages,
+    totalItems,
     page,
-    pageSize,
+    itemsPerPage,
 
-    // Applications data
-    applications,
-    isLoadingApplications,
-    isErrorApplications,
-    totalPagesApplications,
-    totalElementsApplications,
+    // Data
+    myJobs,
 
-    // Saved jobs data
-    savedJobs,
-    isLoadingSavedJobs,
-    isErrorSavedJobs,
-    totalPagesSavedJobs,
-    totalElementsSavedJobs,
+    // Loading states
+    isLoadingMyJobs,
+    isErrorMyJobs,
+    isDownloading,
 
     // Handlers
     handleMainTabChange,
-    setPage,
+    handleDownloadResume,
+    goToPage,
+    nextPage,
+    previousPage,
+    hasNextPage,
+    hasPreviousPage,
   };
 };

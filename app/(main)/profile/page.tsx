@@ -18,7 +18,7 @@ const ProfilePage = () => {
   useGetMyAccountQuery();
 
   const { user, isSignedIn } = useUser(); // Get user data from redux store
-  const [activeTab, setActiveTab] = useState("applications");
+  const [activeTab, setActiveTab] = useState("notifications");
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();

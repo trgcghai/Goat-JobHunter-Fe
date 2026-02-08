@@ -1,49 +1,40 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Application } from '@/types/model';
-import { ApplicationStatus } from '@/types/enum';
-import { FileText, Download, Calendar, Mail, Briefcase, Clock, Eye } from 'lucide-react';
+import { FileText, Download, Calendar, Clock, Eye, Mail } from 'lucide-react';
 import { formatDate, formatDateTime } from '@/utils/formatDate';
 import { useState } from 'react';
 import CoverLetterDialog from './CoverLetterDialog';
 import InterviewDetailDialog from './InterviewDetailDialog';
+import { getStatusConfig } from '@/utils/getApplicationStatusContent';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 interface ApplicationCardProps {
   application: Application;
+  downloadResume: (resumeId: string, fileName: string) => void;
+  isDownloading: boolean;
 }
 
-const getStatusConfig = (status: ApplicationStatus) => {
-  switch (status) {
-    case ApplicationStatus.ACCEPTED:
-      return {
-        label: 'Đã chấp nhận',
-        variant: 'default' as const,
-        className: 'bg-green-500 hover:bg-green-600 text-white',
-      };
-    case ApplicationStatus.REJECTED:
-      return {
-        label: 'Đã từ chối',
-        variant: 'destructive' as const,
-        className: '',
-      };
-    case ApplicationStatus.PENDING:
-    default:
-      return {
-        label: 'Đang chờ',
-        variant: 'secondary' as const,
-        className: 'bg-yellow-500 hover:bg-yellow-600 text-white',
-      };
-  }
-};
-
-export default function ApplicationCard({ application }: Readonly<ApplicationCardProps>) {
+export default function ApplicationCard({
+  application,
+  downloadResume,
+  isDownloading,
+}: Readonly<ApplicationCardProps>) {
   const [isCoverLetterOpen, setIsCoverLetterOpen] = useState(false);
   const [isInterviewDetailOpen, setIsInterviewDetailOpen] = useState(false);
-
   const statusConfig = getStatusConfig(application.status);
+
+  const router = useRouter();
+
+  const handleViewJobDetails = () => {
+    if (application.job?.jobId) {
+      router.push(`/jobs/${application.job.jobId}`);
+    }
+  };
 
   const handleViewResume = () => {
     if (application.resume?.fileUrl) {
@@ -52,92 +43,93 @@ export default function ApplicationCard({ application }: Readonly<ApplicationCar
   };
 
   const handleDownloadResume = () => {
-    if (application.resume?.fileUrl) {
-      const link = document.createElement('a');
-      link.href = application.resume.fileUrl;
-      link.download = `CV_${application.job?.title || 'Ung_tuyen'}.pdf`;
-      link.click();
+    if (application.resume?.resumeId) {
+      downloadResume(String(application.resume.resumeId), application.applicant.fullName);
+      return;
     }
+    toast.error('Không có CV để tải xuống.');
   };
 
   return (
     <>
-      <Card className="hover:shadow-md transition-shadow">
-        <CardHeader className="pb-3">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1 space-y-2">
-              <div className="flex items-center gap-2">
-                <Briefcase className="h-5 w-5 text-primary" />
-                <h3 className="text-lg font-semibold line-clamp-1">{application.job?.title || 'Chưa có tiêu đề'}</h3>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Mail className="h-4 w-4" />
-                <span>{application.email}</span>
-              </div>
-            </div>
-            <Badge variant={statusConfig.variant} className={statusConfig.className}>
-              {statusConfig.label}
-            </Badge>
-          </div>
-        </CardHeader>
+      <Card className="group border-2 rounded-xl hover:border-primary/50 bg-card hover:shadow-lg transition-all duration-300 h-full flex flex-col overflow-hidden relative py-3">
+        <div className="absolute top-3 right-3 z-20">
+          <Badge
+            variant={statusConfig.variant}
+            className={`${statusConfig.className} text-xs px-2.5 py-1 font-medium shadow-sm`}
+          >
+            {statusConfig.label}
+          </Badge>
+        </div>
 
-        <CardContent className="space-y-4">
-          {/* Ngày ứng tuyển */}
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Clock className="h-4 w-4" />
-            <span>Ngày ứng tuyển: {formatDate(application.createdAt)}</span>
+        <CardContent className="flex flex-col h-full px-3">
+          <div className="mb-4 w-full cursor-pointer" onClick={handleViewJobDetails}>
+            <h3 className="font-bold text-lg leading-tight line-clamp-2 group-hover:text-primary transition-colors w-full">
+              {application.job?.title || 'Chưa có tiêu đề'}
+            </h3>
           </div>
 
-          {/* Lịch phỏng vấn */}
-          {application.interview?.scheduledAt && (
-            <div className="flex items-center gap-2 text-sm">
-              <Calendar className="h-4 w-4 text-primary" />
-              <span className="font-medium text-primary">
-                Lịch phỏng vấn: {formatDateTime(application.interview.scheduledAt)}
-              </span>
+          <div className="space-y-2.5">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Mail className="h-4 w-4 flex-shrink-0 text-primary" />
+              <span className="truncate">{application.email}</span>
             </div>
-          )}
 
-          {/* Buttons */}
-          <div className="flex flex-wrap gap-2 pt-2">
-            <Button variant="outline" size="sm" onClick={() => setIsCoverLetterOpen(true)} className="gap-2">
-              <Eye className="h-4 w-4" />
-              Xem thư giới thiệu
-            </Button>
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleViewResume}
-              disabled={!application.resume?.fileUrl}
-              className="gap-2"
-            >
-              <FileText className="h-4 w-4" />
-              Xem CV
-            </Button>
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleDownloadResume}
-              disabled={!application.resume?.fileUrl}
-              className="gap-2"
-            >
-              <Download className="h-4 w-4" />
-              Tải CV
-            </Button>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Clock className="h-4 w-4 flex-shrink-0 text-primary" />
+              <span>Ứng tuyển {formatDate(application.createdAt)}</span>
+            </div>
 
             {application.interview?.scheduledAt && (
-              <Button variant="default" size="sm" onClick={() => setIsInterviewDetailOpen(true)} className="gap-2">
-                <Calendar className="h-4 w-4" />
-                Chi tiết phỏng vấn
-              </Button>
+              <div className="flex items-center gap-2 text-sm bg-primary/5 rounded-lg px-3 py-2 border border-primary/20">
+                <Calendar className="h-4 w-4 flex-shrink-0 text-primary" />
+                <span className="text-foreground font-medium">
+                  Phỏng vấn: {formatDateTime(application.interview.scheduledAt)}
+                </span>
+              </div>
             )}
           </div>
+
+          <div className="grid grid-cols-3 gap-2 mt-4">
+            <button
+              onClick={handleViewResume}
+              disabled={!application.resume?.fileUrl}
+              className="flex flex-col items-center gap-1.5 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed group/btn cursor-pointer"
+              title="Xem CV"
+            >
+              <FileText className="h-5 w-5 text-primary group-hover/btn:scale-110 transition-transform" />
+            </button>
+
+            <button
+              onClick={handleDownloadResume}
+              disabled={!application.resume?.fileUrl || isDownloading}
+              className="flex flex-col items-center gap-1.5 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed group/btn cursor-pointer"
+              title="Tải CV"
+            >
+              <Download className="h-5 w-5 text-primary group-hover/btn:scale-110 transition-transform" />
+            </button>
+
+            <button
+              onClick={() => setIsCoverLetterOpen(true)}
+              className="flex flex-col items-center gap-1.5 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed group/btn cursor-pointer"
+              title="Xem thư giới thiệu"
+            >
+              <Eye className="h-5 w-5 text-primary group-hover/btn:scale-110 transition-transform" />
+            </button>
+          </div>
+
+          {application.interview?.scheduledAt && (
+            <Button
+              onClick={() => setIsInterviewDetailOpen(true)}
+              className="flex flex-col items-center gap-1.5 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed group/btn cursor-pointer"
+              title="Xem chi tiết phỏng vấn"
+            >
+              <Calendar className="h-5 w-5 text-primary group-hover/btn:scale-110 transition-transform" />
+            </Button>
+          )}
         </CardContent>
       </Card>
 
-      {/* Dialogs */}
       <CoverLetterDialog
         open={isCoverLetterOpen}
         onOpenChange={setIsCoverLetterOpen}

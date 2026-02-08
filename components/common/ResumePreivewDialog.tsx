@@ -25,11 +25,11 @@ export default function ResumePreviewDialog({
 }: Readonly<ResumePreviewDialogProps>) {
   const [isIframeLoading, setIsIframeLoading] = useState(true);
 
-  const resumeUrl = application.resumeUrl || "";
+  const resumeUrl = application.resume.fileUrl || "";
   const isPdf = resumeUrl.toLowerCase().endsWith(".pdf");
   const applicantName = useMemo(
-    () => (application.user.fullName ? application.user.fullName : "Ứng_viên"),
-    [application.user],
+    () => (application.applicant.fullName ? application.applicant.fullName : "Ứng_viên"),
+    [application.applicant],
   );
   const jobTitle = useMemo(
     () => (application.job?.title ? application.job.title : "Việc_làm"),

@@ -131,7 +131,7 @@ export default function ApplicationListDialog({ user, open, onOpenChange }: Appl
                       </div>
                       <div className="flex items-center gap-2">
                         <User2 className="h-4 w-4" />
-                        <div className="text-sm text-muted-foreground">{app.recruiterName || app.createdBy}</div>
+                        <div className="text-sm text-muted-foreground">{app.createdBy}</div>
                       </div>
                       <div className="flex items-center gap-2">
                         <Mail className="h-4 w-4" />

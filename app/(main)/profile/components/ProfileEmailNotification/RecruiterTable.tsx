@@ -1,4 +1,3 @@
-import EmptyTable from "@/app/(main)/profile/components/ProfileApplication/EmptyTable";
 import ErrorMessage from "@/components/common/ErrorMessage";
 import LoaderSpin from "@/components/common/LoaderSpin";
 import { Button } from "@/components/ui/button";
@@ -15,6 +14,7 @@ import { useGetFollowedRecruitersQuery } from "@/services/user/userApi";
 import { ExternalLink, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
+import EmptyTable from "../EmptyTable";
 
 const RecruiterTable = () => {
   const { data, isLoading, isError, isSuccess, refetch } =

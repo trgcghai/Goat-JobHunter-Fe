@@ -30,7 +30,7 @@ export default function CoverLetterDialog({
             </DialogDescription>
           )}
         </DialogHeader>
-        <div className="mt-4 max-h-[60vh] overflow-y-auto">
+        <div className="max-h-[60vh] overflow-y-auto">
           <div className="rounded-lg bg-muted/50 p-6">
             <p className="whitespace-pre-wrap text-sm leading-relaxed">{coverLetter}</p>
           </div>
