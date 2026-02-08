@@ -5,18 +5,35 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { X, ChevronDown, UserPlus } from "lucide-react";
+import { X, ChevronDown, UserPlus, Edit, Loader2, LogOut } from "lucide-react";
 import { SharedMediaGrid } from "./SharedMediaGrid";
 import { SharedFilesList } from "./SharedFilesList";
 import { useMemo, useState } from "react";
 import { ChatRoom } from "@/types/model";
 import { useFetchFilesInChatRoomQuery, useFetchMediaInChatRoomQuery } from "@/services/chatRoom/chatRoomApi";
-import { useGetMemberInGroupChatQuery, useAddMemberToGroupMutation } from "@/services/chatRoom/groupChat/groupChatApi";
+import {
+  useGetMemberInGroupChatQuery,
+  useAddMemberToGroupMutation,
+  useLeaveGroupChatMutation
+} from "@/services/chatRoom/groupChat/groupChatApi";
 import { ChatMemberItem } from "@/app/(chat)/messages/components/ChatMemberItem";
 import { useUser } from "@/hooks/useUser";
 import { SearchUsersModal } from "./SearchUsersModal";
 import { User } from "@/types/model";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { EditGroupModal } from "@/app/(chat)/messages/components/EditGroupModal";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
 
 interface GroupDetailsPanelProps {
   chatRoom: ChatRoom;
@@ -30,7 +47,13 @@ export function GroupDetailsPanel({
                                     onClose
                                   }: Readonly<GroupDetailsPanelProps>) {
   const [isMembersOpen, setIsMembersOpen] = useState(true);
+  const [isActionsOpen, setIsActionsOpen] = useState(true);
   const [addMemberModalOpen, setAddMemberModalOpen] = useState(false);
+  const [editGroupModalOpen, setEditGroupModalOpen] = useState(false);
+  const [leaveConfirmOpen, setLeaveConfirmOpen] = useState(false);
+
+  const router = useRouter();
+  const [leaveGroup, { isLoading: isLeavingGroup }] = useLeaveGroupChatMutation();
 
   const {
     data: filesData,
@@ -71,6 +94,9 @@ export function GroupDetailsPanel({
   }, [members, user?.accountId]);
 
   const canAddMember = currentUserRole === "OWNER" || currentUserRole === "MODERATOR";
+  const canEditGroup = currentUserRole === "OWNER" || currentUserRole === "MODERATOR";
+  const canLeaveGroup = currentUserRole !== "OWNER";
+
 
   const handleAddMember = async (selectedUser: User) => {
     try {
@@ -85,7 +111,18 @@ export function GroupDetailsPanel({
       console.error("Error adding member:", error);
       toast.error("Không thể thêm thành viên vào nhóm");
 
-      throw error
+      throw error;
+    }
+  };
+
+  const handleLeaveGroup = async () => {
+    try {
+      await leaveGroup(chatRoom.roomId.toString()).unwrap();
+      toast.success("Đã rời khỏi nhóm");
+      router.push("/messages");
+    } catch (error) {
+      console.error("Error leaving group:", error);
+      toast.error("Không thể rời khỏi nhóm");
     }
   };
 
@@ -113,6 +150,67 @@ export function GroupDetailsPanel({
                 {chatRoom.memberCount} thành viên
               </Badge>
             </div>
+
+            <Separator />
+
+            <Collapsible open={isActionsOpen} onOpenChange={setIsActionsOpen} defaultOpen={true}>
+              <div className="bg-accent/30 rounded-lg overflow-hidden">
+                <CollapsibleTrigger asChild>
+                  <Button
+                    className="w-full flex items-center justify-between p-3 py-6 hover:bg-accent/50 transition-colors cursor-pointer rounded-xl"
+                    variant="ghost"
+                  >
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold text-sm">Thông tin nhóm</h3>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <ChevronDown
+                        className={`h-4 w-4 transition-transform duration-200 ${
+                          isMembersOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </div>
+                  </Button>
+                </CollapsibleTrigger>
+
+                <CollapsibleContent
+                  className="data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up">
+                  <div className="px-2 pb-2 space-y-1 mt-2">
+                    {canEditGroup && (
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start rounded-xl"
+                        onClick={() => setEditGroupModalOpen(true)}
+                      >
+                        <Edit className="h-4 w-4" />
+                        Chỉnh sửa thông tin nhóm
+                      </Button>
+                    )}
+
+                    {canLeaveGroup && (
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start text-destructive hover:text-destructive rounded-xl"
+                        onClick={() => setLeaveConfirmOpen(true)}
+                        disabled={isLeavingGroup}
+                      >
+                        {isLeavingGroup ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            Đang rời nhóm...
+                          </>
+                        ) : (
+                          <>
+                            <LogOut className="h-4 w-4" />
+                            Rời khỏi nhóm
+                          </>
+                        )}
+                      </Button>
+                    )}
+                  </div>
+                </CollapsibleContent>
+              </div>
+            </Collapsible>
 
             <Separator />
 
@@ -203,6 +301,35 @@ export function GroupDetailsPanel({
         onUserSelect={handleAddMember}
         existingMemberIds={members.map(m => m.accountId)}
       />
+
+      {/* Edit Group Modal */}
+      <EditGroupModal
+        open={editGroupModalOpen}
+        onOpenChange={setEditGroupModalOpen}
+        chatRoom={chatRoom}
+      />
+
+      {/* Leave Group Confirmation */}
+      <AlertDialog open={leaveConfirmOpen} onOpenChange={setLeaveConfirmOpen}>
+        <AlertDialogContent className="rounded-xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Rời khỏi nhóm?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Bạn có chắc chắn muốn rời khỏi nhóm &#34;{chatRoom.name}&#34;? Bạn sẽ không thể xem tin nhắn hoặc
+              tham gia trò chuyện nữa.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="rounded-xl">Hủy</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleLeaveGroup}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-xl text-white"
+            >
+              Rời nhóm
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

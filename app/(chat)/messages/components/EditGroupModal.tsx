@@ -1,0 +1,161 @@
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ChatRoom } from "@/types/model";
+import { useState } from "react";
+import { Upload, Loader2 } from "lucide-react";
+import { useUpdateGroupInfoMutation } from "@/services/chatRoom/groupChat/groupChatApi";
+import { toast } from "sonner";
+import Image from "next/image";
+
+interface EditGroupModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  chatRoom: ChatRoom;
+}
+
+export function EditGroupModal({ open, onOpenChange, chatRoom }: EditGroupModalProps) {
+  const [groupName, setGroupName] = useState(chatRoom.name);
+  const [avatarPreview, setAvatarPreview] = useState<string>(chatRoom.avatar || "");
+  const [avatar, setAvatar] = useState<File | null>(null);
+
+  const [updateGroupInfo, { isLoading }] = useUpdateGroupInfoMutation();
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setAvatar(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatarPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      if (!groupName.trim()) {
+        toast.error("Vui lòng nhập tên nhóm");
+        return;
+      }
+
+      const updateData: { name?: string; avatar?: File } = {};
+
+      if (groupName.trim() !== chatRoom.name) {
+        updateData.name = groupName.trim();
+      }
+
+      if (avatar) {
+        updateData.avatar = avatar;
+      }
+
+      if (Object.keys(updateData).length === 0) {
+        toast.info("Không có thay đổi nào");
+        onOpenChange(false);
+        return;
+      }
+
+      await updateGroupInfo({
+        chatroomId: chatRoom.roomId.toString(),
+        ...updateData
+      }).unwrap();
+
+      toast.success("Cập nhật thông tin nhóm thành công");
+      onOpenChange(false);
+    } catch (error) {
+      toast.error("Không thể cập nhật thông tin nhóm");
+      console.error(error);
+    }
+  };
+
+  const handleClose = () => {
+    setGroupName(chatRoom.name);
+    setAvatarPreview(chatRoom.avatar || "");
+    setAvatar(null);
+    onOpenChange(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent className="sm:max-w-md rounded-xl">
+        <DialogHeader>
+          <DialogTitle>Chỉnh sửa thông tin nhóm</DialogTitle>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="flex flex-col items-center gap-4">
+            <div className="relative">
+              <Avatar className="h-24 w-24 border-2">
+                {avatarPreview ? (
+                  <Image
+                    src={avatarPreview}
+                    alt="Group avatar"
+                    className="object-cover"
+                    height={96}
+                    width={96}
+                  />
+                ) : (
+                  <AvatarFallback className="text-2xl">
+                    {groupName.charAt(0) || "G"}
+                  </AvatarFallback>
+                )}
+              </Avatar>
+              <Label
+                htmlFor="avatar-upload"
+                className="absolute bottom-0 right-0 bg-primary text-primary-foreground rounded-full p-2 cursor-pointer hover:bg-primary/90"
+              >
+                <Upload className="h-4 w-4" />
+                <input
+                  id="avatar-upload"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleAvatarChange}
+                />
+              </Label>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="group-name" className="font-bold" required>Tên nhóm</Label>
+            <Input
+              id="group-name"
+              placeholder="Nhập tên nhóm..."
+              value={groupName}
+              className={"rounded-xl"}
+              onChange={(e) => setGroupName(e.target.value)}
+              maxLength={50}
+            />
+          </div>
+
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="flex-1 rounded-xl"
+              onClick={handleClose}
+              disabled={isLoading}
+            >
+              Hủy
+            </Button>
+            <Button type="submit" className="flex-1 rounded-xl" disabled={isLoading || !groupName.trim()}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Đang lưu...
+                </>
+              ) : (
+                "Lưu thay đổi"
+              )}
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
