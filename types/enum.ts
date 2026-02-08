@@ -51,6 +51,13 @@ export enum InterviewType {
   ASSESSMENT_CENTER = 'Trung tâm đánh giá',
 }
 
+export enum InterviewStatus {
+  SCHEDULED = 'Đã lên lịch',
+  COMPLETED = 'Hoàn thành',
+  CANCELLED = 'Đã hủy',
+  RESCHEDULED = 'Đã lên lịch lại',
+}
+
 export enum BlogActionType {
   DELETE = 'DELETE',
   REJECT = 'REJECT',
@@ -112,8 +119,8 @@ export enum ReportReason {
 }
 
 export enum ChatRoomType {
-  DIRECT = "DIRECT",
-  GROUP = "GROUP",
-  BROADCAST = "BROADCAST",
-  AI = "AI",
+  DIRECT = 'DIRECT',
+  GROUP = 'GROUP',
+  BROADCAST = 'BROADCAST',
+  AI = 'AI',
 }

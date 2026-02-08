@@ -1,5 +1,6 @@
 'use client';
 
+import CustomPagination from '@/components/common/CustomPagination';
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from '@/components/ui/empty';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useUser } from '@/hooks/useUser';
@@ -27,7 +28,14 @@ const ResumePage = () => {
     handleDownloadResume,
     handleUpdateTitle,
     handleToggleAvailableStatus,
-  } = useResumeAction();
+    currentPage,
+    totalPages,
+    goToPage,
+    nextPage,
+    previousPage,
+    hasNextPage,
+    hasPreviousPage,
+  } = useResumeAction({ initialPage: 1, itemsPerPage: 6 });
 
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -89,6 +97,17 @@ const ResumePage = () => {
               onEditTitle={handleEditTitle}
               isProcessing={isProcessing}
               uploadButtonText="Tải CV lên"
+            />
+
+            <CustomPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={goToPage}
+              onNextPage={nextPage}
+              onPreviousPage={previousPage}
+              hasNextPage={hasNextPage}
+              hasPreviousPage={hasPreviousPage}
+              visiblePageRange={2}
             />
           </div>
         </div>

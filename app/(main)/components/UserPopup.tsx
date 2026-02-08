@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useUser } from '@/hooks/useUser';
-import { FileText, LogOut, Shield, User } from 'lucide-react';
+import { Briefcase, FileText, LogOut, Shield, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -84,9 +84,9 @@ export default function UserPopup() {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem asChild>
-          <Link href="/profile" className="flex items-center cursor-pointer rounded-xl">
-            <User className="mr-2 h-4 w-4" />
-            <span>Hồ Sơ Cá Nhân</span>
+          <Link href="/my-jobs" className="flex items-center cursor-pointer rounded-xl">
+            <Briefcase className="mr-2 h-4 w-4" />
+            <span>Việc làm của tôi</span>
           </Link>
         </DropdownMenuItem>
 
@@ -99,11 +99,18 @@ export default function UserPopup() {
           </DropdownMenuItem>
         </HasApplicant>
 
+        <DropdownMenuItem asChild>
+          <Link href="/profile" className="flex items-center cursor-pointer rounded-xl">
+            <User className="mr-2 h-4 w-4" />
+            <span>Hồ sơ cá nhân</span>
+          </Link>
+        </DropdownMenuItem>
+
         <HasAdmin user={user}>
           <DropdownMenuItem asChild>
             <Link href="/dashboard" className="flex items-center cursor-pointer rounded-xl">
               <Shield className="mr-2 h-4 w-4" />
-              <span>Bảng Điều Khiển</span>
+              <span>Bảng điều khiển</span>
             </Link>
           </DropdownMenuItem>
         </HasAdmin>
@@ -112,7 +119,7 @@ export default function UserPopup() {
           <DropdownMenuItem asChild>
             <Link href="/recruiter-portal" className="flex items-center cursor-pointer rounded-xl">
               <Shield className="mr-2 h-4 w-4" />
-              <span>Bảng Điều Khiển</span>
+              <span>Bảng điều khiển</span>
             </Link>
           </DropdownMenuItem>
         </HasCompany>

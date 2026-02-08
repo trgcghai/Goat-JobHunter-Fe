@@ -1,6 +1,6 @@
 'use client';
 
-import { JobHeader, JobInfoGrid, JobInfoSidebar, RelatedJobs } from '@/app/(main)/jobs/[id]/components';
+import { JobHeader, JobInfoGrid } from '@/app/(main)/jobs/[id]/components';
 import ResumeDialog from '@/app/(main)/jobs/[id]/components/ResumeDialog';
 import useDetailJob from '@/app/(main)/jobs/[id]/hooks/useDetailJob';
 import LoaderSpin from '@/components/common/LoaderSpin';
@@ -10,9 +10,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyTitle } from '@/components/ui/empty';
 import { Separator } from '@/components/ui/separator';
 import useJobActions from '@/hooks/useJobActions';
-import { BookmarkPlus, ChevronLeft, Send } from 'lucide-react';
+import { BookmarkPlus, Send } from 'lucide-react';
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useUser } from '@/hooks/useUser';
 import ErrorMessage from '@/components/common/ErrorMessage';
 import { HasApplicant } from '@/components/common/HasRole';
@@ -51,7 +51,6 @@ export default function JobDetailView({ jobId }: JobDetailViewProps) {
 
   const { data } = useCountApplicationsByJobAndApplicantQuery(
     {
-      applicantId: user?.accountId || -1,
       jobId: job?.jobId || -1,
     },
     {
@@ -191,7 +190,7 @@ export default function JobDetailView({ jobId }: JobDetailViewProps) {
           open={isDialogOpen}
           onOpenChange={setIsDialogOpen}
           job={job}
-          userId={user?.accountId}
+          accountId={user?.accountId}
           userEmail={user?.email}
         />
       )}

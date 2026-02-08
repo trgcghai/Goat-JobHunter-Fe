@@ -1,6 +1,6 @@
-import type { IBackendRes, IModelPaginate } from "@/types/api";
-import type { Application } from "@/types/model";
-import { InterviewType } from "@/types/enum";
+import type { IBackendRes, IModelPaginate } from '@/types/api';
+import type { Application } from '@/types/model';
+import { InterviewType } from '@/types/enum';
 
 export type ApplicationIdsRequest = {
   applicationIds: number[];
@@ -8,10 +8,10 @@ export type ApplicationIdsRequest = {
 
 // Create
 export type CreateApplicationRequest = {
-  resumeUrl: string;
   email: string;
-  jobId: string;
-  userId: string | number;
+  coverLetter: string;
+  jobId: number;
+  resumeId: number;
 };
 
 // Update Status
@@ -42,9 +42,8 @@ export type FetchApplicationsByApplicantRequest = {
 };
 
 export type CountApplicationsRequest = {
-  applicantId: number;
   jobId: number;
-}
+};
 
 // Response Types
 export type ApplicationMutationResponse = IBackendRes<Application>;

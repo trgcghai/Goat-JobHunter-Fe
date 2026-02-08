@@ -1,10 +1,7 @@
-"use client";
+'use client';
 
-import {
-  ProfileTabContents,
-  ProfileTabsList
-} from "@/app/(main)/profile/components";
-import { Tabs } from "@/components/ui/tabs";
+import { ProfileTabContents, ProfileTabsList } from '@/app/(main)/profile/components';
+import { Tabs } from '@/components/ui/tabs';
 
 interface ProfileTabsProps {
   activeTab: string;
