@@ -31,7 +31,7 @@ export function Sidebar() {
   };
 
   return (
-    <div className="h-full flex flex-col bg-card">
+    <div className="h-full flex flex-col bg-card overflow-hidden">
       <div className="px-4 h-16 flex items-center justify-between border-b shrink-0">
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10 border">
@@ -68,7 +68,7 @@ export function Sidebar() {
         </div>
       </div>
 
-      <ScrollArea className="flex-1 px-2">
+      <ScrollArea className="flex-1 min-h-0 px-2">
         <div className="space-y-1 pb-4">
           {isLoading && (
             <>
