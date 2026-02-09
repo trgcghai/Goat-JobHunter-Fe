@@ -3,10 +3,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { vi } from 'date-fns/locale';
-import { FileIcon } from 'lucide-react';
+import { FileIcon, UserPlus, UserMinus, Crown, ImageIcon, Users } from 'lucide-react';
 import Image from 'next/image';
-import { MessageTypeEnum } from '@/types/enum';
-import { useMemo } from "react";
+import { MessageEvent, MessageTypeEnum } from "@/types/enum";
+import { JSX, useMemo } from "react";
 
 interface MessageBubbleProps {
   message: MessageType;
@@ -24,6 +24,47 @@ export function MessageBubble({ message, isOwn, showAvatar = false, senderName, 
   const type = useMemo(() => message.messageType, [message.messageType]);
 
   const isMedia = useMemo(() => type === MessageTypeEnum.IMAGE || type === MessageTypeEnum.VIDEO || type === MessageTypeEnum.AUDIO, [type]);
+
+  const isSystem = useMemo(() => type === MessageTypeEnum.SYSTEM, [type]);
+
+  const getSystemMessageContent = () => {
+    try {
+      const systemData = JSON.parse(message.content);
+      const event = systemData.event as MessageEvent;
+      const actor = systemData.actor || 'Ai đó';
+      const target = systemData.target;
+
+      const eventIcons: Record<MessageEvent, JSX.Element> = {
+        [MessageEvent.MEMBER_ADDED]: <UserPlus className="h-3.5 w-3.5" />,
+        [MessageEvent.MEMBER_REMOVED]: <UserMinus className="h-3.5 w-3.5" />,
+        [MessageEvent.MEMBER_LEFT]: <UserMinus className="h-3.5 w-3.5" />,
+        [MessageEvent.ROLE_CHANGED]: <Crown className="h-3.5 w-3.5" />,
+        [MessageEvent.GROUP_CREATED]: <Users className="h-3.5 w-3.5" />,
+        [MessageEvent.GROUP_NAME_CHANGED]: <Users className="h-3.5 w-3.5" />,
+        [MessageEvent.GROUP_AVATAR_CHANGED]: <ImageIcon className="h-3.5 w-3.5" />,
+      };
+
+      const eventMessages: Record<MessageEvent, string> = {
+        [MessageEvent.MEMBER_ADDED]: `${actor} đã thêm ${target} vào nhóm`,
+        [MessageEvent.MEMBER_REMOVED]: `${actor} đã xóa ${target} khỏi nhóm`,
+        [MessageEvent.MEMBER_LEFT]: `${actor} đã rời khỏi nhóm`,
+        [MessageEvent.ROLE_CHANGED]: `${actor} đã thay đổi vai trò của ${target} thành ${systemData.newRole || 'thành viên'}`,
+        [MessageEvent.GROUP_CREATED]: `${actor} đã tạo nhóm`,
+        [MessageEvent.GROUP_NAME_CHANGED]: `${actor} đã đổi tên nhóm thành "${target}"`,
+        [MessageEvent.GROUP_AVATAR_CHANGED]: `${actor} đã thay đổi ảnh nhóm`,
+      };
+
+      return {
+        icon: eventIcons[event],
+        text: eventMessages[event] || message.content,
+      };
+    } catch {
+      return {
+        icon: <Users className="h-3.5 w-3.5" />,
+        text: message.content,
+      };
+    }
+  };
 
   const renderContent = () => {
     if (type === MessageTypeEnum.IMAGE) {
@@ -76,10 +117,23 @@ export function MessageBubble({ message, isOwn, showAvatar = false, senderName, 
     return <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{message.content}</p>;
   };
 
+  if (isSystem) {
+    const systemContent = getSystemMessageContent();
+    return (
+      <div className="flex justify-center w-full my-3">
+        <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted/50 text-muted-foreground">
+          {systemContent.icon}
+          <span className="text-xs font-medium">{systemContent.text}</span>
+          <span className="text-xs opacity-70">• {timeAgo}</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={cn('flex w-full mb-2', isOwn ? 'justify-end' : 'justify-start')}>
       {!isOwn && showAvatar && (
-        <Avatar className="h-10 w-10 mr-2 flex-shrink-0">
+        <Avatar className="h-10 w-10 mr-2 flex-shrink-0 border">
           <AvatarImage src={senderAvatar || '/placeholder.svg'} alt={senderName} />
           <AvatarFallback>{senderName?.charAt(0) || 'U'}</AvatarFallback>
         </Avatar>

@@ -1,5 +1,5 @@
-import { api } from "@/services/api";
-import { buildSpringQuery } from "@/utils/buildSpringQuery";
+import { api } from '@/services/api';
+import { buildSpringQuery } from '@/utils/buildSpringQuery';
 import {
   AcceptApplicationStatusRequest,
   ApplicationMutationResponse,
@@ -10,175 +10,142 @@ import {
   FetchApplicationsByApplicantRequest,
   FetchApplicationsRequest,
   FetchApplicationsResponse,
-  RejectApplicationStatusRequest
-} from "./applicationType";
+  RejectApplicationStatusRequest,
+} from './applicationType';
 
 export const applicationApi = api.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
-    createApplication: builder.mutation<
-      ApplicationMutationResponse,
-      CreateApplicationRequest
-    >({
-      query: ({ resumeUrl, email, jobId, userId }) => ({
-        url: "/applications",
-        method: "POST",
-        data: {
-          email,
-          resumeUrl,
-          status: "PENDING",
-          applicant: { userId, type: "applicant" },
-          job: { jobId }
-        }
-      }),
-      invalidatesTags: ["Application"]
-    }),
-
-    acceptApplicationStatus: builder.mutation<
-      ApplicationMutationResponse,
-      AcceptApplicationStatusRequest
-    >({
+    createApplication: builder.mutation<ApplicationMutationResponse, CreateApplicationRequest>({
       query: (data) => ({
-        url: "/applications/accepted",
-        method: "PUT",
-        data
+        url: '/applications',
+        method: 'POST',
+        data,
       }),
-      invalidatesTags: ["Application"]
+      invalidatesTags: ['Application'],
     }),
 
-    rejectApplicationStatus: builder.mutation<
-      ApplicationMutationResponse,
-      RejectApplicationStatusRequest
-    >({
+    acceptApplicationStatus: builder.mutation<ApplicationMutationResponse, AcceptApplicationStatusRequest>({
       query: (data) => ({
-        url: "/applications/rejected",
-        method: "PUT",
-        data
+        url: '/applications/accepted',
+        method: 'PUT',
+        data,
       }),
-      invalidatesTags: ["Application"]
+      invalidatesTags: ['Application'],
     }),
 
-    deleteApplication: builder.mutation<
-      ApplicationMutationResponse,
-      string
-    >({
+    rejectApplicationStatus: builder.mutation<ApplicationMutationResponse, RejectApplicationStatusRequest>({
+      query: (data) => ({
+        url: '/applications/rejected',
+        method: 'PUT',
+        data,
+      }),
+      invalidatesTags: ['Application'],
+    }),
+
+    deleteApplication: builder.mutation<ApplicationMutationResponse, string>({
       query: (applicationId) => ({
         url: `/applications/${applicationId}`,
-        method: "DELETE"
+        method: 'DELETE',
       }),
-      invalidatesTags: ["Application"]
+      invalidatesTags: ['Application'],
     }),
 
-    fetchApplicationById: builder.query<
-      FetchApplicationByIdResponse,
-      string
-    >({
+    fetchApplicationById: builder.query<FetchApplicationByIdResponse, string>({
       query: (applicationId) => ({
         url: `/applications/${applicationId}`,
-        method: "GET"
+        method: 'GET',
       }),
-      providesTags: ["Application"]
+      providesTags: ['Application'],
     }),
 
-    fetchApplications: builder.query<
-      FetchApplicationsResponse,
-      FetchApplicationsRequest
-    >({
+    fetchApplications: builder.query<FetchApplicationsResponse, FetchApplicationsRequest>({
       query: (params) => {
         const { params: queryParams } = buildSpringQuery({
           params,
-          filterFields: ["jobTitle", "status"],
-          textSearchFields: ["jobTitle"],
+          filterFields: ['jobTitle', 'status'],
+          textSearchFields: ['jobTitle'],
           nestedFields: {
-            jobTitle: "job.title"
+            jobTitle: 'job.title',
           },
-          defaultSort: "createdAt,desc",
-          sortableFields: ["createdAt", "status"]
+          defaultSort: 'createdAt,desc',
+          sortableFields: ['createdAt', 'status'],
         });
 
         return {
-          url: "/all-applications",
-          method: "GET",
-          params: queryParams
+          url: '/all-applications',
+          method: 'GET',
+          params: queryParams,
         };
       },
-      providesTags: ["Application"]
+      providesTags: ['Application'],
     }),
 
-    fetchApplicationsByRecruiter: builder.query<
-      FetchApplicationsResponse,
-      FetchApplicationsRequest
-    >({
+    fetchApplicationsByRecruiter: builder.query<FetchApplicationsResponse, FetchApplicationsRequest>({
       query: (params) => {
         const { params: queryParams } = buildSpringQuery({
           params,
-          filterFields: ["jobTitle", "status"],
-          textSearchFields: ["jobTitle"],
+          filterFields: ['jobTitle', 'status'],
+          textSearchFields: ['jobTitle'],
           nestedFields: {
-            jobTitle: "job.title"
+            jobTitle: 'job.title',
           },
-          defaultSort: "createdAt,desc",
-          sortableFields: ["createdAt", "status"]
+          defaultSort: 'createdAt,desc',
+          sortableFields: ['createdAt', 'status'],
         });
 
         return {
-          url: "/applications",
-          method: "GET",
-          params: queryParams
+          url: '/applications',
+          method: 'GET',
+          params: queryParams,
         };
       },
-      providesTags: ["Application"]
+      providesTags: ['Application'],
     }),
 
-    fetchApplicationsByCurrentApplicant: builder.query<
-      FetchApplicationsResponse,
-      FetchApplicationsByApplicantRequest
-    >({
+    fetchApplicationsByCurrentApplicant: builder.query<FetchApplicationsResponse, FetchApplicationsByApplicantRequest>({
       query: (params) => {
         const { params: queryParams } = buildSpringQuery({
           params,
           filterFields: [],
-          defaultSort: "updatedAt,desc"
+          defaultSort: 'updatedAt,desc',
         });
 
         return {
-          url: "/applications/by-applicant",
-          method: "GET",
-          params: queryParams
+          url: '/applications/by-applicant',
+          method: 'GET',
+          params: queryParams,
         };
       },
-      providesTags: ["Application"]
+      providesTags: ['Application'],
     }),
 
-    fetchApplicationsByApplicant: builder.query<
-      FetchApplicationsResponse,
-      FetchApplicationsByApplicantRequest
-    >({
+    fetchApplicationsByApplicant: builder.query<FetchApplicationsResponse, FetchApplicationsByApplicantRequest>({
       query: ({ applicantId, ...params }) => {
         const { params: queryParams } = buildSpringQuery({
           params,
           filterFields: [],
-          defaultSort: "updatedAt,desc"
+          defaultSort: 'updatedAt,desc',
         });
 
         return {
           url: `/applications/by-applicant/${applicantId}`,
-          method: "GET",
-          params: queryParams
+          method: 'GET',
+          params: queryParams,
         };
       },
-      providesTags: ["Application"]
+      providesTags: ['Application'],
     }),
 
     countApplicationsByJobAndApplicant: builder.query<CountApplicationsResponse, CountApplicationsRequest>({
-      query: ({ jobId, applicantId }) => ({
+      query: ({ jobId }) => ({
         url: `/applications/count`,
-        method: "GET",
-        params: { jobId, applicantId }
+        method: 'GET',
+        params: { jobId },
       }),
-      providesTags: ["Application"]
-    })
-  })
+      providesTags: ['Application'],
+    }),
+  }),
 });
 
 export const {
@@ -191,5 +158,5 @@ export const {
   useFetchApplicationsByRecruiterQuery,
   useFetchApplicationsByCurrentApplicantQuery,
   useFetchApplicationsByApplicantQuery,
-  useCountApplicationsByJobAndApplicantQuery
+  useCountApplicationsByJobAndApplicantQuery,
 } = applicationApi;

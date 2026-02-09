@@ -30,10 +30,21 @@ export const chatRoomApi = api.injectEndpoints({
           : [{ type: "ChatRoom", id: "LIST" }]
     }),
 
+    // Fetch detail chat room by ID
+    fetchChatRoomsById: builder.query<IBackendRes<ChatRoom>, number>({
+      query: (chatRoomId) => ({
+        url: `/chatrooms/${chatRoomId}`,
+        method: "GET"
+      }),
+      providesTags: (result, error, chatRoomId) => [
+        { type: "ChatRoom", id: chatRoomId }
+      ]
+    }),
+
     // Fetch messages in a specific chat room
     fetchMessagesInChatRoom: builder.query<FetchMessagesInChatRoomResponse, FetchMessagesInChatRoomRequest>({
       query: ({ chatRoomId, page = 1, size = 50 }) => ({
-        url: `/chatrooms/${chatRoomId}`,
+        url: `/chatrooms/${chatRoomId}/messages`,
         method: "GET",
         params: { size, page }
       }),
@@ -203,6 +214,7 @@ export const chatRoomApi = api.injectEndpoints({
 
 export const {
   useFetchChatRoomsQuery,
+  useFetchChatRoomsByIdQuery,
   useFetchMessagesInChatRoomQuery,
   useFetchFilesInChatRoomQuery,
   useFetchMediaInChatRoomQuery,

@@ -1,61 +1,38 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Dropzone,
-  DropzoneEmptyState,
-} from "@/components/ui/shadcn-io/dropzone";
-import { useCreateApplicationMutation } from "@/services/application/applicationApi";
-import { useUploadSingleFileMutation } from "@/services/upload/uploadApi";
-import { Job } from "@/types/model";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { capitalize, truncate } from "lodash";
-import { FileText, Loader2, X } from "lucide-react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import * as z from "zod";
-import { IBackendError } from "@/types/api";
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
+import { Dropzone, DropzoneEmptyState } from '@/components/ui/shadcn-io/dropzone';
+import { useCreateApplicationMutation } from '@/services/application/applicationApi';
+import { Job } from '@/types/model';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { FileText, Leaf, Loader2, Mail, X } from 'lucide-react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import * as z from 'zod';
+import { cn } from '@/lib/utils';
+import { useResumeAction } from '@/app/(main)/resumes/hooks/useResumeAction';
+import { IBackendError } from '@/types/api';
+import CustomPagination from '@/components/common/CustomPagination';
 
-const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+const MAX_FILE_SIZE = 2 * 1024 * 1024;
 const ACCEPTED_FILE_TYPES = {
-  "application/pdf": [".pdf"],
-  "application/msword": [".doc"],
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
-    ".docx",
-  ],
+  'application/pdf': ['.pdf'],
+  'application/msword': ['.doc'],
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
 };
 
 const applicationSchema = z.object({
-  email: z.string().email("Email không hợp lệ"),
-  resumeFile: z
-    .instanceof(File)
-    .refine(
-      (file) => file.size <= MAX_FILE_SIZE,
-      "File không được vượt quá 5MB",
-    )
-    .refine(
-      (file) => Object.keys(ACCEPTED_FILE_TYPES).includes(file.type),
-      "Chỉ chấp nhận file PDF hoặc Word",
-    )
-    .optional(),
+  email: z.string().email('Email không hợp lệ'),
+  resumeSelectionType: z.enum(['library', 'upload']),
+  resumeId: z.number().optional(),
+  coverLetter: z.string().min(50, 'Thư giới thiệu phải có ít nhất 50 ký tự'),
 });
 
 type ApplicationFormData = z.infer<typeof applicationSchema>;
@@ -64,125 +41,145 @@ interface ResumeDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   job: Job;
+  accountId?: number;
   userEmail?: string;
-  userId?: number;
 }
 
-export default function ResumeDialog({
-  open,
-  onOpenChange,
-  job,
-  userEmail,
-  userId,
-}: Readonly<ResumeDialogProps>) {
-  const [createApplication, { isLoading: isCreatingApplication }] =
-    useCreateApplicationMutation();
-  const [uploadFile, { isLoading: isUploadingFile }] =
-    useUploadSingleFileMutation();
+export default function ResumeDialog({ open, onOpenChange, job, accountId, userEmail }: Readonly<ResumeDialogProps>) {
+  const { resumes, isProcessing, handleCreateResume } = useResumeAction({ initialPage: 1, itemsPerPage: 10 });
+
+  const [createApplication, { isLoading: isCreatingApplication }] = useCreateApplicationMutation();
+  const [selectedResumeId, setSelectedResumeId] = useState<number | undefined>(undefined);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
   const form = useForm<ApplicationFormData>({
     resolver: zodResolver(applicationSchema),
     defaultValues: {
-      email: userEmail || "",
+      email: userEmail || '',
+      resumeSelectionType: 'library',
+      coverLetter: '',
     },
   });
 
-  const isSubmitting = isUploadingFile || isCreatingApplication;
+  const resumeSelectionType = form.watch('resumeSelectionType');
+  const isSubmitting = isProcessing || isCreatingApplication;
 
-  const handleFileDrop = (acceptedFiles: File[]) => {
+  const handleResumeSelect = (resumeId: number) => {
+    setSelectedResumeId(resumeId);
+    form.setValue('resumeId', resumeId);
+  };
+
+  const handleDrop = (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (file) {
-      setUploadedFile(file);
-      form.setValue("resumeFile", file);
-      form.clearErrors("resumeFile");
+      handleFileChange(file);
     }
   };
 
-  const handleRemoveFile = () => {
+  const handleFileChange = (selectedFile: File) => {
+    if (!Object.keys(ACCEPTED_FILE_TYPES).includes(selectedFile.type)) {
+      toast.error('Chỉ chấp nhận file PDF, DOC, DOCX');
+      return;
+    }
+
+    if (selectedFile.size > MAX_FILE_SIZE) {
+      toast.error('Kích thước file không được vượt quá 2MB');
+      return;
+    }
+
+    setUploadedFile(selectedFile);
+  };
+
+  const removeFile = () => {
     setUploadedFile(null);
-    form.setValue("resumeFile", undefined);
   };
 
   const onSubmit = async (data: ApplicationFormData) => {
     try {
-      // Validate file
-      if (!data.resumeFile) {
-        toast.error("Vui lòng tải lên CV của bạn");
+      if (!accountId) {
+        toast.error('Vui lòng đăng nhập để ứng tuyển');
         return;
       }
 
-      // Validate user
-      if (!userId) {
-        toast.error("Vui lòng đăng nhập để ứng tuyển");
+      let finalResumeId: number | undefined;
+
+      // Handle upload if selection type is upload
+      if (data.resumeSelectionType === 'upload') {
+        if (!uploadedFile) {
+          toast.error('Vui lòng tải lên CV của bạn');
+          return;
+        }
+
+        const uploadToast = toast.loading('Đang tải lên CV...');
+
+        try {
+          const formData = new FormData();
+          formData.append('fileUrl', uploadedFile);
+          const createdResume = await handleCreateResume(formData);
+
+          if (createdResume) {
+            finalResumeId = createdResume.resumeId;
+            toast.success('Tải lên CV thành công!', { id: uploadToast });
+          } else {
+            toast.error('Không thể tải lên CV. Vui lòng thử lại', { id: uploadToast });
+            return;
+          }
+        } catch (uploadError) {
+          toast.error('Không thể tải lên CV. Vui lòng thử lại', { id: uploadToast });
+          return;
+        }
+      } else {
+        finalResumeId = selectedResumeId;
+      }
+
+      if (!finalResumeId) {
+        toast.error('Vui lòng chọn hoặc tải lên CV');
         return;
       }
 
-      // Step 1: Upload file
-      const uploadToast = toast.loading("Đang tải lên CV...");
-
-      let resumeUrl: string;
-      try {
-        const uploadResponse = await uploadFile({
-          file: data.resumeFile,
-          folderType: "resumes",
-        }).unwrap();
-
-        resumeUrl = uploadResponse?.data?.url || "";
-        toast.success("Tải lên CV thành công!", {
-          id: uploadToast,
-        });
-      } catch (uploadError) {
-        console.error("Error uploading file:", uploadError);
-        toast.error("Không thể tải lên CV. Vui lòng thử lại", {
-          id: uploadToast,
-        });
-        return;
-      }
-
-      // Step 2: Create application
-      const applicationToast = toast.loading("Đang gửi đơn ứng tuyển...");
-
+      const applicationToast = toast.loading('Đang gửi đơn ứng tuyển...');
       try {
         await createApplication({
           email: data.email,
-          resumeUrl,
-          jobId: job.jobId.toString(),
-          userId,
+          coverLetter: data.coverLetter,
+          jobId: job.jobId,
+          resumeId: finalResumeId,
         }).unwrap();
 
-        toast.success("Ứng tuyển thành công!", {
+        toast.success('Ứng tuyển thành công!', {
           id: applicationToast,
-          duration: 5000,
+          duration: 3000,
         });
 
-        // Reset form and close dialog
         onOpenChange(false);
         form.reset();
         setUploadedFile(null);
+        setSelectedResumeId(undefined);
       } catch (applicationError) {
-        console.error("Error creating application:", applicationError);
-
-        if ((applicationError as IBackendError).data.message.includes("maximum of 3 applications")) {
-          toast.error("Bạn đã đạt đến giới hạn 3 đơn ứng tuyển cho công việc này.", {
+        if (
+          (applicationError as IBackendError)?.data?.message?.includes(
+            'You can submit a maximum of 3 applications for this job.',
+          )
+        ) {
+          toast.error('Bạn đã đạt đến giới hạn 3 đơn ứng tuyển cho công việc này.', {
             id: applicationToast,
           });
           return;
         }
 
-        toast.error("Không thể gửi đơn ứng tuyển. Vui lòng thử lại sau", {
+        toast.error('Không thể gửi đơn ứng tuyển. Vui lòng thử lại sau', {
           id: applicationToast,
         });
       }
     } catch (error) {
-      console.error("Unexpected error:", error);
-      toast.error("Có lỗi xảy ra. Vui lòng thử lại sau");
+      toast.error('Có lỗi xảy ra. Vui lòng thử lại sau');
     }
   };
 
   const handleCancel = () => {
     form.reset();
     setUploadedFile(null);
+    setSelectedResumeId(undefined);
     onOpenChange(false);
   };
 
@@ -192,30 +189,159 @@ export default function ResumeDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] rounded-2xl">
+      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto rounded-2xl">
         <DialogHeader>
-          <DialogTitle className="text-xl">Ứng Tuyển Công Việc</DialogTitle>
-          <DialogDescription>
-            Tải lên CV của bạn để ứng tuyển vào vị trí{" "}
-            <span className="font-semibold text-foreground">{job.title}</span>
-          </DialogDescription>
+          <DialogTitle className="text-xl">
+            Ứng tuyển <span className="text-green-600">{job.title}</span>
+          </DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email liên hệ</FormLabel>
+                  <div className="flex items-center gap-2">
+                    <Mail className="w-5 h-5 text-green-600" />
+                    <FormLabel className="text-base font-semibold">Email liên hệ</FormLabel>
+                  </div>
                   <FormControl>
-                    <Input
+                    <Input {...field} type="email" placeholder="your@email.com" className="rounded-lg" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="resumeSelectionType"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-green-600" />
+                    <FormLabel className="text-base font-semibold">Chọn CV để ứng tuyển</FormLabel>
+                  </div>
+                  <FormControl>
+                    <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="space-y-3">
+                      <div className="space-y-3">
+                        <div className="flex items-start space-x-3">
+                          <RadioGroupItem value="library" id="library" />
+                          <Label htmlFor="library" className="flex-1 cursor-pointer font-medium">
+                            Chọn CV khác trong thư viện CV của tôi
+                          </Label>
+                        </div>
+
+                        {resumeSelectionType === 'library' && (
+                          <div className="space-y-3 p-4 border border-green-600 rounded-lg bg-green-50/50 max-h-[400px] overflow-y-auto">
+                            {resumes
+                              .filter((r) => r.public)
+                              .map((resume) => (
+                                <div
+                                  key={resume.resumeId}
+                                  className={cn(
+                                    'flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-colors',
+                                    selectedResumeId === resume.resumeId
+                                      ? 'border-green-600 bg-green-50'
+                                      : 'border-gray-200 hover:border-green-300',
+                                  )}
+                                  onClick={() => handleResumeSelect(resume.resumeId)}
+                                >
+                                  <span className="text-sm">{resume.title}</span>
+                                  <Button
+                                    type="button"
+                                    variant="link"
+                                    size="sm"
+                                    className="text-green-600 p-0 h-auto"
+                                    onClick={() => window.open(resume.fileUrl, '_blank')}
+                                  >
+                                    Xem
+                                  </Button>
+                                </div>
+                              ))}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="space-y-3">
+                        <div className="flex items-start space-x-3">
+                          <RadioGroupItem value="upload" id="upload" />
+                          <Label htmlFor="upload" className="flex-1 cursor-pointer">
+                            Tải lên CV từ máy tính, chọn hoặc kéo thả
+                          </Label>
+                        </div>
+
+                        {resumeSelectionType === 'upload' && (
+                          <div>
+                            {!uploadedFile ? (
+                              <Dropzone
+                                accept={ACCEPTED_FILE_TYPES}
+                                maxFiles={1}
+                                maxSize={MAX_FILE_SIZE}
+                                onDrop={handleDrop}
+                                onError={handleError}
+                                disabled={isSubmitting}
+                                className="border-dashed border-2 border-gray-300 rounded-lg p-6"
+                              >
+                                <DropzoneEmptyState customCaption>
+                                  <div className="flex flex-col items-center gap-2">
+                                    <div className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-medium transition-colors bg-green-600 text-white hover:bg-green-700 h-10 px-4 py-2">
+                                      Chọn CV
+                                    </div>
+                                    <p className="text-xs text-muted-foreground text-center">
+                                      Hỗ trợ định dạng .doc, .docx, pdf có kích thước dưới {MAX_FILE_SIZE / 1024 / 1024}
+                                      MB
+                                    </p>
+                                  </div>
+                                </DropzoneEmptyState>
+                              </Dropzone>
+                            ) : (
+                              <div className="flex items-center gap-3 p-4 border border-gray-200 rounded-lg bg-gray-50">
+                                <FileText className="w-8 h-8 text-green-600 shrink-0" />
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-medium truncate">{uploadedFile.name}</p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {(uploadedFile.size / 1024).toFixed(2)} KB
+                                  </p>
+                                </div>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={removeFile}
+                                  disabled={isSubmitting}
+                                  className="shrink-0 hover:bg-red-50 hover:text-red-600"
+                                >
+                                  <X className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="coverLetter"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex items-center gap-2">
+                    <Leaf className="w-5 h-5 text-green-600" />
+                    <FormLabel className="text-base font-semibold">Thư giới thiệu</FormLabel>
+                  </div>
+                  <FormControl>
+                    <Textarea
                       {...field}
-                      type="email"
-                      placeholder="your@email.com"
-                      disabled
-                      className="rounded-xl"
+                      placeholder="Một thư giới thiệu ngắn gọn, chỉn chu sẽ giúp bạn trở nên chuyên nghiệp và gây ấn tượng hơn với nhà tuyển dụng."
+                      className="min-h-[150px] rounded-lg resize-none"
                     />
                   </FormControl>
                   <FormMessage />
@@ -223,80 +349,10 @@ export default function ResumeDialog({
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="resumeFile"
-              render={() => (
-                <FormItem>
-                  <FormLabel>CV</FormLabel>
-                  <FormControl>
-                    <div className="space-y-3">
-                      {!uploadedFile ? (
-                        <Dropzone
-                          accept={ACCEPTED_FILE_TYPES}
-                          maxFiles={1}
-                          maxSize={MAX_FILE_SIZE}
-                          onDrop={handleFileDrop}
-                          onError={handleError}
-                          disabled={isSubmitting}
-                          className="rounded-xl"
-                        >
-                          <DropzoneEmptyState customCaption>
-                            <div className="flex flex-col items-center gap-2">
-                              <p className="text-sm font-medium text-foreground">
-                                Kéo thả hoặc click để tải lên CV
-                              </p>
-                              <p className="text-xs text-muted-foreground">
-                                {Object.values(ACCEPTED_FILE_TYPES)
-                                  .map((type) => type[0])
-                                  .map((ext) => capitalize(ext.slice(1)))
-                                  .join(", ")}{" "}
-                                (tối đa {MAX_FILE_SIZE / 1024 / 1024} MB)
-                              </p>
-                            </div>
-                          </DropzoneEmptyState>
-                        </Dropzone>
-                      ) : (
-                        <div className="flex items-start gap-3 p-4 border border-border rounded-xl bg-accent/50">
-                          <FileText className="w-10 h-10 text-primary shrink-0 mt-0.5" />
-                          <div className="flex-1 min-w-0 space-y-1">
-                            <p className="text-sm font-medium text-foreground wrap-break-word">
-                              {truncate(uploadedFile.name, { length: 40 })}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {(uploadedFile.size / 1024).toFixed(2)} KB
-                              {isUploadingFile
-                                ? " • Đang tải lên..."
-                                : " • Sẵn sàng để tải lên"}
-                            </p>
-                          </div>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            onClick={handleRemoveFile}
-                            disabled={isSubmitting}
-                            className="shrink-0 rounded-full hover:bg-destructive/10 hover:text-destructive"
-                          >
-                            <X className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             {isSubmitting && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 p-3 rounded-xl">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
                 <Loader2 className="h-4 w-4 animate-spin" />
-                <span>
-                  {isUploadingFile
-                    ? "Đang tải lên CV..."
-                    : "Đang gửi đơn ứng tuyển..."}
-                </span>
+                <span>{isProcessing ? 'Đang tải lên CV...' : 'Đang gửi đơn ứng tuyển...'}</span>
               </div>
             )}
 
@@ -306,22 +362,22 @@ export default function ResumeDialog({
                 variant="outline"
                 onClick={handleCancel}
                 disabled={isSubmitting}
-                className="rounded-xl"
+                className="rounded-lg"
               >
                 Hủy
               </Button>
               <Button
                 type="submit"
-                disabled={isSubmitting || !uploadedFile}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl"
+                disabled={isProcessing}
+                className="bg-green-600 hover:bg-green-700 text-white rounded-lg"
               >
                 {isSubmitting ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                    {isUploadingFile ? "Đang tải lên..." : "Đang gửi..."}
+                    {isProcessing ? 'Đang tải lên...' : 'Đang gửi...'}
                   </>
                 ) : (
-                  "Ứng tuyển"
+                  'Nộp hồ sơ ứng tuyển'
                 )}
               </Button>
             </DialogFooter>

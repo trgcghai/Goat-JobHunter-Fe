@@ -1,152 +1,252 @@
-'use client';
-
-import { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
+import { Search, Loader2 } from "lucide-react";
+import { useState } from "react";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Search, AlertCircle } from 'lucide-react';
-import { UserSearchResultItem } from './UserSearchResultItem';
-import { useSearchUsers } from '../hooks/useSearchUsers';
-import type { User } from '@/types/model';
-import ErrorMessage from '@/components/common/ErrorMessage';
-import { useLazyCheckExistingChatRoomQuery } from '@/services/chatRoom/chatRoomApi';
-import { useRouter } from 'next/navigation';
+  useLazyCheckExistingChatRoomQuery,
+  useSendMessageToNewChatRoomMutation
+} from "@/services/chatRoom/chatRoomApi";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { User } from "@/types/model";
+import { UserSearchItem } from "./UserSearchItem";
+import { SelectedUsersList } from "./SelectedUsersList";
+import { GroupInfoModal } from "./GroupInfoModal";
+import { useSearchUsers } from "@/app/(chat)/messages/hooks/useSearchUsers";
 
-interface SearchUsersModalProps {
+interface UserSearchModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  mode?: "single" | "multi" | "add-to-group";
+  onUserSelect?: (user: User) => void;
+  existingMemberIds?: number[];
 }
 
-export function SearchUsersModal({ open, onOpenChange }: SearchUsersModalProps) {
-  const { keyword, setKeyword, users, isLoading, isError, isEmpty, shouldShowResults } = useSearchUsers();
+export function SearchUsersModal({
+  open,
+  onOpenChange,
+  mode = "single",
+  onUserSelect,
+  existingMemberIds = []
+}: UserSearchModalProps) {
   const router = useRouter();
-  const [checkExistingRoom] = useLazyCheckExistingChatRoomQuery();
+  const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
+  const [groupInfoModalOpen, setGroupInfoModalOpen] = useState(false);
 
-  const [processingUserId, setProcessingUserId] = useState<number | null>(null);
+  const {
+    keyword,
+    setKeyword,
+    users,
+    isLoading,
+    isError,
+    isEmpty,
+    shouldShowResults
+  } = useSearchUsers();
 
-  const handleMessage = async (user: User) => {
-    if (!user?.accountId) return;
+  const [checkExistingChatRoom] = useLazyCheckExistingChatRoomQuery();
+  const [sendMessageToNewChatRoom, { isLoading: isCreatingChat }] = useSendMessageToNewChatRoomMutation();
 
-    setProcessingUserId(user?.accountId);
+  const isAddToGroupMode = mode === "add-to-group";
 
-    console.log('Start chat with user:', user);
+  // Filter out existing members when in add-to-group mode
+  const filteredUsers = isAddToGroupMode
+    ? users.filter(user => !existingMemberIds.includes(user.accountId))
+    : users;
 
-    try {
-      // Check if chat room already exists
-      const { data: existingRoom } = await checkExistingRoom(user?.accountId).unwrap();
+  const getDialogTitle = () => {
+    if (isAddToGroupMode) return "Thêm thành viên vào nhóm";
+    if (mode === "multi") return "Chọn thành viên";
+    return "Tìm người dùng";
+  };
 
-      console.log(existingRoom);
+  const getButtonText = () => {
+    if (isAddToGroupMode) {
+      return selectedUsers.length > 0
+        ? `Thêm (${selectedUsers.length})`
+        : "Chọn người để thêm";
+    }
+    return `Tiếp theo (${selectedUsers.length})`;
+  };
 
-      if (existingRoom?.roomId) {
+  const handleSelectUser = async (user: User) => {
+    // Add-to-group mode: multi-select, no immediate action
+    if (isAddToGroupMode) {
+      setSelectedUsers((prev) => {
+        const isSelected = prev.some((u) => u.accountId === user.accountId);
+        return isSelected
+          ? prev.filter((u) => u.accountId !== user.accountId)
+          : [...prev, user];
+      });
+      return;
+    }
 
-        // Navigate to existing room
-        router.push(`/messages/${existingRoom.roomId}`);
-        onOpenChange(false);
-      } else {
+    // External handler (used by GroupDetailsPanel)
+    if (onUserSelect) {
+      onUserSelect(user);
+      return;
+    }
 
-        // Navigate to new chat page with recipient query param, not creating room yet
-        router.push(`/messages/new?recipient=${user?.accountId}`);
-        onOpenChange(false);
+    // Default single mode behavior
+    if (mode === "single") {
+      try {
+        const { data: existingChatRoom } = await checkExistingChatRoom(user.accountId).unwrap();
+
+        if (existingChatRoom?.roomId) {
+          onOpenChange(false);
+          router.push(`/messages/${existingChatRoom.roomId}`);
+        } else {
+          const result = await sendMessageToNewChatRoom({ accountId: user.accountId }).unwrap();
+          if (result.data) {
+            onOpenChange(false);
+            router.push(`/messages/${result.data.roomId}`);
+          }
+        }
+      } catch (error) {
+        toast.error("Không thể tạo cuộc trò chuyện");
+        console.error(error);
       }
-    } catch (error) {
-      console.error('Failed to start chat:', error);
-    } finally {
-      setProcessingUserId(null);
+    } else {
+      // Multi mode for group creation
+      setSelectedUsers((prev) => {
+        const isSelected = prev.some((u) => u.accountId === user.accountId);
+        return isSelected
+          ? prev.filter((u) => u.accountId !== user.accountId)
+          : [...prev, user];
+      });
     }
   };
 
-  const handleAddFriend = async (user: User) => {
-    console.log('Add friend:', user);
+  const handleRemoveUser = (userId: number) => {
+    setSelectedUsers((prev) => prev.filter((u) => u.accountId !== userId));
   };
 
+  const handleNext = async () => {
+    if (isAddToGroupMode) {
+      if (selectedUsers.length === 0) {
+        toast.error("Vui lòng chọn ít nhất 1 người");
+        return;
+      }
+
+      // Add all selected users using external handler
+      if (onUserSelect) {
+        for (const user of selectedUsers) {
+          await onUserSelect(user);
+        }
+        onOpenChange(false);
+        setSelectedUsers([]);
+        setKeyword("");
+      }
+    } else {
+      if (selectedUsers.length < 2) {
+        toast.error("Vui lòng chọn ít nhất 2 người");
+        return;
+      }
+      setGroupInfoModalOpen(true);
+    }
+  };
+
+  const handleCloseGroupInfoModal = (open: boolean) => {
+    setGroupInfoModalOpen(open);
+    if (!open) {
+      onOpenChange(false);
+      setSelectedUsers([]);
+      setKeyword("");
+    }
+  };
+
+  const handleModalClose = (open: boolean) => {
+    onOpenChange(open);
+    if (!open) {
+      setSelectedUsers([]);
+      setKeyword("");
+    }
+  };
+
+  const showMultiSelectUI = mode === "multi" || isAddToGroupMode;
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-xl! h-[80vh] flex flex-col gap-0 p-0 rounded-xl">
-        <DialogHeader className="px-6 pt-6 pb-4 border-b shrink-0">
-          <DialogTitle>Tìm kiếm người dùng</DialogTitle>
-          <DialogDescription>
-            Tìm kiếm theo email để bắt đầu cuộc trò chuyện
-          </DialogDescription>
-        </DialogHeader>
+    <>
+      <Dialog open={open} onOpenChange={handleModalClose}>
+        <DialogContent className="sm:max-w-md rounded-xl">
+          <DialogHeader>
+            <DialogTitle>{getDialogTitle()}</DialogTitle>
+          </DialogHeader>
 
-        <div className="px-6 py-4 shrink-0">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Tìm kiếm theo email hoặc tên người dùng..."
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              className="pl-9 bg-accent/50 border focus-visible:ring-1 rounded-full"
-              autoFocus
-            />
-          </div>
+          <div className="space-y-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Tìm kiếm theo tên..."
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                className="pl-9 rounded-xl"
+              />
+            </div>
 
-          {keyword.length > 0 && keyword.length < 2 && (
-            <p className="text-xs text-muted-foreground mt-2">
-              Nhập thêm ít nhất {2 - keyword.length} ký tự để tìm kiếm
-            </p>
-          )}
-        </div>
-
-        <ScrollArea className="flex-1 px-6 h-[60vh]">
-          <div className="space-y-2 pb-6">
-            {!shouldShowResults && (
-              <div className="text-center py-12 text-muted-foreground">
-                <Search className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p className="text-sm">Nhập để tìm kiếm người dùng</p>
-              </div>
+            {showMultiSelectUI && selectedUsers.length > 0 && (
+              <SelectedUsersList users={selectedUsers} onRemove={handleRemoveUser} />
             )}
 
-            {isLoading && shouldShowResults && (
-              <>
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="flex items-center gap-3 p-3">
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                    <div className="flex-1 space-y-2">
-                      <Skeleton className="h-4 w-3/4" />
-                      <Skeleton className="h-3 w-1/2" />
-                    </div>
-                    <Skeleton className="h-9 w-24 rounded-full" />
-                  </div>
-                ))}
-              </>
-            )}
+            <ScrollArea className="h-[400px]">
+              {isLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                </div>
+              ) : isError ? (
+                <div className="text-center py-8 text-destructive">
+                  Có lỗi xảy ra khi tìm kiếm
+                </div>
+              ) : !shouldShowResults ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  Nhập ít nhất 2 ký tự để tìm kiếm
+                </div>
+              ) : isEmpty || (isAddToGroupMode && filteredUsers.length === 0) ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  {isAddToGroupMode
+                    ? "Không tìm thấy người dùng mới"
+                    : "Không tìm thấy người dùng"}
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  {filteredUsers.map((user) => (
+                    <UserSearchItem
+                      key={user.accountId}
+                      user={user}
+                      mode={showMultiSelectUI ? "multi" : "single"}
+                      isSelected={selectedUsers.some((u) => u.accountId === user.accountId)}
+                      onAction={handleSelectUser}
+                    />
+                  ))}
+                </div>
+              )}
+            </ScrollArea>
 
-            {isError && shouldShowResults && (
-              <ErrorMessage message="Có lỗi xảy ra khi tìm kiếm. Vui lòng thử lại." />
-            )}
-
-            {isEmpty && (
-              <div className="text-center py-12 text-muted-foreground">
-                <AlertCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p className="text-sm">Không tìm thấy người dùng nào</p>
-                <p className="text-xs mt-1">Thử tìm kiếm với từ khóa khác</p>
-              </div>
-            )}
-
-            {!isLoading && shouldShowResults && users.length > 0 && (
-              <>
-                {users.map((user) => (
-                  <UserSearchResultItem
-                    key={user?.accountId}
-                    user={user}
-                    onMessage={handleMessage}
-                    onAddFriend={handleAddFriend}
-                    isLoadingMessage={processingUserId === user?.accountId}
-                  />
-                ))}
-              </>
+            {showMultiSelectUI && (
+              <Button
+                className="w-full rounded-xl"
+                onClick={handleNext}
+                disabled={
+                  (isAddToGroupMode && selectedUsers.length === 0) ||
+                  (!isAddToGroupMode && selectedUsers.length < 2) ||
+                  isCreatingChat
+                }
+              >
+                {getButtonText()}
+              </Button>
             )}
           </div>
-        </ScrollArea>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+
+      {mode === "multi" && (
+        <GroupInfoModal
+          open={groupInfoModalOpen}
+          onOpenChange={handleCloseGroupInfoModal}
+          selectedUsers={selectedUsers}
+        />
+      )}
+    </>
   );
 }

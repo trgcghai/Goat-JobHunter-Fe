@@ -4,11 +4,14 @@ import {
   CompanySize,
   Education,
   Gender,
-  Level, MessageTypeEnum,
+  InterviewStatus,
+  InterviewType,
+  Level,
+  MessageTypeEnum,
   MessageTypeRole,
   NotificationTypeEnum,
-  WorkingType
-} from "@/types/enum";
+  WorkingType,
+} from '@/types/enum';
 import { LucideIcon } from 'lucide-react';
 
 export type Address = {
@@ -153,13 +156,21 @@ export type Job = {
 export type Application = {
   applicationId: number;
   email: string;
-  resumeUrl: string;
+  coverLetter: string;
   status: ApplicationStatus;
-  user: { userId: string; fullName: string };
+
   job: { jobId: string; title: string };
-  recruiterName: string;
+  applicant: { accountId: number; email: string; fullName: string };
+  resume: { resumeId: number; fileUrl: string };
+  interview?: {
+    interviewId?: number;
+    scheduledAt?: string;
+  };
+
   createdAt: string;
   createdBy: string;
+  updatedAt: string;
+  updatedBy: string;
 };
 
 export type Permission = {
@@ -316,7 +327,13 @@ export type MessageType = {
   messageSk: string;
   chatRoomId: string;
   messageId: string;
-  senderId: string;
+  sender: {
+    accountId: number
+    fullName: string;
+    username: string;
+    email: string
+    avatar: string;
+  }
   content: string;
   messageType: MessageTypeEnum;
   replyTo?: string;
@@ -359,6 +376,27 @@ export type Resume = {
   analyzeAt?: string;
 
   applicant: Applicant;
+
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+  updatedBy: string;
+};
+
+export type Interview = {
+  interviewId: number;
+  scheduledAt: string;
+  durationMinutes: number;
+  type: InterviewType;
+  status: InterviewStatus;
+  location?: string;
+  meetingLink?: string;
+  notes?: string;
+  feedback?: string;
+  rating?: number;
+
+  interviewer: { accountId: number; email: string; fullName: string };
+  application: { applicationId: number; email: string; status: ApplicationStatus; fullName: string };
 
   createdAt: string;
   updatedAt: string;

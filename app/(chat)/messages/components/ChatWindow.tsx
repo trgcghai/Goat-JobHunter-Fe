@@ -7,6 +7,7 @@ import { MessageList } from './MessageList';
 import { ChatDetailsPanel } from './ChatDetailsPanel';
 import { useDetailsPanelState } from '../hooks/useDetailsPanelState';
 import { ChatRoomType } from '@/types/enum';
+import { GroupDetailsPanel } from "@/app/(chat)/messages/components/GroupDetailsPanel";
 
 interface ChatWindowProps {
   chatRoom: ChatRoom;
@@ -40,8 +41,16 @@ export function ChatWindow({
         <MessageInput onSendMessage={onSendMessage} />
       </div>
 
-      {isDetailsOpen && (
+      {isDetailsOpen && !isGroup && (
         <ChatDetailsPanel
+          chatRoom={chatRoom}
+          isOpen={isDetailsOpen}
+          onClose={close}
+        />
+      )}
+
+      {isDetailsOpen && isGroup && (
+        <GroupDetailsPanel
           chatRoom={chatRoom}
           isOpen={isDetailsOpen}
           onClose={close}

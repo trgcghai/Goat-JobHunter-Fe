@@ -51,6 +51,13 @@ export enum InterviewType {
   ASSESSMENT_CENTER = 'Trung tâm đánh giá',
 }
 
+export enum InterviewStatus {
+  SCHEDULED = 'Đã lên lịch',
+  COMPLETED = 'Hoàn thành',
+  CANCELLED = 'Đã hủy',
+  RESCHEDULED = 'Đã lên lịch lại',
+}
+
 export enum BlogActionType {
   DELETE = 'DELETE',
   REJECT = 'REJECT',
@@ -80,6 +87,17 @@ export enum MessageTypeEnum {
   VIDEO = 'VIDEO',
   AUDIO = 'AUDIO',
   FILE = 'FILE',
+  SYSTEM = 'SYSTEM',
+}
+
+export enum MessageEvent {
+  MEMBER_ADDED = 'MEMBER_ADDED',
+  MEMBER_REMOVED = 'MEMBER_REMOVED',
+  MEMBER_LEFT = 'MEMBER_LEFT',
+  ROLE_CHANGED = 'ROLE_CHANGED',
+  GROUP_CREATED = 'GROUP_CREATED',
+  GROUP_NAME_CHANGED = 'GROUP_NAME_CHANGED',
+  GROUP_AVATAR_CHANGED = 'GROUP_AVATAR_CHANGED',
 }
 
 export enum ReactionType {
@@ -101,8 +119,8 @@ export enum ReportReason {
 }
 
 export enum ChatRoomType {
-  DIRECT = "DIRECT",
-  GROUP = "GROUP",
-  BROADCAST = "BROADCAST",
-  AI = "AI",
+  DIRECT = 'DIRECT',
+  GROUP = 'GROUP',
+  BROADCAST = 'BROADCAST',
+  AI = 'AI',
 }

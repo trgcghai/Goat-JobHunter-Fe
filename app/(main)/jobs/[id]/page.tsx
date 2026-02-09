@@ -56,7 +56,6 @@ export default function JobDetailPage() {
 
   const { data } = useCountApplicationsByJobAndApplicantQuery(
     {
-      applicantId: user?.accountId || -1,
       jobId: job?.jobId || -1,
     },
     {
@@ -210,7 +209,7 @@ export default function JobDetailPage() {
           open={isDialogOpen}
           onOpenChange={setIsDialogOpen}
           job={job}
-          userId={user?.accountId}
+          accountId={user?.accountId}
           userEmail={user?.email}
         />
       )}

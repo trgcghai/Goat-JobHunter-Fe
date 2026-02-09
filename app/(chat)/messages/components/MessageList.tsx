@@ -28,8 +28,10 @@ export function MessageList({ messages, currentUserId, isGroup = false }: Readon
             <MessageBubble
               key={message.messageId}
               message={message}
-              isOwn={message.senderId === currentUserId}
+              isOwn={message.sender.accountId.toString() === currentUserId}
               showAvatar={isGroup}
+              senderName={message.sender.fullName || message.sender.username}
+              senderAvatar={message.sender.avatar || undefined}
             />
           ))}
           {pendingMessages.map((pending) => (

@@ -12,25 +12,17 @@ import {
 } from '@/services/resume/resumeApi';
 import { useFetchResumesByCurrentUserQuery } from '@/services/user/userApi';
 import { Resume } from '@/types/model';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
 
-export const useResumeAction = () => {
-  const { user, isSignedIn } = useUser();
+export interface UseResumeFilterOptions {
+  initialPage?: number;
+  itemsPerPage?: number;
+}
 
-  const {
-    data: resumesData,
-    isLoading: isFetchingResumes,
-    refetch: refetchResumes,
-  } = useFetchResumesByCurrentUserQuery(
-    {
-      page: 0,
-      size: 100,
-    },
-    {
-      skip: !isSignedIn,
-    },
-  );
+export const useResumeAction = ({ initialPage = 1, itemsPerPage = 6 }: UseResumeFilterOptions = {}) => {
+  const { user, isSignedIn } = useUser();
+  const [currentPage, setCurrentPage] = useState(initialPage);
 
   const [toggleAvailableStatus, { isLoading: isTogglingAvailableStatus }] = useToggleAvailableStatusMutation();
 
@@ -42,6 +34,52 @@ export const useResumeAction = () => {
   const [publicResume, { isLoading: isSettingPublic }] = usePublicResumeMutation();
   const [privateResume, { isLoading: isSettingPrivate }] = usePrivateResumeMutation();
   const [downloadResume, { isLoading: isDownloading }] = useDownloadResumeMutation();
+
+  const {
+    data: resumesData,
+    isLoading: isFetchingResumes,
+    refetch: refetchResumes,
+  } = useFetchResumesByCurrentUserQuery(
+    {
+      page: currentPage,
+      size: itemsPerPage,
+    },
+    {
+      skip: !isSignedIn,
+    },
+  );
+
+  const resumes = resumesData?.data?.result || [];
+  const meta = resumesData?.data?.meta || {
+    current: 1,
+    pageSize: itemsPerPage,
+    pages: 0,
+    total: 0,
+  };
+
+  const totalPages = meta.pages;
+  const totalItems = meta.total;
+
+  const goToPage = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const nextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
+  const previousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
+
+  const hasNextPage = currentPage < totalPages;
+  const hasPreviousPage = currentPage > 1;
 
   const handleCreateResume = useCallback(
     async (formData: FormData) => {
@@ -303,8 +341,12 @@ export const useResumeAction = () => {
 
   return {
     // Data
-    resumes: resumesData?.data?.result || [],
-    resumesMetadata: resumesData?.data?.meta,
+    resumes,
+    meta,
+    totalPages,
+    totalItems,
+    currentPage,
+    itemsPerPage,
     defaultResume: getDefaultResume(),
     publicResumes: getPublicResumes(),
 
@@ -343,5 +385,12 @@ export const useResumeAction = () => {
     handleDownloadResume,
     handleToggleAvailableStatus,
     refetchResumes,
+
+    // Pagination
+    goToPage,
+    nextPage,
+    previousPage,
+    hasNextPage,
+    hasPreviousPage,
   };
 };
