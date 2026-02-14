@@ -215,6 +215,7 @@ export default function RichTextEditor({
         <style>{`
           .ql-editor {
             max-height: ${maxHeight}px;
+            height: 150px;
             overflow-y: auto;
           }
         `}</style>
