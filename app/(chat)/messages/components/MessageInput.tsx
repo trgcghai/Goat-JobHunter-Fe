@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Paperclip, Send, Smile, X, Pilcrow } from "lucide-react"
+import { Paperclip, Send, X, Pilcrow } from "lucide-react"
 import { useState, useRef, type KeyboardEvent, type ChangeEvent } from "react"
 import RichTextEditor from "@/components/RichText/Editor"
 
@@ -109,9 +109,6 @@ export function MessageInput({ onSendMessage }: MessageInputProps) {
       <div className="p-3">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
-              <Smile className="h-5 w-5" />
-            </Button>
             <Button
               variant="ghost"
               size="icon"
