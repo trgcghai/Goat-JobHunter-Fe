@@ -5,27 +5,26 @@ import "./quill-fonts.css";
 import ImageInsertModal from "./ImageInsertModal";
 
 import Quill from "quill";
-
-const Font = Quill.import("formats/font");
-const Size = Quill.import("formats/size");
+const Font = Quill.import('formats/font');
+const Size = Quill.import('formats/size');
 
 // @ts-expect-error -- whitelist fonts
 Font.whitelist = [
-  "arial",
-  "comic-sans",
-  "courier-new",
-  "georgia",
-  "helvetica",
-  "inter",
-  "lucida",
-  "times-new-roman",
-  "verdana"
+  'arial',
+  'comic-sans',
+  'courier-new',
+  'georgia',
+  'helvetica',
+  'inter',
+  'lucida',
+  'times-new-roman',
+  'verdana'
 ];
 // @ts-expect-error -- whitelist fonts
 Quill.register(Font, true);
 
 // @ts-expect-error -- whitelist fonts
-Size.whitelist = ["8px", "10px", "12px", "14px", "16px", "18px", "20px", "24px", "28px", "32px", "36px", "48px", "64px"];
+Size.whitelist = ['8px', '10px', '12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px', '64px'];
 // @ts-expect-error -- whitelist fonts
 Quill.register(Size, true);
 
@@ -33,6 +32,7 @@ interface RichTextEditorProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  maxHeight?: number; // New prop for max height with scroll
   // Toolbar options - all default to true
   allowImage?: boolean;
   allowHeader?: boolean;
@@ -51,24 +51,25 @@ interface RichTextEditorProps {
 }
 
 export default function RichTextEditor({
-                                         value,
-                                         onChange,
-                                         placeholder = "Nhập nội dung...",
-                                         allowImage = true,
-                                         allowHeader = true,
-                                         allowFont = true,
-                                         allowSize = true,
-                                         allowBold = true,
-                                         allowItalic = true,
-                                         allowUnderline = true,
-                                         allowStrike = true,
-                                         allowColor = true,
-                                         allowBackground = true,
-                                         allowAlign = true,
-                                         allowList = true,
-                                         allowLink = true,
-                                         allowClean = true
-                                       }: Readonly<RichTextEditorProps>) {
+  value,
+  onChange,
+  placeholder = "Nhập nội dung...",
+  maxHeight,
+  allowImage = true,
+  allowHeader = true,
+  allowFont = true,
+  allowSize = true,
+  allowBold = true,
+  allowItalic = true,
+  allowUnderline = true,
+  allowStrike = true,
+  allowColor = true,
+  allowBackground = true,
+  allowAlign = true,
+  allowList = true,
+  allowLink = true,
+  allowClean = true,
+}: Readonly<RichTextEditorProps>) {
   const quillRef = useRef<ReactQuill>(null);
   const [showImageModal, setShowImageModal] = useState(false);
 
@@ -87,24 +88,23 @@ export default function RichTextEditor({
     if (allowFont) {
       toolbarContainer.push([{
         font: [
-          "arial",
-          "comic-sans",
-          "courier-new",
-          "georgia",
-          "helvetica",
-          "inter",
-          "lucida",
-          "times-new-roman",
-          "verdana"
+          'arial',
+          'comic-sans',
+          'courier-new',
+          'georgia',
+          'helvetica',
+          'inter',
+          'lucida',
+          'times-new-roman',
+          'verdana'
         ]
       }]);
     }
 
     if (allowSize) {
-      toolbarContainer.push([{ size: ["8px", "10px", "12px", "14px", "16px", "18px", "20px", "24px", "28px", "32px", "36px", "48px", "64px"] }]);
+      toolbarContainer.push([{ size: ['8px', '10px', '12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px', '64px'] }]);
     }
 
-    // Text formatting group
     const textFormats: string[] = [];
     if (allowBold) textFormats.push("bold");
     if (allowItalic) textFormats.push("italic");
@@ -114,7 +114,6 @@ export default function RichTextEditor({
       toolbarContainer.push(textFormats);
     }
 
-    // Color group
     const colorFormats: object[] = [];
     if (allowColor) colorFormats.push({ color: [] });
     if (allowBackground) colorFormats.push({ background: [] });
@@ -179,6 +178,10 @@ export default function RichTextEditor({
     return editor ?? null;
   }, []);
 
+  const editorClassName = maxHeight
+    ? `w-full [&_.ql-container]:border-0! [&_.ql-formats]:mr-2! [&_.ql-editor]:max-h-[${maxHeight}px] [&_.ql-editor]:overflow-y-auto`
+    : "w-full [&_.ql-container]:border-0! [&_.ql-container]:min-h-[120px] [&_.ql-editor]:min-h-[120px] [&_.ql-formats]:mr-2!";
+
   return (
     <>
       <div className="h-full w-full">
@@ -190,9 +193,12 @@ export default function RichTextEditor({
           formats={formats}
           placeholder={placeholder}
           theme="snow"
-          className="w-full [&_.ql-container]:border-0! [&_.ql-container]:min-h-[120px] [&_.ql-editor]:min-h-[120px] [&_.ql-formats]:mr-2!"
+          className={editorClassName}
           style={{
-            width: "100%"
+            width: "100%",
+            ...(maxHeight && {
+              ['--editor-max-height' as string]: `${maxHeight}px`
+            })
           }}
         />
       </div>
@@ -203,6 +209,15 @@ export default function RichTextEditor({
           getEditor={handleInsertImage}
           onCancel={() => setShowImageModal(false)}
         />
+      )}
+
+      {maxHeight && (
+        <style>{`
+          .ql-editor {
+            max-height: ${maxHeight}px;
+            overflow-y: auto;
+          }
+        `}</style>
       )}
     </>
   );

@@ -169,6 +169,7 @@ export function MessageInput({ onSendMessage }: MessageInputProps) {
               value={richMessage}
               onChange={setRichMessage}
               placeholder="Nhập tin nhắn..."
+              maxHeight={200}
               allowImage={false}
               allowHeader={false}
               allowFont={false}
