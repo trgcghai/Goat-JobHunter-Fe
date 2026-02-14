@@ -5,30 +5,27 @@ import "./quill-fonts.css";
 import ImageInsertModal from "./ImageInsertModal";
 
 import Quill from "quill";
-const Font = Quill.import('formats/font');
-const Size = Quill.import('formats/size');
 
-// Đăng ký custom fonts
+const Font = Quill.import("formats/font");
+const Size = Quill.import("formats/size");
+
 // @ts-expect-error -- whitelist fonts
 Font.whitelist = [
-  'arial',
-  'comic-sans',
-  'courier-new',
-  'georgia',
-  'helvetica',
-  'inter',
-  'lucida',
-  'times-new-roman',
-  'verdana'
+  "arial",
+  "comic-sans",
+  "courier-new",
+  "georgia",
+  "helvetica",
+  "inter",
+  "lucida",
+  "times-new-roman",
+  "verdana"
 ];
 // @ts-expect-error -- whitelist fonts
 Quill.register(Font, true);
 
-
-// Đăng ký custom font sizes
 // @ts-expect-error -- whitelist fonts
-Size.whitelist = ['8px', '10px', '12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px', '64px'];
-
+Size.whitelist = ["8px", "10px", "12px", "14px", "16px", "18px", "20px", "24px", "28px", "32px", "36px", "48px", "64px"];
 // @ts-expect-error -- whitelist fonts
 Quill.register(Size, true);
 
@@ -36,15 +33,42 @@ interface RichTextEditorProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
+  // Toolbar options - all default to true
   allowImage?: boolean;
+  allowHeader?: boolean;
+  allowFont?: boolean;
+  allowSize?: boolean;
+  allowBold?: boolean;
+  allowItalic?: boolean;
+  allowUnderline?: boolean;
+  allowStrike?: boolean;
+  allowColor?: boolean;
+  allowBackground?: boolean;
+  allowAlign?: boolean;
+  allowList?: boolean;
+  allowLink?: boolean;
+  allowClean?: boolean;
 }
 
 export default function RichTextEditor({
- value,
- onChange,
- placeholder = "Nhập nội dung...",
- allowImage = true
-}: Readonly<RichTextEditorProps>) {
+                                         value,
+                                         onChange,
+                                         placeholder = "Nhập nội dung...",
+                                         allowImage = true,
+                                         allowHeader = true,
+                                         allowFont = true,
+                                         allowSize = true,
+                                         allowBold = true,
+                                         allowItalic = true,
+                                         allowUnderline = true,
+                                         allowStrike = true,
+                                         allowColor = true,
+                                         allowBackground = true,
+                                         allowAlign = true,
+                                         allowList = true,
+                                         allowLink = true,
+                                         allowClean = true
+                                       }: Readonly<RichTextEditorProps>) {
   const quillRef = useRef<ReactQuill>(null);
   const [showImageModal, setShowImageModal] = useState(false);
 
@@ -54,32 +78,68 @@ export default function RichTextEditor({
   }, [allowImage]);
 
   const modules = useMemo(() => {
-    const toolbarContainer = [
-      [{ header: [1, 2, 3, 4, 5, false] }],
-      [{
+    const toolbarContainer: (string | object)[][] = [];
+
+    if (allowHeader) {
+      toolbarContainer.push([{ header: [1, 2, 3, 4, 5, false] }]);
+    }
+
+    if (allowFont) {
+      toolbarContainer.push([{
         font: [
-          'arial',
-          'comic-sans',
-          'courier-new',
-          'georgia',
-          'helvetica',
-          'inter',
-          'lucida',
-          'times-new-roman',
-          'verdana'
+          "arial",
+          "comic-sans",
+          "courier-new",
+          "georgia",
+          "helvetica",
+          "inter",
+          "lucida",
+          "times-new-roman",
+          "verdana"
         ]
-      }],
-      [{ size: ['8px', '10px', '12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px', '64px'] }],
-      ["bold", "italic", "underline", "strike"],
-      [{ color: [] }, { background: [] }],
-      [{ align: [] }],
-      [{ list: "ordered" }, { list: "bullet" }],
-      ["link"],
-      ["clean"],
-    ];
+      }]);
+    }
+
+    if (allowSize) {
+      toolbarContainer.push([{ size: ["8px", "10px", "12px", "14px", "16px", "18px", "20px", "24px", "28px", "32px", "36px", "48px", "64px"] }]);
+    }
+
+    // Text formatting group
+    const textFormats: string[] = [];
+    if (allowBold) textFormats.push("bold");
+    if (allowItalic) textFormats.push("italic");
+    if (allowUnderline) textFormats.push("underline");
+    if (allowStrike) textFormats.push("strike");
+    if (textFormats.length > 0) {
+      toolbarContainer.push(textFormats);
+    }
+
+    // Color group
+    const colorFormats: object[] = [];
+    if (allowColor) colorFormats.push({ color: [] });
+    if (allowBackground) colorFormats.push({ background: [] });
+    if (colorFormats.length > 0) {
+      toolbarContainer.push(colorFormats);
+    }
+
+    if (allowAlign) {
+      toolbarContainer.push([{ align: [] }]);
+    }
+
+    if (allowList) {
+      toolbarContainer.push([{ list: "ordered" }, { list: "bullet" }]);
+    }
+
+    if (allowLink) {
+      toolbarContainer.push(["link"]);
+    }
 
     if (allowImage) {
       toolbarContainer.push(["image"]);
+    }
+
+    if (allowClean) {
+      toolbarContainer.push(["clean"]);
     }
 
     return {
@@ -88,30 +148,31 @@ export default function RichTextEditor({
         handlers: allowImage ? { image: imageHandler } : {}
       }
     };
-  }, [allowImage, imageHandler]);
+  }, [
+    allowHeader, allowFont, allowSize, allowBold, allowItalic,
+    allowUnderline, allowStrike, allowColor, allowBackground,
+    allowAlign, allowList, allowLink, allowImage, allowClean, imageHandler
+  ]);
 
   const formats = useMemo(() => {
-    const baseFormats = [
-      "header",
-      "font",
-      "size",
-      "bold",
-      "italic",
-      "underline",
-      "strike",
-      "color",
-      "background",
-      "align",
-      "list",
-      "link"
-    ];
+    const baseFormats: string[] = [];
 
-    if (allowImage) {
-      baseFormats.push("image");
-    }
+    if (allowHeader) baseFormats.push("header");
+    if (allowFont) baseFormats.push("font");
+    if (allowSize) baseFormats.push("size");
+    if (allowBold) baseFormats.push("bold");
+    if (allowItalic) baseFormats.push("italic");
+    if (allowUnderline) baseFormats.push("underline");
+    if (allowStrike) baseFormats.push("strike");
+    if (allowColor) baseFormats.push("color");
+    if (allowBackground) baseFormats.push("background");
+    if (allowAlign) baseFormats.push("align");
+    if (allowList) baseFormats.push("list");
+    if (allowLink) baseFormats.push("link");
+    if (allowImage) baseFormats.push("image");
 
     return baseFormats;
-  }, [allowImage]);
+  }, [allowHeader, allowFont, allowSize, allowBold, allowItalic, allowUnderline, allowStrike, allowColor, allowBackground, allowAlign, allowList, allowLink, allowImage]);
 
   const handleInsertImage = useCallback(() => {
     const editor = quillRef.current?.getEditor();

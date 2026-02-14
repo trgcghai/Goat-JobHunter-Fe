@@ -37,12 +37,10 @@ export function MessageInput({ onSendMessage }: MessageInputProps) {
 
   const toggleEditorMode = () => {
     if (isEditorMode) {
-      // Chuyển từ editor về input thường - giữ plain text
       const plainText = richMessage.replace(/<[^>]*>/g, '').trim()
       setMessage(plainText)
       setRichMessage("")
     } else {
-      // Chuyển từ input thường sang editor
       setRichMessage(message ? `<p>${message}</p>` : "")
     }
     setIsEditorMode(!isEditorMode)
@@ -74,10 +72,6 @@ export function MessageInput({ onSendMessage }: MessageInputProps) {
     const i = Math.floor(Math.log(bytes) / Math.log(k))
     return Math.round(bytes / Math.pow(k, i) * 100) / 100 + " " + sizes[i]
   }
-
-  const hasContent = isEditorMode
-    ? richMessage.replace(/<[^>]*>/g, '').trim().length > 0
-    : message.trim().length > 0
 
   return (
     <div className="border-t border-border bg-card">
@@ -112,16 +106,16 @@ export function MessageInput({ onSendMessage }: MessageInputProps) {
         </div>
       )}
 
-      <div className="p-4">
-        <div className={`flex ${isEditorMode ? 'flex-col gap-3' : 'items-center gap-2'}`}>
-          <div className="flex items-center gap-2 flex-shrink-0 w-full">
-            <Button variant="ghost" size="icon" className="h-9 w-9">
+      <div className="p-3">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
               <Smile className="h-5 w-5" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              className="h-9 w-9"
+              className="h-8 w-8 rounded-full"
               onClick={handleAttachClick}
             >
               <Paperclip className="h-5 w-5" />
@@ -129,7 +123,7 @@ export function MessageInput({ onSendMessage }: MessageInputProps) {
             <Button
               variant="ghost"
               size="icon"
-              className={`h-9 w-9 ${isEditorMode ? 'bg-accent' : ''}`}
+              className={`h-8 w-8 rounded-full ${isEditorMode ? 'bg-accent' : ''}`}
               onClick={toggleEditorMode}
               title={isEditorMode ? "Switch to simple input" : "Switch to rich text editor"}
             >
@@ -144,51 +138,46 @@ export function MessageInput({ onSendMessage }: MessageInputProps) {
               onChange={handleFileChange}
               accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.zip,.rar"
             />
-
-            {!isEditorMode && (
-              <>
-                <div className="relative flex-1">
-                  <Input
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    onKeyDown={handleKeyPress}
-                    placeholder="Type a message..."
-                    className="pr-12 bg-accent/50 border-0 focus-visible:ring-1 rounded-full h-10"
-                  />
-                </div>
-                <Button
-                  onClick={handleSend}
-                  size="icon"
-                  className="h-9 w-9 rounded-full flex-shrink-0"
-                  disabled={!hasContent && selectedFiles.length === 0}
-                >
-                  <Send className="h-4 w-4" />
-                </Button>
-              </>
-            )}
           </div>
 
-          {isEditorMode && (
-            <div className="flex gap-2 items-end">
-              <div className="flex-1 bg-accent/30 rounded-lg overflow-hidden">
-                <RichTextEditor
-                  value={richMessage}
-                  onChange={setRichMessage}
-                  placeholder="Type a message..."
-                  allowImage={false}
-                />
-              </div>
-              <Button
-                onClick={handleSend}
-                size="icon"
-                className="h-9 w-9 rounded-full flex-shrink-0 mb-1"
-                disabled={!hasContent && selectedFiles.length === 0}
-              >
-                <Send className="h-4 w-4" />
-              </Button>
-            </div>
-          )}
+          <div className="flex items-center gap-1">
+            <Button
+              onClick={handleSend}
+              size="icon"
+              className="h-8 w-8 rounded-full"
+            >
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
+
+        {!isEditorMode ? (
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1">
+              <Input
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={handleKeyPress}
+                placeholder="Nhập tin nhắn..."
+                className="bg-accent/50 border-0 focus-visible:ring-1 rounded-full h-8"
+              />
+            </div>
+          </div>
+        ) : (
+          <div className="bg-accent/30 rounded-lg overflow-hidden">
+            <RichTextEditor
+              value={richMessage}
+              onChange={setRichMessage}
+              placeholder="Nhập tin nhắn..."
+              allowImage={false}
+              allowHeader={false}
+              allowFont={false}
+              allowSize={false}
+              allowLink={false}
+              allowBackground={false}
+            />
+          </div>
+        )}
       </div>
     </div>
   )
