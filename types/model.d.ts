@@ -381,13 +381,13 @@ export type Resume = {
 };
 
 export type ResumeEvaluation = {
-  ResumeEvaluationId: number;
+  resumeEvaluationId: number;
   score: number;
   strengths: string;
   weaknesses: string;
   missingSkills: string;
+  skills: string;
   suggestions: string;
-  analyzedAt: string;
   aiModel: string;
 
   resume: Resume;
